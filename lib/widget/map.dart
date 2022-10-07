@@ -14,9 +14,7 @@ class MapView extends StatelessWidget {
       zoomControlsEnabled: false,
       initialCameraPosition: _kGooglePlex,
       mapType: MapType.terrain,
-      onMapCreated: (GoogleMapController controller) {
-        print(controller);
-      },
+      onMapCreated: (GoogleMapController controller) {},
     );
   }
 }

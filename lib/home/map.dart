@@ -10,12 +10,13 @@ class MapView extends StatelessWidget {
   const MapView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-
     return GoogleMap(
       zoomControlsEnabled: false,
       initialCameraPosition: _kGooglePlex,
       mapType: MapType.terrain,
-      onMapCreated: (GoogleMapController controller) {},
+      onMapCreated: (GoogleMapController controller) {
+        print(controller);
+      },
     );
   }
 }

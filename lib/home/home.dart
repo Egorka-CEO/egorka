@@ -2,6 +2,7 @@ import 'package:egorka/home/map.dart';
 import 'package:egorka/home/side_menu.dart';
 import 'package:egorka/widget/bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,7 +23,8 @@ class HomePage extends StatelessWidget {
   }
 
   Widget appBar() {
-    TextStyle style = const TextStyle(fontSize: 35, fontWeight: FontWeight.w900, color: Colors.black);
+    TextStyle style = const TextStyle(
+        fontSize: 35, fontWeight: FontWeight.w900, color: Colors.black);
 
     return Padding(
       padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
@@ -30,22 +32,16 @@ class HomePage extends StatelessWidget {
         alignment: Alignment.topLeft,
         child: Row(
           children: [
-            Builder(
-              builder: (context) {
-                return GestureDetector(
+            Builder(builder: (context) {
+              return GestureDetector(
                   onTap: () => Scaffold.of(context).openDrawer(),
-                  child: const Icon(Icons.menu, color: Colors.white));
-              }
-            ),
+                  child: const Icon(Icons.menu, size: 35, color: Colors.white));
+            }),
             const SizedBox(width: 10),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text: 'Eg', style: style),
-                  TextSpan(text:'o', style: style.copyWith(color: Colors.red)),
-                  TextSpan(text: 'rka', style: style),
-                ]
-              )
+            SvgPicture.asset(
+              'assets/images/logo3.svg',
+              width: 100,
+              height: 30,
             ),
             const Spacer(),
             Container(
@@ -55,7 +51,9 @@ class HomePage extends StatelessWidget {
               ),
               child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                child: Text('Маркетплейсы', ),
+                child: Text(
+                  'Маркетплейсы',
+                ),
               ),
             )
           ],
@@ -64,5 +62,10 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget iconGPS() => const Center(child: Icon(Icons.location_pin));
+  Widget iconGPS() => const Center(
+          child: Icon(
+        Icons.location_pin,
+        color: Colors.red,
+        size: 35,
+      ));
 }

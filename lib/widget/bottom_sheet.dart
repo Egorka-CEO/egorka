@@ -12,8 +12,11 @@ class BottomSheetDraggable extends StatelessWidget {
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
             decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-              color: Colors.white
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+              color: Colors.white,
             ),
             child: ListView(
               padding: const EdgeInsets.all(0),
@@ -21,30 +24,50 @@ class BottomSheetDraggable extends StatelessWidget {
               controller: scrollController,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                   child: Column(
-                    children: const [
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Откуда',
-                          border: OutlineInputBorder()
+                    children: [
+                      Container(
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.grey),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextField(
+                            decoration:
+                                InputDecoration.collapsed(hintText: 'Откуда?'),
+                          ),
                         ),
                       ),
-                      SizedBox(height: 15),
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Куда',
-                          border: OutlineInputBorder()
+                      const SizedBox(height: 15),
+                      Container(
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.grey),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextField(
+                            decoration: InputDecoration.collapsed(
+                              hintText: 'Куда?',
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 )
-              ]
-            )
+              ],
+            ),
           );
         },
-      )
+      ),
     );
   }
 }

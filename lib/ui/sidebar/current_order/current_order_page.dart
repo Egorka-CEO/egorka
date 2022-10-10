@@ -47,46 +47,67 @@ class CurrentOrderPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Заказ №123 / 6 марта',
-                          style: CustomTextStyle.black15w500),
+                      const Text(
+                        'Заказ №123 / 6 марта',
+                        style: CustomTextStyle.black15w500,
+                      ),
                       const SizedBox(height: 10),
-                      const Text('Статус: поиск Егорки',
-                          style: CustomTextStyle.grey14w400),
+                      const Text(
+                        'Статус: поиск Егорки',
+                        style: CustomTextStyle.grey14w400,
+                      ),
                       const SizedBox(height: 10),
                       const SizedBox(
-                        height: 150,
+                        height: 250,
                         child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: MapView()),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Row(
-                          children: const [
-                            Text('Дата и время забора',
-                                style: CustomTextStyle.grey15bold),
-                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          child: MapView(),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 30),
-                        child: Row(
-                          children: const [
-                            SizedBox(width: 10),
-                            Text('Суббота, 7 марта с 13:00 до 14:00',
-                                style: CustomTextStyle.black15w500),
-                          ],
-                        ),
-                      ),
+                      const SizedBox(height: 30),
                       Row(
                         children: const [
-                          Text('Маршрут', style: CustomTextStyle.grey15bold),
+                          Text(
+                            'Дата и время забора',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 200),
+                      const SizedBox(height: 30),
                       Row(
                         children: const [
-                          Text('Кто везёт', style: CustomTextStyle.grey15bold),
+                          SizedBox(width: 10),
+                          Text(
+                            'Суббота, 7 марта с 13:00 до 14:00',
+                            style: CustomTextStyle.black15w500,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        children: const [
+                          Text(
+                            'Маршрут',
+                            style: CustomTextStyle.grey15bold,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 10,
+                        itemBuilder: ((context, index) {
+                          return Text('Маршрут ${index + 1}');
+                        }),
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        children: const [
+                          Text(
+                            'Кто везёт',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -105,11 +126,15 @@ class CurrentOrderPage extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: const [
-                                  Text('Евгений',
-                                      style: CustomTextStyle.black15w700),
+                                  Text(
+                                    'Евгений',
+                                    style: CustomTextStyle.black15w700,
+                                  ),
                                   SizedBox(height: 10),
-                                  Text('Румянцев',
-                                      style: CustomTextStyle.black15w700),
+                                  Text(
+                                    'Румянцев',
+                                    style: CustomTextStyle.black15w700,
+                                  ),
                                 ],
                               )
                             ],
@@ -143,11 +168,15 @@ class CurrentOrderPage extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: const [
-                                  Text('Lada Largus / У081МО799',
-                                      style: CustomTextStyle.black15w700),
+                                  Text(
+                                    'Lada Largus / У081МО799',
+                                    style: CustomTextStyle.black15w700,
+                                  ),
                                   SizedBox(height: 10),
-                                  Text('Цвет: белый',
-                                      style: CustomTextStyle.black15w700),
+                                  Text(
+                                    'Цвет: белый',
+                                    style: CustomTextStyle.black15w700,
+                                  ),
                                 ],
                               )
                             ],
@@ -157,47 +186,70 @@ class CurrentOrderPage extends StatelessWidget {
                       const SizedBox(height: 30),
                       Row(
                         children: const [
-                          Text('Сводная информация',
-                              style: CustomTextStyle.grey15bold),
+                          Text(
+                            'Сводная информация',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         children: const [
                           SizedBox(width: 10),
-                          Text('Объявленная ценность',
-                              style: CustomTextStyle.grey15bold),
+                          Text(
+                            'Объявленная ценность',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                           Spacer(),
-                          Text('1000 ₽', style: CustomTextStyle.black15w700),
+                          Text(
+                            '1000 ₽',
+                            style: CustomTextStyle.black15w700,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         children: const [
                           SizedBox(width: 10),
-                          Text('Что везем', style: CustomTextStyle.grey15bold),
+                          Text(
+                            'Что везем',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                           Spacer(),
-                          Text('Зарядка', style: CustomTextStyle.black15w700),
+                          Text(
+                            'Зарядка',
+                            style: CustomTextStyle.black15w700,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         children: const [
                           SizedBox(width: 10),
-                          Text('Стоимость заказа',
-                              style: CustomTextStyle.grey15bold),
+                          Text(
+                            'Стоимость заказа',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                           Spacer(),
-                          Text('562 ₽', style: CustomTextStyle.black15w700),
+                          Text(
+                            '562 ₽',
+                            style: CustomTextStyle.black15w700,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         children: const [
                           SizedBox(width: 10),
-                          Text('Способ оплаты',
-                              style: CustomTextStyle.grey15bold),
+                          Text(
+                            'Способ оплаты',
+                            style: CustomTextStyle.grey15bold,
+                          ),
                           Spacer(),
-                          Text('Депозит', style: CustomTextStyle.black15w700),
+                          Text(
+                            'Депозит',
+                            style: CustomTextStyle.black15w700,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 70),
@@ -211,8 +263,11 @@ class CurrentOrderPage extends StatelessWidget {
                                 color: Colors.red,
                                 size: 50,
                               ),
-                              Text('Позвонить\nводителю',
-                                  style: CustomTextStyle.black15w700),
+                              Text(
+                                'Позвонить\nводителю',
+                                textAlign: TextAlign.center,
+                                style: CustomTextStyle.black15w700,
+                              ),
                             ],
                           ),
                           Column(
@@ -222,8 +277,11 @@ class CurrentOrderPage extends StatelessWidget {
                                 color: Colors.red,
                                 size: 50,
                               ),
-                              Text('Написать в\nподдержку',
-                                  style: CustomTextStyle.black15w700),
+                              Text(
+                                'Написать в\nподдержку',
+                                textAlign: TextAlign.center,
+                                style: CustomTextStyle.black15w700,
+                              ),
                             ],
                           ),
                         ],

@@ -7,11 +7,9 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    String initialRoute = AppRoute.home;
-
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: initialRoute,
+      initialRoute: AppRoute.home,
       onGenerateRoute: AppRoute.onGenerateRoute,
     );
   }

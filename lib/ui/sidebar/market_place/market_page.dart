@@ -1,4 +1,5 @@
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
 class MarketPage extends StatelessWidget {
@@ -7,6 +8,7 @@ class MarketPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.grey[200],
       child: SafeArea(
         child: Column(
           children: [
@@ -63,19 +65,31 @@ class MarketPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Row(
+                          Column(
                             children: [
-                              Checkbox(
-                                value: false,
-                                fillColor:
-                                    MaterialStateProperty.all(Colors.red),
-                                shape: const CircleBorder(),
-                                onChanged: ((value) {}),
-                              ),
-                              const Expanded(child: TextField()),
-                              const Icon(
-                                Icons.gps_fixed,
-                                color: Colors.red,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Checkbox(
+                                    value: false,
+                                    fillColor:
+                                        MaterialStateProperty.all(Colors.red),
+                                    shape: const CircleBorder(),
+                                    onChanged: ((value) {}),
+                                  ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      hintText: '',
+                                      textEditingController:
+                                          TextEditingController(),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  const Icon(
+                                    Icons.gps_fixed,
+                                    color: Colors.red,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -89,28 +103,31 @@ class MarketPage extends StatelessWidget {
                             ],
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: 'Подъезд',
-                                  ),
+                                child: CustomTextField(
+                                  hintText: 'Подъезд',
+                                  textInputType: TextInputType.number,
+                                  textEditingController:
+                                      TextEditingController(),
                                 ),
                               ),
-                              SizedBox(width: 15),
+                              const SizedBox(width: 15),
                               Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: 'Этаж',
-                                  ),
+                                child: CustomTextField(
+                                  hintText: 'Этаж',
+                                  textInputType: TextInputType.number,
+                                  textEditingController:
+                                      TextEditingController(),
                                 ),
                               ),
-                              SizedBox(width: 15),
+                              const SizedBox(width: 15),
                               Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: 'Офис/кв.',
-                                  ),
+                                child: CustomTextField(
+                                  hintText: 'Офис/кв.',
+                                  textInputType: TextInputType.number,
+                                  textEditingController:
+                                      TextEditingController(),
                                 ),
                               ),
                             ],
@@ -131,7 +148,14 @@ class MarketPage extends StatelessWidget {
                                 shape: const CircleBorder(),
                                 onChanged: ((value) {}),
                               ),
-                              const Expanded(child: TextField()),
+                              Expanded(
+                                child: CustomTextField(
+                                  hintText: '',
+                                  textEditingController:
+                                      TextEditingController(),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
                               const Icon(
                                 Icons.map_outlined,
                                 color: Colors.red,
@@ -148,9 +172,16 @@ class MarketPage extends StatelessWidget {
                             ],
                           ),
                           Row(
-                            children: const [
-                              Expanded(child: TextField()),
-                              Icon(
+                            children: [
+                              Expanded(
+                                child: CustomTextField(
+                                  hintText: '',
+                                  textEditingController:
+                                      TextEditingController(),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              const Icon(
                                 Icons.help_outline_outlined,
                                 color: Colors.red,
                               ),
@@ -165,6 +196,7 @@ class MarketPage extends StatelessWidget {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 30),
                           Row(
                             children: const [
                               Text(
@@ -174,23 +206,24 @@ class MarketPage extends StatelessWidget {
                             ],
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: 'Имя',
-                                  ),
+                                child: CustomTextField(
+                                  hintText: 'Имя',
+                                  textEditingController:
+                                      TextEditingController(),
                                 ),
                               ),
                             ],
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Expanded(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: '+7 (999) 888-77-66',
-                                  ),
+                                child: CustomTextField(
+                                  hintText: '+7 (999) 888-77-66',
+                                  textInputType: TextInputType.number,
+                                  textEditingController:
+                                      TextEditingController(),
                                 ),
                               ),
                             ],
@@ -207,10 +240,14 @@ class MarketPage extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  controller: TextEditingController(text: '0'),
+                                child: CustomTextField(
+                                  hintText: '0',
+                                  textInputType: TextInputType.number,
+                                  textEditingController:
+                                      TextEditingController(text: '0'),
                                 ),
                               ),
+                              const SizedBox(width: 10),
                               const Icon(
                                 Icons.help_outline_outlined,
                                 color: Colors.red,
@@ -236,10 +273,14 @@ class MarketPage extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  controller: TextEditingController(text: '0'),
+                                child: CustomTextField(
+                                  hintText: '0',
+                                  textInputType: TextInputType.number,
+                                  textEditingController:
+                                      TextEditingController(text: '0'),
                                 ),
                               ),
+                              const SizedBox(width: 10),
                               const Icon(
                                 Icons.help_outline_outlined,
                                 color: Colors.red,
@@ -307,15 +348,19 @@ class MarketPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Center(
-                                child: Text('ОПЛАТИТЬ ЗАКАЗ',
+                            GestureDetector(
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Center(
+                                  child: Text(
+                                    'ОПЛАТИТЬ ЗАКАЗ',
                                     style: CustomTextStyle.white15w600
-                                        .copyWith(letterSpacing: 3)),
+                                        .copyWith(letterSpacing: 3),
+                                  ),
+                                ),
                               ),
                             )
                           ],

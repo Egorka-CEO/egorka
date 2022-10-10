@@ -5,7 +5,7 @@ import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRoute {
-  static const home = '/home';
+  static const home = '/';
   static const currentOrder = '/currentOrder';
   static const marketplaces = '/marketplaces';
   static const about = '/about';

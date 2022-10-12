@@ -255,9 +255,10 @@ class MarketPage extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Slider(
-                                    thumbColor: Colors.red,
-                                    value: 0,
-                                    onChanged: (value) {}),
+                                  thumbColor: Colors.red,
+                                  value: 0,
+                                  onChanged: (value) {},
+                                ),
                               )
                             ],
                           ),
@@ -288,9 +289,10 @@ class MarketPage extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Slider(
-                                    thumbColor: Colors.red,
-                                    value: 0,
-                                    onChanged: (value) {}),
+                                  thumbColor: Colors.red,
+                                  value: 0,
+                                  onChanged: (value) {},
+                                ),
                               )
                             ],
                           ),
@@ -307,7 +309,9 @@ class MarketPage extends StatelessWidget {
                       color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
                         child: Column(
                           children: [
                             Row(
@@ -321,23 +325,29 @@ class MarketPage extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
-                                    Text('Пеший',
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w300)),
-                                    Text('1900 ₽',
-                                        style: TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w600)),
+                                    Text(
+                                      'Пеший',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                    Text(
+                                      '1900 ₽',
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 const Text(
                                   '}',
                                   style: TextStyle(
-                                      fontSize: 60,
-                                      fontWeight: FontWeight.w200),
+                                    fontSize: 60,
+                                    fontWeight: FontWeight.w200,
+                                  ),
                                 ),
-                                // SizedBox(width: 5),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [

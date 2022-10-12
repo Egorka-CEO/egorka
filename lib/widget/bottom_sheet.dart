@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/search/search_address_bloc.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomSheetDraggable extends StatelessWidget {
   BottomSheetDraggable({Key? key});
@@ -72,6 +74,11 @@ class BottomSheetDraggable extends StatelessWidget {
                                       fillColor: Colors.grey[300],
                                       hintText: 'Откуда забрать?',
                                       textEditingController: fromController,
+                                      onChanged: (value) {
+                                        BlocProvider.of<SearchAddressBloc>(
+                                                context)
+                                            .add(SearchAddress(value));
+                                      },
                                     ),
                                   ),
                                   const Icon(
@@ -108,6 +115,9 @@ class BottomSheetDraggable extends StatelessWidget {
                                       textEditingController: toController,
                                       onChanged: (value) {
                                         stream.add('event');
+                                        BlocProvider.of<SearchAddressBloc>(
+                                                context)
+                                            .add(SearchAddress(value));
                                       },
                                     ),
                                   ),
@@ -124,17 +134,35 @@ class BottomSheetDraggable extends StatelessWidget {
                               ),
                             ),
                           ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: 40,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Text('Адрес ${index + 1}'),
-                              );
-                            },
-                          )
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 30),
+                            child: BlocBuilder<SearchAddressBloc,
+                                SearchAddressState>(
+                              builder: ((context, state) {
+                                if (state is SearchAddressStated) {
+                                  return const SizedBox();
+                                } else if (state is SearchAddressLoading) {
+                                  return const CircularProgressIndicator();
+                                } else if (state is SearchAddressSuccess) {
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: 40,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(18.0),
+                                        child: Text('Адрес ${index + 1}'),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return const Text('Ничего не найдено');
+                                }
+                              }),
+                            ),
+                          ),
                         ],
                       );
                     },

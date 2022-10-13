@@ -3,32 +3,38 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
 
 class Repository {
-  static var uri = Uri.parse(server);
-  var dio = Dio(BaseOptions(baseUrl: server));
+  var dio = Dio();
 
-  Future<List<Adress>?> getAddress(String input, String lang) async {
-    const request =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    final response = await dio.get(
-      request,
-      queryParameters: {
-        'input': input,
-        'types': 'address',
-        'language': lang,
-        'components': 'country',
-        'key': apiKey,
-        'sessiontoken': ''
+  Future<Address?> getAddress(String value) async {
+    final response = await dio.post(
+      '$server/dictionary/',
+      options: Options(headers: {
+        'Content-Type': 'application/json',
+      }),
+      data: {
+        "Auth": {
+          "Type": "Application",
+          "System": "Agent",
+          "Key": "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE",
+        },
+        "Method": "Location",
+        "Body": {
+          "Query": value,
+        },
+        "Params": {
+          "Compress": "GZip",
+          "Language": "RU",
+        }
       },
     );
 
     if (response.statusCode == 200) {
-      final result = response.data;
-      if (result['status'] == 'OK') {
-        return result['predictions']
-            .map<Adress>((p) => Adress(p['place_id'], p['description']))
-            .toList();
-      }
-      if (result['status'] == 'INVALID_REQUEST') {
+      try {
+        final address = Address.fromJson(response.data);
+        if (address.errors == null) {
+          return Address.fromJson(response.data);
+        }
+      } catch (e) {
         return null;
       }
       return null;

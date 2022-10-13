@@ -7,3 +7,5 @@ class SearchAddress extends SearchAddressEvent {
 
   SearchAddress(this.value);
 }
+
+class SearchAddressClear extends SearchAddressEvent {}

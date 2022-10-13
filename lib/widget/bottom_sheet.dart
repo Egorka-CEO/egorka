@@ -10,6 +10,9 @@ class BottomSheetDraggable extends StatelessWidget {
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
 
+  FocusNode focusFrom = FocusNode();
+  FocusNode focusTo = FocusNode();
+
   final stream = StreamController();
 
   @override
@@ -71,6 +74,12 @@ class BottomSheetDraggable extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: CustomTextField(
+                                      onTap: () {
+                                        BlocProvider.of<SearchAddressBloc>(
+                                                context)
+                                            .add(SearchAddressClear());
+                                      },
+                                      focusNode: focusFrom,
                                       fillColor: Colors.grey[300],
                                       hintText: 'Откуда забрать?',
                                       textEditingController: fromController,
@@ -110,6 +119,12 @@ class BottomSheetDraggable extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: CustomTextField(
+                                      onTap: () {
+                                        BlocProvider.of<SearchAddressBloc>(
+                                                context)
+                                            .add(SearchAddressClear());
+                                      },
+                                      focusNode: focusTo,
                                       fillColor: Colors.grey[300],
                                       hintText: 'Куда отвезти?',
                                       textEditingController: toController,
@@ -129,14 +144,14 @@ class BottomSheetDraggable extends StatelessWidget {
                                             stream.add('event');
                                           },
                                           child: const Icon(Icons.clear),
-                                        )
+                                        ),
+                                  const SizedBox(width: 10),
                                 ],
                               ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 30),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: BlocBuilder<SearchAddressBloc,
                                 SearchAddressState>(
                               builder: ((context, state) {
@@ -145,15 +160,43 @@ class BottomSheetDraggable extends StatelessWidget {
                                 } else if (state is SearchAddressLoading) {
                                   return const CircularProgressIndicator();
                                 } else if (state is SearchAddressSuccess) {
+                                  // if() {
+                                  // FocusManager.instance.primaryFocus?.unfocus();
+                                  // }
                                   return ListView.builder(
                                     shrinkWrap: true,
-                                    itemCount: 40,
+                                    itemCount: state
+                                        .address!.result.suggestions!.length,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       return Padding(
-                                        padding: const EdgeInsets.all(18.0),
-                                        child: Text('Адрес ${index + 1}'),
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (focusFrom.hasFocus) {
+                                              fromController.text = state
+                                                  .address!
+                                                  .result
+                                                  .suggestions![index]
+                                                  .name;
+                                            } else if (focusTo.hasFocus) {
+                                              toController.text = state
+                                                  .address!
+                                                  .result
+                                                  .suggestions![index]
+                                                  .name;
+                                            }
+
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                            BlocProvider.of<SearchAddressBloc>(
+                                                    context)
+                                                .add(SearchAddressClear());
+                                          },
+                                          child: Text(state.address!.result
+                                              .suggestions![index].name),
+                                        ),
                                       );
                                     },
                                   );

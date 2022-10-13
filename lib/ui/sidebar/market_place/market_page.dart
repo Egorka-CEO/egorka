@@ -10,6 +10,7 @@ class MarketPage extends StatelessWidget {
     return Material(
       color: Colors.grey[200],
       child: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             Padding(
@@ -304,7 +305,8 @@ class MarketPage extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      height: 180,
+                      height: 200,
+                      padding: const EdgeInsets.only(bottom: 40),
                       width: MediaQuery.of(context).size.width,
                       color: Colors.white,
                       child: Padding(
@@ -372,7 +374,7 @@ class MarketPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

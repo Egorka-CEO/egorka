@@ -1,6 +1,8 @@
-part of 'search/search_adress_bloc.dart';
+part of 'search_bloc.dart';
 
 abstract class SearchAddressState {}
+
+class SearchAddressStated extends SearchAddressState {}
 
 class SearchAddressLoading extends SearchAddressState {}
 

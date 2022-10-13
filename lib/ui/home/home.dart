@@ -1,4 +1,3 @@
-import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/map.dart';
 import 'package:egorka/ui/sidebar/side_menu.dart';

@@ -1,6 +1,9 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+part 'search_event.dart';
+part 'search_state.dart';
+
 class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   SearchAddressBloc() : super(SearchAddressStated()) {
     on<SearchAddress>((event, emit) => _searchAddress(event, emit));
@@ -22,21 +25,3 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     }
   }
 }
-
-abstract class SearchAddressEvent {}
-
-class SearchAddress extends SearchAddressEvent {
-  String value;
-
-  SearchAddress(this.value);
-}
-
-abstract class SearchAddressState {}
-
-class SearchAddressStated extends SearchAddressState {}
-
-class SearchAddressLoading extends SearchAddressState {}
-
-class SearchAddressSuccess extends SearchAddressState {}
-
-class SearchAddressFailed extends SearchAddressState {}

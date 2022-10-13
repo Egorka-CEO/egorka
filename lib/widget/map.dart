@@ -11,9 +11,10 @@ class MapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
+      myLocationButtonEnabled: true,
       zoomControlsEnabled: false,
       initialCameraPosition: _kGooglePlex,
-      mapType: MapType.terrain,
+      mapType: MapType.normal,
       onMapCreated: (GoogleMapController controller) {},
     );
   }

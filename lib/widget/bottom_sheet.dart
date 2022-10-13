@@ -160,9 +160,6 @@ class BottomSheetDraggable extends StatelessWidget {
                                 } else if (state is SearchAddressLoading) {
                                   return const CircularProgressIndicator();
                                 } else if (state is SearchAddressSuccess) {
-                                  // if() {
-                                  // FocusManager.instance.primaryFocus?.unfocus();
-                                  // }
                                   return ListView.builder(
                                     shrinkWrap: true,
                                     itemCount: state

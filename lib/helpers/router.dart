@@ -1,3 +1,4 @@
+import 'package:egorka/ui/auth/auth_page.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/sidebar/about/about_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
@@ -9,6 +10,7 @@ class AppRoute {
   static const currentOrder = '/currentOrder';
   static const marketplaces = '/marketplaces';
   static const about = '/about';
+  static const auth = '/auth';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
@@ -20,6 +22,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const MarketPage());
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
+      case auth:
+        return MaterialPageRoute(builder: (_) => AuthPage());
       default:
         return null;
     }

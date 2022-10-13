@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final Icon? icon;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
   final TextEditingController textEditingController;
   final Color? mainColor;
   final Color? bgColor;
@@ -33,6 +34,7 @@ class CustomTextField extends StatelessWidget {
       required this.hintText,
       this.icon,
       this.onChanged,
+      this.onFieldSubmitted,
       required this.textEditingController,
       this.mainColor,
       this.bgColor,
@@ -60,6 +62,7 @@ class CustomTextField extends StatelessWidget {
       width: widthOfScreen,
       child: Center(
         child: TextFormField(
+          onFieldSubmitted: onFieldSubmitted,
           enabled: enabled,
           focusNode: focusNode,
           onTap: onTap as void Function()?,

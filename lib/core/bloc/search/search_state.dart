@@ -12,4 +12,10 @@ class SearchAddressSuccess extends SearchAddressState {
   SearchAddressSuccess(this.address);
 }
 
+class ChangeAddressSuccess extends SearchAddressState {
+  GeoData? geoData;
+
+  ChangeAddressSuccess(this.geoData);
+}
+
 class SearchAddressFailed extends SearchAddressState {}

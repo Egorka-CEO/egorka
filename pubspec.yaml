@@ -20,7 +20,9 @@ dependencies:
   shared_preferences: ^2.0.15
   rounded_loading_button: ^2.0.8
   geolocator: ^9.0.2
+  sliding_up_panel: ^2.0.0+1
   permission_handler: ^10.1.0
+  geocoder2: ^1.4.0
 
 dev_dependencies:
   flutter_test:

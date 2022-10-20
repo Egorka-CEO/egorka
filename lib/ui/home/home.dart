@@ -9,11 +9,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawerEnableOpenDragGesture: false,
       drawer: const NavBar(),
       body: Stack(
         children: [
-          const MapView(),
+          SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: const MapView()),
           CustomWidget.appBar(),
           CustomWidget.iconGPS(),
           BottomSheetDraggable(),

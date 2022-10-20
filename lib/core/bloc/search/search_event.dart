@@ -8,4 +8,10 @@ class SearchAddress extends SearchAddressEvent {
   SearchAddress(this.value);
 }
 
+class ChangeMapPosition extends SearchAddressEvent {
+  LatLng coordinates;
+
+  ChangeMapPosition(this.coordinates);
+}
+
 class SearchAddressClear extends SearchAddressEvent {}

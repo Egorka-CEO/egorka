@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:math';
 
 import 'package:egorka/core/network/repository.dart';
@@ -16,6 +15,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<SearchAddress>((event, emit) => _searchAddress(event, emit));
     on<SearchAddressClear>((event, emit) => _clearAddress());
     on<ChangeMapPosition>((event, emit) => _changeMapPosition(event, emit));
+    on<SearchMeEvent>((event, emit) => emit(FindMeState()));
+    on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
   }
 
   void _searchAddress(
@@ -39,6 +40,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     data = await Geocoder2.getDataFromCoordinates(
         latitude: event.coordinates.latitude.toDouble(),
         longitude: event.coordinates.longitude.toDouble(),
+        language: 'RU',
         googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
 
     emit(ChangeAddressSuccess(data));

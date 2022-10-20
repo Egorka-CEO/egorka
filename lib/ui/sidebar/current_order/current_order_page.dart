@@ -57,7 +57,7 @@ class CurrentOrderPage extends StatelessWidget {
                         style: CustomTextStyle.grey14w400,
                       ),
                       const SizedBox(height: 10),
-                      const SizedBox(
+                      SizedBox(
                         height: 250,
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(20)),

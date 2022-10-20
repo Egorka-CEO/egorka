@@ -15,3 +15,10 @@ class ChangeMapPosition extends SearchAddressEvent {
 }
 
 class SearchAddressClear extends SearchAddressEvent {}
+
+class SearchMeEvent extends SearchAddressEvent {}
+
+class JumpToPointEvent extends SearchAddressEvent {
+  final Point point;
+  JumpToPointEvent(this.point);
+}

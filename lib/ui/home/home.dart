@@ -15,8 +15,7 @@ class HomePage extends StatelessWidget {
       body: Stack(
         children: [
           SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: const MapView()),
+              height: MediaQuery.of(context).size.height, child: MapView()),
           CustomWidget.appBar(),
           CustomWidget.iconGPS(),
           BottomSheetDraggable(),

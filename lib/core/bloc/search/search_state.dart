@@ -19,3 +19,11 @@ class ChangeAddressSuccess extends SearchAddressState {
 }
 
 class SearchAddressFailed extends SearchAddressState {}
+
+class FindMeState extends SearchAddressState {}
+
+class JumpToPointState extends SearchAddressState {
+  final Point point;
+
+  JumpToPointState(this.point);
+}

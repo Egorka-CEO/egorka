@@ -23,6 +23,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   permission_handler: ^10.1.0
   geocoder2: ^1.4.0
+  flutter_polyline_points: ^1.0.0
 
 dev_dependencies:
   flutter_test:

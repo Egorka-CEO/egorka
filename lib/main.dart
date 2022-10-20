@@ -1,9 +1,13 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  Location().checkPermission;
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -17,7 +21,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: AppRoute.auth,
+        initialRoute: AppRoute.home,
         onGenerateRoute: AppRoute.onGenerateRoute,
       ),
     );

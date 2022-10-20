@@ -16,19 +16,19 @@ class AuthPage extends StatelessWidget {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
-  void getLocation() async {
-    const hasPermission = Permission.locationWhenInUse;
-    hasPermission.status.then((value) {
-      print('object $value');
-    });
-    final position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-  }
+  // void getLocation() async {
+  //   const hasPermission = Permission.locationWhenInUse;
+  //   hasPermission.status.then((value) {
+  //     print('object $value');
+  //   });
+  //   final position = await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.high,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    getLocation();
+    // getLocation();
 
     return Material(
       child: SafeArea(

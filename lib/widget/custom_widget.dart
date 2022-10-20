@@ -53,4 +53,12 @@ class CustomWidget {
           size: 35,
         ),
       );
+
+  static Widget iconGPSSmall() => const Center(
+        child: Icon(
+          Icons.location_pin,
+          color: Colors.red,
+          size: 25,
+        ),
+      );
 }

@@ -1,28 +1,150 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/helpers/direction.dart';
+import 'package:egorka/helpers/location.dart';
+import 'package:egorka/main.dart';
+import 'package:egorka/model/address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapView extends StatelessWidget {
+class MapView extends StatefulWidget {
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(53.159646, 24.469827),
     zoom: 5,
   );
+  MapView({Key? key}) : super(key: key);
 
-  const MapView({Key? key}) : super(key: key);
+  @override
+  State<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
+  late CameraPosition pos;
+  Marker? firstMarker;
+  Marker? secondMarker;
+  Position? position;
+  GoogleMapController? mapController;
+
+  @override
+  void initState() {
+    Location().checkPermission;
+
+    super.initState();
+  }
+
+  void setMarks() async {
+    // var userLatLng = LatLng();
+    // var shopLatLng = LatLng();
+
+    //   firstMarker = Marker(
+    //     markerId: const MarkerId('userMarker'),
+    //     // icon: _userIcon!,
+    //     position: userLatLng,
+    //   );
+    //   secondMarker = Marker(
+    //     markerId: const MarkerId('shopMarker'),
+    //     // icon: _shopIcon!,
+    //     position: shopLatLng,
+    //   );
+
+    // final directions = await DirectionsRepository(dio: null)
+    //     .getDirections(origin: userLatLng, destination: shopLatLng);
+
+    //   _info = directions;
+    //   _mapInit = true;
+  }
+
+  void _getPosition() async {
+    if (await Location().checkPermission()) {
+      var position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      if (mapController != null) {
+        mapController!.moveCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 15,
+              tilt: 0,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  void _findMe() async {
+    if (await Location().checkPermission()) {
+      var position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      print('123');
+      // Future.delayed(Duration(milliseconds: 1000), () {
+      if (mapController != null) {
+        print('12345');
+        mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 15,
+              tilt: 0,
+            ),
+          ),
+        );
+      }
+      // });
+    }
+  }
+
+  void _jumpToPoint(Point point) async {
+    if (await Location().checkPermission()) {
+      if (mapController != null) {
+        mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(point.latitude, point.longitude),
+              zoom: 15,
+              tilt: 0,
+            ),
+          ),
+        );
+      }
+      // });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      padding: EdgeInsets.zero,
-      myLocationButtonEnabled: true,
-      zoomControlsEnabled: false,
-      onCameraMove: (postion) {
-        BlocProvider.of<SearchAddressBloc>(context)
-            .add(ChangeMapPosition(postion.target));
-      },
-      initialCameraPosition: _kGooglePlex,
-      mapType: MapType.normal,
-      onMapCreated: (GoogleMapController controller) {},
-    );
+    return BlocBuilder<SearchAddressBloc, SearchAddressState>(
+        buildWhen: (previous, current) {
+      if (current is FindMeState) {
+        _findMe();
+        print('1231231231231');
+        return true;
+      } else if (current is JumpToPointState) {
+        _jumpToPoint(current.point);
+        return true;
+      } else {
+        return false;
+      }
+    }, builder: (context, snapshot) {
+      return GoogleMap(
+        padding: EdgeInsets.zero,
+        myLocationButtonEnabled: false,
+        zoomControlsEnabled: false,
+        onCameraMove: (position) {
+          pos = position;
+        },
+        onCameraIdle: () {
+          BlocProvider.of<SearchAddressBloc>(context)
+              .add(ChangeMapPosition(pos.target));
+        },
+        initialCameraPosition: MapView._kGooglePlex,
+        mapType: MapType.normal,
+        onMapCreated: (GoogleMapController controller) {
+          mapController = controller;
+          _getPosition();
+        },
+      );
+    });
   }
 }

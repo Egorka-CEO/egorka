@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -25,6 +26,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   final stream = StreamController();
 
+  bool _visible = false;
+
   final _sheetController = DraggableScrollableController();
 
   @override
@@ -36,10 +39,15 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       onPanelClosed: () {
         focusFrom.unfocus();
         focusTo.unfocus();
+        _visible = false;
         print('closed');
       },
       onPanelOpened: () {
         print('opened');
+        _visible = true;
+        if (!focusFrom.hasFocus && !focusTo.hasFocus) {
+          panelController.close();
+        }
       },
       onPanelSlide: (size) {
         if (size.toStringAsFixed(1) == (0.5).toString()) {
@@ -48,7 +56,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         }
         print(size.toStringAsFixed(2));
       },
-      maxHeight: 700,
+      maxHeight: 720,
       minHeight: 200,
       defaultPanelState: PanelState.CLOSED,
     );
@@ -56,6 +64,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   Widget _floatingPanel(BuildContext context) {
     return Container(
+      margin: MediaQuery.of(context).viewInsets,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
@@ -132,9 +141,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            const Icon(
-                              Icons.gps_fixed,
-                              color: Colors.red,
+                            GestureDetector(
+                              onTap: () {
+                                focusFrom.unfocus();
+                                focusTo.unfocus();
+                                panelController.close();
+                                BlocProvider.of<SearchAddressBloc>(context)
+                                    .add(SearchMeEvent());
+                              },
+                              child: const Icon(
+                                Icons.gps_fixed,
+                                color: Colors.red,
+                              ),
                             ),
                             const SizedBox(width: 15),
                           ],
@@ -198,57 +216,104 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
-                        builder: ((context, state) {
-                          if (state is SearchAddressStated) {
-                            return const SizedBox();
-                          } else if (state is SearchAddressLoading) {
-                            return const CircularProgressIndicator();
-                          } else if (state is SearchAddressSuccess) {
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount:
-                                  state.address!.result.suggestions!.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (focusFrom.hasFocus) {
-                                        fromController.text = state.address!
-                                            .result.suggestions![index].name;
-                                      } else if (focusTo.hasFocus) {
-                                        toController.text = state.address!
-                                            .result.suggestions![index].name;
-                                      }
-
-                                      FocusManager.instance.primaryFocus
-                                          ?.unfocus();
-                                      BlocProvider.of<SearchAddressBloc>(
-                                              context)
-                                          .add(SearchAddressClear());
-                                    },
-                                    child: Text(state.address!.result
-                                        .suggestions![index].name),
-                                  ),
-                                );
-                              },
-                            );
-                          } else {
-                            return const Text('Ничего не найдено');
-                          }
-                        }),
-                      ),
-                    ),
+                    _searchList(),
                   ],
                 );
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Container _searchList() {
+    return Container(
+      // margin: const EdgeInsets.symmetric(horizontal: 10),
+      height: 212,
+      child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
+        buildWhen: (previous, current) {
+          if (current is ChangeAddressSuccess) {
+            if (fromController.text != current.geoData!.address) {
+              fromController.text = current.geoData!.address;
+            }
+          }
+          return true;
+        },
+        builder: ((context, state) {
+          if (state is SearchAddressStated) {
+            return const SizedBox();
+          } else if (state is SearchAddressLoading) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+              ],
+            );
+          } else if (state is SearchAddressSuccess) {
+            return _visible
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemCount: state.address!.result.suggestions!.length,
+                    // physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return _pointCard(state, index, context);
+                    },
+                  )
+                : Container();
+          } else {
+            return const Text('');
+          }
+        }),
+      ),
+    );
+  }
+
+  Container _pointCard(
+      SearchAddressSuccess state, int index, BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 5, bottom: 5),
+      height: 50,
+      child: InkWell(
+        onTap: () {
+          if (focusFrom.hasFocus) {
+            fromController.text =
+                state.address!.result.suggestions![index].name;
+          } else if (focusTo.hasFocus) {
+            toController.text = state.address!.result.suggestions![index].name;
+          }
+
+          focusFrom.unfocus();
+          focusTo.unfocus();
+          panelController.close();
+          BlocProvider.of<SearchAddressBloc>(context).add(
+            JumpToPointEvent(
+              state.address!.result.suggestions![index].point!,
+            ),
+          );
+          // BlocProvider.of<SearchAddressBloc>(
+          //         context)
+          //     .add(SearchAddressClear());
+        },
+        child: Row(
+          children: [
+            Expanded(
+                flex: 1,
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: CustomWidget.iconGPSSmall())),
+            const SizedBox(width: 15),
+            Expanded(
+              flex: 10,
+              child: Text(
+                state.address!.result.suggestions![index].name,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                maxLines: 2,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

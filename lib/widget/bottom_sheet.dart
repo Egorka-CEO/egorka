@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -28,6 +28,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   final stream = StreamController();
 
   bool _visible = false;
+
+  List<DeliveryChocie> listChoice = [
+    DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
+    DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
+    DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
+    DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png'),
+  ];
 
   // final _sheetController = DraggableScrollableController();
 
@@ -58,7 +65,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
         },
         maxHeight: 735,
-        minHeight: bloc.isPolilyne ? 315 : 215,
+        minHeight: bloc.isPolilyne ? 415 : 215,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -67,13 +74,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Widget _floatingPanel(BuildContext context) {
     var bloc = BlocProvider.of<SearchAddressBloc>(context);
     return Container(
-      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15),
+      margin:
+          MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
@@ -242,6 +250,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           return true;
         },
         builder: ((context, state) {
+          var bloc = BlocProvider.of<SearchAddressBloc>(context);
           if (state is SearchAddressStated) {
             return const SizedBox();
           } else if (state is SearchAddressLoading) {
@@ -262,6 +271,21 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     },
                   )
                 : Container();
+          } else if (bloc.isPolilyne) {
+            return ListView.builder(
+                padding: const EdgeInsets.all(0),
+                shrinkWrap: true,
+                itemCount: listChoice.length,
+                itemBuilder: ((context, index) {
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed('/newOrder'),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(0),
+                      title: Text(listChoice[index].title),
+                      leading: Image.asset(listChoice[index].icon, height: 50),
+                    ),
+                  );
+                }));
           } else {
             return const Text('');
           }
@@ -287,16 +311,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           if (toController.text.isNotEmpty && toController.text.isNotEmpty) {
             BlocProvider.of<SearchAddressBloc>(context)
                 .add(SearchAddressPolilyne(toController.text));
+          } else {
+            BlocProvider.of<SearchAddressBloc>(context).add(
+              JumpToPointEvent(
+                state.address!.result.suggestions![index].point!,
+              ),
+            );
           }
 
           focusFrom.unfocus();
           focusTo.unfocus();
           panelController.close();
-          BlocProvider.of<SearchAddressBloc>(context).add(
-            JumpToPointEvent(
-              state.address!.result.suggestions![index].point!,
-            ),
-          );
         },
         child: Row(
           children: [

@@ -94,12 +94,14 @@ class _MapViewState extends State<MapView> {
       if (current is SearchAddressRoutePolilyne) {
         routes = current.routes;
         marker = current.markers;
+        mapController!.animateCamera(
+          CameraUpdate.newLatLngBounds(routes!.bounds, 140),
+        );
         return true;
       } else if (current is FindMeState) {
         _findMe();
         return true;
       } else if (current is DeletePolilyneState) {
-        print('delete');
         marker = {};
         routes = null;
         return true;
@@ -110,38 +112,41 @@ class _MapViewState extends State<MapView> {
         return false;
       }
     }, builder: (context, snapshot) {
-      return GoogleMap(
-        markers: marker,
-        polylines: {
-          if (routes != null)
-            Polyline(
-              polylineId: const PolylineId('route'),
-              visible: true,
-              width: 5,
-              points: routes != null
-                  ? routes!.polylinePoints
-                      .map((e) => LatLng(e.latitude, e.longitude))
-                      .toList()
-                  : [],
-              color: Colors.red,
-            )
-        },
-        padding: EdgeInsets.zero,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        onCameraMove: (position) {
-          pos = position;
-        },
-        onCameraIdle: () {
-          BlocProvider.of<SearchAddressBloc>(context)
-              .add(ChangeMapPosition(pos.target));
-        },
-        initialCameraPosition: MapView._kGooglePlex,
-        mapType: MapType.normal,
-        onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
-          _getPosition();
-        },
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 190),
+        child: GoogleMap(
+          markers: marker,
+          polylines: {
+            if (routes != null)
+              Polyline(
+                polylineId: const PolylineId('route'),
+                visible: true,
+                width: 5,
+                points: routes != null
+                    ? routes!.polylinePoints
+                        .map((e) => LatLng(e.latitude, e.longitude))
+                        .toList()
+                    : [],
+                color: Colors.red,
+              )
+          },
+          padding: EdgeInsets.zero,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          onCameraMove: (position) {
+            pos = position;
+          },
+          onCameraIdle: () {
+            BlocProvider.of<SearchAddressBloc>(context)
+                .add(ChangeMapPosition(pos.target));
+          },
+          initialCameraPosition: MapView._kGooglePlex,
+          mapType: MapType.normal,
+          onMapCreated: (GoogleMapController controller) {
+            mapController = controller;
+            _getPosition();
+          },
+        ),
       );
     });
   }

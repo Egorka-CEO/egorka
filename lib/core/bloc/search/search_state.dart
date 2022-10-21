@@ -11,6 +11,8 @@ class SearchAddressRoutePolilyne extends SearchAddressState {
   SearchAddressRoutePolilyne(this.routes, this.markers);
 }
 
+class DeletePolilyneState extends SearchAddressState {}
+
 class SearchAddressLoading extends SearchAddressState {}
 
 class SearchAddressSuccess extends SearchAddressState {

@@ -3,6 +3,7 @@ import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -32,42 +33,54 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   @override
   Widget build(BuildContext context) {
-    return SlidingUpPanel(
-      controller: panelController,
-      renderPanelSheet: false,
-      panel: _floatingPanel(context),
-      onPanelClosed: () {
-        focusFrom.unfocus();
-        focusTo.unfocus();
-        _visible = false;
-      },
-      onPanelOpened: () {
-        _visible = true;
-        if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-          panelController.close();
-        }
-      },
-      onPanelSlide: (size) {
-        if (size.toStringAsFixed(1) == (0.5).toString()) {
+    return BlocBuilder<SearchAddressBloc, SearchAddressState>(
+        builder: (context, snapshot) {
+      var bloc = BlocProvider.of<SearchAddressBloc>(context);
+      return SlidingUpPanel(
+        controller: panelController,
+        renderPanelSheet: false,
+        panel: _floatingPanel(context),
+        onPanelClosed: () {
           focusFrom.unfocus();
           focusTo.unfocus();
-        }
-      },
-      maxHeight: 720,
-      minHeight: 200,
-      defaultPanelState: PanelState.CLOSED,
-    );
+          _visible = false;
+        },
+        onPanelOpened: () {
+          _visible = true;
+          if (!focusFrom.hasFocus && !focusTo.hasFocus) {
+            panelController.close();
+          }
+        },
+        onPanelSlide: (size) {
+          if (size.toStringAsFixed(1) == (0.5).toString()) {
+            focusFrom.unfocus();
+            focusTo.unfocus();
+          }
+        },
+        maxHeight: 735,
+        minHeight: bloc.isPolilyne ? 315 : 215,
+        defaultPanelState: PanelState.CLOSED,
+      );
+    });
   }
 
   Widget _floatingPanel(BuildContext context) {
+    var bloc = BlocProvider.of<SearchAddressBloc>(context);
     return Container(
-      margin: MediaQuery.of(context).viewInsets,
+      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
-        color: Colors.grey[200],
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 10,
+            spreadRadius: 1,
+            color: Colors.black12,
+          ),
+        ],
+        color: Colors.white.withOpacity(0.9),
       ),
       child: Column(
         children: [
@@ -95,7 +108,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: Colors.grey[300],
+                        color: Colors.grey[200],
                       ),
                       child: Align(
                         alignment: Alignment.centerLeft,
@@ -115,20 +128,19 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       const Duration(milliseconds: 300), () {
                                     focusFrom.requestFocus();
                                   });
-                                  BlocProvider.of<SearchAddressBloc>(context)
-                                      .add(SearchAddressClear());
+                                  bloc.add(SearchAddressClear());
                                 },
                                 focusNode: focusFrom,
-                                fillColor: Colors.grey[300],
+                                fillColor: Colors.grey[200],
                                 hintText: 'Откуда забрать?',
+                                enabled: !bloc.isPolilyne,
                                 onFieldSubmitted: (text) {
                                   panelController.close();
                                   focusFrom.unfocus();
                                 },
                                 textEditingController: fromController,
                                 onChanged: (value) {
-                                  BlocProvider.of<SearchAddressBloc>(context)
-                                      .add(SearchAddress(value));
+                                  bloc.add(SearchAddress(value));
                                 },
                               ),
                             ),
@@ -137,8 +149,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 focusFrom.unfocus();
                                 focusTo.unfocus();
                                 panelController.close();
-                                BlocProvider.of<SearchAddressBloc>(context)
-                                    .add(SearchMeEvent());
+                                bloc.add(SearchMeEvent());
                               },
                               child: const Icon(
                                 Icons.gps_fixed,
@@ -155,7 +166,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       height: 60,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: Colors.grey[300]),
+                          color: Colors.grey[200]),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -171,8 +182,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               child: CustomTextField(
                                 onTap: () {
                                   panelController.open();
-                                  BlocProvider.of<SearchAddressBloc>(context)
-                                      .add(SearchAddressClear());
+                                  bloc.add(SearchAddressClear());
                                   Future.delayed(
                                       const Duration(milliseconds: 300), () {
                                     focusTo.requestFocus();
@@ -182,14 +192,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   panelController.close();
                                   focusTo.unfocus();
                                 },
+                                enabled: !bloc.isPolilyne,
                                 focusNode: focusTo,
-                                fillColor: Colors.grey[300],
+                                fillColor: Colors.grey[200],
                                 hintText: 'Куда отвезти?',
                                 textEditingController: toController,
                                 onChanged: (value) {
                                   stream.add('event');
-                                  BlocProvider.of<SearchAddressBloc>(context)
-                                      .add(SearchAddress(value));
+                                  bloc.add(SearchAddress(value));
                                 },
                               ),
                             ),
@@ -197,6 +207,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 ? const SizedBox()
                                 : GestureDetector(
                                     onTap: () {
+                                      bloc.add(DeletePolilyneEvent());
                                       toController.text = '';
                                       stream.add('event');
                                     },

@@ -98,6 +98,11 @@ class _MapViewState extends State<MapView> {
       } else if (current is FindMeState) {
         _findMe();
         return true;
+      } else if (current is DeletePolilyneState) {
+        print('delete');
+        marker = {};
+        routes = null;
+        return true;
       } else if (current is JumpToPointState) {
         _jumpToPoint(current.point);
         return true;
@@ -108,17 +113,18 @@ class _MapViewState extends State<MapView> {
       return GoogleMap(
         markers: marker,
         polylines: {
-          Polyline(
-            polylineId: const PolylineId('route'),
-            visible: true,
-            width: 5,
-            points: routes != null
-                ? routes!.polylinePoints
-                    .map((e) => LatLng(e.latitude, e.longitude))
-                    .toList()
-                : [],
-            color: Colors.blue,
-          )
+          if (routes != null)
+            Polyline(
+              polylineId: const PolylineId('route'),
+              visible: true,
+              width: 5,
+              points: routes != null
+                  ? routes!.polylinePoints
+                      .map((e) => LatLng(e.latitude, e.longitude))
+                      .toList()
+                  : [],
+              color: Colors.red,
+            )
         },
         padding: EdgeInsets.zero,
         myLocationButtonEnabled: false,

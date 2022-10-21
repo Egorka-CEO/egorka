@@ -12,13 +12,21 @@ part 'search_state.dart';
 
 class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   late GeoData data;
+  bool isPolilyne = false;
   SearchAddressBloc() : super(SearchAddressStated()) {
     on<SearchAddress>((event, emit) => _searchAddress(event, emit));
     on<SearchAddressClear>((event, emit) => _clearAddress());
     on<ChangeMapPosition>((event, emit) => _changeMapPosition(event, emit));
     on<SearchMeEvent>((event, emit) => emit(FindMeState()));
+    on<DeletePolilyneEvent>((event, emit) => _deletePolyline(event, emit));
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
     on<SearchAddressPolilyne>((event, emit) => _getPoliline(event, emit));
+  }
+
+  void _deletePolyline(
+      DeletePolilyneEvent event, Emitter<SearchAddressState> emit) {
+    isPolilyne = false;
+    emit(DeletePolilyneState());
   }
 
   void _searchAddress(
@@ -39,17 +47,20 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
   void _changeMapPosition(
       ChangeMapPosition event, Emitter<SearchAddressState> emit) async {
-    data = await Geocoder2.getDataFromCoordinates(
-        latitude: event.coordinates.latitude.toDouble(),
-        longitude: event.coordinates.longitude.toDouble(),
-        language: 'RU',
-        googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
+    if (!isPolilyne) {
+      data = await Geocoder2.getDataFromCoordinates(
+          latitude: event.coordinates.latitude.toDouble(),
+          longitude: event.coordinates.longitude.toDouble(),
+          language: 'RU',
+          googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
 
-    emit(ChangeAddressSuccess(data));
+      emit(ChangeAddressSuccess(data));
+    }
   }
 
   void _getPoliline(
       SearchAddressPolilyne event, Emitter<SearchAddressState> emit) async {
+    isPolilyne = true;
     final location = await Geocoder2.getDataFromAddress(
         address: event.to, googleMapApiKey: apiKey);
     final directions = await DirectionsRepository(dio: null).getDirections(
@@ -68,6 +79,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
               directions.polylinePoints.last.longitude),
         ),
       }));
+    } else {
+      isPolilyne = false;
     }
   }
 

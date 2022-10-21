@@ -28,3 +28,5 @@ class SearchAddressPolilyne extends SearchAddressEvent {
 
   SearchAddressPolilyne(this.to);
 }
+
+class DeletePolilyneEvent extends SearchAddressEvent {}

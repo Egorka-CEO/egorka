@@ -124,6 +124,12 @@ class CustomTextField extends StatelessWidget {
                 style: BorderStyle.solid,
               ),
             ),
+            disabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 0.0,
+              style: BorderStyle.solid,
+            )),
             hintStyle: TextStyle(
               overflow: TextOverflow.ellipsis,
               fontSize: 14,

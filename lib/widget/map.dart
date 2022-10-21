@@ -1,8 +1,7 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
-import 'package:egorka/helpers/direction.dart';
 import 'package:egorka/helpers/location.dart';
-import 'package:egorka/main.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/directions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +12,7 @@ class MapView extends StatefulWidget {
     target: LatLng(53.159646, 24.469827),
     zoom: 5,
   );
-  MapView({Key? key}) : super(key: key);
+  const MapView({Key? key}) : super(key: key);
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -26,33 +25,14 @@ class _MapViewState extends State<MapView> {
   Position? position;
   GoogleMapController? mapController;
 
+  Directions? routes;
+  Set<Marker> marker = {};
+
   @override
   void initState() {
     Location().checkPermission;
 
     super.initState();
-  }
-
-  void setMarks() async {
-    // var userLatLng = LatLng();
-    // var shopLatLng = LatLng();
-
-    //   firstMarker = Marker(
-    //     markerId: const MarkerId('userMarker'),
-    //     // icon: _userIcon!,
-    //     position: userLatLng,
-    //   );
-    //   secondMarker = Marker(
-    //     markerId: const MarkerId('shopMarker'),
-    //     // icon: _shopIcon!,
-    //     position: shopLatLng,
-    //   );
-
-    // final directions = await DirectionsRepository(dio: null)
-    //     .getDirections(origin: userLatLng, destination: shopLatLng);
-
-    //   _info = directions;
-    //   _mapInit = true;
   }
 
   void _getPosition() async {
@@ -77,10 +57,7 @@ class _MapViewState extends State<MapView> {
     if (await Location().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      print('123');
-      // Future.delayed(Duration(milliseconds: 1000), () {
       if (mapController != null) {
-        print('12345');
         mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
@@ -91,7 +68,6 @@ class _MapViewState extends State<MapView> {
           ),
         );
       }
-      // });
     }
   }
 
@@ -108,7 +84,6 @@ class _MapViewState extends State<MapView> {
           ),
         );
       }
-      // });
     }
   }
 
@@ -116,9 +91,12 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchAddressBloc, SearchAddressState>(
         buildWhen: (previous, current) {
-      if (current is FindMeState) {
+      if (current is SearchAddressRoutePolilyne) {
+        routes = current.routes;
+        marker = current.markers;
+        return true;
+      } else if (current is FindMeState) {
         _findMe();
-        print('1231231231231');
         return true;
       } else if (current is JumpToPointState) {
         _jumpToPoint(current.point);
@@ -128,6 +106,20 @@ class _MapViewState extends State<MapView> {
       }
     }, builder: (context, snapshot) {
       return GoogleMap(
+        markers: marker,
+        polylines: {
+          Polyline(
+            polylineId: const PolylineId('route'),
+            visible: true,
+            width: 5,
+            points: routes != null
+                ? routes!.polylinePoints
+                    .map((e) => LatLng(e.latitude, e.longitude))
+                    .toList()
+                : [],
+            color: Colors.blue,
+          )
+        },
         padding: EdgeInsets.zero,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,

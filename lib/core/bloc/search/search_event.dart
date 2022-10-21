@@ -22,3 +22,9 @@ class JumpToPointEvent extends SearchAddressEvent {
   final Point point;
   JumpToPointEvent(this.point);
 }
+
+class SearchAddressPolilyne extends SearchAddressEvent {
+  String to;
+
+  SearchAddressPolilyne(this.to);
+}

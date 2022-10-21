@@ -15,10 +15,15 @@ class HomePage extends StatelessWidget {
       body: Stack(
         children: [
           SizedBox(
-              height: MediaQuery.of(context).size.height, child: MapView()),
+            height: MediaQuery.of(context).size.height,
+            child: const MapView(),
+          ),
           CustomWidget.appBar(),
-          CustomWidget.iconGPS(),
-          BottomSheetDraggable(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: CustomWidget.iconGPS(),
+          ),
+          const BottomSheetDraggable(),
         ],
       ),
     );

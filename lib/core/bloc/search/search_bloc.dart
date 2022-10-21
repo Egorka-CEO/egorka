@@ -1,12 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/directions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'dart:ui' as ui;
 part 'search_event.dart';
 part 'search_state.dart';
 
@@ -67,13 +71,21 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         origin: LatLng(data.latitude, data.longitude),
         destination: LatLng(location.latitude, location.longitude));
     if (directions != null) {
+      // final Uint8List markerIcon =
+      //     await getBytesFromAsset('assets/images/flutter.png', 100);
+      final fromIcon = BitmapDescriptor.fromBytes(
+          await getBytesFromAsset('assets/images/from.png', 90));
+      final toIcon = BitmapDescriptor.fromBytes(
+          await getBytesFromAsset('assets/images/to.png', 90));
       emit(SearchAddressRoutePolilyne(directions, {
         Marker(
+          icon: fromIcon,
           markerId: const MarkerId('start'),
           position: LatLng(directions.polylinePoints.first.latitude,
               directions.polylinePoints.first.longitude),
         ),
         Marker(
+          icon: toIcon,
           markerId: const MarkerId('finish'),
           position: LatLng(directions.polylinePoints.last.latitude,
               directions.polylinePoints.last.longitude),
@@ -82,6 +94,16 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     } else {
       isPolilyne = false;
     }
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 
   void _clearAddress() => emit(SearchAddressStated());

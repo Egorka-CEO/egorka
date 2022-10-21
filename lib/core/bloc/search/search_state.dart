@@ -4,6 +4,13 @@ abstract class SearchAddressState {}
 
 class SearchAddressStated extends SearchAddressState {}
 
+class SearchAddressRoutePolilyne extends SearchAddressState {
+  Directions routes;
+  Set<Marker> markers;
+
+  SearchAddressRoutePolilyne(this.routes, this.markers);
+}
+
 class SearchAddressLoading extends SearchAddressState {}
 
 class SearchAddressSuccess extends SearchAddressState {

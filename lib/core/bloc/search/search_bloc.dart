@@ -1,7 +1,8 @@
-import 'dart:math';
-
+import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/directions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,6 +18,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<ChangeMapPosition>((event, emit) => _changeMapPosition(event, emit));
     on<SearchMeEvent>((event, emit) => emit(FindMeState()));
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
+    on<SearchAddressPolilyne>((event, emit) => _getPoliline(event, emit));
   }
 
   void _searchAddress(
@@ -44,6 +46,29 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
 
     emit(ChangeAddressSuccess(data));
+  }
+
+  void _getPoliline(
+      SearchAddressPolilyne event, Emitter<SearchAddressState> emit) async {
+    final location = await Geocoder2.getDataFromAddress(
+        address: event.to, googleMapApiKey: apiKey);
+    final directions = await DirectionsRepository(dio: null).getDirections(
+        origin: LatLng(data.latitude, data.longitude),
+        destination: LatLng(location.latitude, location.longitude));
+    if (directions != null) {
+      emit(SearchAddressRoutePolilyne(directions, {
+        Marker(
+          markerId: const MarkerId('start'),
+          position: LatLng(directions.polylinePoints.first.latitude,
+              directions.polylinePoints.first.longitude),
+        ),
+        Marker(
+          markerId: const MarkerId('finish'),
+          position: LatLng(directions.polylinePoints.last.latitude,
+              directions.polylinePoints.last.longitude),
+        ),
+      }));
+    }
   }
 
   void _clearAddress() => emit(SearchAddressStated());

@@ -113,7 +113,7 @@ class _MapViewState extends State<MapView> {
       }
     }, builder: (context, snapshot) {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 190),
+        padding: const EdgeInsets.only(bottom: 160),
         child: GoogleMap(
           markers: marker,
           polylines: {

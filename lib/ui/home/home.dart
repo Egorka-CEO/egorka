@@ -19,10 +19,7 @@ class HomePage extends StatelessWidget {
         drawer: const NavBar(),
         body: Stack(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: const MapView(),
-            ),
+            const MapView(),
             CustomWidget.appBar(),
             if (!bloc.isPolilyne)
               Padding(

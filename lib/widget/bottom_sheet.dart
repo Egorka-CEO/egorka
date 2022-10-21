@@ -45,6 +45,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       var bloc = BlocProvider.of<SearchAddressBloc>(context);
       return SlidingUpPanel(
         controller: panelController,
+        color: Colors.red,
         renderPanelSheet: false,
         panel: _floatingPanel(context),
         onPanelClosed: () {
@@ -65,7 +66,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
         },
         maxHeight: 735,
-        minHeight: bloc.isPolilyne ? 415 : 215,
+        minHeight: bloc.isPolilyne ? 300 : 215,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -272,7 +273,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   )
                 : Container();
           } else if (bloc.isPolilyne) {
-            return ListView.builder(
+            return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 16 / 5,
+                ),
                 padding: const EdgeInsets.all(0),
                 shrinkWrap: true,
                 itemCount: listChoice.length,
@@ -282,7 +287,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(0),
                       title: Text(listChoice[index].title),
-                      leading: Image.asset(listChoice[index].icon, height: 50),
+                      leading: Image.asset(listChoice[index].icon),
                     ),
                   );
                 }));

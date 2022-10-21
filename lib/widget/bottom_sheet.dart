@@ -36,7 +36,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png'),
   ];
 
-  // final _sheetController = DraggableScrollableController();
+  @override
+  void dispose() {
+    stream.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       var bloc = BlocProvider.of<SearchAddressBloc>(context);
       return SlidingUpPanel(
         controller: panelController,
-        color: Colors.red,
         renderPanelSheet: false,
         panel: _floatingPanel(context),
         onPanelClosed: () {
@@ -77,19 +80,19 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     return Container(
       margin:
           MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
             color: Colors.black12,
           ),
         ],
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white,
       ),
       child: Column(
         children: [

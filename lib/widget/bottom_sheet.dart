@@ -72,7 +72,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
         },
         maxHeight: 735,
-        minHeight: bloc.isPolilyne ? 315 : 215,
+        minHeight: bloc.isPolilyne ? 350 : 215,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -229,6 +229,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       bloc.add(DeletePolilyneEvent());
                                       toController.text = '';
                                       stream.add('event');
+                                      streamDelivery.add(-1);
                                     },
                                     child: const Icon(Icons.clear),
                                   ),
@@ -300,7 +301,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         itemCount: listChoice.length,
                         itemBuilder: ((context, index) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.only(
+                                left: 20,
+                                right: index == listChoice.length - 1 ? 20 : 0),
                             child: GestureDetector(
                               onTap: () {
                                 if (index == snapshot.data) {
@@ -309,48 +312,36 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   streamDelivery.add(index);
                                 }
                               },
-                              // onTap: () => Navigator.of(context).pushNamed('/newOrder'),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SizedBox(
-                                              height: 65,
-                                              child: Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    listChoice[index].title,
-                                                    style: TextStyle(
-                                                        color: snapshot.data! ==
-                                                                index
-                                                            ? Colors.red
-                                                            : Colors.black),
-                                                  ))),
-                                          SizedBox(
-                                            height: 65,
-                                            child: Image.asset(
-                                              listChoice[index].icon,
-                                              color: snapshot.data! == index
-                                                  ? Colors.red
-                                                  : Colors.black,
-                                            ),
-                                          )
-                                        ],
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                decoration: BoxDecoration(
+                                    color: snapshot.data! == index
+                                        ? Colors.grey[200]
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      height: 45,
+                                      width: 90,
+                                      child: Image.asset(
+                                        listChoice[index].icon,
+                                        color: snapshot.data! == index
+                                            ? Colors.red
+                                            : Colors.black,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      listChoice[index].title,
+                                      style: TextStyle(
+                                          color: snapshot.data! == index
+                                              ? Colors.red
+                                              : Colors.black),
+                                    ),
+                                    // const SizedBox(height: 10)
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -363,24 +354,29 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 ),
               ),
               const SizedBox(height: 10),
-              AnimatedOpacity(
-                opacity: snapshot.data != -1 ? 1 : 0,
-                duration: const Duration(milliseconds: 500),
-                child: snapshot.data != -1
-                    ? GestureDetector(
-                        onTap: () =>
-                            Navigator.of(context).pushNamed('/newOrder'),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              // border: Border.all(color: Colors.red),
-                              borderRadius: BorderRadius.circular(15)),
-                          child: const Text('Перейти к оформлению',
-                              style: CustomTextStyle.white15w600),
-                        ),
-                      )
-                    : const SizedBox(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: AnimatedOpacity(
+                  opacity: snapshot.data != -1 ? 1 : 0,
+                  duration: const Duration(milliseconds: 500),
+                  child: snapshot.data != -1
+                      ? GestureDetector(
+                          onTap: () =>
+                              Navigator.of(context).pushNamed('/newOrder'),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: const Center(
+                              child: Text('Перейти к оформлению',
+                                  style: CustomTextStyle.white15w600),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ),
               )
             ],
           );

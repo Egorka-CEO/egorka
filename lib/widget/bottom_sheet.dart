@@ -302,8 +302,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         itemBuilder: ((context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
-                                left: 20,
-                                right: index == listChoice.length - 1 ? 20 : 0),
+                                left: index == 0 ? 5 : 10,
+                                right: index == listChoice.length - 1 ? 5 : 0),
                             child: GestureDetector(
                               onTap: () {
                                 if (index == snapshot.data) {
@@ -313,7 +313,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 }
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
                                 decoration: BoxDecoration(
                                     color: snapshot.data! == index
                                         ? Colors.grey[200]

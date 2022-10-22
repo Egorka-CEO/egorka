@@ -95,7 +95,7 @@ class _MapViewState extends State<MapView> {
         routes = current.routes;
         marker = current.markers;
         mapController!.animateCamera(
-          CameraUpdate.newLatLngBounds(routes!.bounds, 140),
+          CameraUpdate.newLatLngBounds(routes!.bounds, 130),
         );
         return true;
       } else if (current is FindMeState) {
@@ -113,7 +113,7 @@ class _MapViewState extends State<MapView> {
       }
     }, builder: (context, snapshot) {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 160),
+        padding: const EdgeInsets.only(bottom: 170),
         child: GoogleMap(
           markers: marker,
           polylines: {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
@@ -26,6 +27,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   PanelController panelController = PanelController();
 
   final stream = StreamController();
+
+  final streamDelivery = StreamController<int>();
 
   bool _visible = false;
 
@@ -69,7 +72,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
         },
         maxHeight: 735,
-        minHeight: bloc.isPolilyne ? 300 : 215,
+        minHeight: bloc.isPolilyne ? 315 : 215,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -100,7 +103,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             padding: EdgeInsets.only(
                 top: 10,
                 left: (MediaQuery.of(context).size.width * 45) / 100,
-                right: (MediaQuery.of(context).size.width * 45) / 100),
+                right: (MediaQuery.of(context).size.width * 45) / 100,
+                bottom: 10),
             child: Container(
               height: 5,
               decoration: BoxDecoration(
@@ -109,14 +113,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: StreamBuilder<dynamic>(
-              stream: stream.stream,
-              builder: (context, snapshot) {
-                return Column(
-                  children: [
-                    Container(
+          StreamBuilder<dynamic>(
+            stream: stream.stream,
+            builder: (context, snapshot) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
                       height: 60,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
@@ -173,8 +177,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    Container(
+                  ),
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
                       height: 60,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
@@ -230,76 +237,154 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         ),
                       ),
                     ),
-                    _searchList(),
-                  ],
-                );
-              },
-            ),
+                  ),
+                  _searchList(),
+                ],
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  SizedBox _searchList() {
-    return SizedBox(
-      height: 212,
-      child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
-        buildWhen: (previous, current) {
-          if (current is ChangeAddressSuccess) {
-            if (fromController.text != current.geoData!.address) {
-              fromController.text = current.geoData!.address;
-            }
-          }
-          return true;
-        },
-        builder: ((context, state) {
-          var bloc = BlocProvider.of<SearchAddressBloc>(context);
-          if (state is SearchAddressStated) {
-            return const SizedBox();
-          } else if (state is SearchAddressLoading) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-              ],
-            );
-          } else if (state is SearchAddressSuccess) {
-            return _visible
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemCount: state.address!.result.suggestions!.length,
-                    itemBuilder: (context, index) {
-                      return _pointCard(state, index, context);
-                    },
-                  )
-                : Container();
-          } else if (bloc.isPolilyne) {
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 16 / 5,
+  Widget _searchList() {
+    return StreamBuilder<int>(
+        stream: streamDelivery.stream,
+        initialData: -1,
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              const SizedBox(height: 10),
+              SizedBox(
+                height: snapshot.data != -1 ? 70 : 215,
+                child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
+                  buildWhen: (previous, current) {
+                    if (current is ChangeAddressSuccess) {
+                      if (fromController.text != current.geoData!.address) {
+                        fromController.text = current.geoData!.address;
+                      }
+                    }
+                    return true;
+                  },
+                  builder: ((context, state) {
+                    var bloc = BlocProvider.of<SearchAddressBloc>(context);
+                    if (state is SearchAddressStated) {
+                      return const SizedBox();
+                    } else if (state is SearchAddressLoading) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          CircularProgressIndicator(),
+                        ],
+                      );
+                    } else if (state is SearchAddressSuccess) {
+                      return _visible
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                itemCount:
+                                    state.address!.result.suggestions!.length,
+                                itemBuilder: (context, index) {
+                                  return _pointCard(state, index, context);
+                                },
+                              ),
+                            )
+                          : Container();
+                    } else if (bloc.isPolilyne) {
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: listChoice.length,
+                        itemBuilder: ((context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (index == snapshot.data) {
+                                  streamDelivery.add(-1);
+                                } else {
+                                  streamDelivery.add(index);
+                                }
+                              },
+                              // onTap: () => Navigator.of(context).pushNamed('/newOrder'),
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                              height: 65,
+                                              child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    listChoice[index].title,
+                                                    style: TextStyle(
+                                                        color: snapshot.data! ==
+                                                                index
+                                                            ? Colors.red
+                                                            : Colors.black),
+                                                  ))),
+                                          SizedBox(
+                                            height: 65,
+                                            child: Image.asset(
+                                              listChoice[index].icon,
+                                              color: snapshot.data! == index
+                                                  ? Colors.red
+                                                  : Colors.black,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      );
+                    } else {
+                      return const Text('');
+                    }
+                  }),
                 ),
-                padding: const EdgeInsets.all(0),
-                shrinkWrap: true,
-                itemCount: listChoice.length,
-                itemBuilder: ((context, index) {
-                  return GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed('/newOrder'),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(0),
-                      title: Text(listChoice[index].title),
-                      leading: Image.asset(listChoice[index].icon),
-                    ),
-                  );
-                }));
-          } else {
-            return const Text('');
-          }
-        }),
-      ),
-    );
+              ),
+              const SizedBox(height: 10),
+              AnimatedOpacity(
+                opacity: snapshot.data != -1 ? 1 : 0,
+                duration: const Duration(milliseconds: 500),
+                child: snapshot.data != -1
+                    ? GestureDetector(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('/newOrder'),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              // border: Border.all(color: Colors.red),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: const Text('Перейти к оформлению',
+                              style: CustomTextStyle.white15w600),
+                        ),
+                      )
+                    : const SizedBox(),
+              )
+            ],
+          );
+        });
   }
 
   Container _pointCard(

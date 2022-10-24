@@ -1,9 +1,25 @@
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/receiver.dart';
+import 'package:egorka/model/sender.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
 class NewOrderPage extends StatelessWidget {
   const NewOrderPage({super.key});
+
+  static Sender sender = Sender(
+    firstName: 'Олег',
+    secondName: 'Бочко',
+    phone: '+79223747362',
+    address: 'г.Москва, ул.Кижеватова д.23',
+  );
+
+  static Receiver receiver = Receiver(
+    firstName: 'Максим',
+    secondName: 'Яковлев',
+    phone: '+79111119393',
+    address: 'г.Москва, ул.Солнечная д.6',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +58,9 @@ class NewOrderPage extends StatelessWidget {
               child: Stack(
                 children: [
                   SingleChildScrollView(
-                    // physics: BouncingScrollPhysics(),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Column(
@@ -59,15 +73,20 @@ class NewOrderPage extends StatelessWidget {
                                   style: CustomTextStyle.grey15bold,
                                 ),
                               ),
-                              ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: ((context, index) {
-                                  return Text('item $index',
-                                      style: CustomTextStyle.grey14w400);
-                                }),
-                                shrinkWrap: true,
-                                itemCount: 10,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Имя: ${sender.secondName}',
+                                      style: CustomTextStyle.grey14w400),
+                                  Text('Фамилия: ${sender.firstName}',
+                                      style: CustomTextStyle.grey14w400),
+                                  Text('Телефон: ${sender.phone}',
+                                      style: CustomTextStyle.grey14w400),
+                                  Text('Адрес: ${sender.address}',
+                                      style: CustomTextStyle.grey14w400)
+                                ],
                               ),
+                              const SizedBox(height: 8),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: const [
@@ -93,15 +112,20 @@ class NewOrderPage extends StatelessWidget {
                                   style: CustomTextStyle.grey15bold,
                                 ),
                               ),
-                              ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: ((context, index) {
-                                  return Text('item $index',
-                                      style: CustomTextStyle.grey14w400);
-                                }),
-                                shrinkWrap: true,
-                                itemCount: 10,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Имя: ${receiver.secondName}',
+                                      style: CustomTextStyle.grey14w400),
+                                  Text('Фамилия: ${receiver.firstName}',
+                                      style: CustomTextStyle.grey14w400),
+                                  Text('Телефон: ${receiver.phone}',
+                                      style: CustomTextStyle.grey14w400),
+                                  Text('Адрес: ${receiver.address}',
+                                      style: CustomTextStyle.grey14w400)
+                                ],
                               ),
+                              const SizedBox(height: 8),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: const [

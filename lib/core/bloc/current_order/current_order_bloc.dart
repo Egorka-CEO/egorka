@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';

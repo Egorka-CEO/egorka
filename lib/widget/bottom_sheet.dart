@@ -37,7 +37,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
     DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
     DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
-    DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png'),
+    DeliveryChocie(title: 'Пешком', icon: 'assets/images/ic_leg.png'),
   ];
 
   @override
@@ -300,7 +300,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: listChoice.length,
-                        padding: EdgeInsets.only(left: 15),
+                        padding: EdgeInsets.only(left: 0),
                         itemBuilder: ((context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
@@ -327,7 +327,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                         child: Image.asset(
                                           listChoice[index].icon,
                                           color: snapshot.data! == index
-                                              ? Colors.red
+                                              ? Colors.black
                                               : Colors.black,
                                         ),
                                       ),
@@ -335,14 +335,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                         listChoice[index].title,
                                         style: TextStyle(
                                             color: snapshot.data! == index
-                                                ? Colors.red
+                                                ? Colors.black
                                                 : Colors.black),
                                       ),
                                       Text(
                                         '1999₽',
                                         style: TextStyle(
                                             color: snapshot.data! == index
-                                                ? Colors.red
+                                                ? Colors.grey
                                                 : Colors.black),
                                       ),
                                     ],

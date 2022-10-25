@@ -19,9 +19,13 @@ class HomePage extends StatelessWidget {
         drawer: const NavBar(),
         body: Stack(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 170),
-              child: MapView(),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOutQuint,
+              margin: EdgeInsets.only(
+                bottom: snapshot is SearchAddressRoutePolilyne ? 100 : 0,
+              ),
+              child: const MapView(),
             ),
             CustomWidget.appBar(),
             if (!bloc.isPolilyne)

@@ -138,7 +138,7 @@ class _MapViewState extends State<MapView> {
           },
           onCameraIdle: () {
             BlocProvider.of<SearchAddressBloc>(context)
-                .add(ChangeMapPosition(pos.target));
+                .add(ChangeMapPosition(pos!.target));
             if (state is SearchAddressRoutePolilyne) {
               mapController!.animateCamera(
                 CameraUpdate.newLatLngBounds(routes!.bounds, 130),

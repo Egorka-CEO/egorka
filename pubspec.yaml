@@ -24,6 +24,8 @@ dependencies:
   permission_handler: ^10.1.0
   geocoder2: ^1.4.0
   flutter_polyline_points: ^1.0.0
+  scale_button: ^2.1.2
+  popover: ^0.2.7
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,8 @@ import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/widget/allert_dialog.dart';
+import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -300,7 +302,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: listChoice.length,
-                        padding: EdgeInsets.only(left: 0),
                         itemBuilder: ((context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
@@ -385,49 +386,74 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   void authShowDialog() async {
     await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          contentPadding: const EdgeInsets.all(20),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Хотите авторизоваться?',
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20)),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey[400])),
-                      onPressed: () => Navigator.of(context)
-                        ..pop()
-                        ..pushNamed(AppRoute.newOrder),
-                      child: const Text('Нет')),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.red)),
-                      onPressed: () async {
-                        Navigator.pushNamed(context, AppRoute.auth).then(
-                          (value) {
-                            Navigator.of(context)
-                              ..pop()
-                              ..pushNamed(AppRoute.newOrder);
-                          },
-                        );
-                      },
-                      child: const Text('Да'))
-                ],
-              )
+        context: context,
+        builder: (context) {
+          return StandartAlertDialog(
+            message: 'Хотите авторизоваться?',
+            buttons: [
+              StandartButton(
+                  label: 'Нет',
+                  color: Colors.red.withOpacity(0.9),
+                  onTap: () => Navigator.of(context)
+                    ..pop()
+                    ..pushNamed(AppRoute.newOrder)),
+              StandartButton(
+                  label: 'Да',
+                  color: Colors.green,
+                  onTap: () => Navigator.pushNamed(context, AppRoute.auth).then(
+                        (value) {
+                          Navigator.of(context)
+                            ..pop()
+                            ..pushNamed(AppRoute.newOrder);
+                        },
+                      ))
             ],
-          ),
-        );
-      },
-    );
+          );
+        });
+    // await showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return AlertDialog(
+    //       contentPadding: const EdgeInsets.all(20),
+    //       content: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           const Text('Хотите авторизоваться?',
+    //               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20)),
+    //           const SizedBox(height: 30),
+    //           Row(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             children: [
+    //               ElevatedButton(
+    //                   style: ButtonStyle(
+    //                       backgroundColor:
+    //                           MaterialStateProperty.all(Colors.grey[400])),
+    // onPressed: () => Navigator.of(context)
+    //   ..pop()
+    //   ..pushNamed(AppRoute.newOrder),
+    //                   child: const Text('Нет')),
+    //               const SizedBox(width: 10),
+    //               ElevatedButton(
+    //                   style: ButtonStyle(
+    //                       backgroundColor:
+    //                           MaterialStateProperty.all(Colors.red)),
+    //                   onPressed: () async {
+    // Navigator.pushNamed(context, AppRoute.auth).then(
+    //   (value) {
+    //     Navigator.of(context)
+    //       ..pop()
+    //       ..pushNamed(AppRoute.newOrder);
+    //   },
+    // );
+    //                   },
+    //                   child: const Text('Да'))
+    //             ],
+    //           )
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
   }
 
   Container _pointCard(

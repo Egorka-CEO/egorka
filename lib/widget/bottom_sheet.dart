@@ -300,6 +300,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: listChoice.length,
+                        padding: EdgeInsets.only(left: 15),
                         itemBuilder: ((context, index) {
                           return Padding(
                             padding: EdgeInsets.only(

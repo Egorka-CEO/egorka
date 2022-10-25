@@ -1,4 +1,4 @@
-import 'package:egorka/ui/auth/auth_page.dart';
+import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/ui/sidebar/about/about_page.dart';
@@ -25,7 +25,7 @@ class AppRoute {
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
-        return MaterialPageRoute(builder: (_) => AuthPage());
+        return MaterialPageRoute(builder: (_) => MainAuthPage());
       case newOrder:
         return MaterialPageRoute(builder: (_) => const NewOrderPage());
       default:

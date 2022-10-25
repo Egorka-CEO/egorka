@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'package:egorka/helpers/router.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AuthPage extends StatelessWidget {
   AuthPage({super.key});
@@ -16,20 +13,8 @@ class AuthPage extends StatelessWidget {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
-  // void getLocation() async {
-  //   const hasPermission = Permission.locationWhenInUse;
-  //   hasPermission.status.then((value) {
-  //     print('object $value');
-  //   });
-  //   final position = await Geolocator.getCurrentPosition(
-  //     desiredAccuracy: LocationAccuracy.high,
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // getLocation();
-
     return Material(
       child: SafeArea(
         bottom: false,
@@ -74,8 +59,7 @@ class AuthPage extends StatelessWidget {
     _btnController.start();
     _btnController.success();
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppRoute.home, (route) => false);
+      Navigator.pop(context, true);
     });
   }
 }

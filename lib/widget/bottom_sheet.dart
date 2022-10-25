@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -252,13 +253,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Widget _searchList() {
     return StreamBuilder<int>(
         stream: streamDelivery.stream,
-        initialData: -1,
+        initialData: 0,
         builder: (context, snapshot) {
+          var blocs = BlocProvider.of<SearchAddressBloc>(context);
           return Column(
             children: [
               const SizedBox(height: 10),
               SizedBox(
-                height: snapshot.data != -1 ? 70 : 215,
+                height: blocs.isPolilyne ? 80 : 215,
                 child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   buildWhen: (previous, current) {
                     if (current is ChangeAddressSuccess) {
@@ -302,46 +304,49 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         itemBuilder: ((context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
-                                left: index == 0 ? 5 : 10,
+                                left: index == 0 ? 20 : 0,
                                 right: index == listChoice.length - 1 ? 5 : 0),
                             child: GestureDetector(
                               onTap: () {
-                                if (index == snapshot.data) {
-                                  streamDelivery.add(-1);
-                                } else {
-                                  streamDelivery.add(index);
-                                }
+                                streamDelivery.add(index);
                               },
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                decoration: BoxDecoration(
-                                    color: snapshot.data! == index
-                                        ? Colors.grey[200]
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      height: 45,
-                                      width: 90,
-                                      child: Image.asset(
-                                        listChoice[index].icon,
-                                        color: snapshot.data! == index
-                                            ? Colors.red
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      listChoice[index].title,
-                                      style: TextStyle(
+                              child: Opacity(
+                                opacity: snapshot.data! == index ? 1 : 0.3,
+                                child: Container(
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      color: snapshot.data! == index
+                                          ? Colors.grey[200]
+                                          : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        height: 45,
+                                        child: Image.asset(
+                                          listChoice[index].icon,
                                           color: snapshot.data! == index
                                               ? Colors.red
-                                              : Colors.black),
-                                    ),
-                                    // const SizedBox(height: 10)
-                                  ],
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        listChoice[index].title,
+                                        style: TextStyle(
+                                            color: snapshot.data! == index
+                                                ? Colors.red
+                                                : Colors.black),
+                                      ),
+                                      Text(
+                                        '1999₽',
+                                        style: TextStyle(
+                                            color: snapshot.data! == index
+                                                ? Colors.red
+                                                : Colors.black),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -355,33 +360,72 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 ),
               ),
               const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: AnimatedOpacity(
-                  opacity: snapshot.data != -1 ? 1 : 0,
-                  duration: const Duration(milliseconds: 500),
-                  child: snapshot.data != -1
-                      ? GestureDetector(
-                          onTap: () =>
-                              Navigator.of(context).pushNamed('/newOrder'),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: const Center(
-                              child: Text('Перейти к оформлению',
-                                  style: CustomTextStyle.white15w600),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                ),
-              )
+              if (blocs.isPolilyne)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GestureDetector(
+                    onTap: authShowDialog,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Center(
+                        child: Text('Перейти к оформлению',
+                            style: CustomTextStyle.white15w600),
+                      ),
+                    ),
+                  ),
+                )
             ],
           );
         });
+  }
+
+  void authShowDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(20),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Хотите авторизоваться?',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20)),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey[400])),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Нет')),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.red)),
+                      onPressed: () async {
+                        Navigator.pushNamed(context, AppRoute.auth).then(
+                          (value) {
+                            Navigator.of(context)
+                              ..pop()
+                              ..pushNamed(AppRoute.newOrder);
+                          },
+                        );
+                      },
+                      child: const Text('Да'))
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Container _pointCard(

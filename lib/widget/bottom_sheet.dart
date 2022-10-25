@@ -230,7 +230,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       bloc.add(DeletePolilyneEvent());
                                       toController.text = '';
                                       stream.add('event');
-                                      streamDelivery.add(-1);
                                     },
                                     child: const Icon(Icons.clear),
                                   ),
@@ -253,7 +252,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Widget _searchList() {
     return StreamBuilder<int>(
         stream: streamDelivery.stream,
-        initialData: 0,
+        initialData: 1,
         builder: (context, snapshot) {
           var blocs = BlocProvider.of<SearchAddressBloc>(context);
           return Column(
@@ -402,7 +401,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(Colors.grey[400])),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => Navigator.of(context)
+                        ..pop()
+                        ..pushNamed(AppRoute.newOrder),
                       child: const Text('Нет')),
                   const SizedBox(width: 10),
                   ElevatedButton(

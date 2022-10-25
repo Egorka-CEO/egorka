@@ -25,7 +25,7 @@ class AppRoute {
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
-        return MaterialPageRoute(builder: (_) => MainAuthPage());
+        return MaterialPageRoute(builder: (_) => const MainAuthPage());
       case newOrder:
         return MaterialPageRoute(builder: (_) => const NewOrderPage());
       default:

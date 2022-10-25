@@ -19,7 +19,7 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  late CameraPosition pos;
+  CameraPosition? pos;
   Marker? firstMarker;
   Marker? secondMarker;
   Position? position;
@@ -112,41 +112,40 @@ class _MapViewState extends State<MapView> {
         return false;
       }
     }, builder: (context, snapshot) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 170),
-        child: GoogleMap(
-          markers: marker,
-          polylines: {
-            if (routes != null)
-              Polyline(
-                polylineId: const PolylineId('route'),
-                visible: true,
-                width: 5,
-                points: routes != null
-                    ? routes!.polylinePoints
-                        .map((e) => LatLng(e.latitude, e.longitude))
-                        .toList()
-                    : [],
-                color: Colors.red,
-              )
-          },
-          padding: EdgeInsets.zero,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          onCameraMove: (position) {
-            pos = position;
-          },
-          onCameraIdle: () {
+      return GoogleMap(
+        markers: marker,
+        polylines: {
+          if (routes != null)
+            Polyline(
+              polylineId: const PolylineId('route'),
+              visible: true,
+              width: 5,
+              points: routes != null
+                  ? routes!.polylinePoints
+                      .map((e) => LatLng(e.latitude, e.longitude))
+                      .toList()
+                  : [],
+              color: Colors.red,
+            )
+        },
+        padding: EdgeInsets.zero,
+        myLocationButtonEnabled: false,
+        zoomControlsEnabled: false,
+        onCameraMove: (position) {
+          pos = position;
+        },
+        onCameraIdle: () {
+          if (pos != null) {
             BlocProvider.of<SearchAddressBloc>(context)
-                .add(ChangeMapPosition(pos.target));
-          },
-          initialCameraPosition: MapView._kGooglePlex,
-          mapType: MapType.normal,
-          onMapCreated: (GoogleMapController controller) {
-            mapController = controller;
-            _getPosition();
-          },
-        ),
+                .add(ChangeMapPosition(pos!.target));
+          }
+        },
+        initialCameraPosition: MapView._kGooglePlex,
+        mapType: MapType.normal,
+        onMapCreated: (GoogleMapController controller) {
+          mapController = controller;
+          _getPosition();
+        },
       );
     });
   }

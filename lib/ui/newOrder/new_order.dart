@@ -1,10 +1,16 @@
+import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/receiver.dart';
+import 'package:egorka/model/route_order.dart';
 import 'package:egorka/model/sender.dart';
+import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NewOrderPage extends StatelessWidget {
+enum TypeAdd { sender, receiver }
+
+class NewOrderPage extends StatefulWidget {
   const NewOrderPage({super.key});
 
   static Sender sender = Sender(
@@ -22,245 +28,443 @@ class NewOrderPage extends StatelessWidget {
   );
 
   @override
+  State<NewOrderPage> createState() => _NewOrderPageState();
+}
+
+class _NewOrderPageState extends State<NewOrderPage> {
+  List<RouteOrder> routeOrderSender = [
+    RouteOrder(adress: 'москва солнечная 6'),
+  ];
+
+  List<RouteOrder> routeOrderReceiver = [
+    RouteOrder(adress: 'москва солнечная 6'),
+  ];
+
+  bool btmSheet = false;
+  TypeAdd? typeAdd;
+
+  @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.grey[200],
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.centerRight,
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: const Text('Отмена',
-                              style: CustomTextStyle.red15),
-                        ),
-                        const Align(
-                          child: Text(
-                            'Оформление заказа',
-                            style: CustomTextStyle.black15w500,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NewOrderPageBloc>(
+          create: (context) => NewOrderPageBloc(),
+        ),
+      ],
+      child: Material(
+        color: Colors.grey[200],
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.centerRight,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8.0, bottom: 8),
-                                child: Text(
-                                  'Отправитель',
-                                  style: CustomTextStyle.grey15bold,
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Имя: ${sender.secondName}',
-                                      style: CustomTextStyle.grey14w400),
-                                  Text('Фамилия: ${sender.firstName}',
-                                      style: CustomTextStyle.grey14w400),
-                                  Text('Телефон: ${sender.phone}',
-                                      style: CustomTextStyle.grey14w400),
-                                  Text('Адрес: ${sender.address}',
-                                      style: CustomTextStyle.grey14w400)
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: const [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 8.0, bottom: 8),
-                                    child: Text(
-                                      'Добавить отправителя',
-                                      style: CustomTextStyle.red15,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text('Отмена',
+                                style: CustomTextStyle.red15),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8.0, bottom: 8),
-                                child: Text(
-                                  'Получатель',
-                                  style: CustomTextStyle.grey15bold,
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Имя: ${receiver.secondName}',
-                                      style: CustomTextStyle.grey14w400),
-                                  Text('Фамилия: ${receiver.firstName}',
-                                      style: CustomTextStyle.grey14w400),
-                                  Text('Телефон: ${receiver.phone}',
-                                      style: CustomTextStyle.grey14w400),
-                                  Text('Адрес: ${receiver.address}',
-                                      style: CustomTextStyle.grey14w400)
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: const [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 8.0, bottom: 8),
-                                    child: Text(
-                                      'Добавить получателя',
-                                      style: CustomTextStyle.red15,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8.0, top: 20),
-                                child: Text(
-                                  'Что везем?',
-                                  style: CustomTextStyle.grey15bold,
-                                ),
-                              ),
-                              CustomTextField(
-                                hintText:
-                                    'Документы / Цветы / Техника / Личная вещь',
-                                textEditingController: TextEditingController(),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8.0, top: 20),
-                                child: Text(
-                                  'Ценность вашего груза?',
-                                  style: CustomTextStyle.grey15bold,
-                                ),
-                              ),
-                              CustomTextField(
-                                hintText: 'До 100000 ₽',
-                                textEditingController: TextEditingController(),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 210)
+                          const Align(
+                            child: Text(
+                              'Оформление заказа',
+                              style: CustomTextStyle.black15w500,
+                            ),
+                          )
                         ],
                       ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 200,
-                      padding: const EdgeInsets.only(bottom: 40),
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Image.asset(
-                                  'assets/images/ic_leg.png',
-                                  color: Colors.red,
-                                  height: 90,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      'Пеший',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w300,
-                                      ),
+                  ],
+                ),
+              ),
+              BlocBuilder<NewOrderPageBloc, NewOrderState>(
+                  buildWhen: (previous, current) {
+                if (current is NewOrderStatedOpenBtmSheet) {
+                  btmSheet = true;
+                } else if (current is NewOrderStateCloseBtmSheet) {
+                  btmSheet = false;
+                  if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                    routeOrderSender.add(RouteOrder(adress: current.value));
+                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
+                    routeOrderReceiver.add(RouteOrder(adress: current.value));
+                  }
+                }
+
+                return true;
+              }, builder: (context, snapshot) {
+                return Expanded(
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 8.0, bottom: 8),
+                                    child: Text(
+                                      'Отправитель',
+                                      style: CustomTextStyle.grey15bold,
                                     ),
-                                    Text(
-                                      '1900 ₽',
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Text(
-                                  '}',
-                                  style: TextStyle(
-                                    fontSize: 60,
-                                    fontWeight: FontWeight.w200,
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text('400 ₽ доставка'),
-                                    Text('0 ₽ доп. услуги'),
-                                    Text('11 ₽ сбор-плат. сист.'),
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: routeOrderSender.length,
+                                    itemBuilder: ((context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.grey[300]!),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/from.png',
+                                                    height: 25,
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  Flexible(
+                                                    child: Text(
+                                                      routeOrderSender[index]
+                                                          .adress,
+                                                      style: CustomTextStyle
+                                                          .black15w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .arrow_downward_rounded,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  const Text(
+                                                    'Указать детали',
+                                                    style:
+                                                        CustomTextStyle.red15,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                  // Column(
+                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                  //   children: [
+                                  //     Text('Имя: ${sender.secondName}',
+                                  //         style: CustomTextStyle.grey14w400),
+                                  //     Text('Фамилия: ${sender.firstName}',
+                                  //         style: CustomTextStyle.grey14w400),
+                                  //     Text('Телефон: ${sender.phone}',
+                                  //         style: CustomTextStyle.grey14w400),
+                                  //     Text('Адрес: ${sender.address}',
+                                  //         style: CustomTextStyle.grey14w400)
+                                  //   ],
+                                  // ),
+                                  const SizedBox(height: 20),
+                                  GestureDetector(
+                                    onTap: () {
+                                      typeAdd = TypeAdd.sender;
+                                      BlocProvider.of<NewOrderPageBloc>(context)
+                                          .add(NewOrderOpenBtmSheet());
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey[300]!),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Center(
+                                        child: Text(
+                                          'Добавить отправителя',
+                                          style: CustomTextStyle.black15w500
+                                              .copyWith(
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 8.0, bottom: 8),
+                                    child: Text(
+                                      'Получатель',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: routeOrderReceiver.length,
+                                    itemBuilder: ((context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.grey[300]!),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/to.png',
+                                                    height: 25,
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  Text(
+                                                    routeOrderReceiver[index]
+                                                        .adress,
+                                                    style: CustomTextStyle
+                                                        .black15w500,
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    index ==
+                                                            routeOrderReceiver
+                                                                    .length -
+                                                                1
+                                                        ? Icons.flag
+                                                        : Icons
+                                                            .arrow_downward_rounded,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  const Text(
+                                                    'Указать детали',
+                                                    style:
+                                                        CustomTextStyle.red15,
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                  // Column(
+                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                  //   children: [
+                                  //     Text('Имя: ${receiver.secondName}',
+                                  //         style: CustomTextStyle.grey14w400),
+                                  //     Text('Фамилия: ${receiver.firstName}',
+                                  //         style: CustomTextStyle.grey14w400),
+                                  //     Text('Телефон: ${receiver.phone}',
+                                  //         style: CustomTextStyle.grey14w400),
+                                  //     Text('Адрес: ${receiver.address}',
+                                  //         style: CustomTextStyle.grey14w400)
+                                  //   ],
+                                  // ),
+                                  const SizedBox(height: 20),
+                                  GestureDetector(
+                                    onTap: () {
+                                      typeAdd = TypeAdd.receiver;
+                                      BlocProvider.of<NewOrderPageBloc>(context)
+                                          .add(NewOrderOpenBtmSheet());
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey[300]!),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Center(
+                                        child: Text(
+                                          'Добавить получателя',
+                                          style: CustomTextStyle.black15w500
+                                              .copyWith(
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 8.0, top: 20),
+                                    child: Text(
+                                      'Что везем?',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ),
+                                  CustomTextField(
+                                    hintText:
+                                        'Документы / Цветы / Техника / Личная вещь',
+                                    textEditingController:
+                                        TextEditingController(),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 8.0, top: 20),
+                                    child: Text(
+                                      'Ценность вашего груза?',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ),
+                                  CustomTextField(
+                                    hintText: 'До 100000 ₽',
+                                    textEditingController:
+                                        TextEditingController(),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 210)
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 200,
+                          padding: const EdgeInsets.only(bottom: 40),
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/ic_leg.png',
+                                      color: Colors.red,
+                                      height: 90,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: const [
+                                        Text(
+                                          'Пеший',
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                        Text(
+                                          '1900 ₽',
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Text(
+                                      '}',
+                                      style: TextStyle(
+                                        fontSize: 60,
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: const [
+                                        Text('400 ₽ доставка'),
+                                        Text('0 ₽ доп. услуги'),
+                                        Text('11 ₽ сбор-плат. сист.'),
+                                      ],
+                                    ),
                                   ],
+                                ),
+                                GestureDetector(
+                                  child: Container(
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Center(
+                                      child: Text(
+                                        'ОПЛАТИТЬ ЗАКАЗ',
+                                        style: CustomTextStyle.white15w600
+                                            .copyWith(letterSpacing: 3),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            GestureDetector(
-                              child: Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Center(
-                                  child: Text(
-                                    'ОПЛАТИТЬ ЗАКАЗ',
-                                    style: CustomTextStyle.white15w600
-                                        .copyWith(letterSpacing: 3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+                      btmSheet
+                          ? AddAdressBottomSheetDraggable(
+                              typeAdd: typeAdd!,
+                            )
+                          : const SizedBox()
+                    ],
+                  ),
+                );
+              })
+            ],
+          ),
         ),
       ),
     );

@@ -261,7 +261,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             children: [
               const SizedBox(height: 10),
               SizedBox(
-                height: blocs.isPolilyne ? 80 : 215,
+                height:
+                    blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
+                        ? 80
+                        : 215,
                 child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   buildWhen: (previous, current) {
                     if (current is ChangeAddressSuccess) {

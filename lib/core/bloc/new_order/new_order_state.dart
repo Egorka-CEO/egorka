@@ -6,8 +6,10 @@ class NewOrderStated extends NewOrderState {}
 
 class NewOrderStatedOpenBtmSheet extends NewOrderState {}
 
+class NewOrderCloseBtmSheet extends NewOrderState {}
+
 class NewOrderStateCloseBtmSheet extends NewOrderState {
-  String value;
+  String? value;
 
   NewOrderStateCloseBtmSheet(this.value);
 }

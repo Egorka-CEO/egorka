@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -59,7 +60,9 @@ class AuthPage extends StatelessWidget {
     _btnController.start();
     _btnController.success();
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pop(context, true);
+      Navigator.of(context)
+        ..pop()
+        ..pushNamed(AppRoute.newOrder);
     });
   }
 }

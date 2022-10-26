@@ -12,6 +12,8 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
     on<NewOrderOpenBtmSheet>((event, emit) => _openBtmSheet(event, emit));
     on<NewOrderStatedCloseBtmSheet>(
         (event, emit) => _closeBtmSheet(event, emit));
+    on<NewOrderCloseBtmSheetEvent>(
+        (event, emit) => _closeBtmSheetWithoutSearch(event, emit));
   }
 
   void _searchAddress(NewOrder event, Emitter<NewOrderState> emit) async {
@@ -34,4 +36,8 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
   void _closeBtmSheet(
           NewOrderStatedCloseBtmSheet event, Emitter<NewOrderState> emit) =>
       emit(NewOrderStateCloseBtmSheet(event.value));
+
+  void _closeBtmSheetWithoutSearch(
+          NewOrderCloseBtmSheetEvent event, Emitter<NewOrderState> emit) =>
+      emit(NewOrderCloseBtmSheet());
 }

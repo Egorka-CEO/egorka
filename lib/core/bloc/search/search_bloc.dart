@@ -1,11 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/directions.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
@@ -15,7 +12,7 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
-  late GeoData data;
+  GeoData? data;
   bool isPolilyne = false;
   SearchAddressBloc() : super(SearchAddressStated()) {
     on<SearchAddress>((event, emit) => _searchAddress(event, emit));
@@ -65,11 +62,15 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   void _getPoliline(
       SearchAddressPolilyne event, Emitter<SearchAddressState> emit) async {
     isPolilyne = true;
-    final location = await Geocoder2.getDataFromAddress(
+
+    final locationFrom = await Geocoder2.getDataFromAddress(
+        address: event.from, googleMapApiKey: apiKey);
+    final locationTo = await Geocoder2.getDataFromAddress(
         address: event.to, googleMapApiKey: apiKey);
+
     final directions = await DirectionsRepository(dio: null).getDirections(
-        origin: LatLng(data.latitude, data.longitude),
-        destination: LatLng(location.latitude, location.longitude));
+        origin: LatLng(locationFrom.latitude, locationFrom.longitude),
+        destination: LatLng(locationTo.latitude, locationTo.longitude));
     if (directions != null) {
       // final Uint8List markerIcon =
       //     await getBytesFromAsset('assets/images/flutter.png', 100);

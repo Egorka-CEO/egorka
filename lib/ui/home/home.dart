@@ -1,4 +1,5 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/map.dart';
 import 'package:egorka/ui/sidebar/side_menu.dart';
@@ -27,7 +28,7 @@ class HomePage extends StatelessWidget {
               ),
               child: const MapView(),
             ),
-            CustomWidget.appBar(),
+            CustomWidget.appBar((() => markerPlace(context))),
             if (!bloc.isPolilyne)
               Padding(
                 padding: const EdgeInsets.only(bottom: 35 / 2),
@@ -39,4 +40,7 @@ class HomePage extends StatelessWidget {
       );
     });
   }
+
+  void markerPlace(BuildContext context) =>
+      Navigator.of(context).pushNamed(AppRoute.marketplaces);
 }

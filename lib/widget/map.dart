@@ -97,6 +97,7 @@ class _MapViewState extends State<MapView> {
         mapController!.animateCamera(
           CameraUpdate.newLatLngBounds(routes!.bounds, 130),
         );
+
         return true;
       } else if (current is FindMeState) {
         _findMe();
@@ -137,8 +138,10 @@ class _MapViewState extends State<MapView> {
             pos = position;
           },
           onCameraIdle: () {
-            BlocProvider.of<SearchAddressBloc>(context)
-                .add(ChangeMapPosition(pos!.target));
+            if (pos != null) {
+              BlocProvider.of<SearchAddressBloc>(context)
+                  .add(ChangeMapPosition(pos!.target));
+            }
             if (state is SearchAddressRoutePolilyne) {
               mapController!.animateCamera(
                 CameraUpdate.newLatLngBounds(routes!.bounds, 130),

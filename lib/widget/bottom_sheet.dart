@@ -152,7 +152,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 focusNode: focusFrom,
                                 fillColor: Colors.grey[200],
                                 hintText: 'Откуда забрать?',
-                                enabled: !bloc.isPolilyne,
+                                // enabled: !bloc.isPolilyne,
                                 onFieldSubmitted: (text) {
                                   panelController.close();
                                   focusFrom.unfocus();
@@ -214,7 +214,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   panelController.close();
                                   focusTo.unfocus();
                                 },
-                                enabled: !bloc.isPolilyne,
+                                // enabled: !bloc.isPolilyne,
                                 focusNode: focusTo,
                                 fillColor: Colors.grey[200],
                                 hintText: 'Куда отвезти?',
@@ -261,7 +261,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             children: [
               const SizedBox(height: 10),
               SizedBox(
-                height: blocs.isPolilyne ? 80 : 215,
+                height:
+                    blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
+                        ? 80
+                        : 215,
                 child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   buildWhen: (previous, current) {
                     if (current is ChangeAddressSuccess) {
@@ -298,7 +301,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               ),
                             )
                           : Container();
-                    } else if (bloc.isPolilyne) {
+                    } else if (blocs.isPolilyne &&
+                        !focusFrom.hasFocus &&
+                        !focusTo.hasFocus) {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: listChoice.length,
@@ -361,7 +366,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 ),
               ),
               const SizedBox(height: 10),
-              if (blocs.isPolilyne)
+              if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
@@ -400,60 +405,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               StandartButton(
                   label: 'Да',
                   color: Colors.green,
-                  onTap: () => Navigator.pushNamed(context, AppRoute.auth).then(
-                        (value) {
-                          Navigator.of(context)
-                            ..pop()
-                            ..pushNamed(AppRoute.newOrder);
-                        },
-                      ))
+                  onTap: () => Navigator.of(context)
+                    ..pop()
+                    ..pushNamed(AppRoute.auth))
             ],
           );
         });
-    // await showDialog(
-    //   context: context,
-    //   builder: (context) {
-    //     return AlertDialog(
-    //       contentPadding: const EdgeInsets.all(20),
-    //       content: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           const Text('Хотите авторизоваться?',
-    //               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20)),
-    //           const SizedBox(height: 30),
-    //           Row(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             children: [
-    //               ElevatedButton(
-    //                   style: ButtonStyle(
-    //                       backgroundColor:
-    //                           MaterialStateProperty.all(Colors.grey[400])),
-    // onPressed: () => Navigator.of(context)
-    //   ..pop()
-    //   ..pushNamed(AppRoute.newOrder),
-    //                   child: const Text('Нет')),
-    //               const SizedBox(width: 10),
-    //               ElevatedButton(
-    //                   style: ButtonStyle(
-    //                       backgroundColor:
-    //                           MaterialStateProperty.all(Colors.red)),
-    //                   onPressed: () async {
-    // Navigator.pushNamed(context, AppRoute.auth).then(
-    //   (value) {
-    //     Navigator.of(context)
-    //       ..pop()
-    //       ..pushNamed(AppRoute.newOrder);
-    //   },
-    // );
-    //                   },
-    //                   child: const Text('Да'))
-    //             ],
-    //           )
-    //         ],
-    //       ),
-    //     );
-    //   },
-    // );
   }
 
   Container _pointCard(
@@ -471,8 +428,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
 
           if (toController.text.isNotEmpty && toController.text.isNotEmpty) {
-            BlocProvider.of<SearchAddressBloc>(context)
-                .add(SearchAddressPolilyne(toController.text));
+            BlocProvider.of<SearchAddressBloc>(context).add(
+                SearchAddressPolilyne(fromController.text, toController.text));
           } else {
             BlocProvider.of<SearchAddressBloc>(context).add(
               JumpToPointEvent(

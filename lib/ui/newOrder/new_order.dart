@@ -84,14 +84,16 @@ class _NewOrderPageState extends State<NewOrderPage> {
               ),
               BlocBuilder<NewOrderPageBloc, NewOrderState>(
                   buildWhen: (previous, current) {
-                if (current is NewOrderStatedOpenBtmSheet) {
+                if (current is NewOrderCloseBtmSheet) {
+                  btmSheet = false;
+                } else if (current is NewOrderStatedOpenBtmSheet) {
                   btmSheet = true;
                 } else if (current is NewOrderStateCloseBtmSheet) {
                   btmSheet = false;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    routeOrderSender.add(RouteOrder(adress: current.value));
+                    routeOrderSender.add(RouteOrder(adress: current.value!));
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    routeOrderReceiver.add(RouteOrder(adress: current.value));
+                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
                   }
                 }
 
@@ -114,7 +116,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         EdgeInsets.only(left: 8.0, bottom: 8),
                                     child: Text(
                                       'Отправитель',
-                                      style: CustomTextStyle.grey15bold,
+                                      style: CustomTextStyle.black15w500,
                                     ),
                                   ),
                                   ListView.builder(
@@ -190,7 +192,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   //         style: CustomTextStyle.grey14w400)
                                   //   ],
                                   // ),
-                                  const SizedBox(height: 20),
+                                  // const SizedBox(height: 5),
                                   GestureDetector(
                                     onTap: () {
                                       typeAdd = TypeAdd.sender;
@@ -209,8 +211,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           'Добавить отправителя',
                                           style: CustomTextStyle.black15w500
                                               .copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  letterSpacing: 1),
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -226,7 +228,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         EdgeInsets.only(left: 8.0, bottom: 8),
                                     child: Text(
                                       'Получатель',
-                                      style: CustomTextStyle.grey15bold,
+                                      style: CustomTextStyle.black15w500,
                                     ),
                                   ),
                                   ListView.builder(
@@ -303,7 +305,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   //         style: CustomTextStyle.grey14w400)
                                   //   ],
                                   // ),
-                                  const SizedBox(height: 20),
+                                  // const SizedBox(height: 20),
                                   GestureDetector(
                                     onTap: () {
                                       typeAdd = TypeAdd.receiver;
@@ -322,8 +324,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           'Добавить получателя',
                                           style: CustomTextStyle.black15w500
                                               .copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  letterSpacing: 1),
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -335,10 +337,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 children: [
                                   const Padding(
                                     padding:
-                                        EdgeInsets.only(left: 8.0, top: 20),
+                                        EdgeInsets.only(left: 8.0, top: 10),
                                     child: Text(
                                       'Что везем?',
-                                      style: CustomTextStyle.grey15bold,
+                                      style: CustomTextStyle.black15w500,
                                     ),
                                   ),
                                   CustomTextField(
@@ -354,10 +356,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 children: [
                                   const Padding(
                                     padding:
-                                        EdgeInsets.only(left: 8.0, top: 20),
+                                        EdgeInsets.only(left: 8.0, top: 10),
                                     child: Text(
                                       'Ценность вашего груза?',
-                                      style: CustomTextStyle.grey15bold,
+                                      style: CustomTextStyle.black15w500,
                                     ),
                                   ),
                                   CustomTextField(
@@ -455,8 +457,20 @@ class _NewOrderPageState extends State<NewOrderPage> {
                         ),
                       ),
                       btmSheet
-                          ? AddAdressBottomSheetDraggable(
-                              typeAdd: typeAdd!,
+                          ? Stack(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        BlocProvider.of<NewOrderPageBloc>(
+                                                context)
+                                            .add(NewOrderCloseBtmSheetEvent()),
+                                  ),
+                                ),
+                                AddAdressBottomSheetDraggable(
+                                  typeAdd: typeAdd!,
+                                ),
+                              ],
                             )
                           : const SizedBox()
                     ],

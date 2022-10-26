@@ -22,6 +22,17 @@ class _MainAuthPageState extends State<MainAuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        leading: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -88,8 +99,4 @@ class _MainAuthPageState extends State<MainAuthPage> {
       ),
     );
   }
-
-  void next() => pageController.jumpToPage(0);
-
-  void prev() => pageController.jumpToPage(2);
 }

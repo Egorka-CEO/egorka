@@ -41,6 +41,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
     RouteOrder(adress: 'москва солнечная 6'),
   ];
 
+  TextEditingController fromController = TextEditingController();
+
   PanelController panelController = PanelController();
   bool btmSheet = false;
   TypeAdd? typeAdd;
@@ -320,8 +322,12 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       typeAdd = TypeAdd.receiver;
                                       BlocProvider.of<NewOrderPageBloc>(context)
                                           .add(NewOrderOpenBtmSheet());
-                                      panelController.close();
-                                      panelController.open();
+                                      panelController.animatePanelToPosition(1,
+                                          curve: Curves.easeInOutQuint,
+                                          duration:
+                                              Duration(milliseconds: 1000));
+                                      // panelController.close();
+                                      // panelController.open();
                                     },
                                     child: Container(
                                       height: 50,
@@ -488,8 +494,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
                         collapsed: Container(),
                         panel: AddAdressBottomSheetDraggable(
                           typeAdd: typeAdd,
+                          fromController: fromController,
+                          panelController: panelController,
                         ),
                         onPanelClosed: () {
+                          fromController.text = '';
                           // focusFrom.unfocus();
                           // focusTo.unfocus();
                           // _visible = false;

@@ -10,10 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AddAdressBottomSheetDraggable extends StatefulWidget {
+  TextEditingController fromController;
+  PanelController panelController;
   TypeAdd? typeAdd;
   AddAdressBottomSheetDraggable({
     Key? key,
     required this.typeAdd,
+    required this.fromController,
+    required this.panelController,
   });
 
   @override
@@ -22,11 +26,11 @@ class AddAdressBottomSheetDraggable extends StatefulWidget {
 }
 
 class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
-  final TextEditingController fromController = TextEditingController();
+  // final TextEditingController fromController = TextEditingController();
 
   FocusNode focusFrom = FocusNode();
 
-  PanelController panelController = PanelController();
+  // PanelController panelController = PanelController();
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
@@ -107,7 +111,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                           Expanded(
                             child: CustomTextField(
                               onTap: () {
-                                panelController.open();
+                                // panelController.open();
                                 Future.delayed(
                                     const Duration(milliseconds: 300), () {
                                   focusFrom.requestFocus();
@@ -117,10 +121,10 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                               fillColor: Colors.grey[200],
                               hintText: 'Откуда забрать?',
                               onFieldSubmitted: (text) {
-                                panelController.close();
+                                // panelController.close();
                                 focusFrom.unfocus();
                               },
-                              textEditingController: fromController,
+                              textEditingController: widget.fromController,
                               onChanged: (value) {
                                 bloc.add(NewOrder(value));
                               },
@@ -200,7 +204,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                   state.address!.result.suggestions![index].name));
 
           focusFrom.unfocus();
-          panelController.close();
+          widget.panelController.close();
         },
         child: Row(
           children: [

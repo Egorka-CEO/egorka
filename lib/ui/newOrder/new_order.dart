@@ -52,7 +52,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
         ),
       ],
       child: Material(
-        color: Colors.grey[200],
+        color: Colors.white,
         child: SafeArea(
           bottom: false,
           child: Column(
@@ -124,7 +124,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: routeOrderSender.length,
-                                    itemBuilder: ((context, index) {
+                                    itemBuilder: (context, index) {
                                       return Padding(
                                         padding:
                                             const EdgeInsets.only(bottom: 10.0),
@@ -132,9 +132,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           padding: const EdgeInsets.all(10.0),
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                                color: Colors.grey[300]!),
+                                              color: Colors.grey[200]!,
+                                            ),
                                             borderRadius:
-                                                BorderRadius.circular(20),
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Column(
                                             children: [
@@ -177,7 +178,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           ),
                                         ),
                                       );
-                                    }),
+                                    },
                                   ),
                                   // Column(
                                   //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,9 +204,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       height: 50,
                                       decoration: BoxDecoration(
                                           border: Border.all(
-                                              color: Colors.grey[300]!),
+                                            color: Colors.grey[200]!,
+                                          ),
                                           borderRadius:
-                                              BorderRadius.circular(15)),
+                                              BorderRadius.circular(10)),
                                       child: Center(
                                         child: Text(
                                           'Добавить отправителя',
@@ -244,9 +246,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           padding: const EdgeInsets.all(10.0),
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                                color: Colors.grey[300]!),
+                                              color: Colors.grey[200]!,
+                                            ),
                                             borderRadius:
-                                                BorderRadius.circular(20),
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Column(
                                             children: [
@@ -315,10 +318,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                     child: Container(
                                       height: 50,
                                       decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey[300]!),
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
+                                        border: Border.all(
+                                          color: Colors.grey[200]!,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                       child: Center(
                                         child: Text(
                                           'Добавить получателя',
@@ -380,7 +384,20 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           height: 200,
                           padding: const EdgeInsets.only(bottom: 40),
                           width: MediaQuery.of(context).size.width,
-                          color: Colors.white,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15),
+                              topLeft: Radius.circular(15),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                                color: Colors.black12,
+                              ),
+                            ],
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,

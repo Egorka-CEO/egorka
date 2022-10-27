@@ -402,17 +402,23 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             message: 'Хотите авторизоваться?',
             buttons: [
               StandartButton(
-                  label: 'Нет',
-                  color: Colors.red.withOpacity(0.9),
-                  onTap: () => Navigator.of(context)
-                    ..pop()
-                    ..pushNamed(AppRoute.newOrder)),
+                label: 'Нет',
+                color: Colors.red.withOpacity(0.9),
+                onTap: () => Navigator.of(context)
+                  ..pop()
+                  ..pushNamed(AppRoute.newOrder),
+              ),
               StandartButton(
-                  label: 'Да',
-                  color: Colors.green,
-                  onTap: () => Navigator.of(context)
-                    ..pop()
-                    ..pushNamed(AppRoute.auth))
+                label: 'Да',
+                color: Colors.green,
+                onTap: () => Navigator.pushNamed(context, AppRoute.auth).then(
+                  (value) {
+                    Navigator.of(context)
+                      ..pop()
+                      ..pushNamed(AppRoute.newOrder);
+                  },
+                ),
+              )
             ],
           );
         });

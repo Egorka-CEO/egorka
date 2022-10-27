@@ -57,10 +57,10 @@ class CustomWidget {
         ),
       );
 
-  static Widget iconGPSSmall() => const Center(
+  static Widget iconGPSSmall({Color? color}) => Center(
         child: Icon(
           Icons.location_pin,
-          color: Colors.red,
+          color: color ?? Colors.red,
           size: 25,
         ),
       );

@@ -227,7 +227,10 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                 flex: 1,
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: CustomWidget.iconGPSSmall())),
+                    child: CustomWidget.iconGPSSmall(
+                        color: widget.typeAdd == TypeAdd.sender
+                            ? Colors.red
+                            : Colors.blue))),
             const SizedBox(width: 15),
             Expanded(
               flex: 10,

@@ -3,6 +3,7 @@ import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -34,6 +35,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   final streamDelivery = StreamController<int>();
 
   bool _visible = false;
+
+  TypeAdd? typeAdd;
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
@@ -142,6 +145,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 onTap: () {
+                                  typeAdd = TypeAdd.sender;
                                   panelController.open();
                                   Future.delayed(
                                       const Duration(milliseconds: 300), () {
@@ -203,6 +207,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 onTap: () {
+                                  typeAdd = TypeAdd.receiver;
                                   panelController.open();
                                   bloc.add(SearchAddressClear());
                                   Future.delayed(
@@ -448,7 +453,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 flex: 1,
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: CustomWidget.iconGPSSmall())),
+                    child: CustomWidget.iconGPSSmall(
+                        color: typeAdd == TypeAdd.sender
+                            ? Colors.red
+                            : Colors.blue))),
             const SizedBox(width: 15),
             Expanded(
               flex: 10,

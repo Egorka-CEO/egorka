@@ -7,6 +7,7 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 enum TypeAdd { sender, receiver }
 
@@ -40,6 +41,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
     RouteOrder(adress: 'москва солнечная 6'),
   ];
 
+  PanelController panelController = PanelController();
   bool btmSheet = false;
   TypeAdd? typeAdd;
 
@@ -199,6 +201,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       typeAdd = TypeAdd.sender;
                                       BlocProvider.of<NewOrderPageBloc>(context)
                                           .add(NewOrderOpenBtmSheet());
+                                      panelController.animatePanelToPosition(1,
+                                          curve: Curves.easeInOutQuint,
+                                          duration:
+                                              Duration(milliseconds: 1000));
                                     },
                                     child: Container(
                                       height: 50,
@@ -314,6 +320,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       typeAdd = TypeAdd.receiver;
                                       BlocProvider.of<NewOrderPageBloc>(context)
                                           .add(NewOrderOpenBtmSheet());
+                                      panelController.close();
+                                      panelController.open();
                                     },
                                     child: Container(
                                       height: 50,
@@ -473,23 +481,35 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           ),
                         ),
                       ),
-                      btmSheet
-                          ? Stack(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () =>
-                                        BlocProvider.of<NewOrderPageBloc>(
-                                                context)
-                                            .add(NewOrderCloseBtmSheetEvent()),
-                                  ),
-                                ),
-                                AddAdressBottomSheetDraggable(
-                                  typeAdd: typeAdd!,
-                                ),
-                              ],
-                            )
-                          : const SizedBox()
+                      SlidingUpPanel(
+                        controller: panelController,
+                        renderPanelSheet: false,
+                        isDraggable: true,
+                        collapsed: Container(),
+                        panel: AddAdressBottomSheetDraggable(
+                          typeAdd: typeAdd,
+                        ),
+                        onPanelClosed: () {
+                          // focusFrom.unfocus();
+                          // focusTo.unfocus();
+                          // _visible = false;
+                        },
+                        onPanelOpened: () {
+                          // _visible = true;
+                          // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
+                          //   panelController.close();
+                          // }
+                        },
+                        onPanelSlide: (size) {
+                          // if (size.toStringAsFixed(1) == (0.5).toString()) {
+                          //   focusFrom.unfocus();
+                          //   focusTo.unfocus();
+                          // }
+                        },
+                        maxHeight: 700,
+                        minHeight: 0,
+                        defaultPanelState: PanelState.CLOSED,
+                      ),
                     ],
                   ),
                 );

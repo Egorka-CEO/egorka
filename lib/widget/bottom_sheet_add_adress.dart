@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AddAdressBottomSheetDraggable extends StatefulWidget {
-  TypeAdd typeAdd;
+  TypeAdd? typeAdd;
   AddAdressBottomSheetDraggable({
     Key? key,
     required this.typeAdd,
@@ -41,27 +41,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   Widget build(BuildContext context) {
     return BlocBuilder<NewOrderPageBloc, NewOrderState>(
         builder: (context, snapshot) {
-      return SlidingUpPanel(
-        controller: panelController,
-        renderPanelSheet: false,
-        panel: _floatingPanel(context),
-        onPanelClosed: () {
-          focusFrom.unfocus();
-        },
-        onPanelOpened: () {
-          if (!focusFrom.hasFocus) {
-            panelController.close();
-          }
-        },
-        onPanelSlide: (size) {
-          if (size.toStringAsFixed(1) == (0.5).toString()) {
-            focusFrom.unfocus();
-          }
-        },
-        maxHeight: 735,
-        minHeight: 350,
-        defaultPanelState: PanelState.CLOSED,
-      );
+      return _floatingPanel(context);
     });
   }
 
@@ -100,61 +80,62 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
               ),
             ),
           ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.grey[200],
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: false,
-                          fillColor: MaterialStateProperty.all(
-                              widget.typeAdd == TypeAdd.sender
-                                  ? Colors.red
-                                  : Colors.blue),
-                          shape: const CircleBorder(),
-                          onChanged: ((value) {}),
-                        ),
-                        Expanded(
-                          child: CustomTextField(
-                            onTap: () {
-                              panelController.open();
-                              Future.delayed(const Duration(milliseconds: 300),
-                                  () {
-                                focusFrom.requestFocus();
-                              });
-                            },
-                            focusNode: focusFrom,
-                            fillColor: Colors.grey[200],
-                            hintText: 'Откуда забрать?',
-                            onFieldSubmitted: (text) {
-                              panelController.close();
-                              focusFrom.unfocus();
-                            },
-                            textEditingController: fromController,
-                            onChanged: (value) {
-                              bloc.add(NewOrder(value));
-                            },
+          if (widget.typeAdd != null)
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.grey[200],
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: false,
+                            fillColor: MaterialStateProperty.all(
+                                widget.typeAdd == TypeAdd.sender
+                                    ? Colors.red
+                                    : Colors.blue),
+                            shape: const CircleBorder(),
+                            onChanged: ((value) {}),
                           ),
-                        ),
-                        const SizedBox(width: 15),
-                      ],
+                          Expanded(
+                            child: CustomTextField(
+                              onTap: () {
+                                panelController.open();
+                                Future.delayed(
+                                    const Duration(milliseconds: 300), () {
+                                  focusFrom.requestFocus();
+                                });
+                              },
+                              focusNode: focusFrom,
+                              fillColor: Colors.grey[200],
+                              hintText: 'Откуда забрать?',
+                              onFieldSubmitted: (text) {
+                                panelController.close();
+                                focusFrom.unfocus();
+                              },
+                              textEditingController: fromController,
+                              onChanged: (value) {
+                                bloc.add(NewOrder(value));
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              _searchList(),
-            ],
-          ),
+                const SizedBox(height: 15),
+                _searchList(),
+              ],
+            ),
         ],
       ),
     );

@@ -21,7 +21,7 @@ class AppRoute {
       case currentOrder:
         return MaterialPageRoute(builder: (_) => const CurrentOrderPage());
       case marketplaces:
-        return MaterialPageRoute(builder: (_) => const MarketPage());
+        return MaterialPageRoute(builder: (_) => MarketPage());
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:

@@ -71,13 +71,15 @@ class _NewOrderPageState extends State<NewOrderPage> {
                         children: [
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
-                            child: const Text('Отмена',
-                                style: CustomTextStyle.red15),
+                            child: Text('Отмена',
+                                style: CustomTextStyle.red15
+                                    .copyWith(fontSize: 17)),
                           ),
-                          const Align(
+                          Align(
                             child: Text(
                               'Оформление заказа',
-                              style: CustomTextStyle.black15w500,
+                              style: CustomTextStyle.black15w500.copyWith(
+                                  fontSize: 17, fontWeight: FontWeight.w700),
                             ),
                           )
                         ],
@@ -120,7 +122,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         EdgeInsets.only(left: 8.0, bottom: 8),
                                     child: Text(
                                       'Отправитель',
-                                      style: CustomTextStyle.black15w500,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                   ListView.builder(
@@ -155,7 +159,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                       routeOrderSender[index]
                                                           .adress,
                                                       style: CustomTextStyle
-                                                          .black15w500,
+                                                          .black15w500
+                                                          .copyWith(
+                                                              fontSize: 16),
                                                     ),
                                                   ),
                                                 ],
@@ -169,10 +175,13 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                     color: Colors.grey[400],
                                                   ),
                                                   const SizedBox(width: 15),
-                                                  const Text(
+                                                  Text(
                                                     'Указать детали',
-                                                    style:
-                                                        CustomTextStyle.red15,
+                                                    style: CustomTextStyle.red15
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   )
@@ -238,7 +247,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         EdgeInsets.only(left: 8.0, bottom: 8),
                                     child: Text(
                                       'Получатель',
-                                      style: CustomTextStyle.black15w500,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                   ListView.builder(
@@ -272,7 +283,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                     routeOrderReceiver[index]
                                                         .adress,
                                                     style: CustomTextStyle
-                                                        .black15w500,
+                                                        .black15w500
+                                                        .copyWith(fontSize: 16),
                                                   ),
                                                 ],
                                               ),
@@ -290,10 +302,13 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                     color: Colors.grey[400],
                                                   ),
                                                   const SizedBox(width: 15),
-                                                  const Text(
+                                                  Text(
                                                     'Указать детали',
-                                                    style:
-                                                        CustomTextStyle.red15,
+                                                    style: CustomTextStyle.red15
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
                                                   )
                                                 ],
                                               ),
@@ -358,10 +373,21 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         EdgeInsets.only(left: 8.0, top: 10),
                                     child: Text(
                                       'Что везем?',
-                                      style: CustomTextStyle.black15w500,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                   CustomTextField(
+                                    height: 50,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    hintStyle: const TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                     hintText:
                                         'Документы / Цветы / Техника / Личная вещь',
                                     textEditingController:
@@ -377,10 +403,21 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         EdgeInsets.only(left: 8.0, top: 10),
                                     child: Text(
                                       'Ценность вашего груза?',
-                                      style: CustomTextStyle.black15w500,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                   CustomTextField(
+                                    height: 50,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    hintStyle: const TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                     hintText: 'До 100000 ₽',
                                     textEditingController:
                                         TextEditingController(),

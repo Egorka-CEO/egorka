@@ -25,7 +25,10 @@ class CustomTextField extends StatelessWidget {
   final String? prefixText;
   final bool? enabled;
   final Color? fillColor;
-  const CustomTextField(
+  double? height;
+  TextStyle? hintStyle;
+  EdgeInsets? contentPadding;
+  CustomTextField(
       {Key? key,
       this.onTap,
       this.readOnly,
@@ -49,16 +52,30 @@ class CustomTextField extends StatelessWidget {
       this.prefixicon,
       this.prefixText,
       this.enabled,
-      this.fillColor})
+      this.fillColor,
+      this.hintStyle,
+      this.height,
+      this.contentPadding})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Color hintTextColor = Colors.grey;
+    height = height ?? 75;
+    hintStyle = hintStyle ??
+        TextStyle(
+          overflow: TextOverflow.ellipsis,
+          fontSize: 14,
+          color: hintTextColor,
+          fontWeight: FontWeight.w400,
+        );
+
+    contentPadding =
+        contentPadding ?? EdgeInsets.symmetric(vertical: 20, horizontal: 20);
 
     var widthOfScreen = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: 75,
+      height: height,
       width: widthOfScreen,
       child: Center(
         child: TextFormField(
@@ -97,8 +114,7 @@ class CustomTextField extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
             errorStyle: const TextStyle(fontSize: 10.0),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            contentPadding: contentPadding,
             filled: true,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -130,12 +146,7 @@ class CustomTextField extends StatelessWidget {
               width: 0.0,
               style: BorderStyle.solid,
             )),
-            hintStyle: TextStyle(
-              overflow: TextOverflow.ellipsis,
-              fontSize: 14,
-              color: hintTextColor,
-              fontWeight: FontWeight.w400,
-            ),
+            hintStyle: hintStyle,
             hintText: hintText,
           ),
         ),

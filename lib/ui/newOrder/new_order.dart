@@ -433,7 +433,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                         alignment: Alignment.bottomCenter,
                         child: Container(
                           height: 200,
-                          padding: const EdgeInsets.only(bottom: 40),
+                          padding: const EdgeInsets.only(bottom: 10),
                           width: MediaQuery.of(context).size.width,
                           decoration: const BoxDecoration(
                             color: Colors.white,
@@ -452,57 +452,81 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
-                              vertical: 10,
+                              vertical: 20,
                             ),
                             child: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/ic_leg.png',
-                                      color: Colors.red,
-                                      height: 90,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: const [
-                                        Text(
-                                          'Пеший',
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                        Text(
-                                          '1900 ₽',
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const Text(
-                                      '}',
-                                      style: TextStyle(
-                                        fontSize: 60,
-                                        fontWeight: FontWeight.w200,
+                                SizedBox(
+                                  // height: 7,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/ic_leg.png',
+                                        color: Colors.red,
+                                        height: 80,
                                       ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: const [
-                                        Text('400 ₽ доставка'),
-                                        Text('0 ₽ доп. услуги'),
-                                        Text('11 ₽ сбор-плат. сист.'),
-                                      ],
-                                    ),
-                                  ],
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: const [
+                                          Text(
+                                            'Пеший',
+                                            style: TextStyle(
+                                              fontSize: 19,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Text(
+                                            '1900 ₽',
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Center(
+                                        child: Text(
+                                          '}',
+                                          style: TextStyle(
+                                            height: 1,
+                                            fontSize: 60,
+                                            fontWeight: FontWeight.w200,
+                                          ),
+                                        ),
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: const [
+                                          Text(
+                                            '400 ₽ доставка',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          SizedBox(height: 3),
+                                          Text('0 ₽ доп. услуги',
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500)),
+                                          SizedBox(height: 3),
+                                          Text('11 ₽ сбор-плат. сист.',
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                SizedBox(height: 20),
                                 GestureDetector(
                                   child: Container(
                                     height: 50,
@@ -514,7 +538,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       child: Text(
                                         'ОПЛАТИТЬ ЗАКАЗ',
                                         style: CustomTextStyle.white15w600
-                                            .copyWith(letterSpacing: 3),
+                                            .copyWith(
+                                                letterSpacing: 1,
+                                                fontWeight: FontWeight.w500),
                                       ),
                                     ),
                                   ),

@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
@@ -17,6 +18,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<SearchAddressBloc>(
           create: (context) => SearchAddressBloc(),
+        ),
+        BlocProvider<HistoryOrdersBloc>(
+          create: (context) => HistoryOrdersBloc(),
         ),
       ],
       child: const MaterialApp(

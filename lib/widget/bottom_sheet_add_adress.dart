@@ -26,11 +26,7 @@ class AddAdressBottomSheetDraggable extends StatefulWidget {
 }
 
 class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
-  // final TextEditingController fromController = TextEditingController();
-
   FocusNode focusFrom = FocusNode();
-
-  // PanelController panelController = PanelController();
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),

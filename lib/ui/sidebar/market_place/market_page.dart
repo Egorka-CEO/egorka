@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/route_order.dart';
@@ -8,9 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class MarketPage extends StatelessWidget {
-  MarketPage({super.key});
+class MarketPage extends StatefulWidget {
+  const MarketPage({super.key});
+
+  @override
+  State<MarketPage> createState() => _MarketPageState();
+}
+
+class _MarketPageState extends State<MarketPage> {
   bool btmSheet = false;
+
   TypeAdd? typeAdd;
 
   List<RouteOrder> routeOrderSender = [
@@ -24,9 +33,21 @@ class MarketPage extends StatelessWidget {
   TextEditingController controller = TextEditingController();
 
   TextEditingController fromController = TextEditingController();
+
   TextEditingController toController = TextEditingController();
 
   PanelController panelController = PanelController();
+
+  final bucketController = StreamController<int>();
+  final palletController = StreamController<int>();
+
+  @override
+  void dispose() {
+    bucketController.close();
+    palletController.close();
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,9 +290,12 @@ class MarketPage extends StatelessWidget {
                               const SizedBox(height: 30),
                               Row(
                                 children: const [
-                                  Text(
-                                    'Оформить доставку до Маркетплейса на завтра\nможно строго до 15:00.',
-                                    style: CustomTextStyle.grey15,
+                                  Expanded(
+                                    child: Text(
+                                      'Оформить доставку до Маркетплейса на завтра можно строго до 15:00.',
+                                      style: CustomTextStyle.grey15,
+                                      textAlign: TextAlign.justify,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -316,31 +340,43 @@ class MarketPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      hintText: '0',
-                                      textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(text: '0'),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Icon(
-                                    Icons.help_outline_outlined,
-                                    color: Colors.red,
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Slider(
-                                      thumbColor: Colors.red,
-                                      value: 0,
-                                      onChanged: (value) {},
-                                    ),
-                                  )
-                                ],
-                              ),
+                              StreamBuilder<int>(
+                                  stream: bucketController.stream,
+                                  initialData: 32,
+                                  builder: (context, snapshot) {
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                            hintText: '0',
+                                            textInputType: TextInputType.number,
+                                            textEditingController:
+                                                TextEditingController(
+                                                    text: snapshot.data!
+                                                        .toString()),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        const Icon(
+                                          Icons.help_outline_outlined,
+                                          color: Colors.red,
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Slider(
+                                            min: 1,
+                                            max: 50,
+                                            thumbColor: Colors.red,
+                                            value: snapshot.data!.toDouble(),
+                                            onChanged: (value) {
+                                              bucketController
+                                                  .add(value.toInt());
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  }),
                               const SizedBox(height: 20),
                               Row(
                                 children: const [
@@ -350,31 +386,43 @@ class MarketPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      hintText: '0',
-                                      textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(text: '0'),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Icon(
-                                    Icons.help_outline_outlined,
-                                    color: Colors.red,
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Slider(
-                                      thumbColor: Colors.red,
-                                      value: 0,
-                                      onChanged: (value) {},
-                                    ),
-                                  )
-                                ],
-                              ),
+                              StreamBuilder<int>(
+                                  stream: palletController.stream,
+                                  initialData: 16,
+                                  builder: (context, snapshot) {
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                            hintText: '0',
+                                            textInputType: TextInputType.number,
+                                            textEditingController:
+                                                TextEditingController(
+                                                    text: snapshot.data!
+                                                        .toString()),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        const Icon(
+                                          Icons.help_outline_outlined,
+                                          color: Colors.red,
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Slider(
+                                            min: 1,
+                                            max: 50,
+                                            thumbColor: Colors.red,
+                                            value: snapshot.data!.toDouble(),
+                                            onChanged: (value) {
+                                              palletController
+                                                  .add(value.toInt());
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  }),
                               const SizedBox(height: 210)
                             ],
                           ),

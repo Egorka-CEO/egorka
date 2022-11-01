@@ -5,6 +5,7 @@ import 'package:egorka/ui/sidebar/about/about_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
 import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
+import 'package:egorka/ui/sidebar/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRoute {
@@ -15,6 +16,7 @@ class AppRoute {
   static const auth = '/auth';
   static const newOrder = '/newOrder';
   static const historyOrder = '/history';
+  static const profile = '/profile';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
@@ -23,7 +25,7 @@ class AppRoute {
       case currentOrder:
         return MaterialPageRoute(builder: (_) => const CurrentOrderPage());
       case marketplaces:
-        return MaterialPageRoute(builder: (_) => MarketPage());
+        return MaterialPageRoute(builder: (_) => const MarketPage());
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
@@ -32,6 +34,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const NewOrderPage());
       case historyOrder:
         return MaterialPageRoute(builder: (_) => const HistoryOrdersPage());
+      case profile:
+        return MaterialPageRoute(builder: (_) => ProfilePage());
       default:
         return null;
     }

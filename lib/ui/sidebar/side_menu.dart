@@ -25,6 +25,14 @@ class NavBar extends StatelessWidget {
                 ),
                 const Divider(height: 30),
                 GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, AppRoute.profile),
+                  child: const Text(
+                    'Профиль',
+                    style: CustomTextStyle.black15w500,
+                  ),
+                ),
+                const Divider(height: 30),
+                GestureDetector(
                   onTap: () =>
                       Navigator.pushNamed(context, AppRoute.currentOrder),
                   child: const Text(

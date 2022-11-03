@@ -1,5 +1,6 @@
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
+import 'package:egorka/ui/home/test.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/ui/sidebar/about/about_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
@@ -17,9 +18,12 @@ class AppRoute {
   static const newOrder = '/newOrder';
   static const historyOrder = '/history';
   static const profile = '/profile';
+  static const test = '/test';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
+      case test:
+        return MaterialPageRoute(builder: (_) => PhotoHero());
       case home:
         return MaterialPageRoute(builder: (_) => HomePage());
       case currentOrder:

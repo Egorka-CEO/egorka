@@ -14,7 +14,13 @@ class CustomWidget {
               builder: (context) {
                 return GestureDetector(
                   onTap: () => Scaffold.of(context).openDrawer(),
-                  child: const Icon(Icons.menu, size: 35, color: Colors.white),
+                  child: Hero(
+                    tag: 'logo',
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 50,
+                    ),
+                  ),
                 );
               },
             ),

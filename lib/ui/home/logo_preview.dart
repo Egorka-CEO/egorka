@@ -1,8 +1,7 @@
-import 'package:egorka/helpers/router.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:flutter/material.dart';
 
-class PhotoHero extends StatelessWidget {
+class LogoPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     goHomePage(context);
     return Material(

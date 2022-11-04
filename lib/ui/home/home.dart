@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  int duration = 2;
+  int duration = 1;
   double hight = 0;
 
   bool initHeight = true;

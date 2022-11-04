@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: AppRoute.logoPreview,
+        initialRoute: AppRoute.home,
         onGenerateRoute: AppRoute.onGenerateRoute,
       ),
     );

@@ -23,49 +23,75 @@ class NavBar extends StatelessWidget {
                   width: 100,
                   height: 30,
                 ),
-                const Divider(height: 30),
+                const SizedBox(height: 30),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.asset(
+                        'assets/images/company.jpg',
+                        height: 80,
+                        width: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Иванов Дмитрий Игоревич, ИП',
+                          style: CustomTextStyle.black15w500
+                              .copyWith(fontSize: 17),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(height: 50),
                 GestureDetector(
                   onTap: () => Navigator.pushNamed(context, AppRoute.profile),
-                  child: const Text(
+                  child: Text(
                     'Профиль',
-                    style: CustomTextStyle.black15w500,
+                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
                   ),
                 ),
-                const Divider(height: 30),
+                const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () =>
                       Navigator.pushNamed(context, AppRoute.currentOrder),
-                  child: const Text(
+                  child: Text(
                     'Текущий заказ',
-                    style: CustomTextStyle.black15w500,
+                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
                   ),
                 ),
-                const Divider(height: 30),
+                const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () {
                     BlocProvider.of<HistoryOrdersBloc>(context)
                         .add(OpenBtmSheetHistoryEvent());
                   },
-                  child: const Text(
+                  child: Text(
                     'История заказов',
-                    style: CustomTextStyle.black15w500,
+                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
                   ),
                 ),
-                const Divider(height: 30),
+                const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () =>
                       Navigator.pushNamed(context, AppRoute.marketplaces),
-                  child: const Text(
+                  child: Text(
                     'Маркетплейсы',
-                    style: CustomTextStyle.black15w500,
+                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
                   ),
                 ),
-                const Divider(height: 30),
+                const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () => Navigator.pushNamed(context, AppRoute.about),
-                  child: const Text(
+                  child: Text(
                     'О приложении',
-                    style: CustomTextStyle.black15w500,
+                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
                   ),
                 )
               ],

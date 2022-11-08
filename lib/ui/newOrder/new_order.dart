@@ -57,37 +57,49 @@ class _NewOrderPageState extends State<NewOrderPage> {
       ],
       child: Material(
         color: Colors.white,
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Stack(
-                        alignment: Alignment.centerRight,
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Text('Отмена',
-                                style: CustomTextStyle.red15
-                                    .copyWith(fontSize: 17)),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            shadowColor: Colors.black.withOpacity(0.5),
+            leading: SizedBox(),
+            flexibleSpace: Column(
+              children: [
+                Spacer(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.centerRight,
+                            children: [
+                              GestureDetector(
+                                onTap: () => Navigator.pop(context),
+                                child: Text('Отмена',
+                                    style: CustomTextStyle.red15
+                                        .copyWith(fontSize: 17)),
+                              ),
+                              Align(
+                                child: Text(
+                                  'Оформление заказа',
+                                  style: CustomTextStyle.black15w500.copyWith(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              )
+                            ],
                           ),
-                          Align(
-                            child: Text(
-                              'Оформление заказа',
-                              style: CustomTextStyle.black15w500.copyWith(
-                                  fontSize: 17, fontWeight: FontWeight.w700),
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
+            ),
+          ),
+          body: Column(
+            children: [
               BlocBuilder<NewOrderPageBloc, NewOrderState>(
                   buildWhen: (previous, current) {
                 if (current is NewOrderCloseBtmSheet) {
@@ -117,6 +129,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  const SizedBox(height: 15),
                                   const Padding(
                                     padding:
                                         EdgeInsets.only(left: 8.0, bottom: 8),
@@ -132,81 +145,62 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: routeOrderSender.length,
+                                    padding: EdgeInsets.all(0),
                                     itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 10.0),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.grey[200]!,
+                                      return Container(
+                                        padding: const EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey[200]!,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/from.png',
+                                                  height: 25,
+                                                ),
+                                                const SizedBox(width: 15),
+                                                Flexible(
+                                                  child: Text(
+                                                    routeOrderSender[index]
+                                                        .adress,
+                                                    style: CustomTextStyle
+                                                        .black15w500
+                                                        .copyWith(fontSize: 16),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/images/from.png',
-                                                    height: 25,
-                                                  ),
-                                                  const SizedBox(width: 15),
-                                                  Flexible(
-                                                    child: Text(
-                                                      routeOrderSender[index]
-                                                          .adress,
-                                                      style: CustomTextStyle
-                                                          .black15w500
-                                                          .copyWith(
-                                                              fontSize: 16),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 15),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons
-                                                        .arrow_downward_rounded,
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  const SizedBox(width: 15),
-                                                  Text(
-                                                    'Указать детали',
-                                                    style: CustomTextStyle.red15
-                                                        .copyWith(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                            const SizedBox(height: 15),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.arrow_downward_rounded,
+                                                  color: Colors.grey[400],
+                                                ),
+                                                const SizedBox(width: 15),
+                                                Text(
+                                                  'Указать детали',
+                                                  style: CustomTextStyle.red15
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                )
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       );
                                     },
                                   ),
-                                  // Column(
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: [
-                                  //     Text('Имя: ${sender.secondName}',
-                                  //         style: CustomTextStyle.grey14w400),
-                                  //     Text('Фамилия: ${sender.firstName}',
-                                  //         style: CustomTextStyle.grey14w400),
-                                  //     Text('Телефон: ${sender.phone}',
-                                  //         style: CustomTextStyle.grey14w400),
-                                  //     Text('Адрес: ${sender.address}',
-                                  //         style: CustomTextStyle.grey14w400)
-                                  //   ],
-                                  // ),
-                                  // const SizedBox(height: 5),
+                                  const SizedBox(height: 10),
                                   GestureDetector(
                                     onTap: () {
                                       typeAdd = TypeAdd.sender;
@@ -218,13 +212,13 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                               Duration(milliseconds: 1000));
                                     },
                                     child: Container(
-                                      height: 50,
+                                      height: 40,
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                             color: Colors.grey[200]!,
                                           ),
                                           borderRadius:
-                                              BorderRadius.circular(10)),
+                                              BorderRadius.circular(15)),
                                       child: Center(
                                         child: Text(
                                           'Добавить отправителя',
@@ -257,81 +251,64 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: routeOrderReceiver.length,
+                                    padding: EdgeInsets.all(0),
                                     itemBuilder: ((context, index) {
-                                      return Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 10.0),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.grey[200]!,
+                                      return Container(
+                                        padding: const EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.grey[200]!,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/to.png',
+                                                  height: 25,
+                                                ),
+                                                const SizedBox(width: 15),
+                                                Text(
+                                                  routeOrderReceiver[index]
+                                                      .adress,
+                                                  style: CustomTextStyle
+                                                      .black15w500
+                                                      .copyWith(fontSize: 16),
+                                                ),
+                                              ],
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/images/to.png',
-                                                    height: 25,
-                                                  ),
-                                                  const SizedBox(width: 15),
-                                                  Text(
-                                                    routeOrderReceiver[index]
-                                                        .adress,
-                                                    style: CustomTextStyle
-                                                        .black15w500
-                                                        .copyWith(fontSize: 16),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 15),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    index ==
-                                                            routeOrderReceiver
-                                                                    .length -
-                                                                1
-                                                        ? Icons.flag
-                                                        : Icons
-                                                            .arrow_downward_rounded,
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  const SizedBox(width: 15),
-                                                  Text(
-                                                    'Указать детали',
-                                                    style: CustomTextStyle.red15
-                                                        .copyWith(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                            const SizedBox(height: 15),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  index ==
+                                                          routeOrderReceiver
+                                                                  .length -
+                                                              1
+                                                      ? Icons.flag
+                                                      : Icons
+                                                          .arrow_downward_rounded,
+                                                  color: Colors.grey[400],
+                                                ),
+                                                const SizedBox(width: 15),
+                                                Text(
+                                                  'Указать детали',
+                                                  style: CustomTextStyle.red15
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                )
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       );
                                     }),
                                   ),
-                                  // Column(
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: [
-                                  //     Text('Имя: ${receiver.secondName}',
-                                  //         style: CustomTextStyle.grey14w400),
-                                  //     Text('Фамилия: ${receiver.firstName}',
-                                  //         style: CustomTextStyle.grey14w400),
-                                  //     Text('Телефон: ${receiver.phone}',
-                                  //         style: CustomTextStyle.grey14w400),
-                                  //     Text('Адрес: ${receiver.address}',
-                                  //         style: CustomTextStyle.grey14w400)
-                                  //   ],
-                                  // ),
-                                  // const SizedBox(height: 20),
+                                  const SizedBox(height: 10),
                                   GestureDetector(
                                     onTap: () {
                                       typeAdd = TypeAdd.receiver;
@@ -341,16 +318,14 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           curve: Curves.easeInOutQuint,
                                           duration:
                                               Duration(milliseconds: 1000));
-                                      // panelController.close();
-                                      // panelController.open();
                                     },
                                     child: Container(
-                                      height: 50,
+                                      height: 40,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: Colors.grey[200]!,
                                         ),
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
                                       child: Center(
                                         child: Text(
@@ -370,7 +345,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 children: [
                                   const Padding(
                                     padding:
-                                        EdgeInsets.only(left: 8.0, top: 10),
+                                        EdgeInsets.only(left: 8.0, top: 10, bottom: 8),
                                     child: Text(
                                       'Что везем?',
                                       style: TextStyle(
@@ -378,6 +353,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           fontWeight: FontWeight.w500),
                                     ),
                                   ),
+                                  
                                   CustomTextField(
                                     height: 50,
                                     contentPadding: const EdgeInsets.symmetric(
@@ -400,7 +376,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 children: [
                                   const Padding(
                                     padding:
-                                        EdgeInsets.only(left: 8.0, top: 10),
+                                        EdgeInsets.only(left: 8.0, top: 10, bottom: 8),
                                     child: Text(
                                       'Ценность вашего груза?',
                                       style: TextStyle(
@@ -435,7 +411,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           height: 200,
                           padding: const EdgeInsets.only(bottom: 10),
                           width: MediaQuery.of(context).size.width,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(15),
@@ -443,9 +419,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                                color: Colors.black12,
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
                               ),
                             ],
                           ),

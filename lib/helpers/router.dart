@@ -5,6 +5,7 @@ import 'package:egorka/ui/sidebar/about/about_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
 import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
+import 'package:egorka/ui/sidebar/market_place/market_places.dart';
 import 'package:egorka/ui/sidebar/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,7 @@ class AppRoute {
   static const home = '/';
   static const currentOrder = '/currentOrder';
   static const marketplaces = '/marketplaces';
+  static const marketplacesMap = '/marketplacesMap';
   static const about = '/about';
   static const auth = '/auth';
   static const newOrder = '/newOrder';
@@ -36,6 +38,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const HistoryOrdersPage());
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case marketplacesMap:
+        return MaterialPageRoute(builder: (_) => MarketPlaces());
       default:
         return null;
     }

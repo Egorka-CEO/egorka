@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
           style: CustomTextStyle.black15w500,
         ),
         foregroundColor: Colors.red,
-        elevation: 0,
+        elevation: 0.5,
       ),
       body: Column(
         children: [

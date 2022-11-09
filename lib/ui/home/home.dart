@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/router.dart';
@@ -37,7 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  int duration = 500;
+  int duration = 1;
   double hight = 0;
 
   bool initHeight = true;
@@ -198,16 +197,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       logoVisibleMove = true;
                       setState(() {});
                     },
-                    curve: Curves.easeOutCubic,
-                    duration: Duration(milliseconds: duration),
+                    curve: Curves.linear,
+                    duration: Duration(seconds: duration),
                     padding: EdgeInsets.only(
                       top: logoMoveBackgroundScale ? 65 : 0,
                       left: logoMoveBackgroundScale ? 65 : 0,
                     ),
                     child: AnimatedAlign(
-                      curve: Curves.easeOutCubic,
-                      alignment:
-                          logoMoveBackgroundScale ? Alignment.topLeft : Alignment.center,
+                      curve: Curves.linear,
+                      alignment: logoMoveBackgroundScale
+                          ? Alignment.topLeft
+                          : Alignment.center,
                       duration: Duration(seconds: duration),
                       child: AnimatedOpacity(
                         duration: const Duration(seconds: 0),

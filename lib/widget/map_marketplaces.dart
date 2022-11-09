@@ -27,10 +27,11 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
 
   void initMarkers() async {
     for (var element in widget.points) {
+      String name = element.name[0].name[0] + element.name[0].name[1];
       marker.add(MarkerData(
         marker: Marker(
             markerId: MarkerId(element.ID), position: LatLng(element.latitude, element.longitude)),
-        child: _customMarker(element.name[0].name, Colors.red),
+        child: _customMarker(name, Colors.red),
       ));
     }
   }

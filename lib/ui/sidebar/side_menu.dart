@@ -10,94 +10,115 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: ListView(
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/logo_egorka.svg',
-                  alignment: Alignment.centerLeft,
-                  width: 100,
-                  height: 30,
-                ),
-                const SizedBox(height: 30),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.asset(
-                        'assets/images/company.jpg',
-                        height: 80,
-                        width: 80,
-                        fit: BoxFit.cover,
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topRight: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+      child: Drawer(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: ListView(
+                children: [
+                  Hero(
+                    tag: 'logo',
+                    child: SvgPicture.asset(
+                      'assets/icons/logo_egorka.svg',
+                      alignment: Alignment.centerLeft,
+                      width: 100,
+                      height: 40,
+                    ),
+                  ),
+                  // const Divider(height: 30),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, AppRoute.profile),
+                    child: Container(
+                      color: Colors.transparent,
+                      width: double.infinity,
+                      height: 60,
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Профиль',
+                          style: CustomTextStyle.black15w500,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Иванов Дмитрий Игоревич, ИП',
-                          style: CustomTextStyle.black15w500
-                              .copyWith(fontSize: 17),
+                  ),
+                  // const Divider(height: 30),
+                  GestureDetector(
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoute.currentOrder),
+                    child: Container(
+                      color: Colors.transparent,
+                      height: 60,
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Текущий заказ',
+                          style: CustomTextStyle.black15w500,
                         ),
-                      ],
-                    )
-                  ],
-                ),
-                const SizedBox(height: 50),
-                GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, AppRoute.profile),
-                  child: Text(
-                    'Профиль',
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                GestureDetector(
-                  onTap: () =>
-                      Navigator.pushNamed(context, AppRoute.currentOrder),
-                  child: Text(
-                    'Текущий заказ',
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
+                  // const Divider(height: 30),
+                  GestureDetector(
+                    onTap: () {
+                      BlocProvider.of<HistoryOrdersBloc>(context)
+                          .add(OpenBtmSheetHistoryEvent());
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      height: 60,
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'История заказов',
+                          style: CustomTextStyle.black15w500,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                GestureDetector(
-                  onTap: () {
-                    BlocProvider.of<HistoryOrdersBloc>(context)
-                        .add(OpenBtmSheetHistoryEvent());
-                  },
-                  child: Text(
-                    'История заказов',
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
+                  // const Divider(height: 30),
+                  GestureDetector(
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoute.marketplaces),
+                    child: Container(
+                      color: Colors.transparent,
+                      height: 60,
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Маркетплейсы',
+                          style: CustomTextStyle.black15w500,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                GestureDetector(
-                  onTap: () =>
-                      Navigator.pushNamed(context, AppRoute.marketplaces),
-                  child: Text(
-                    'Маркетплейсы',
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
+                  // const Divider(height: 30),
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, AppRoute.about),
+                    child: Container(
+                      color: Colors.transparent,
+                      height: 60,
+                      width: double.infinity,
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'О приложении',
+                          style: CustomTextStyle.black15w500,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, AppRoute.about),
-                  child: Text(
-                    'О приложении',
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 17),
-                  ),
-                )
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

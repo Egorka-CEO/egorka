@@ -167,18 +167,28 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                focusFrom.unfocus();
-                                focusTo.unfocus();
-                                panelController.close();
-                                bloc.add(SearchMeEvent());
-                              },
-                              child: const Icon(
-                                Icons.gps_fixed,
-                                color: Colors.red,
-                              ),
-                            ),
+                            focusFrom.hasFocus
+                                // ? const SizedBox()
+                                ? GestureDetector(
+                                    onTap: () {
+                                      bloc.add(DeletePolilyneEvent());
+                                      fromController.text = '';
+                                      stream.add('event');
+                                    },
+                                    child: const Icon(Icons.clear),
+                                  )
+                                : GestureDetector(
+                                    onTap: () {
+                                      focusFrom.unfocus();
+                                      focusTo.unfocus();
+                                      panelController.close();
+                                      bloc.add(SearchMeEvent());
+                                    },
+                                    child: const Icon(
+                                      Icons.gps_fixed,
+                                      color: Colors.red,
+                                    ),
+                                  ),
                             const SizedBox(width: 15),
                           ],
                         ),
@@ -230,16 +240,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            toController.text.isEmpty
-                                ? const SizedBox()
-                                : GestureDetector(
+                            focusTo.hasFocus
+                                
+                                ? GestureDetector(
                                     onTap: () {
                                       bloc.add(DeletePolilyneEvent());
                                       toController.text = '';
                                       stream.add('event');
                                     },
                                     child: const Icon(Icons.clear),
-                                  ),
+                                  )
+                                : const SizedBox(),
                             const SizedBox(width: 10),
                           ],
                         ),
@@ -452,6 +463,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           focusFrom.unfocus();
           focusTo.unfocus();
           panelController.close();
+
+          stream.add('event');
         },
         child: Row(
           children: [

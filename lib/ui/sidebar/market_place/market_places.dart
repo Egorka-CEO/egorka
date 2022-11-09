@@ -22,6 +22,7 @@ class MarketPlacesMap extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           shadowColor: Colors.black.withOpacity(0.5),
+          elevation: 0.5,
           leading: const SizedBox(),
           flexibleSpace: Column(
             children: [

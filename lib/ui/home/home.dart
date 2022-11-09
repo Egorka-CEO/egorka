@@ -205,8 +205,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     child: AnimatedAlign(
                       curve: Curves.linear,
-                      alignment:
-                          logoMoveBackgroundScale ? Alignment.topLeft : Alignment.center,
+                      alignment: logoMoveBackgroundScale
+                          ? Alignment.topLeft
+                          : Alignment.center,
                       duration: Duration(seconds: duration),
                       child: AnimatedOpacity(
                         duration: const Duration(seconds: 0),

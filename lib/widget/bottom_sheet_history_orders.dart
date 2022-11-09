@@ -119,19 +119,19 @@ class _BottomSheetDraggableState
     return Container(
       margin:
           MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
             color: Colors.black12,
           ),
         ],
-        color: Colors.grey[200],
+        color: Colors.white,
       ),
       child: Column(
         children: [
@@ -190,16 +190,17 @@ class _BottomSheetDraggableState
               state.date,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 25,
+                fontSize: 20,
                 color: Colors.grey[400],
                 height: 1,
               ),
             ),
             Container(
               padding: const EdgeInsets.all(20),
+              margin: EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
+                color: Colors.grey[50],
               ),
               child: Row(
                 children: [

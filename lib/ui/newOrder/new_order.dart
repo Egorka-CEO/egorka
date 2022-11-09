@@ -62,6 +62,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
             backgroundColor: Colors.white,
             shadowColor: Colors.black.withOpacity(0.5),
             leading: SizedBox(),
+            elevation: 0.5,
             flexibleSpace: Column(
               children: [
                 Spacer(),
@@ -344,8 +345,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 8.0, top: 10, bottom: 8),
+                                    padding: EdgeInsets.only(
+                                        left: 8.0, top: 10, bottom: 8),
                                     child: Text(
                                       'Что везем?',
                                       style: TextStyle(
@@ -353,7 +354,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           fontWeight: FontWeight.w500),
                                     ),
                                   ),
-                                  
                                   CustomTextField(
                                     height: 50,
                                     contentPadding: const EdgeInsets.symmetric(
@@ -375,8 +375,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 8.0, top: 10, bottom: 8),
+                                    padding: EdgeInsets.only(
+                                        left: 8.0, top: 10, bottom: 8),
                                     child: Text(
                                       'Ценность вашего груза?',
                                       style: TextStyle(

@@ -29,7 +29,7 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
 
   void initMarkers() async {
     for (var element in widget.points) {
-      String name = element.name[0].name[0] + element.name[0].name[1];
+      String name = element.name[0].name[0];
       marker.add(MarkerData(
         marker: Marker(
           onTap: () {

@@ -30,10 +30,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void startAnim() async {
-    Future.delayed(const Duration(seconds: 4), () {
-      background = true;
-      logoMove = true;
-      logoScale = true;
+    Future.delayed(const Duration(seconds: 2), () {
+      logoMoveBackgroundScale = true;
       setState(() {});
     });
   }
@@ -42,10 +40,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double hight = 0;
 
   bool initHeight = true;
-  bool logoMove = false;
-  bool background = false;
   bool logoVisibleMove = false;
-  bool logoScale = false;
+  bool logoMoveBackgroundScale = false;
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +181,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     setState(() {});
                   },
                   duration: Duration(seconds: duration),
-                  opacity: background ? 0 : 1,
+                  opacity: logoMoveBackgroundScale ? 0 : 1,
                   child: Container(
                     height: hight,
                     color: Colors.white,
@@ -204,19 +200,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     curve: Curves.linear,
                     duration: Duration(seconds: duration),
                     padding: EdgeInsets.only(
-                      top: logoMove ? 65 : 0,
-                      left: logoMove ? 65 : 0,
+                      top: logoMoveBackgroundScale ? 65 : 0,
+                      left: logoMoveBackgroundScale ? 65 : 0,
                     ),
                     child: AnimatedAlign(
                       curve: Curves.linear,
                       alignment:
-                          logoMove ? Alignment.topLeft : Alignment.center,
+                          logoMoveBackgroundScale ? Alignment.topLeft : Alignment.center,
                       duration: Duration(seconds: duration),
                       child: AnimatedOpacity(
                         duration: const Duration(seconds: 0),
                         opacity: logoVisibleMove ? 0 : 1,
                         child: AnimatedScale(
-                          scale: logoScale ? 1 : 2,
+                          scale: logoMoveBackgroundScale ? 1 : 2,
                           duration: Duration(seconds: duration),
                           child: Padding(
                             padding: const EdgeInsets.only(top: 5),

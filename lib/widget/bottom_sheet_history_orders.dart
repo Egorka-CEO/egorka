@@ -204,38 +204,50 @@ class _BottomSheetDraggableState
               child: Row(
                 children: [
                   Expanded(
-                      flex: 10,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Поездка днём, в 16:16',
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 10),
-                          state.status
-                              ? Text(
-                                  state.adress,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              : const Text(
-                                  'Отменено',
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                        ],
-                      )),
-                  // const SizedBox(width: 15),
-                  // Spacer(),
+                    flex: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Поездка днём, в 16:16',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state.adress,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            state.status
+                                ? const Text(
+                                    'Выполнено',
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : const Text(
+                                    'Отменено',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                   Expanded(
                     flex: 2,
                     child: Image.asset(state.icon),

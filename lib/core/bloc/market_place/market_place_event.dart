@@ -17,3 +17,5 @@ class MarketPlace extends MarketPlaceEvent {
 
   MarketPlace(this.value);
 }
+
+class GetMarketPlaces extends MarketPlaceEvent {}

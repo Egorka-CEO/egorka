@@ -2,19 +2,21 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
+import 'package:egorka/model/marketplaces.dart' as mrkt;
 
 part 'market_place_event.dart';
 part 'market_place_state.dart';
 
 class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
   late GeoData data;
+  mrkt.MarketPlaces? marketPlaces;
+
   MarketPlacePageBloc() : super(MarketPlaceStated()) {
-    on<MarketPlace>((event, emit) => _searchAddress(event, emit));
-    on<MarketPlaceOpenBtmSheet>((event, emit) => _openBtmSheet(event, emit));
-    on<MarketPlaceStatedCloseBtmSheet>(
-        (event, emit) => _closeBtmSheet(event, emit));
-    on<MarketPlaceCloseBtmSheetEvent>(
-        (event, emit) => _closeBtmSheetWithoutSearch(event, emit));
+    on<MarketPlace>(_searchAddress);
+    on<MarketPlaceOpenBtmSheet>(_openBtmSheet);
+    on<MarketPlaceStatedCloseBtmSheet>(_closeBtmSheet);
+    on<MarketPlaceCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
+    on<GetMarketPlaces>(_getMarketPlaces);
   }
 
   void _searchAddress(MarketPlace event, Emitter<MarketPlaceState> emit) async {
@@ -28,6 +30,15 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
       } else {
         emit(MarketPlaceFailed());
       }
+    }
+  }
+
+  void _getMarketPlaces(
+      GetMarketPlaces event, Emitter<MarketPlaceState> emit) async {
+    var result = await Repository().getMarketplaces();
+    if (result != null) {
+      marketPlaces = result;
+      emit(MarketPlacesSuccessState());
     }
   }
 

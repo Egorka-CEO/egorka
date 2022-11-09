@@ -1,3 +1,4 @@
+import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -39,7 +40,8 @@ class AppRoute {
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case marketplacesMap:
-        return MaterialPageRoute(builder: (_) => MarketPlaces());
+        final value = route.arguments as mrkt.MarketPlaces;
+        return MaterialPageRoute(builder: (_) => MarketPlacesMap(value));
       default:
         return null;
     }

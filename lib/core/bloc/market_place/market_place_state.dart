@@ -23,3 +23,5 @@ class MarketPlaceSuccess extends MarketPlaceState {
 }
 
 class MarketPlaceFailed extends MarketPlaceState {}
+
+class MarketPlacesSuccessState extends MarketPlaceState {}

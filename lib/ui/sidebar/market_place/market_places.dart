@@ -1,10 +1,13 @@
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/widget/bottom_sheet_map_marketplaces.dart';
 import 'package:egorka/widget/map_marketplaces.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class MarketPlaces extends StatelessWidget {
+class MarketPlacesMap extends StatelessWidget {
+  MarketPlaces marketPlaces;
+  MarketPlacesMap(this.marketPlaces, {super.key});
   PanelController panelController = PanelController();
 
   @override
@@ -13,10 +16,10 @@ class MarketPlaces extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         shadowColor: Colors.black.withOpacity(0.5),
-        leading: SizedBox(),
+        leading: const SizedBox(),
         flexibleSpace: Column(
           children: [
-            Spacer(),
+            const Spacer(),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
@@ -60,7 +63,7 @@ class MarketPlaces extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          MapMarketPlaces(),
+          MapMarketPlaces(points: marketPlaces.result.points),
           SlidingUpPanel(
             controller: panelController,
             renderPanelSheet: false,
@@ -68,8 +71,6 @@ class MarketPlaces extends StatelessWidget {
             collapsed: Container(),
             panel: BottomMarketPlacesMap(
               fromController: TextEditingController(),
-              // typeAdd: typeAdd,
-              // fromController: controller,
               panelController: panelController,
             ),
             onPanelClosed: () {

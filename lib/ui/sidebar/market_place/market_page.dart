@@ -57,600 +57,615 @@ class _MarketPageState extends State<MarketPage> {
           create: (context) => MarketPlacePageBloc(),
         ),
       ],
-      child: Material(
-        color: Colors.grey[200],
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            shadowColor: Colors.black.withOpacity(0.5),
-            leading: SizedBox(),
-            flexibleSpace: Column(
-              children: [
-                Spacer(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: const Text('Отмена',
-                                    style: CustomTextStyle.red15),
-                              ),
-                              const Align(
-                                child: Text(
-                                  'Оформление заказа',
-                                  style: CustomTextStyle.black15w500,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          body: Column(
-            children: [
-              BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
-                  buildWhen: (previous, current) {
-                if (current is MarketPlaceCloseBtmSheet) {
-                  btmSheet = false;
-                } else if (current is MarketPlaceStatedOpenBtmSheet) {
-                  btmSheet = true;
-                } else if (current is MarketPlaceStateCloseBtmSheet) {
-                  btmSheet = false;
-                  if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    print('object TypeAdd.sender');
-
-                    fromController.text = controller.text;
-                    routeOrderSender.add(RouteOrder(adress: current.value!));
-                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
-                    print('object TypeAdd.receiver');
-
-                    toController.text = controller.text;
-                  }
-                }
-
-                return true;
-              }, builder: (context, snapshot) {
-                return Expanded(
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 15),
-                              const Text(
-                                'Доставка до маркетплейса',
-                                style: CustomTextStyle.black15w700,
-                              ),
-                              const SizedBox(height: 5),
-                              const Text(
-                                'Как это работает?',
-                                style: CustomTextStyle.red15,
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Откуда забрать?',
-                                    style: CustomTextStyle.grey15bold,
+      child: Builder(
+        builder: (context) {
+          BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
+          return Material(
+            color: Colors.grey[200],
+            child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                shadowColor: Colors.black.withOpacity(0.5),
+                leading: const SizedBox(),
+                flexibleSpace: Column(
+                  children: [
+                    const Spacer(),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Stack(
+                                alignment: Alignment.centerRight,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: const Text('Отмена',
+                                        style: CustomTextStyle.red15),
                                   ),
+                                  const Align(
+                                    child: Text(
+                                      'Оформление заказа',
+                                      style: CustomTextStyle.black15w500,
+                                    ),
+                                  )
                                 ],
                               ),
-                              const SizedBox(height: 5),
-                              Column(
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              body: Column(
+                children: [
+                  BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
+                      buildWhen: (previous, current) {
+                    if (current is MarketPlaceCloseBtmSheet) {
+                      btmSheet = false;
+                    } else if (current is MarketPlaceStatedOpenBtmSheet) {
+                      btmSheet = true;
+                    } else if (current is MarketPlaceStateCloseBtmSheet) {
+                      btmSheet = false;
+                      if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                        print('object TypeAdd.sender');
+      
+                        fromController.text = controller.text;
+                        routeOrderSender.add(RouteOrder(adress: current.value!));
+                      } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
+                        routeOrderReceiver.add(RouteOrder(adress: current.value!));
+                        print('object TypeAdd.receiver');
+      
+                        toController.text = controller.text;
+                      }
+                    }
+      
+                    return true;
+                  }, builder: (context, snapshot) {
+                    return Expanded(
+                      child: Stack(
+                        children: [
+                          SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  const SizedBox(height: 15),
+                                  const Text(
+                                    'Доставка до маркетплейса',
+                                    style: CustomTextStyle.black15w700,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  const Text(
+                                    'Как это работает?',
+                                    style: CustomTextStyle.red15,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Откуда забрать?',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Checkbox(
+                                              value: false,
+                                              fillColor: MaterialStateProperty.all(
+                                                  Colors.red),
+                                              shape: const CircleBorder(),
+                                              onChanged: ((value) {}),
+                                            ),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  controller.text = '';
+                                                  typeAdd = TypeAdd.sender;
+                                                  BlocProvider.of<
+                                                              MarketPlacePageBloc>(
+                                                          context)
+                                                      .add(
+                                                          MarketPlaceOpenBtmSheet());
+                                                  panelController
+                                                      .animatePanelToPosition(
+                                                    1,
+                                                    curve: Curves.easeInOutQuint,
+                                                    duration: const Duration(
+                                                        milliseconds: 1000),
+                                                  );
+                                                },
+                                                child: CustomTextField(
+                                                  height: 50,
+                                                  fillColor: Colors.white,
+                                                  enabled: false,
+                                                  hintText: '',
+                                                  textEditingController:
+                                                      fromController,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            GestureDetector(
+                                              onTap: () {
+                                                final marketplaces = BlocProvider.of<MarketPlacePageBloc>(context).marketPlaces;
+                                                if(marketplaces != null) {
+                                                  Navigator.of(context)
+                                                  .pushNamed(
+                                                      AppRoute.marketplacesMap, arguments: marketplaces);
+                                                }
+                                              },
+                                              child: const Icon(
+                                                Icons.map_outlined,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Не обязательно к заполнению',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextField(
+                                          height: 50,
+                                          fillColor: Colors.white,
+                                          hintText: 'Подъезд',
+                                          textInputType: TextInputType.number,
+                                          textEditingController:
+                                              TextEditingController(),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Expanded(
+                                        child: CustomTextField(
+                                          height: 50,
+                                          fillColor: Colors.white,
+                                          hintText: 'Этаж',
+                                          textInputType: TextInputType.number,
+                                          textEditingController:
+                                              TextEditingController(),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Expanded(
+                                        child: CustomTextField(
+                                          height: 50,
+                                          fillColor: Colors.white,
+                                          hintText: 'Офис/кв.',
+                                          textInputType: TextInputType.number,
+                                          textEditingController:
+                                              TextEditingController(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Text('Куда отвезти?',
+                                          style: CustomTextStyle.grey15bold),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
                                   Container(
                                     decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                        borderRadius: BorderRadius.circular(15)),
+                                    child: Column(
                                       children: [
-                                        Checkbox(
-                                          value: false,
-                                          fillColor: MaterialStateProperty.all(
-                                              Colors.red),
-                                          shape: const CircleBorder(),
-                                          onChanged: ((value) {}),
-                                        ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              controller.text = '';
-                                              typeAdd = TypeAdd.sender;
-                                              BlocProvider.of<
-                                                          MarketPlacePageBloc>(
-                                                      context)
-                                                  .add(
-                                                      MarketPlaceOpenBtmSheet());
-                                              panelController
-                                                  .animatePanelToPosition(
-                                                1,
-                                                curve: Curves.easeInOutQuint,
-                                                duration: Duration(
-                                                    milliseconds: 1000),
-                                              );
-                                            },
-                                            child: CustomTextField(
-                                              height: 50,
-                                              fillColor: Colors.white,
-                                              enabled: false,
-                                              hintText: '',
-                                              textEditingController:
-                                                  fromController,
+                                        Row(
+                                          children: [
+                                            Checkbox(
+                                              value: false,
+                                              fillColor: MaterialStateProperty.all(
+                                                  Colors.blue),
+                                              shape: const CircleBorder(),
+                                              onChanged: ((value) {}),
                                             ),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  controller.text = '';
+                                                  typeAdd = TypeAdd.receiver;
+                                                  BlocProvider.of<
+                                                              MarketPlacePageBloc>(
+                                                          context)
+                                                      .add(
+                                                          MarketPlaceOpenBtmSheet());
+                                                  panelController
+                                                      .animatePanelToPosition(1,
+                                                          curve:
+                                                              Curves.easeInOutQuint,
+                                                          duration: const Duration(
+                                                              milliseconds: 1000));
+                                                },
+                                                child: CustomTextField(
+                                                  height: 50,
+                                                  fillColor: Colors.white,
+                                                  enabled: false,
+                                                  hintText: '',
+                                                  textEditingController:
+                                                      toController,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            GestureDetector(
+                                              onTap: () {
+                                              final marketplaces = BlocProvider.of<MarketPlacePageBloc>(context).marketPlaces;
+                                                if(marketplaces != null) {
+                                                  Navigator.of(context)
+                                                  .pushNamed(
+                                                      AppRoute.marketplacesMap, arguments: marketplaces);
+                                                }
+                                              },
+                                              child: const Icon(
+                                                Icons.map_outlined,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Когда забрать?',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15)),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                            height: 50,
+                                            fillColor: Colors.white,
+                                            hintText: '',
+                                            textEditingController:
+                                                TextEditingController(),
                                           ),
                                         ),
                                         const SizedBox(width: 10),
-                                        GestureDetector(
-                                          onTap: () => Navigator.of(context)
-                                              .pushNamed(
-                                                  AppRoute.marketplacesMap),
-                                          child: const Icon(
-                                            Icons.map_outlined,
-                                            color: Colors.red,
-                                          ),
+                                        const Icon(
+                                          Icons.help_outline_outlined,
+                                          color: Colors.red,
                                         ),
                                         const SizedBox(width: 10),
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Expanded(
+                                        child: Text(
+                                          'Оформить доставку до Маркетплейса на завтра можно строго до 15:00.',
+                                          style: CustomTextStyle.grey15,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Ваши контакты',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextField(
+                                          height: 50,
+                                          fillColor: Colors.white,
+                                          hintText: 'Имя',
+                                          textEditingController:
+                                              TextEditingController(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextField(
+                                          height: 50,
+                                          fillColor: Colors.white,
+                                          hintText: '+7 (999) 888-77-66',
+                                          textInputType: TextInputType.number,
+                                          textEditingController:
+                                              TextEditingController(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Кол-во коробок?',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  StreamBuilder<int>(
+                                      stream: bucketController.stream,
+                                      initialData: 32,
+                                      builder: (context, snapshot) {
+                                        return Row(
+                                          children: [
+                                            Expanded(
+                                              child: CustomTextField(
+                                                height: 50,
+                                                fillColor: Colors.white,
+                                                hintText: '0',
+                                                textInputType: TextInputType.number,
+                                                textEditingController:
+                                                    TextEditingController(
+                                                        text: snapshot.data!
+                                                            .toString()),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            const Icon(
+                                              Icons.help_outline_outlined,
+                                              color: Colors.red,
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Slider(
+                                                min: 1,
+                                                max: 50,
+                                                thumbColor: Colors.red,
+                                                value: snapshot.data!.toDouble(),
+                                                onChanged: (value) {
+                                                  bucketController
+                                                      .add(value.toInt());
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      }),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Кол-во паллет?',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  StreamBuilder<int>(
+                                      stream: palletController.stream,
+                                      initialData: 16,
+                                      builder: (context, snapshot) {
+                                        return Row(
+                                          children: [
+                                            Expanded(
+                                              child: CustomTextField(
+                                                height: 50,
+                                                fillColor: Colors.white,
+                                                hintText: '0',
+                                                textInputType: TextInputType.number,
+                                                textEditingController:
+                                                    TextEditingController(
+                                                        text: snapshot.data!
+                                                            .toString()),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            const Icon(
+                                              Icons.help_outline_outlined,
+                                              color: Colors.red,
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Slider(
+                                                min: 1,
+                                                max: 50,
+                                                thumbColor: Colors.red,
+                                                value: snapshot.data!.toDouble(),
+                                                onChanged: (value) {
+                                                  palletController
+                                                      .add(value.toInt());
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      }),
+                                  const SizedBox(height: 210)
                                 ],
                               ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Не обязательно к заполнению',
-                                    style: CustomTextStyle.grey15bold,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              height: 200,
+                              padding: const EdgeInsets.only(bottom: 40),
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset:
+                                        const Offset(0, 3), // changes position of shadow
                                   ),
                                 ],
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white,
                               ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 50,
-                                      fillColor: Colors.white,
-                                      hintText: 'Подъезд',
-                                      textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 50,
-                                      fillColor: Colors.white,
-                                      hintText: 'Этаж',
-                                      textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 50,
-                                      fillColor: Colors.white,
-                                      hintText: 'Офис/кв.',
-                                      textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Text('Куда отвезти?',
-                                      style: CustomTextStyle.grey15bold),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
                                 child: Column(
                                   children: [
                                     Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                       children: [
-                                        Checkbox(
-                                          value: false,
-                                          fillColor: MaterialStateProperty.all(
-                                              Colors.blue),
-                                          shape: const CircleBorder(),
-                                          onChanged: ((value) {}),
+                                        Image.asset(
+                                          'assets/images/ic_leg.png',
+                                          color: Colors.red,
+                                          height: 90,
                                         ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              controller.text = '';
-                                              typeAdd = TypeAdd.receiver;
-                                              BlocProvider.of<
-                                                          MarketPlacePageBloc>(
-                                                      context)
-                                                  .add(
-                                                      MarketPlaceOpenBtmSheet());
-                                              panelController
-                                                  .animatePanelToPosition(1,
-                                                      curve:
-                                                          Curves.easeInOutQuint,
-                                                      duration: Duration(
-                                                          milliseconds: 1000));
-                                            },
-                                            child: CustomTextField(
-                                              height: 50,
-                                              fillColor: Colors.white,
-                                              enabled: false,
-                                              hintText: '',
-                                              textEditingController:
-                                                  toController,
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: const [
+                                            Text(
+                                              'Пеший',
+                                              style: TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.w300,
+                                              ),
                                             ),
+                                            Text(
+                                              '1900 ₽',
+                                              style: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const Text(
+                                          '}',
+                                          style: TextStyle(
+                                            fontSize: 60,
+                                            fontWeight: FontWeight.w200,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
-                                        GestureDetector(
-                                          onTap: () => Navigator.of(context)
-                                              .pushNamed(
-                                                  AppRoute.marketplacesMap),
-                                          child: const Icon(
-                                            Icons.map_outlined,
-                                            color: Colors.red,
-                                          ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: const [
+                                            Text('400 ₽ доставка'),
+                                            Text('0 ₽ доп. услуги'),
+                                            Text('11 ₽ сбор-плат. сист.'),
+                                          ],
                                         ),
-                                        const SizedBox(width: 10),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Когда забрать?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: CustomTextField(
+                                    GestureDetector(
+                                      child: Container(
                                         height: 50,
-                                        fillColor: Colors.white,
-                                        hintText: '',
-                                        textEditingController:
-                                            TextEditingController(),
+                                        decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Center(
+                                          child: Text(
+                                            'ОПЛАТИТЬ ЗАКАЗ',
+                                            style: CustomTextStyle.white15w600
+                                                .copyWith(letterSpacing: 1),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
-                                    const Icon(
-                                      Icons.help_outline_outlined,
-                                      color: Colors.red,
-                                    ),
-                                    const SizedBox(width: 10),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Expanded(
-                                    child: Text(
-                                      'Оформить доставку до Маркетплейса на завтра можно строго до 15:00.',
-                                      style: CustomTextStyle.grey15,
-                                      textAlign: TextAlign.justify,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Ваши контакты',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 50,
-                                      fillColor: Colors.white,
-                                      hintText: 'Имя',
-                                      textEditingController:
-                                          TextEditingController(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 50,
-                                      fillColor: Colors.white,
-                                      hintText: '+7 (999) 888-77-66',
-                                      textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Кол-во коробок?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              StreamBuilder<int>(
-                                  stream: bucketController.stream,
-                                  initialData: 32,
-                                  builder: (context, snapshot) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomTextField(
-                                            height: 50,
-                                            fillColor: Colors.white,
-                                            hintText: '0',
-                                            textInputType: TextInputType.number,
-                                            textEditingController:
-                                                TextEditingController(
-                                                    text: snapshot.data!
-                                                        .toString()),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        const Icon(
-                                          Icons.help_outline_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Slider(
-                                            min: 1,
-                                            max: 50,
-                                            thumbColor: Colors.red,
-                                            value: snapshot.data!.toDouble(),
-                                            onChanged: (value) {
-                                              bucketController
-                                                  .add(value.toInt());
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  }),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Кол-во паллет?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              StreamBuilder<int>(
-                                  stream: palletController.stream,
-                                  initialData: 16,
-                                  builder: (context, snapshot) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomTextField(
-                                            height: 50,
-                                            fillColor: Colors.white,
-                                            hintText: '0',
-                                            textInputType: TextInputType.number,
-                                            textEditingController:
-                                                TextEditingController(
-                                                    text: snapshot.data!
-                                                        .toString()),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        const Icon(
-                                          Icons.help_outline_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Slider(
-                                            min: 1,
-                                            max: 50,
-                                            thumbColor: Colors.red,
-                                            value: snapshot.data!.toDouble(),
-                                            onChanged: (value) {
-                                              palletController
-                                                  .add(value.toInt());
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  }),
-                              const SizedBox(height: 210)
-                            ],
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 200,
-                          padding: const EdgeInsets.only(bottom: 40),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset:
-                                    Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/ic_leg.png',
-                                      color: Colors.red,
-                                      height: 90,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: const [
-                                        Text(
-                                          'Пеший',
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                        Text(
-                                          '1900 ₽',
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const Text(
-                                      '}',
-                                      style: TextStyle(
-                                        fontSize: 60,
-                                        fontWeight: FontWeight.w200,
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: const [
-                                        Text('400 ₽ доставка'),
-                                        Text('0 ₽ доп. услуги'),
-                                        Text('11 ₽ сбор-плат. сист.'),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                GestureDetector(
-                                  child: Container(
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Center(
-                                      child: Text(
-                                        'ОПЛАТИТЬ ЗАКАЗ',
-                                        style: CustomTextStyle.white15w600
-                                            .copyWith(letterSpacing: 1),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
-                        ),
+                          SlidingUpPanel(
+                            controller: panelController,
+                            renderPanelSheet: false,
+                            isDraggable: true,
+                            collapsed: Container(),
+                            panel: MarketPlaceBottomSheetDraggable(
+                              typeAdd: typeAdd,
+                              fromController: controller,
+                              panelController: panelController,
+                            ),
+                            onPanelClosed: () {
+                              // if (typeAdd == TypeAdd.sender) {
+                              //   fromController.text = controller.text;
+                              // } else if (typeAdd == TypeAdd.receiver) {
+                              //   toController.text = controller.text;
+                              // }
+                              // controller.text = '';
+                              // focusFrom.unfocus();
+                              // focusTo.unfocus();
+                              // _visible = false;
+                            },
+                            onPanelOpened: () {
+                              // _visible = true;
+                              // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
+                              //   panelController.close();
+                              // }
+                            },
+                            onPanelSlide: (size) {
+                              // if (size.toStringAsFixed(1) == (0.5).toString()) {
+                              //   focusFrom.unfocus();
+                              //   focusTo.unfocus();
+                              // }
+                            },
+                            maxHeight: 700,
+                            minHeight: 0,
+                            defaultPanelState: PanelState.CLOSED,
+                          ),
+                        ],
                       ),
-                      SlidingUpPanel(
-                        controller: panelController,
-                        renderPanelSheet: false,
-                        isDraggable: true,
-                        collapsed: Container(),
-                        panel: MarketPlaceBottomSheetDraggable(
-                          typeAdd: typeAdd,
-                          fromController: controller,
-                          panelController: panelController,
-                        ),
-                        onPanelClosed: () {
-                          // if (typeAdd == TypeAdd.sender) {
-                          //   fromController.text = controller.text;
-                          // } else if (typeAdd == TypeAdd.receiver) {
-                          //   toController.text = controller.text;
-                          // }
-                          // controller.text = '';
-                          // focusFrom.unfocus();
-                          // focusTo.unfocus();
-                          // _visible = false;
-                        },
-                        onPanelOpened: () {
-                          // _visible = true;
-                          // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-                          //   panelController.close();
-                          // }
-                        },
-                        onPanelSlide: (size) {
-                          // if (size.toStringAsFixed(1) == (0.5).toString()) {
-                          //   focusFrom.unfocus();
-                          //   focusTo.unfocus();
-                          // }
-                        },
-                        maxHeight: 700,
-                        minHeight: 0,
-                        defaultPanelState: PanelState.CLOSED,
-                      ),
-                    ],
-                  ),
-                );
-              })
-            ],
-          ),
-        ),
+                    );
+                  })
+                ],
+              ),
+            ),
+          );
+        }
       ),
     );
   }

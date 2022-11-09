@@ -19,3 +19,9 @@ class MarketPlace extends MarketPlaceEvent {
 }
 
 class GetMarketPlaces extends MarketPlaceEvent {}
+
+class SelectMarketPlaces extends MarketPlaceEvent {
+  mrkt.Points points;
+
+  SelectMarketPlaces(this.points);
+}

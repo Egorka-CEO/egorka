@@ -17,6 +17,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     on<MarketPlaceStatedCloseBtmSheet>(_closeBtmSheet);
     on<MarketPlaceCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
     on<GetMarketPlaces>(_getMarketPlaces);
+    on<SelectMarketPlaces>(_selectMarketPlaces);
   }
 
   void _searchAddress(MarketPlace event, Emitter<MarketPlaceState> emit) async {
@@ -40,6 +41,12 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
       marketPlaces = result;
       emit(MarketPlacesSuccessState());
     }
+  }
+
+  void _selectMarketPlaces(
+      SelectMarketPlaces event, Emitter<MarketPlaceState> emit) async {
+
+      emit(MarketPlacesSelectPointState(event.points));
   }
 
   void _openBtmSheet(

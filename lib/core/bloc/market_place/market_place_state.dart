@@ -25,3 +25,9 @@ class MarketPlaceSuccess extends MarketPlaceState {
 class MarketPlaceFailed extends MarketPlaceState {}
 
 class MarketPlacesSuccessState extends MarketPlaceState {}
+
+class MarketPlacesSelectPointState extends MarketPlaceState {
+  mrkt.Points points;
+
+  MarketPlacesSelectPointState(this.points);
+}

@@ -1,7 +1,9 @@
 import 'package:custom_map_markers/custom_map_markers.dart';
+import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -30,6 +32,9 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
       String name = element.name[0].name[0] + element.name[0].name[1];
       marker.add(MarkerData(
         marker: Marker(
+          onTap: () {
+            BlocProvider.of<MarketPlacePageBloc>(context).add(SelectMarketPlaces(element));
+          },
             markerId: MarkerId(element.ID), position: LatLng(element.latitude, element.longitude)),
         child: _customMarker(name, Colors.red),
       ));

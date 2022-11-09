@@ -3,6 +3,7 @@ import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/route_order.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
@@ -210,7 +211,8 @@ class _MarketPageState extends State<MarketPage> {
                                               },
                                               child: CustomTextField(
                                                 height: 50,
-                                                contentPadding: EdgeInsets.all(0),
+                                                contentPadding:
+                                                    EdgeInsets.all(0),
                                                 fillColor: Colors.white,
                                                 enabled: false,
                                                 hintText: '',
@@ -349,7 +351,8 @@ class _MarketPageState extends State<MarketPage> {
                                                 }
                                               },
                                               child: CustomTextField(
-                                                contentPadding: EdgeInsets.all(0),
+                                                contentPadding:
+                                                    EdgeInsets.all(0),
                                                 height: 50,
                                                 fillColor: Colors.white,
                                                 enabled: false,
@@ -361,15 +364,24 @@ class _MarketPageState extends State<MarketPage> {
                                           ),
                                           const SizedBox(width: 10),
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               final marketplaces = BlocProvider
                                                       .of<MarketPlacePageBloc>(
                                                           context)
                                                   .marketPlaces;
                                               if (marketplaces != null) {
-                                                Navigator.of(context).pushNamed(
-                                                    AppRoute.marketplacesMap,
-                                                    arguments: marketplaces);
+                                                final result = await Navigator
+                                                        .of(context)
+                                                    .pushNamed(
+                                                        AppRoute
+                                                            .marketplacesMap,
+                                                        arguments:
+                                                            marketplaces);
+                                                if (result != null) {
+                                                  final points =
+                                                      result as Points;
+                                                  toController.text = points.name[0].name;
+                                                }
                                               }
                                             },
                                             child: const Icon(

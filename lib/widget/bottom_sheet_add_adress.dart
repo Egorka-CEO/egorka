@@ -115,7 +115,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                               },
                               focusNode: focusFrom,
                               fillColor: Colors.grey[200],
-                              hintText: 'Откуда забрать?',
+                              hintText: widget.typeAdd == TypeAdd.sender ? 'Откуда забрать?' : 'Куда отвезти?',
                               onFieldSubmitted: (text) {
                                 // panelController.close();
                                 focusFrom.unfocus();
@@ -198,7 +198,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
           BlocProvider.of<NewOrderPageBloc>(context).add(
               NewOrderStatedCloseBtmSheet(
                   state.address!.result.suggestions![index].name));
-
+          widget.fromController.text = state.address!.result.suggestions![index].name;
           focusFrom.unfocus();
           widget.panelController.close();
         },

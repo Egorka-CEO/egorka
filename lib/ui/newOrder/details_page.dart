@@ -1,10 +1,10 @@
-import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/receiver.dart';
 import 'package:egorka/model/route_order.dart';
 import 'package:egorka/model/sender.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
-import 'package:egorka/widget/bottom_sheet_marketplace.dart';
+import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,8 +59,8 @@ class _DetailsPageState extends State<DetailsPage> {
     print('object ${widget.index} ${widget.typeAdd}');
     return MultiBlocProvider(
       providers: [
-        BlocProvider<MarketPlacePageBloc>(
-          create: (context) => MarketPlacePageBloc(),
+        BlocProvider<NewOrderPageBloc>(
+          create: (context) => NewOrderPageBloc(),
         ),
       ],
       child: Material(
@@ -137,7 +137,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: Colors.red,
+                            color: widget.typeAdd == TypeAdd.sender ? Colors.red : Colors.blue,
                             width: 2,
                           ),
                         ),
@@ -188,9 +188,15 @@ class _DetailsPageState extends State<DetailsPage> {
                                   onTap: () {
                                     controller.text = '';
                                     typeAdd = TypeAdd.sender;
+                                    // BlocProvider.of<NewOrderPageBloc>(
+                                    //               context)
+                                    //           .add(NewOrderOpenBtmSheet());
                                     // BlocProvider.of<MarketPlacePageBloc>(
                                     //         context)
                                     //     .add(MarketPlaceOpenBtmSheet());
+                                    setState(() {
+                                      
+                                    });
                                     panelController.animatePanelToPosition(
                                       1,
                                       curve: Curves.easeInOutQuint,
@@ -291,7 +297,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       },
                       child: CustomTextField(
                         height: 50,
-                        contentPadding: const EdgeInsets.all(0),
+                        // contentPadding: const EdgeInsets.all(0),
                         fillColor: Colors.white,
                         hintText: 'Имя',
                         textEditingController: TextEditingController(),
@@ -315,7 +321,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       },
                       child: CustomTextField(
                         height: 50,
-                        contentPadding: const EdgeInsets.all(0),
+                        // contentPadding: const EdgeInsets.all(0),
                         fillColor: Colors.white,
                         // enabled: false,
                         hintText: '+7 (___) ___-__-__',
@@ -362,42 +368,62 @@ class _DetailsPageState extends State<DetailsPage> {
                   ),
                 ],
               ),
-              SlidingUpPanel(
-                controller: panelController,
-                renderPanelSheet: false,
-                isDraggable: true,
-                collapsed: Container(),
-                panel: MarketPlaceBottomSheetDraggable(
-                  typeAdd: typeAdd,
-                  fromController: controller,
-                  panelController: panelController,
-                ),
-                onPanelClosed: () {
-                  // if (typeAdd == TypeAdd.sender) {
-                  //   fromController.text = controller.text;
-                  // } else if (typeAdd == TypeAdd.receiver) {
-                  //   toController.text = controller.text;
-                  // }
-                  // controller.text = '';
-                  // focusFrom.unfocus();
-                  // focusTo.unfocus();
-                  // _visible = false;
-                },
-                onPanelOpened: () {
-                  // _visible = true;
-                  // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-                  //   panelController.close();
-                  // }
-                },
-                onPanelSlide: (size) {
-                  // if (size.toStringAsFixed(1) == (0.5).toString()) {
-                  //   focusFrom.unfocus();
-                  //   focusTo.unfocus();
-                  // }
-                },
-                maxHeight: 700,
-                minHeight: 0,
-                defaultPanelState: PanelState.CLOSED,
+              BlocBuilder<NewOrderPageBloc, NewOrderState>(
+                  buildWhen: (previous, current) {
+                if (current is NewOrderCloseBtmSheet) {
+                  btmSheet = false;
+                } else if (current is NewOrderStatedOpenBtmSheet) {
+                  btmSheet = true;
+                } else if (current is NewOrderStateCloseBtmSheet) {
+                  btmSheet = false;
+                  if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                    routeOrderSender.add(RouteOrder(adress: current.value!));
+                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
+                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
+                  }
+                }
+
+                return true;
+              }, builder: (context, snapshot) {
+                  return SlidingUpPanel(
+                    color: Colors.white,
+                    controller: panelController,
+                    renderPanelSheet: false,
+                    isDraggable: true,
+                    collapsed: Container(),
+                    panel: AddAdressBottomSheetDraggable(
+                      typeAdd: widget.typeAdd,
+                      fromController: controller,
+                      panelController: panelController,
+                    ),
+                    onPanelClosed: () {
+                      // if (typeAdd == TypeAdd.sender) {
+                      //   fromController.text = controller.text;
+                      // } else if (typeAdd == TypeAdd.receiver) {
+                      //   toController.text = controller.text;
+                      // }
+                      // controller.text = '';
+                      // focusFrom.unfocus();
+                      // focusTo.unfocus();
+                      // _visible = false;
+                    },
+                    onPanelOpened: () {
+                      // _visible = true;
+                      // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
+                      //   panelController.close();
+                      // }
+                    },
+                    onPanelSlide: (size) {
+                      // if (size.toStringAsFixed(1) == (0.5).toString()) {
+                      //   focusFrom.unfocus();
+                      //   focusTo.unfocus();
+                      // }
+                    },
+                    maxHeight: 700,
+                    minHeight: 0,
+                    defaultPanelState: PanelState.CLOSED,
+                  );
+                }
               ),
             ],
           ),

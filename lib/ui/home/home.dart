@@ -30,13 +30,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void startAnim() async {
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       logoMoveBackgroundScale = true;
       setState(() {});
     });
   }
 
-  int duration = 600;
+  int duration = 350;
   double hight = 0;
 
   bool initHeight = true;

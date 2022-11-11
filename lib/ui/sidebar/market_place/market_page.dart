@@ -209,7 +209,8 @@ class _MarketPageState extends State<MarketPage> {
                                             },
                                             child: CustomTextField(
                                               height: 50,
-                                              contentPadding: EdgeInsets.all(0),
+                                              contentPadding:
+                                                  const EdgeInsets.all(0),
                                               fillColor: Colors.white,
                                               enabled: false,
                                               hintText: '',
@@ -344,7 +345,8 @@ class _MarketPageState extends State<MarketPage> {
                                               }
                                             },
                                             child: CustomTextField(
-                                              contentPadding: EdgeInsets.all(0),
+                                              contentPadding:
+                                                  const EdgeInsets.all(0),
                                               height: 50,
                                               fillColor: Colors.white,
                                               enabled: false,

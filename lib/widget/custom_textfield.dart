@@ -26,6 +26,7 @@ class CustomTextField extends StatelessWidget {
   final bool? enabled;
   final Color? fillColor;
   double? height;
+  double? width;
   TextStyle? hintStyle;
   EdgeInsets? contentPadding;
   CustomTextField(
@@ -55,6 +56,7 @@ class CustomTextField extends StatelessWidget {
       this.fillColor,
       this.hintStyle,
       this.height,
+      this.width,
       this.contentPadding})
       : super(key: key);
 
@@ -73,7 +75,7 @@ class CustomTextField extends StatelessWidget {
     contentPadding =
         contentPadding ?? EdgeInsets.symmetric(vertical: 20, horizontal: 20);
 
-    var widthOfScreen = MediaQuery.of(context).size.width;
+    var widthOfScreen = width ?? MediaQuery.of(context).size.width;
     return SizedBox(
       height: height,
       width: widthOfScreen,

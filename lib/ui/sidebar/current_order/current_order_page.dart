@@ -22,37 +22,24 @@ class CurrentOrderPage extends StatelessWidget {
         ),
       ],
       child: Material(
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Stack(
-                        alignment: Alignment.centerLeft,
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Icon(
-                              Icons.arrow_back_outlined,
-                              size: 30,
-                              color: Colors.red,
-                            ),
-                          ),
-                          const Align(
-                            child: Text(
-                              'Текущий заказ',
-                              style: CustomTextStyle.black15w500,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0.5,
+            title: const Text(
+              'Текущий заказ',
+              style: CustomTextStyle.black15w500,
+            ),
+            leading: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.red,
               ),
+            ),
+            backgroundColor: Colors.white,
+          ),
+          body: Column(
+            children: [
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -61,6 +48,7 @@ class CurrentOrderPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        const SizedBox(height: 20),
                         const Text(
                           'Заказ №123 / 6 марта',
                           style: CustomTextStyle.black15w500,

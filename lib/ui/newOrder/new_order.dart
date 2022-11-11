@@ -1,4 +1,5 @@
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/receiver.dart';
 import 'package:egorka/model/route_order.dart';
@@ -61,11 +62,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
           appBar: AppBar(
             backgroundColor: Colors.white,
             shadowColor: Colors.black.withOpacity(0.5),
-            leading: SizedBox(),
+            leading: const SizedBox(),
             elevation: 0.5,
             flexibleSpace: Column(
               children: [
-                Spacer(),
+                const Spacer(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
@@ -146,90 +147,128 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: routeOrderSender.length,
-                                    padding: EdgeInsets.all(0),
+                                    padding: const EdgeInsets.all(0),
                                     itemBuilder: (context, index) {
-                                      return Container(
-                                        padding: const EdgeInsets.all(10.0),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey[200]!,
+                                      return Dismissible(
+                                        key: Key('$index'),
+                                        confirmDismiss: (direction) {
+                                          print(
+                                              'object ${routeOrderSender.length}');
+                                          routeOrderSender.removeAt(index);
+                                          return routeOrderSender.length == 1
+                                              ? Future.value(false)
+                                              : Future.value(true);
+                                          // return Future.value(false);
+                                        },
+                                        direction: DismissDirection.endToStart,
+                                        background: Container(
+                                          // color: Colors.red,
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(index == 0 ? 15 : 0),
+                                              bottomRight: Radius.circular(index == routeOrderSender.length ? 15 : 0),
+                                            ),
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                'Удалить',
+                                                style:
+                                                    CustomTextStyle.white15w600,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/from.png',
-                                                  height: 25,
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Flexible(
-                                                  child: Text(
-                                                    routeOrderSender[index]
-                                                        .adress,
-                                                    style: CustomTextStyle
-                                                        .black15w500
-                                                        .copyWith(fontSize: 16),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            // border: Border.all(
+                                            //   color: Colors.grey[200]!,
+                                            // ),
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/from.png',
+                                                    height: 25,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 15),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.arrow_downward_rounded,
-                                                  color: Colors.grey[400],
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Text(
-                                                  'Указать детали',
-                                                  style: CustomTextStyle.red15
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                )
-                                              ],
-                                            ),
-                                          ],
+                                                  const SizedBox(width: 15),
+                                                  Flexible(
+                                                    child: Text(
+                                                      routeOrderSender[index]
+                                                          .adress,
+                                                      style: CustomTextStyle
+                                                          .black15w500
+                                                          .copyWith(
+                                                              fontSize: 16),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .arrow_downward_rounded,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  GestureDetector(
+                                                    onTap: () => Navigator.of(context).pushNamed(AppRoute.detailsOrder, arguments: [TypeAdd.sender, routeOrderSender.length + 1]),
+                                                    child: Text(
+                                                      'Указать детали',
+                                                      style: CustomTextStyle.red15
+                                                          .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       );
                                     },
                                   ),
                                   const SizedBox(height: 10),
-                                  GestureDetector(
-                                    onTap: () {
-                                      typeAdd = TypeAdd.sender;
-                                      BlocProvider.of<NewOrderPageBloc>(context)
-                                          .add(NewOrderOpenBtmSheet());
-                                      panelController.animatePanelToPosition(1,
-                                          curve: Curves.easeInOutQuint,
-                                          duration:
-                                              Duration(milliseconds: 1000));
-                                    },
-                                    child: Container(
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey[200]!,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Center(
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          typeAdd = TypeAdd.sender;
+                                          BlocProvider.of<NewOrderPageBloc>(
+                                                  context)
+                                              .add(NewOrderOpenBtmSheet());
+                                          panelController
+                                              .animatePanelToPosition(
+                                            1,
+                                            curve: Curves.easeInOutQuint,
+                                            duration: const Duration(
+                                                milliseconds: 1000),
+                                          );
+                                        },
                                         child: Text(
                                           'Добавить отправителя',
-                                          style: CustomTextStyle.black15w500
-                                              .copyWith(
+                                          style: CustomTextStyle.red15.copyWith(
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -252,59 +291,96 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: routeOrderReceiver.length,
-                                    padding: EdgeInsets.all(0),
+                                    padding: const EdgeInsets.all(0),
                                     itemBuilder: ((context, index) {
-                                      return Container(
-                                        padding: const EdgeInsets.all(10.0),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.grey[200]!,
+                                      return Dismissible(
+                                        key: Key('$index'),
+                                        confirmDismiss: (direction) {
+                                          print(
+                                              'object ${routeOrderSender.length}');
+                                          routeOrderReceiver.removeAt(index);
+                                          return routeOrderReceiver.length == 1
+                                              ? Future.value(false)
+                                              : Future.value(true);
+                                          // return Future.value(false);
+                                        },
+                                        direction: DismissDirection.endToStart,
+                                        background: Container(
+                                          // color: Colors.red,
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(index == 0 ? 15 : 0),
+                                              bottomRight: Radius.circular(index == routeOrderReceiver.length ? 15 : 0),
+                                            ),
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                'Удалить',
+                                                style:
+                                                    CustomTextStyle.white15w600,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/to.png',
-                                                  height: 25,
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Text(
-                                                  routeOrderReceiver[index]
-                                                      .adress,
-                                                  style: CustomTextStyle
-                                                      .black15w500
-                                                      .copyWith(fontSize: 16),
-                                                ),
-                                              ],
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.grey[200]!,
                                             ),
-                                            const SizedBox(height: 15),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  index ==
-                                                          routeOrderReceiver
-                                                                  .length -
-                                                              1
-                                                      ? Icons.flag
-                                                      : Icons
-                                                          .arrow_downward_rounded,
-                                                  color: Colors.grey[400],
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Text(
-                                                  'Указать детали',
-                                                  style: CustomTextStyle.red15
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                )
-                                              ],
-                                            ),
-                                          ],
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/to.png',
+                                                    height: 25,
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  Text(
+                                                    routeOrderReceiver[index]
+                                                        .adress,
+                                                    style: CustomTextStyle
+                                                        .black15w500
+                                                        .copyWith(fontSize: 16),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    index ==
+                                                            routeOrderReceiver
+                                                                    .length -
+                                                                1
+                                                        ? Icons.flag
+                                                        : Icons
+                                                            .arrow_downward_rounded,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  GestureDetector(
+                                                    onTap: () => Navigator.of(context).pushNamed(AppRoute.detailsOrder, arguments: [TypeAdd.receiver, routeOrderReceiver.length + 1]),
+                                                    child: Text(
+                                                      'Указать детали',
+                                                      style: CustomTextStyle.red15
+                                                          .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight.w400),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       );
                                     }),
@@ -317,28 +393,50 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           .add(NewOrderOpenBtmSheet());
                                       panelController.animatePanelToPosition(1,
                                           curve: Curves.easeInOutQuint,
-                                          duration:
-                                              Duration(milliseconds: 1000));
+                                          duration: const Duration(
+                                              milliseconds: 1000));
                                     },
-                                    child: Container(
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey[200]!,
-                                        ),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Center(
-                                        child: Text(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
                                           'Добавить получателя',
-                                          style: CustomTextStyle.black15w500
-                                              .copyWith(
+                                          style: CustomTextStyle.red15.copyWith(
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     typeAdd = TypeAdd.receiver;
+                                  //     BlocProvider.of<NewOrderPageBloc>(context)
+                                  //         .add(NewOrderOpenBtmSheet());
+                                  //     panelController.animatePanelToPosition(1,
+                                  //         curve: Curves.easeInOutQuint,
+                                  //         duration: const Duration(
+                                  //             milliseconds: 1000));
+                                  //   },
+                                  //   child: Container(
+                                  //     height: 40,
+                                  //     decoration: BoxDecoration(
+                                  //       border: Border.all(
+                                  //         color: Colors.grey[200]!,
+                                  //       ),
+                                  //       borderRadius: BorderRadius.circular(15),
+                                  //     ),
+                                  //     child: Center(
+                                  //       child: Text(
+                                  //         'Добавить получателя',
+                                  //         style: CustomTextStyle.black15w500
+                                  //             .copyWith(
+                                  //           fontWeight: FontWeight.w400,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                               Column(
@@ -413,7 +511,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(15),
                               topLeft: Radius.circular(15),
                             ),
@@ -422,8 +520,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 5,
                                 blurRadius: 7,
-                                offset:
-                                    Offset(0, 3), // changes position of shadow
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
                               ),
                             ],
                           ),
@@ -504,7 +602,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 GestureDetector(
                                   child: Container(
                                     height: 50,

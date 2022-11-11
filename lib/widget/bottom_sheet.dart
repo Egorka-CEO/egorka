@@ -8,6 +8,8 @@ import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
+import 'package:flip_card/flip_card.dart';
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -44,6 +46,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
     DeliveryChocie(title: 'Пешком', icon: 'assets/images/ic_leg.png'),
   ];
+
+  bool showFront = true;
+  FlipCardController? _flipController;
+  @override
+  void initState() {
+    super.initState();
+    _flipController = FlipCardController();
+  }
 
   @override
   void dispose() {
@@ -145,6 +155,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 onTap: () {
+                                  if (_flipController!.state!.isFront) {
+                                    _flipController!.toggleCard();
+                                  }
                                   typeAdd = TypeAdd.sender;
                                   panelController.open();
                                   Future.delayed(
@@ -167,28 +180,29 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            focusFrom.hasFocus
-                                // ? const SizedBox()
-                                ? GestureDetector(
-                                    onTap: () {
-                                      bloc.add(DeletePolilyneEvent());
-                                      fromController.text = '';
-                                      stream.add('event');
-                                    },
-                                    child: const Icon(Icons.clear),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      focusFrom.unfocus();
-                                      focusTo.unfocus();
-                                      panelController.close();
-                                      bloc.add(SearchMeEvent());
-                                    },
-                                    child: const Icon(
-                                      Icons.gps_fixed,
-                                      color: Colors.red,
-                                    ),
-                                  ),
+                            FlipCard(
+                              controller: _flipController,
+                              back: GestureDetector(
+                                onTap: () {
+                                  bloc.add(DeletePolilyneEvent());
+                                  fromController.text = '';
+                                  stream.add('event');
+                                },
+                                child: const Icon(Icons.clear),
+                              ),
+                              front: GestureDetector(
+                                onTap: () {
+                                  focusFrom.unfocus();
+                                  focusTo.unfocus();
+                                  panelController.close();
+                                  bloc.add(SearchMeEvent());
+                                },
+                                child: const Icon(
+                                  Icons.gps_fixed,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
                             const SizedBox(width: 15),
                           ],
                         ),
@@ -217,6 +231,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 onTap: () {
+                                  if (!_flipController!.state!.isFront) {
+                                    _flipController!.toggleCard();
+                                  }
                                   typeAdd = TypeAdd.receiver;
                                   panelController.open();
                                   bloc.add(SearchAddressClear());
@@ -241,7 +258,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               ),
                             ),
                             focusTo.hasFocus
-                                
                                 ? GestureDetector(
                                     onTap: () {
                                       bloc.add(DeletePolilyneEvent());
@@ -442,6 +458,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       height: 50,
       child: InkWell(
         onTap: () {
+          if (!_flipController!.state!.isFront) {
+            _flipController!.toggleCard();
+          }
           if (focusFrom.hasFocus) {
             fromController.text =
                 state.address!.result.suggestions![index].name;

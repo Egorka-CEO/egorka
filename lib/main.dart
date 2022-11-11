@@ -4,9 +4,11 @@ import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   Location().checkPermission;
+  initializeDateFormatting('ru');
   runApp(const MyApp());
 }
 

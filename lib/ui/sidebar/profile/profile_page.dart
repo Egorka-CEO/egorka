@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           'Профиль',
           style: CustomTextStyle.black15w500,
         ),
@@ -77,12 +78,31 @@ class ProfilePage extends StatelessWidget {
                                   .copyWith(fontSize: 24),
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              '200 367 ₽',
-                              style: CustomTextStyle.black15w700.copyWith(
-                                fontSize: 30,
-                                color: Colors.green[600],
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  '200 367 ₽',
+                                  style: CustomTextStyle.black15w700.copyWith(
+                                    fontSize: 30,
+                                    color: Colors.green[600],
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                GestureDetector(
+                                  onTap: () => Navigator.pushNamed(
+                                      context, AppRoute.addDeposit),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.5),
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -239,6 +259,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               obscureText: true,
                               hintText: '',
+                              fillColor: Colors.white,
                               textEditingController:
                                   TextEditingController(text: 'password'),
                             ),
@@ -257,6 +278,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               obscureText: true,
                               hintText: '',
+                              fillColor: Colors.white,
                               textEditingController:
                                   TextEditingController(text: 'password'),
                             ),
@@ -275,6 +297,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               obscureText: true,
                               hintText: '',
+                              fillColor: Colors.white,
                               textEditingController:
                                   TextEditingController(text: 'password'),
                             ),

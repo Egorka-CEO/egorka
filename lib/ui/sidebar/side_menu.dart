@@ -22,23 +22,49 @@ class NavBar extends StatelessWidget {
               padding: const EdgeInsets.all(18.0),
               child: ListView(
                 children: [
-                  Hero(
-                    tag: 'logo',
-                    child: SvgPicture.asset(
-                      'assets/icons/logo_egorka.svg',
-                      alignment: Alignment.centerLeft,
-                      width: 100,
-                      height: 40,
+                  SvgPicture.asset(
+                    'assets/icons/logo_egorka.svg',
+                    alignment: Alignment.centerLeft,
+                    width: 100,
+                    height: 40,
+                  ),
+                  const SizedBox(height: 30),
+                  Container(
+                    color: Colors.transparent,
+                      width: double.infinity,
+                      height: 50,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, AppRoute.trafficDeposit),
+                            child: const Text(
+                              'Движение по депозиту',
+                              style: CustomTextStyle.black15w500,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, AppRoute.addDeposit),
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.red.withOpacity(0.6),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
+
                   // const Divider(height: 30),
-                  const SizedBox(height: 20),
+
                   GestureDetector(
                     onTap: () => Navigator.pushNamed(context, AppRoute.profile),
                     child: Container(
                       color: Colors.transparent,
                       width: double.infinity,
-                      height: 60,
+                      height: 50,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -54,7 +80,7 @@ class NavBar extends StatelessWidget {
                         Navigator.pushNamed(context, AppRoute.currentOrder),
                     child: Container(
                       color: Colors.transparent,
-                      height: 60,
+                      height: 50,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -72,7 +98,7 @@ class NavBar extends StatelessWidget {
                     },
                     child: Container(
                       color: Colors.transparent,
-                      height: 60,
+                      height: 50,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -88,7 +114,7 @@ class NavBar extends StatelessWidget {
                         Navigator.pushNamed(context, AppRoute.marketplaces),
                     child: Container(
                       color: Colors.transparent,
-                      height: 60,
+                      height: 50,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -103,7 +129,7 @@ class NavBar extends StatelessWidget {
                     onTap: () => Navigator.pushNamed(context, AppRoute.about),
                     child: Container(
                       color: Colors.transparent,
-                      height: 60,
+                      height: 50,
                       width: double.infinity,
                       child: const Align(
                         alignment: Alignment.centerLeft,

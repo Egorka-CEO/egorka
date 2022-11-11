@@ -26,6 +26,8 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   scale_button: ^2.1.2
   custom_map_markers: ^0.0.2+1
+  intl: ^0.17.0
+  flip_card: ^0.6.0
 
 dev_dependencies:
   flutter_test:

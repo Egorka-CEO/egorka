@@ -41,7 +41,7 @@ class MarketPlacesMap extends StatelessWidget {
                               child: Row(
                                 children: [
                                   const Icon(
-                                    Icons.arrow_back_outlined,
+                                    Icons.arrow_back_ios,
                                     size: 25,
                                     color: Colors.red,
                                   ),
@@ -51,11 +51,10 @@ class MarketPlacesMap extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Align(
+                            const Align(
                               child: Text(
                                 'Маркетплейсы',
-                                style: CustomTextStyle.black15w500.copyWith(
-                                    fontSize: 16, fontWeight: FontWeight.w700),
+                                style: CustomTextStyle.black15w500,
                               ),
                             )
                           ],

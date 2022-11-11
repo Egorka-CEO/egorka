@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           padding: const EdgeInsets.only(top: 10),
                           child: AnimatedOpacity(
                             duration: const Duration(seconds: 0),
-                            opacity: logoVisibleMove ? 1 : 0,
+                            opacity: 1,
                             child: SizedBox(
                               height: 50,
                               child: SvgPicture.asset(
@@ -189,50 +189,50 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ],
             ),
-            Positioned.fill(
-              child: Stack(
-                children: [
-                  AnimatedPadding(
-                    onEnd: () {
-                      logoVisibleMove = true;
-                      setState(() {});
-                    },
-                    curve: Curves.linear,
-                    duration: Duration(seconds: duration),
-                    padding: EdgeInsets.only(
-                      top: logoMoveBackgroundScale ? 65 : 0,
-                      left: logoMoveBackgroundScale ? 65 : 0,
-                    ),
-                    child: AnimatedAlign(
-                      curve: Curves.linear,
-                      alignment: logoMoveBackgroundScale
-                          ? Alignment.topLeft
-                          : Alignment.center,
-                      duration: Duration(seconds: duration),
-                      child: AnimatedOpacity(
-                        duration: const Duration(seconds: 0),
-                        opacity: logoVisibleMove ? 0 : 1,
-                        child: AnimatedScale(
-                          scale: logoMoveBackgroundScale ? 1 : 2,
-                          duration: Duration(seconds: duration),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: SizedBox(
-                              height: 50,
-                              child: SvgPicture.asset(
-                                'assets/icons/logo_egorka.svg',
-                                width: 100,
-                                height: 30,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Positioned.fill(
+            //   child: Stack(
+            //     children: [
+            //       AnimatedPadding(
+            //         onEnd: () {
+            //           logoVisibleMove = true;
+            //           setState(() {});
+            //         },
+            //         curve: Curves.linear,
+            //         duration: Duration(seconds: duration),
+            //         padding: EdgeInsets.only(
+            //           top: logoMoveBackgroundScale ? 65 : 0,
+            //           left: logoMoveBackgroundScale ? 65 : 0,
+            //         ),
+            //         child: AnimatedAlign(
+            //           curve: Curves.linear,
+            //           alignment: logoMoveBackgroundScale
+            //               ? Alignment.topLeft
+            //               : Alignment.center,
+            //           duration: Duration(seconds: duration),
+            //           child: AnimatedOpacity(
+            //             duration: const Duration(seconds: 0),
+            //             opacity: logoVisibleMove ? 0 : 1,
+            //             child: AnimatedScale(
+            //               scale: logoMoveBackgroundScale ? 1 : 2,
+            //               duration: Duration(seconds: duration),
+            //               child: Padding(
+            //                 padding: const EdgeInsets.only(top: 5),
+            //                 child: SizedBox(
+            //                   height: 50,
+            //                   child: SvgPicture.asset(
+            //                     'assets/icons/logo_egorka.svg',
+            //                     width: 100,
+            //                     height: 30,
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         );
       },

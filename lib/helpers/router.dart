@@ -1,3 +1,4 @@
+import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
@@ -34,7 +35,12 @@ class AppRoute {
       case currentOrder:
         return MaterialPageRoute(builder: (_) => const CurrentOrderPage());
       case marketplaces:
-        return MaterialPageRoute(builder: (_) => const MarketPage());
+      var history;
+      if(route.arguments != null) {
+        final list = route.arguments as List<HistoryModel>;
+        history = list[0];
+      }
+        return MaterialPageRoute(builder: (_) => MarketPage(historyModel: history));
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:

@@ -30,13 +30,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void startAnim() async {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       logoMoveBackgroundScale = true;
       setState(() {});
     });
   }
 
-  int duration = 1;
+  int duration = 400;
   double hight = 0;
 
   bool initHeight = true;
@@ -173,22 +173,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 },
               ),
             ),
-            Stack(
-              children: [
-                AnimatedOpacity(
-                  onEnd: () {
-                    hight = 0;
-                    setState(() {});
-                  },
-                  duration: Duration(seconds: duration),
-                  opacity: logoMoveBackgroundScale ? 0 : 1,
-                  child: Container(
-                    height: hight,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
+            // Stack(
+            //   children: [
+            //     AnimatedOpacity(
+            //       onEnd: () {
+            //         hight = 0;
+            //         setState(() {});
+            //       },
+            //       duration: Duration(milliseconds: duration),
+            //       opacity: logoMoveBackgroundScale ? 0 : 1,
+            //       child: Container(
+            //         height: hight,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             // Positioned.fill(
             //   child: Stack(
             //     children: [
@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             //           setState(() {});
             //         },
             //         curve: Curves.linear,
-            //         duration: Duration(seconds: duration),
+            //         duration: Duration(milliseconds: duration),
             //         padding: EdgeInsets.only(
             //           top: logoMoveBackgroundScale ? 65 : 0,
             //           left: logoMoveBackgroundScale ? 65 : 0,
@@ -208,13 +208,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             //           alignment: logoMoveBackgroundScale
             //               ? Alignment.topLeft
             //               : Alignment.center,
-            //           duration: Duration(seconds: duration),
+            //           duration: Duration(milliseconds: duration),
             //           child: AnimatedOpacity(
             //             duration: const Duration(seconds: 0),
             //             opacity: logoVisibleMove ? 0 : 1,
             //             child: AnimatedScale(
             //               scale: logoMoveBackgroundScale ? 1 : 2,
-            //               duration: Duration(seconds: duration),
+            //               duration: Duration(milliseconds: duration),
             //               child: Padding(
             //                 padding: const EdgeInsets.only(top: 5),
             //                 child: SizedBox(

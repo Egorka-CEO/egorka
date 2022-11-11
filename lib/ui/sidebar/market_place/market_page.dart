@@ -3,6 +3,7 @@ import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/route_order.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -16,7 +17,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MarketPage extends StatefulWidget {
-  const MarketPage({super.key});
+  HistoryModel? historyModel;
+  MarketPage({super.key, this.historyModel});
 
   @override
   State<MarketPage> createState() => _MarketPageState();
@@ -41,10 +43,39 @@ class _MarketPageState extends State<MarketPage> {
 
   TextEditingController toController = TextEditingController();
 
+  TextEditingController item1Controller = TextEditingController();
+  TextEditingController item2Controller = TextEditingController();
+  TextEditingController item3Controller = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController startOrderController = TextEditingController();
+  TextEditingController countBucketController = TextEditingController();
+  TextEditingController countPalletController = TextEditingController();
+
   PanelController panelController = PanelController();
 
   final bucketController = StreamController<int>();
   final palletController = StreamController<int>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.historyModel != null) {
+      fromController.text = widget.historyModel!.fromAdress!;
+      toController.text = widget.historyModel!.toAdress!;
+      item1Controller.text = widget.historyModel!.item1!;
+      item2Controller.text = widget.historyModel!.item2!;
+      item3Controller.text = widget.historyModel!.item3!;
+      startOrderController.text = widget.historyModel!.startOrder!;
+      countBucketController.text = widget.historyModel!.countBucket!.toString();
+      countPalletController.text = widget.historyModel!.countPallet!.toString();
+      nameController.text = widget.historyModel!.name!;
+      phoneController.text = widget.historyModel!.phone!;
+      bucketController.add(widget.historyModel!.countBucket!);
+      palletController.add(widget.historyModel!.countPallet!);
+    }
+  }
 
   @override
   void dispose() {
@@ -253,8 +284,7 @@ class _MarketPageState extends State<MarketPage> {
                                       fillColor: Colors.white,
                                       hintText: 'Подъезд',
                                       textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
+                                      textEditingController: item1Controller,
                                     ),
                                   ),
                                   const SizedBox(width: 15),
@@ -264,8 +294,7 @@ class _MarketPageState extends State<MarketPage> {
                                       fillColor: Colors.white,
                                       hintText: 'Этаж',
                                       textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
+                                      textEditingController: item2Controller,
                                     ),
                                   ),
                                   const SizedBox(width: 15),
@@ -275,8 +304,7 @@ class _MarketPageState extends State<MarketPage> {
                                       fillColor: Colors.white,
                                       hintText: 'Офис/кв.',
                                       textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
+                                      textEditingController: item3Controller,
                                     ),
                                   ),
                                 ],
@@ -409,7 +437,7 @@ class _MarketPageState extends State<MarketPage> {
                                         fillColor: Colors.white,
                                         hintText: '',
                                         textEditingController:
-                                            TextEditingController(),
+                                            startOrderController,
                                       ),
                                     ),
                                     const SizedBox(width: 10),
@@ -450,8 +478,7 @@ class _MarketPageState extends State<MarketPage> {
                                       height: 50,
                                       fillColor: Colors.white,
                                       hintText: 'Имя',
-                                      textEditingController:
-                                          TextEditingController(),
+                                      textEditingController: nameController,
                                     ),
                                   ),
                                 ],
@@ -465,8 +492,7 @@ class _MarketPageState extends State<MarketPage> {
                                       fillColor: Colors.white,
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
-                                      textEditingController:
-                                          TextEditingController(),
+                                      textEditingController: phoneController,
                                     ),
                                   ),
                                 ],
@@ -483,7 +509,7 @@ class _MarketPageState extends State<MarketPage> {
                               const SizedBox(height: 5),
                               StreamBuilder<int>(
                                   stream: bucketController.stream,
-                                  initialData: 32,
+                                  initialData: 0,
                                   builder: (context, snapshot) {
                                     return Row(
                                       children: [
@@ -494,9 +520,7 @@ class _MarketPageState extends State<MarketPage> {
                                             hintText: '0',
                                             textInputType: TextInputType.number,
                                             textEditingController:
-                                                TextEditingController(
-                                                    text: snapshot.data!
-                                                        .toString()),
+                                                countBucketController,
                                           ),
                                         ),
                                         const SizedBox(width: 10),
@@ -507,13 +531,14 @@ class _MarketPageState extends State<MarketPage> {
                                         Expanded(
                                           flex: 2,
                                           child: Slider(
-                                            min: 1,
+                                            min: 0,
                                             max: 50,
                                             thumbColor: Colors.red,
                                             value: snapshot.data!.toDouble(),
                                             onChanged: (value) {
                                               bucketController
                                                   .add(value.toInt());
+                                                  countBucketController.text = value.toInt().toString();
                                             },
                                           ),
                                         )
@@ -532,7 +557,7 @@ class _MarketPageState extends State<MarketPage> {
                               const SizedBox(height: 5),
                               StreamBuilder<int>(
                                   stream: palletController.stream,
-                                  initialData: 16,
+                                  initialData: 0,
                                   builder: (context, snapshot) {
                                     return Row(
                                       children: [
@@ -543,9 +568,7 @@ class _MarketPageState extends State<MarketPage> {
                                             hintText: '0',
                                             textInputType: TextInputType.number,
                                             textEditingController:
-                                                TextEditingController(
-                                                    text: snapshot.data!
-                                                        .toString()),
+                                                countPalletController,
                                           ),
                                         ),
                                         const SizedBox(width: 10),
@@ -556,13 +579,14 @@ class _MarketPageState extends State<MarketPage> {
                                         Expanded(
                                           flex: 2,
                                           child: Slider(
-                                            min: 1,
+                                            min: 0,
                                             max: 50,
                                             thumbColor: Colors.red,
                                             value: snapshot.data!.toDouble(),
                                             onChanged: (value) {
                                               palletController
                                                   .add(value.toInt());
+                                                  countPalletController.text = value.toInt().toString();
                                             },
                                           ),
                                         )

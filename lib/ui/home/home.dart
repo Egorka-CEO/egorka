@@ -30,13 +30,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void startAnim() async {
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       logoMoveBackgroundScale = true;
       setState(() {});
     });
   }
 
-  int duration = 400;
+  int duration = 600;
   double hight = 0;
 
   bool initHeight = true;
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           padding: const EdgeInsets.only(top: 10),
                           child: AnimatedOpacity(
                             duration: const Duration(seconds: 0),
-                            opacity: 1,
+                            opacity: logoVisibleMove ? 1 : 0,
                             child: SizedBox(
                               height: 50,
                               child: SvgPicture.asset(
@@ -189,50 +189,50 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             //     ),
             //   ],
             // ),
-            // Positioned.fill(
-            //   child: Stack(
-            //     children: [
-            //       AnimatedPadding(
-            //         onEnd: () {
-            //           logoVisibleMove = true;
-            //           setState(() {});
-            //         },
-            //         curve: Curves.linear,
-            //         duration: Duration(milliseconds: duration),
-            //         padding: EdgeInsets.only(
-            //           top: logoMoveBackgroundScale ? 65 : 0,
-            //           left: logoMoveBackgroundScale ? 65 : 0,
-            //         ),
-            //         child: AnimatedAlign(
-            //           curve: Curves.linear,
-            //           alignment: logoMoveBackgroundScale
-            //               ? Alignment.topLeft
-            //               : Alignment.center,
-            //           duration: Duration(milliseconds: duration),
-            //           child: AnimatedOpacity(
-            //             duration: const Duration(seconds: 0),
-            //             opacity: logoVisibleMove ? 0 : 1,
-            //             child: AnimatedScale(
-            //               scale: logoMoveBackgroundScale ? 1 : 2,
-            //               duration: Duration(milliseconds: duration),
-            //               child: Padding(
-            //                 padding: const EdgeInsets.only(top: 5),
-            //                 child: SizedBox(
-            //                   height: 50,
-            //                   child: SvgPicture.asset(
-            //                     'assets/icons/logo_egorka.svg',
-            //                     width: 100,
-            //                     height: 30,
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Positioned.fill(
+              child: Stack(
+                children: [
+                  AnimatedPadding(
+                    onEnd: () {
+                      logoVisibleMove = true;
+                      setState(() {});
+                    },
+                    curve: Curves.linear,
+                    duration: Duration(milliseconds: duration),
+                    padding: EdgeInsets.only(
+                      top: logoMoveBackgroundScale ? 65 : 0,
+                      left: logoMoveBackgroundScale ? 65 : 0,
+                    ),
+                    child: AnimatedAlign(
+                      curve: Curves.linear,
+                      alignment: logoMoveBackgroundScale
+                          ? Alignment.topLeft
+                          : Alignment.center,
+                      duration: Duration(milliseconds: duration),
+                      child: AnimatedOpacity(
+                        duration: const Duration(seconds: 0),
+                        opacity: logoVisibleMove ? 0 : 1,
+                        child: AnimatedScale(
+                          scale: logoMoveBackgroundScale ? 1 : 3.6,
+                          duration: Duration(milliseconds: duration),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 5, bottom: 5),
+                            child: SizedBox(
+                              height: 50,
+                              child: SvgPicture.asset(
+                                'assets/icons/logo_egorka.svg',
+                                width: 100,
+                                height: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       },

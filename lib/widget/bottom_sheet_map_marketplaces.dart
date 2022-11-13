@@ -1,9 +1,9 @@
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/address.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class BottomMarketPlacesMap extends StatefulWidget {
@@ -22,7 +22,6 @@ class BottomMarketPlacesMap extends StatefulWidget {
 class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
   FocusNode focusFrom = FocusNode();
 
-  // Address? address;
   mrkt.Points? points;
 
   @override
@@ -31,16 +30,14 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
   }
 
   Widget _floatingPanel(BuildContext context) {
-    // var bloc = BlocProvider.of<MarketPlacePageBloc>(context);
     return Container(
-      margin:
-          MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
-      decoration: const BoxDecoration(
+      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15.h),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+          topLeft: Radius.circular(25.r),
+          topRight: Radius.circular(25.r),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
@@ -61,14 +58,15 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
             children: [
               Padding(
                 padding: EdgeInsets.only(
-                    top: 10,
-                    left: (MediaQuery.of(context).size.width * 45) / 100,
-                    right: (MediaQuery.of(context).size.width * 45) / 100,
-                    bottom: 10),
+                  top: 10.w,
+                  left: ((MediaQuery.of(context).size.width * 45) / 100).w,
+                  right: ((MediaQuery.of(context).size.width * 45) / 100).w,
+                  bottom: 10.w,
+                ),
                 child: Container(
-                  height: 5,
+                  height: 5.h,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(25.r),
                     color: Colors.grey,
                   ),
                 ),
@@ -79,28 +77,27 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
                       style: CustomTextStyle.black15w700,
                     )
                   : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 10.w,
                       ),
                       child: Column(
                         children: [
-                          Text('${points!.name[0].name}',
+                          Text(points!.name[0].name,
                               style: CustomTextStyle.black15w700),
                           Text(
-                            '${points!.address[0].address}',
+                            points!.address[0].address,
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20.h),
                           GestureDetector(
                             onTap: () => Navigator.of(context).pop(points),
                             child: Container(
                               height: 50,
                               decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(15)),
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
                               child: Center(
                                 child: Text(
                                   'Выбрать',
@@ -110,7 +107,6 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
                               ),
                             ),
                           ),
-                          
                         ],
                       ),
                     ),
@@ -120,94 +116,4 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
       ),
     );
   }
-
-  // Widget _searchList() {
-  //   return Column(
-  //     children: [
-  //       const SizedBox(height: 10),
-  //       SizedBox(
-  //         height: 215,
-  //         child: BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
-  //           buildWhen: (previous, current) {
-  //             if (current is MarketPlaceSuccess) {
-  //               address = current.address;
-  //             }
-  //             return true;
-  //           },
-  //           builder: ((context, state) {
-  //             if (state is MarketPlaceStated) {
-  //               return const SizedBox();
-  //             } else if (state is MarketPlaceLoading) {
-  //               return Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: const [
-  //                   CircularProgressIndicator(),
-  //                 ],
-  //               );
-  //             } else if (state is MarketPlaceSuccess) {
-  //               return address != null
-  //                   ? Padding(
-  //                       padding: const EdgeInsets.symmetric(horizontal: 20),
-  //                       child: ListView.builder(
-  //                         shrinkWrap: true,
-  //                         padding: EdgeInsets.zero,
-  //                         itemCount: state.address!.result.suggestions!.length,
-  //                         itemBuilder: (context, index) {
-  //                           return _pointCard(state, index, context);
-  //                         },
-  //                       ),
-  //                     )
-  //                   : Container();
-  //             } else {
-  //               return const Text('');
-  //             }
-  //           }),
-  //         ),
-  //       ),
-  //       const SizedBox(height: 10),
-  //     ],
-  //   );
-  // }
-
-  // Container _pointCard(
-  //     MarketPlaceSuccess state, int index, BuildContext context) {
-  //   return Container(
-  //     margin: const EdgeInsets.only(top: 5, bottom: 5),
-  //     height: 50,
-  //     child: InkWell(
-  //       onTap: () {
-  //         widget.fromController.text =
-  //             state.address!.result.suggestions![index].name;
-  //         BlocProvider.of<MarketPlacePageBloc>(context).add(
-  //             MarketPlaceStatedCloseBtmSheet(
-  //                 state.address!.result.suggestions![index].name));
-
-  //         focusFrom.unfocus();
-  //         widget.panelController.close();
-  //       },
-  //       child: Row(
-  //         children: [
-  //           // Expanded(
-  //           //     flex: 1,
-  //           //     child: Align(
-  //           //         alignment: Alignment.centerLeft,
-  //           //         child: CustomWidget.iconGPSSmall(
-  //           //             color: widget.typeAdd == TypeAdd.sender
-  //           //                 ? Colors.red
-  //           //                 : Colors.blue))),
-  //           const SizedBox(width: 15),
-  //           Expanded(
-  //             flex: 10,
-  //             child: Text(
-  //               state.address!.result.suggestions![index].name,
-  //               style:
-  //                   const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-  //               maxLines: 2,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

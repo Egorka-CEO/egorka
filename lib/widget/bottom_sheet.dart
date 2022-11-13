@@ -8,8 +8,11 @@ import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
+import 'package:flip_card/flip_card.dart';
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class BottomSheetDraggable extends StatefulWidget {
@@ -45,6 +48,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     DeliveryChocie(title: 'Пешком', icon: 'assets/images/ic_leg.png'),
   ];
 
+  bool showFront = true;
+  FlipCardController? _flipController;
+  @override
+  void initState() {
+    super.initState();
+    _flipController = FlipCardController();
+  }
+
   @override
   void dispose() {
     stream.close();
@@ -77,8 +88,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             focusTo.unfocus();
           }
         },
-        maxHeight: 735,
-        minHeight: bloc.isPolilyne ? 350 : 215,
+        maxHeight: 735.h,
+        minHeight: bloc.isPolilyne ? 350.h : 215.h,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -87,14 +98,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Widget _floatingPanel(BuildContext context) {
     var bloc = BlocProvider.of<SearchAddressBloc>(context);
     return Container(
-      margin:
-          MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
-      decoration: const BoxDecoration(
+      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15.h),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+          topLeft: Radius.circular(25.r),
+          topRight: Radius.circular(25.r),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
@@ -107,14 +117,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         children: [
           Padding(
             padding: EdgeInsets.only(
-                top: 10,
-                left: (MediaQuery.of(context).size.width * 45) / 100,
-                right: (MediaQuery.of(context).size.width * 45) / 100,
-                bottom: 10),
+                top: 10.w,
+                left: ((MediaQuery.of(context).size.width * 45) / 100).w,
+                right: ((MediaQuery.of(context).size.width * 45) / 100).w,
+                bottom: 10.w),
             child: Container(
-              height: 5,
+              height: 5.h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(25.r),
                 color: Colors.grey,
               ),
             ),
@@ -125,11 +135,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Container(
-                      height: 60,
+                      height: 60.h,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15.r),
                         color: Colors.grey[200],
                       ),
                       child: Align(
@@ -145,6 +155,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 onTap: () {
+                                  if (_flipController!.state!.isFront) {
+                                    _flipController!.toggleCard();
+                                  }
                                   typeAdd = TypeAdd.sender;
                                   panelController.open();
                                   Future.delayed(
@@ -156,7 +169,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 focusNode: focusFrom,
                                 fillColor: Colors.grey[200],
                                 hintText: 'Откуда забрать?',
-                                // enabled: !bloc.isPolilyne,
                                 onFieldSubmitted: (text) {
                                   panelController.close();
                                   focusFrom.unfocus();
@@ -167,41 +179,42 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            focusFrom.hasFocus
-                                // ? const SizedBox()
-                                ? GestureDetector(
-                                    onTap: () {
-                                      bloc.add(DeletePolilyneEvent());
-                                      fromController.text = '';
-                                      stream.add('event');
-                                    },
-                                    child: const Icon(Icons.clear),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      focusFrom.unfocus();
-                                      focusTo.unfocus();
-                                      panelController.close();
-                                      bloc.add(SearchMeEvent());
-                                    },
-                                    child: const Icon(
-                                      Icons.gps_fixed,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                            const SizedBox(width: 15),
+                            FlipCard(
+                              controller: _flipController,
+                              back: GestureDetector(
+                                onTap: () {
+                                  bloc.add(DeletePolilyneEvent());
+                                  fromController.text = '';
+                                  stream.add('event');
+                                },
+                                child: const Icon(Icons.clear),
+                              ),
+                              front: GestureDetector(
+                                onTap: () {
+                                  focusFrom.unfocus();
+                                  focusTo.unfocus();
+                                  panelController.close();
+                                  bloc.add(SearchMeEvent());
+                                },
+                                child: const Icon(
+                                  Icons.gps_fixed,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 15.w),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  SizedBox(height: 15.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Container(
-                      height: 60,
+                      height: 60.h,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(15.r),
                           color: Colors.grey[200]),
                       child: Align(
                         alignment: Alignment.centerLeft,
@@ -217,6 +230,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 onTap: () {
+                                  if (!_flipController!.state!.isFront) {
+                                    _flipController!.toggleCard();
+                                  }
                                   typeAdd = TypeAdd.receiver;
                                   panelController.open();
                                   bloc.add(SearchAddressClear());
@@ -241,7 +257,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               ),
                             ),
                             focusTo.hasFocus
-                                
                                 ? GestureDetector(
                                     onTap: () {
                                       bloc.add(DeletePolilyneEvent());
@@ -275,12 +290,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           var blocs = BlocProvider.of<SearchAddressBloc>(context);
           return Column(
             children: [
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               SizedBox(
                 height:
                     blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
-                        ? 80
-                        : 215,
+                        ? 80.h
+                        : 215.h,
                 child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   buildWhen: (previous, current) {
                     if (current is ChangeAddressSuccess) {
@@ -304,8 +319,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     } else if (state is SearchAddressSuccess) {
                       return _visible
                           ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 padding: EdgeInsets.zero,
@@ -326,8 +340,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         itemBuilder: ((context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
-                                left: index == 0 ? 20 : 0,
-                                right: index == listChoice.length - 1 ? 5 : 0),
+                                left: index == 0 ? 20.w : 0,
+                                right:
+                                    index == listChoice.length - 1 ? 5.w : 0),
                             child: GestureDetector(
                               onTap: () {
                                 streamDelivery.add(index);
@@ -335,17 +350,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               child: Opacity(
                                 opacity: snapshot.data! == index ? 1 : 0.3,
                                 child: Container(
-                                  width: 80,
+                                  width: 80.w,
                                   decoration: BoxDecoration(
-                                      color: snapshot.data! == index
-                                          ? Colors.grey[200]
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(15)),
+                                    color: snapshot.data! == index
+                                        ? Colors.grey[200]
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(15.r),
+                                  ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       SizedBox(
-                                        height: 45,
+                                        height: 45.h,
                                         child: Image.asset(
                                           listChoice[index].icon,
                                           color: snapshot.data! == index
@@ -381,18 +397,19 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   }),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
                     onTap: authShowDialog,
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(15),
+                      padding: EdgeInsets.all(15.w),
                       decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(10)),
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
                       child: const Center(
                         child: Text('Перейти к оформлению',
                             style: CustomTextStyle.white15w600),
@@ -438,10 +455,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Container _pointCard(
       SearchAddressSuccess state, int index, BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 5),
-      height: 50,
+      margin: EdgeInsets.only(top: 5.w, bottom: 5.w),
+      height: 50.h,
       child: InkWell(
         onTap: () {
+          if (!_flipController!.state!.isFront) {
+            _flipController!.toggleCard();
+          }
           if (focusFrom.hasFocus) {
             fromController.text =
                 state.address!.result.suggestions![index].name;
@@ -469,14 +489,15 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         child: Row(
           children: [
             Expanded(
-                flex: 1,
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: CustomWidget.iconGPSSmall(
-                        color: typeAdd == TypeAdd.sender
-                            ? Colors.red
-                            : Colors.blue))),
-            const SizedBox(width: 15),
+              flex: 1,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: CustomWidget.iconGPSSmall(
+                    color:
+                        typeAdd == TypeAdd.sender ? Colors.red : Colors.blue),
+              ),
+            ),
+            SizedBox(width: 15.w),
             Expanded(
               flex: 10,
               child: Text(

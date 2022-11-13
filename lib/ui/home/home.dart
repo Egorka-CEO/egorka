@@ -10,6 +10,7 @@ import 'package:egorka/ui/sidebar/side_menu.dart';
 import 'package:egorka/widget/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -30,13 +31,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void startAnim() async {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       logoMoveBackgroundScale = true;
       setState(() {});
     });
   }
 
-  int duration = 1;
+  int duration = 350;
   double hight = 0;
 
   bool initHeight = true;
@@ -64,19 +65,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInOutQuint,
                     margin: EdgeInsets.only(
-                      bottom: snapshot is SearchAddressRoutePolilyne ? 100 : 0,
+                      bottom:
+                          snapshot is SearchAddressRoutePolilyne ? 100.h : 0,
                     ),
                     child: const MapView(),
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 60, left: 20, right: 20),
+                        EdgeInsets.only(top: 60.w, left: 20.w, right: 20.w),
                     child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 5),
+                          padding: EdgeInsets.only(top: 5.w),
                           child: SizedBox(
-                            height: 35,
+                            height: 35.h,
                             child: Builder(
                               builder: (context) {
                                 return GestureDetector(
@@ -97,11 +99,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             duration: const Duration(seconds: 0),
                             opacity: logoVisibleMove ? 1 : 0,
                             child: SizedBox(
-                              height: 50,
+                              height: 50.h,
                               child: SvgPicture.asset(
                                 'assets/icons/logo_egorka.svg',
-                                width: 100,
-                                height: 30,
+                                width: 100.w,
+                                height: 30.w,
                               ),
                             ),
                           ),
@@ -117,10 +119,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   Color.fromRGBO(255, 0, 96, 1),
                                   Color.fromRGBO(216, 0, 255, 1)
                                 ])),
-                            child: const Padding(
+                            child: Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 5),
-                              child: Text(
+                                  horizontal: 8.w, vertical: 5.h),
+                              child: const Text(
                                 'Маркетплейсы',
                                 style: CustomTextStyle.white15w600,
                               ),
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   if (!bloc.isPolilyne)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 35 / 2),
+                      padding: EdgeInsets.only(bottom: (35 / 2).h),
                       child: CustomWidget.iconGPS(),
                     ),
                   const BottomSheetDraggable(),
@@ -140,18 +142,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 50.0),
+              padding: EdgeInsets.only(top: 50.h),
               child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
                 buildWhen: (previous, current) {
                   if (current is HistoryOpenBtmSheetState) {
-                    panelController.animatePanelToPosition(1,
-                        curve: Curves.easeInOutQuint,
-                        duration: const Duration(milliseconds: 1000));
+                    panelController.animatePanelToPosition(
+                      1,
+                      curve: Curves.easeInOutQuint,
+                      duration: const Duration(milliseconds: 1000),
+                    );
                   }
                   if (current is HistoryCloseBtmSheetState) {
-                    panelController.animatePanelToPosition(0,
-                        curve: Curves.easeInOutQuint,
-                        duration: const Duration(milliseconds: 1000));
+                    panelController.animatePanelToPosition(
+                      0,
+                      curve: Curves.easeInOutQuint,
+                      duration: const Duration(milliseconds: 1000),
+                    );
                   }
                   return false;
                 },
@@ -166,29 +172,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     onPanelClosed: () {},
                     onPanelOpened: () {},
                     onPanelSlide: (size) {},
-                    maxHeight: 700,
+                    maxHeight: 700.h,
                     minHeight: 0,
                     defaultPanelState: PanelState.CLOSED,
                   );
                 },
               ),
             ),
-            Stack(
-              children: [
-                AnimatedOpacity(
-                  onEnd: () {
-                    hight = 0;
-                    setState(() {});
-                  },
-                  duration: Duration(seconds: duration),
-                  opacity: logoMoveBackgroundScale ? 0 : 1,
-                  child: Container(
-                    height: hight,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
+            // Stack(
+            //   children: [
+            //     AnimatedOpacity(
+            //       onEnd: () {
+            //         hight = 0;
+            //         setState(() {});
+            //       },
+            //       duration: Duration(milliseconds: duration),
+            //       opacity: logoMoveBackgroundScale ? 0 : 1,
+            //       child: Container(
+            //         height: hight,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Positioned.fill(
               child: Stack(
                 children: [
@@ -198,31 +204,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       setState(() {});
                     },
                     curve: Curves.linear,
-                    duration: Duration(seconds: duration),
+                    duration: Duration(milliseconds: duration),
                     padding: EdgeInsets.only(
-                      top: logoMoveBackgroundScale ? 65 : 0,
-                      left: logoMoveBackgroundScale ? 65 : 0,
+                      top: logoMoveBackgroundScale ? 65.w : 0,
+                      left: logoMoveBackgroundScale ? 65.w : 0,
                     ),
                     child: AnimatedAlign(
                       curve: Curves.linear,
                       alignment: logoMoveBackgroundScale
                           ? Alignment.topLeft
                           : Alignment.center,
-                      duration: Duration(seconds: duration),
+                      duration: Duration(milliseconds: duration),
                       child: AnimatedOpacity(
                         duration: const Duration(seconds: 0),
                         opacity: logoVisibleMove ? 0 : 1,
                         child: AnimatedScale(
-                          scale: logoMoveBackgroundScale ? 1 : 2,
-                          duration: Duration(seconds: duration),
+                          scale: logoMoveBackgroundScale ? 1 : 3.6,
+                          duration: Duration(milliseconds: duration),
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 5),
+                            padding: EdgeInsets.only(top: 5.w, bottom: 5.w),
                             child: SizedBox(
-                              height: 50,
+                              height: 50.h,
                               child: SvgPicture.asset(
                                 'assets/icons/logo_egorka.svg',
-                                width: 100,
-                                height: 30,
+                                width: 100.w,
+                                height: 30.w,
                               ),
                             ),
                           ),

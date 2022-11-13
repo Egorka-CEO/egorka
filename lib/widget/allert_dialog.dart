@@ -1,6 +1,6 @@
 import 'package:egorka/widget/buttons.dart';
 import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StandartAlertDialog extends StatelessWidget {
   const StandartAlertDialog({
@@ -20,17 +20,17 @@ class StandartAlertDialog extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+              padding: EdgeInsets.fromLTRB(20.w, 10.w, 20.w, 20.w),
               width: MediaQuery.of(context).size.width * 0.85,
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    height: 125,
+                    height: 125.h,
                     alignment: Alignment.center,
                     child: Text(
                       message,
@@ -52,9 +52,7 @@ class StandartAlertDialog extends StatelessWidget {
                         if ((index + 1) == buttons.length) {
                           return const SizedBox.shrink();
                         }
-                        return const SizedBox(
-                          height: 15,
-                        );
+                        return SizedBox(height: 15.h);
                       },
                       itemCount: buttons.length,
                     ),
@@ -62,7 +60,7 @@ class StandartAlertDialog extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(child: buttons[0]),
-                        const SizedBox(width: 15),
+                        SizedBox(width: 15.w),
                         Expanded(child: buttons[1]),
                       ],
                     ),

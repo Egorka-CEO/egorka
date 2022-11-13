@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:egorka/ui/auth/auth_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainAuthPage extends StatefulWidget {
   const MainAuthPage({super.key});
@@ -38,7 +39,7 @@ class _MainAuthPageState extends State<MainAuthPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: StreamBuilder<int>(
                   stream: streamController.stream,
                   initialData: 0,
@@ -52,30 +53,29 @@ class _MainAuthPageState extends State<MainAuthPage> {
                             pageController.jumpToPage(0);
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10.w),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(20.r),
                               color:
                                   snapshot.data == 0 ? Colors.grey[300] : null,
                             ),
-                            child: const Icon(Icons.person, size: 40),
+                            child: Icon(Icons.person, size: 40.w),
                           ),
                         ),
-                        const SizedBox(width: 30),
+                        SizedBox(width: 30.w),
                         GestureDetector(
                           onTap: () {
                             streamController.add(1);
                             pageController.jumpToPage(1);
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10.w),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(20.r),
                               color:
                                   snapshot.data == 1 ? Colors.grey[300] : null,
                             ),
-                            child:
-                                const Icon(Icons.card_travel_sharp, size: 40),
+                            child: Icon(Icons.card_travel_sharp, size: 40.w),
                           ),
                         ),
                       ],
@@ -83,7 +83,7 @@ class _MainAuthPageState extends State<MainAuthPage> {
                   }),
             ),
             SizedBox(
-              height: 400,
+              height: 400.h,
               child: PageView(
                 controller: pageController,
                 scrollDirection: Axis.vertical,

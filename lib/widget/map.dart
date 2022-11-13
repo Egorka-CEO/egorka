@@ -4,6 +4,7 @@ import 'package:egorka/model/address.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -95,7 +96,7 @@ class _MapViewState extends State<MapView> {
         routes = current.routes;
         marker = current.markers;
         mapController!.animateCamera(
-          CameraUpdate.newLatLngBounds(routes!.bounds, 130),
+          CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
         );
 
         return true;
@@ -114,7 +115,7 @@ class _MapViewState extends State<MapView> {
       }
     }, builder: (context, state) {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 170),
+        padding: EdgeInsets.only(bottom: 170.h),
         child: GoogleMap(
           markers: marker,
           polylines: {
@@ -144,7 +145,7 @@ class _MapViewState extends State<MapView> {
             }
             if (state is SearchAddressRoutePolilyne) {
               mapController!.animateCamera(
-                CameraUpdate.newLatLngBounds(routes!.bounds, 130),
+                CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
               );
             }
           },

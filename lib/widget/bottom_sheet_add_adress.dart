@@ -7,6 +7,7 @@ import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AddAdressBottomSheetDraggable extends StatefulWidget {
@@ -48,14 +49,13 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   Widget _floatingPanel(BuildContext context) {
     var bloc = BlocProvider.of<NewOrderPageBloc>(context);
     return Container(
-      margin:
-          MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
-      decoration: const BoxDecoration(
+      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15.h),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+          topLeft: Radius.circular(25.r),
+          topRight: Radius.circular(25.r),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
@@ -68,14 +68,15 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
         children: [
           Padding(
             padding: EdgeInsets.only(
-                top: 10,
-                left: (MediaQuery.of(context).size.width * 45) / 100,
-                right: (MediaQuery.of(context).size.width * 45) / 100,
-                bottom: 10),
+              top: 10.w,
+              left: ((MediaQuery.of(context).size.width * 45) / 100).w,
+              right: ((MediaQuery.of(context).size.width * 45) / 100).w,
+              bottom: 10.w,
+            ),
             child: Container(
-              height: 5,
+              height: 5.h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(25.r),
                 color: Colors.grey,
               ),
             ),
@@ -84,11 +85,11 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Container(
-                    height: 60,
+                    height: 60.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(15.r),
                       color: Colors.grey[200],
                     ),
                     child: Align(
@@ -107,7 +108,6 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                           Expanded(
                             child: CustomTextField(
                               onTap: () {
-                                // panelController.open();
                                 Future.delayed(
                                     const Duration(milliseconds: 300), () {
                                   focusFrom.requestFocus();
@@ -115,9 +115,10 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                               },
                               focusNode: focusFrom,
                               fillColor: Colors.grey[200],
-                              hintText: 'Откуда забрать?',
+                              hintText: widget.typeAdd == TypeAdd.sender
+                                  ? 'Откуда забрать?'
+                                  : 'Куда отвезти?',
                               onFieldSubmitted: (text) {
-                                // panelController.close();
                                 focusFrom.unfocus();
                               },
                               textEditingController: widget.fromController,
@@ -126,13 +127,13 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                               },
                             ),
                           ),
-                          const SizedBox(width: 15),
+                          SizedBox(width: 15.w),
                         ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: 15.w),
                 _searchList(),
               ],
             ),
@@ -144,9 +145,9 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   Widget _searchList() {
     return Column(
       children: [
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         SizedBox(
-          height: 215,
+          height: 215.h,
           child: BlocBuilder<NewOrderPageBloc, NewOrderState>(
             buildWhen: (previous, current) {
               if (current is NewOrderSuccess) {
@@ -167,7 +168,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
               } else if (state is NewOrderSuccess) {
                 return address != null
                     ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: ListView.builder(
                           shrinkWrap: true,
                           padding: EdgeInsets.zero,
@@ -184,34 +185,37 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
             }),
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
       ],
     );
   }
 
   Container _pointCard(NewOrderSuccess state, int index, BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 5),
-      height: 50,
+      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+      height: 50.h,
       child: InkWell(
         onTap: () {
           BlocProvider.of<NewOrderPageBloc>(context).add(
               NewOrderStatedCloseBtmSheet(
                   state.address!.result.suggestions![index].name));
-
+          widget.fromController.text =
+              state.address!.result.suggestions![index].name;
           focusFrom.unfocus();
           widget.panelController.close();
         },
         child: Row(
           children: [
             Expanded(
-                flex: 1,
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: CustomWidget.iconGPSSmall(
-                        color: widget.typeAdd == TypeAdd.sender
-                            ? Colors.red
-                            : Colors.blue))),
+              flex: 1,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: CustomWidget.iconGPSSmall(
+                    color: widget.typeAdd == TypeAdd.sender
+                        ? Colors.red
+                        : Colors.blue),
+              ),
+            ),
             const SizedBox(width: 15),
             Expanded(
               flex: 10,

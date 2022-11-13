@@ -2,6 +2,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/history.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
@@ -117,14 +118,13 @@ class _BottomSheetDraggableState
 
   Widget _floatingPanel(BuildContext context) {
     return Container(
-      margin:
-          MediaQuery.of(context).viewInsets + const EdgeInsets.only(top: 15),
-      decoration: const BoxDecoration(
+      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15.h),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+          topLeft: Radius.circular(25.r),
+          topRight: Radius.circular(25.r),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 10,
             spreadRadius: 1,
@@ -137,19 +137,20 @@ class _BottomSheetDraggableState
         children: [
           Padding(
             padding: EdgeInsets.only(
-                top: 10,
-                left: (MediaQuery.of(context).size.width * 45) / 100,
-                right: (MediaQuery.of(context).size.width * 45) / 100,
-                bottom: 10),
+              top: 10.w,
+              left: ((MediaQuery.of(context).size.width * 45) / 100).w,
+              right: ((MediaQuery.of(context).size.width * 45) / 100).w,
+              bottom: 10.w,
+            ),
             child: Container(
-              height: 5,
+              height: 5.h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(25.r),
                 color: Colors.grey,
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Expanded(
             child: SingleChildScrollView(
               child: _searchList(),
@@ -162,7 +163,7 @@ class _BottomSheetDraggableState
 
   Widget _searchList() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -177,7 +178,7 @@ class _BottomSheetDraggableState
 
   Container _pointCard(HistoryModel state, int index, BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 15),
+      margin: EdgeInsets.only(top: 5.h, bottom: 15.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -191,10 +192,10 @@ class _BottomSheetDraggableState
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.only(top: 10),
+            padding: EdgeInsets.all(20.w),
+            margin: EdgeInsets.only(top: 10.h),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
               color: Colors.grey[50],
             ),
             child: Row(
@@ -222,7 +223,7 @@ class _BottomSheetDraggableState
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600),
                                 ),
-                                const SizedBox(height: 10),
+                                SizedBox(height: 10.h),
                                 Text(
                                   state.adress!,
                                   style: const TextStyle(
@@ -279,11 +280,12 @@ class _BottomSheetDraggableState
                 Expanded(
                   flex: 2,
                   child: GestureDetector(
-                      onTap: () {
-                        widget.panelController.close();
-                        Navigator.of(context).pushNamed(AppRoute.historyOrder);
-                      },
-                      child: Image.asset(state.icon!)),
+                    onTap: () {
+                      widget.panelController.close();
+                      Navigator.of(context).pushNamed(AppRoute.historyOrder);
+                    },
+                    child: Image.asset(state.icon!),
+                  ),
                 ),
               ],
             ),

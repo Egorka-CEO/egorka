@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/ui/sidebar/deposit/item_traffic.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TrafficDeposit extends StatefulWidget {
   @override
@@ -44,15 +45,15 @@ class _TrafficDepositState extends State<TrafficDeposit> {
             initialData: 0,
             builder: (context, snapshot) {
               return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 20,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                  vertical: 20.w,
                 ),
                 child: Container(
-                  height: 50,
+                  height: 50.h,
                   decoration: BoxDecoration(
                       color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(15)),
+                      borderRadius: BorderRadius.circular(15.r)),
                   child: Row(
                     children: [
                       Expanded(
@@ -64,10 +65,10 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                                 curve: Curves.ease);
                           },
                           child: Container(
-                            margin: const EdgeInsets.all(6),
+                            margin: EdgeInsets.all(6.w),
                             decoration: BoxDecoration(
                                 color: snapshot.data! == 0 ? Colors.red : null,
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(10.r)),
                             child: Center(
                               child: Text(
                                 'Все счета',
@@ -88,7 +89,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                                 curve: Curves.ease);
                           },
                           child: Container(
-                            margin: const EdgeInsets.all(6),
+                            margin: EdgeInsets.all(6.w),
                             decoration: BoxDecoration(
                                 color: snapshot.data! == 1 ? Colors.red : null,
                                 borderRadius: BorderRadius.circular(10)),
@@ -112,7 +113,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                                 curve: Curves.ease);
                           },
                           child: Container(
-                            margin: const EdgeInsets.all(6),
+                            margin: EdgeInsets.all(6.w),
                             decoration: BoxDecoration(
                                 color: snapshot.data! == 2 ? Colors.red : null,
                                 borderRadius: BorderRadius.circular(10)),
@@ -135,9 +136,9 @@ class _TrafficDepositState extends State<TrafficDeposit> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, bottom: 30),
+              padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 30.w),
               child: SizedBox(
-                height: 400,
+                height: 400.h,
                 child: PageView(
                   physics: const NeverScrollableScrollPhysics(),
                   controller: pageController,

@@ -8,6 +8,7 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -56,7 +57,6 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('object ${widget.index} ${widget.typeAdd}');
     return MultiBlocProvider(
       providers: [
         BlocProvider<NewOrderPageBloc>(
@@ -76,7 +76,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 const Spacer(),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    padding: EdgeInsets.only(left: 20.w, right: 20.w),
                     child: Row(
                       children: [
                         Expanded(
@@ -87,14 +87,16 @@ class _DetailsPageState extends State<DetailsPage> {
                                 onTap: () => Navigator.pop(context),
                                 child: Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.arrow_back_ios,
-                                      size: 25,
+                                      size: 25.h,
                                       color: Colors.red,
                                     ),
-                                    Text('Назад',
-                                        style: CustomTextStyle.red15
-                                            .copyWith(fontSize: 17)),
+                                    Text(
+                                      'Назад',
+                                      style: CustomTextStyle.red15
+                                          .copyWith(fontSize: 17),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -127,23 +129,27 @@ class _DetailsPageState extends State<DetailsPage> {
               ListView(
                 shrinkWrap: true,
                 children: [
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Stack(
                     alignment: Alignment.center,
                     children: [
                       Container(
-                        height: 80,
-                        width: 80,
+                        height: 80.w,
+                        width: 80.w,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: widget.typeAdd == TypeAdd.sender ? Colors.red : Colors.blue,
-                            width: 2,
+                            color: widget.typeAdd == TypeAdd.sender
+                                ? Colors.red
+                                : Colors.blue,
+                            width: 2.w,
                           ),
                         ),
                       ),
-                      Text(widget.typeAdd == TypeAdd.sender ?
-                        'А${widget.index}' : 'Б${widget.index}',
+                      Text(
+                        widget.typeAdd == TypeAdd.sender
+                            ? 'А${widget.index}'
+                            : 'Б${widget.index}',
                         style: const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w600,
@@ -151,31 +157,33 @@ class _DetailsPageState extends State<DetailsPage> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Row(
                       children: [
-                        Text(widget.typeAdd == TypeAdd.sender?
-                          'Откуда забрать?' : 'Куда отвезти?',
+                        Text(
+                          widget.typeAdd == TypeAdd.sender
+                              ? 'Откуда забрать?'
+                              : 'Куда отвезти?',
                           style: CustomTextStyle.grey15bold,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Column(
                       children: [
                         Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(15)),
+                              borderRadius: BorderRadius.circular(15.r)),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const SizedBox(width: 20),
+                              SizedBox(width: 20.w),
                               // Checkbox(
                               //   value: false,
                               //   fillColor:
@@ -194,9 +202,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     // BlocProvider.of<MarketPlacePageBloc>(
                                     //         context)
                                     //     .add(MarketPlaceOpenBtmSheet());
-                                    setState(() {
-                                      
-                                    });
+                                    setState(() {});
                                     panelController.animatePanelToPosition(
                                       1,
                                       curve: Curves.easeInOutQuint,
@@ -205,7 +211,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     );
                                   },
                                   child: CustomTextField(
-                                    height: 50,
+                                    height: 50.h,
                                     contentPadding: const EdgeInsets.all(0),
                                     fillColor: Colors.white,
                                     enabled: false,
@@ -214,16 +220,16 @@ class _DetailsPageState extends State<DetailsPage> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10.w),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Row(
                       children: const [
                         Text(
@@ -233,34 +239,34 @@ class _DetailsPageState extends State<DetailsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Row(
                       children: [
                         Expanded(
                           child: CustomTextField(
-                            height: 50,
+                            height: 50.h,
                             fillColor: Colors.white,
                             hintText: 'Подъезд',
                             textInputType: TextInputType.number,
                             textEditingController: TextEditingController(),
                           ),
                         ),
-                        const SizedBox(width: 15),
+                        SizedBox(width: 15.w),
                         Expanded(
                           child: CustomTextField(
-                            height: 50,
+                            height: 50.h,
                             fillColor: Colors.white,
                             hintText: 'Этаж',
                             textInputType: TextInputType.number,
                             textEditingController: TextEditingController(),
                           ),
                         ),
-                        const SizedBox(width: 15),
+                        SizedBox(width: 15.w),
                         Expanded(
                           child: CustomTextField(
-                            height: 50,
+                            height: 50.h,
                             fillColor: Colors.white,
                             hintText: 'Офис/кв.',
                             textInputType: TextInputType.number,
@@ -270,9 +276,9 @@ class _DetailsPageState extends State<DetailsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.w),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Row(
                       children: const [
                         Text('Контакты получателя',
@@ -280,9 +286,9 @@ class _DetailsPageState extends State<DetailsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: GestureDetector(
                       onTap: () {
                         // controller.text = '';
@@ -296,7 +302,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         // );
                       },
                       child: CustomTextField(
-                        height: 50,
+                        height: 50.h,
                         // contentPadding: const EdgeInsets.all(0),
                         fillColor: Colors.white,
                         hintText: 'Имя',
@@ -304,9 +310,9 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: GestureDetector(
                       onTap: () {
                         // controller.text = '';
@@ -320,7 +326,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         // );
                       },
                       child: CustomTextField(
-                        height: 50,
+                        height: 50.h,
                         // contentPadding: const EdgeInsets.all(0),
                         fillColor: Colors.white,
                         // enabled: false,
@@ -329,9 +335,9 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Row(
                       children: const [
                         Text(
@@ -341,27 +347,27 @@ class _DetailsPageState extends State<DetailsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15.r),
                       ),
                       child: Row(
                         children: [
                           Expanded(
                             child: CustomTextField(
-                              height: 300,
-                              width: 100,
+                              height: 300.w,
+                              width: 100.w,
                               fillColor: Colors.white,
                               hintText: '',
                               maxLines: 10,
                               textEditingController: TextEditingController(),
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                         ],
                       ),
                     ),
@@ -369,22 +375,23 @@ class _DetailsPageState extends State<DetailsPage> {
                 ],
               ),
               BlocBuilder<NewOrderPageBloc, NewOrderState>(
-                  buildWhen: (previous, current) {
-                if (current is NewOrderCloseBtmSheet) {
-                  btmSheet = false;
-                } else if (current is NewOrderStatedOpenBtmSheet) {
-                  btmSheet = true;
-                } else if (current is NewOrderStateCloseBtmSheet) {
-                  btmSheet = false;
-                  if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    routeOrderSender.add(RouteOrder(adress: current.value!));
-                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
+                buildWhen: (previous, current) {
+                  if (current is NewOrderCloseBtmSheet) {
+                    btmSheet = false;
+                  } else if (current is NewOrderStatedOpenBtmSheet) {
+                    btmSheet = true;
+                  } else if (current is NewOrderStateCloseBtmSheet) {
+                    btmSheet = false;
+                    if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                      routeOrderSender.add(RouteOrder(adress: current.value!));
+                    } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
+                      routeOrderReceiver
+                          .add(RouteOrder(adress: current.value!));
+                    }
                   }
-                }
-
-                return true;
-              }, builder: (context, snapshot) {
+                  return true;
+                },
+                builder: (context, snapshot) {
                   return SlidingUpPanel(
                     color: Colors.white,
                     controller: panelController,
@@ -419,11 +426,11 @@ class _DetailsPageState extends State<DetailsPage> {
                       //   focusTo.unfocus();
                       // }
                     },
-                    maxHeight: 700,
+                    maxHeight: 700.h,
                     minHeight: 0,
                     defaultPanelState: PanelState.CLOSED,
                   );
-                }
+                },
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatelessWidget {
   final Function? onTap;
@@ -63,7 +64,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color hintTextColor = Colors.grey;
-    height = height ?? 75;
+    height = height ?? 75.h;
     hintStyle = hintStyle ??
         TextStyle(
           overflow: TextOverflow.ellipsis,
@@ -72,8 +73,8 @@ class CustomTextField extends StatelessWidget {
           fontWeight: FontWeight.w400,
         );
 
-    contentPadding =
-        contentPadding ?? EdgeInsets.symmetric(vertical: 20, horizontal: 20);
+    contentPadding = contentPadding ??
+        EdgeInsets.symmetric(vertical: 20.w, horizontal: 20.w);
 
     var widthOfScreen = width ?? MediaQuery.of(context).size.width;
     return SizedBox(
@@ -142,8 +143,8 @@ class CustomTextField extends StatelessWidget {
                 style: BorderStyle.solid,
               ),
             ),
-            disabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+            disabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
               color: Colors.transparent,
               width: 0.0,
               style: BorderStyle.solid,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -20,19 +21,19 @@ class AuthPage extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
               SvgPicture.asset(
                 'assets/icons/logo_egorka.svg',
-                height: 60,
+                height: 60.h,
               ),
               const Spacer(),
               CustomTextField(
                 textEditingController: _loginController,
-                hintText: 'Логин',
+                hintText: 'Логинaaa',
               ),
               CustomTextField(
                 textEditingController: _passwordController,

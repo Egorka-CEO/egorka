@@ -12,6 +12,7 @@ import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -59,7 +60,6 @@ class _MarketPageState extends State<MarketPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.historyModel != null) {
       fromController.text = widget.historyModel!.fromAdress!;
@@ -119,7 +119,7 @@ class _MarketPageState extends State<MarketPage> {
                 const Spacer(),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    padding: EdgeInsets.only(left: 20.w, right: 20.w),
                     child: Row(
                       children: [
                         Expanded(
@@ -158,18 +158,13 @@ class _MarketPageState extends State<MarketPage> {
                 } else if (current is MarketPlaceStateCloseBtmSheet) {
                   btmSheet = false;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    print('object TypeAdd.sender');
-
                     fromController.text = controller.text;
                     routeOrderSender.add(RouteOrder(adress: current.value!));
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
                     routeOrderReceiver.add(RouteOrder(adress: current.value!));
-                    print('object TypeAdd.receiver');
-
                     toController.text = controller.text;
                   }
                 }
-
                 return true;
               }, builder: (context, snapshot) {
                 return Expanded(
@@ -177,22 +172,22 @@ class _MarketPageState extends State<MarketPage> {
                     children: [
                       SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: EdgeInsets.symmetric(horizontal: 15.w),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const SizedBox(height: 15),
+                              SizedBox(height: 15.h),
                               const Text(
                                 'Доставка до маркетплейса',
                                 style: CustomTextStyle.black15w700,
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               const Text(
                                 'Как это работает?',
                                 style: CustomTextStyle.red15,
                               ),
-                              const SizedBox(height: 20),
+                              SizedBox(height: 20.h),
                               Row(
                                 children: const [
                                   Text(
@@ -201,14 +196,14 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               Column(
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15.r),
+                                    ),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
@@ -239,7 +234,7 @@ class _MarketPageState extends State<MarketPage> {
                                               );
                                             },
                                             child: CustomTextField(
-                                              height: 50,
+                                              height: 50.h,
                                               contentPadding:
                                                   const EdgeInsets.all(0),
                                               fillColor: Colors.white,
@@ -250,7 +245,7 @@ class _MarketPageState extends State<MarketPage> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: 10.w),
                                         GestureDetector(
                                           onTap: () {
                                             _findMe();
@@ -260,13 +255,13 @@ class _MarketPageState extends State<MarketPage> {
                                             color: Colors.red,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: 10.w),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Text(
@@ -275,32 +270,32 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               Row(
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50,
+                                      height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: 'Подъезд',
                                       textInputType: TextInputType.number,
                                       textEditingController: item1Controller,
                                     ),
                                   ),
-                                  const SizedBox(width: 15),
+                                  SizedBox(width: 15.w),
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50,
+                                      height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: 'Этаж',
                                       textInputType: TextInputType.number,
                                       textEditingController: item2Controller,
                                     ),
                                   ),
-                                  const SizedBox(width: 15),
+                                  SizedBox(width: 15.w),
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50,
+                                      height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: 'Офис/кв.',
                                       textInputType: TextInputType.number,
@@ -309,18 +304,19 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Text('Куда отвезти?',
                                       style: CustomTextStyle.grey15bold),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
                                 child: Column(
                                   children: [
                                     Row(
@@ -347,7 +343,7 @@ class _MarketPageState extends State<MarketPage> {
                                                   builder:
                                                       (BuildContext context) {
                                                     return SizedBox(
-                                                      height: 200,
+                                                      height: 200.h,
                                                       child: CupertinoPicker(
                                                         backgroundColor:
                                                             Colors.grey[200],
@@ -384,7 +380,7 @@ class _MarketPageState extends State<MarketPage> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: 10.w),
                                         GestureDetector(
                                           onTap: () async {
                                             final marketplaces = BlocProvider
@@ -409,13 +405,13 @@ class _MarketPageState extends State<MarketPage> {
                                             color: Colors.red,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: 10.w),
                                       ],
                                     ),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Text(
@@ -424,32 +420,33 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15.w),
+                                ),
                                 child: Row(
                                   children: [
                                     Expanded(
                                       child: CustomTextField(
-                                        height: 50,
+                                        height: 50.h,
                                         fillColor: Colors.white,
                                         hintText: '',
                                         textEditingController:
                                             startOrderController,
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    SizedBox(width: 10.w),
                                     const Icon(
                                       Icons.help_outline_outlined,
                                       color: Colors.red,
                                     ),
-                                    const SizedBox(width: 10),
+                                    SizedBox(width: 10.w),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Expanded(
@@ -461,7 +458,7 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Text(
@@ -470,12 +467,12 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               Row(
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50,
+                                      height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: 'Имя',
                                       textEditingController: nameController,
@@ -483,12 +480,12 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50,
+                                      height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
@@ -497,7 +494,7 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Text(
@@ -506,7 +503,7 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               StreamBuilder<int>(
                                   stream: bucketController.stream,
                                   initialData: 0,
@@ -515,7 +512,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50,
+                                            height: 50.h,
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -523,7 +520,7 @@ class _MarketPageState extends State<MarketPage> {
                                                 countBucketController,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: 10.w),
                                         const Icon(
                                           Icons.help_outline_outlined,
                                           color: Colors.red,
@@ -538,14 +535,15 @@ class _MarketPageState extends State<MarketPage> {
                                             onChanged: (value) {
                                               bucketController
                                                   .add(value.toInt());
-                                                  countBucketController.text = value.toInt().toString();
+                                              countBucketController.text =
+                                                  value.toInt().toString();
                                             },
                                           ),
                                         )
                                       ],
                                     );
                                   }),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               Row(
                                 children: const [
                                   Text(
@@ -554,7 +552,7 @@ class _MarketPageState extends State<MarketPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 5.h),
                               StreamBuilder<int>(
                                   stream: palletController.stream,
                                   initialData: 0,
@@ -563,7 +561,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50,
+                                            height: 50.h,
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -571,7 +569,7 @@ class _MarketPageState extends State<MarketPage> {
                                                 countPalletController,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: 10.w),
                                         const Icon(
                                           Icons.help_outline_outlined,
                                           color: Colors.red,
@@ -586,14 +584,15 @@ class _MarketPageState extends State<MarketPage> {
                                             onChanged: (value) {
                                               palletController
                                                   .add(value.toInt());
-                                                  countPalletController.text = value.toInt().toString();
+                                              countPalletController.text =
+                                                  value.toInt().toString();
                                             },
                                           ),
                                         )
                                       ],
                                     );
                                   }),
-                              const SizedBox(height: 210)
+                              SizedBox(height: 210.h)
                             ],
                           ),
                         ),
@@ -601,8 +600,8 @@ class _MarketPageState extends State<MarketPage> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
-                          height: 200,
-                          padding: const EdgeInsets.only(bottom: 40),
+                          height: 200.h,
+                          padding: EdgeInsets.only(bottom: 40.h),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -614,13 +613,13 @@ class _MarketPageState extends State<MarketPage> {
                                     0, 3), // changes position of shadow
                               ),
                             ],
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(15.r),
                             color: Colors.white,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 10.w,
                             ),
                             child: Column(
                               children: [
@@ -631,7 +630,7 @@ class _MarketPageState extends State<MarketPage> {
                                     Image.asset(
                                       'assets/images/ic_leg.png',
                                       color: Colors.red,
-                                      height: 90,
+                                      height: 90.h,
                                     ),
                                     Column(
                                       crossAxisAlignment:
@@ -673,7 +672,7 @@ class _MarketPageState extends State<MarketPage> {
                                 ),
                                 GestureDetector(
                                   child: Container(
-                                    height: 50,
+                                    height: 50.h,
                                     decoration: BoxDecoration(
                                         color: Colors.red,
                                         borderRadius:
@@ -725,7 +724,7 @@ class _MarketPageState extends State<MarketPage> {
                           //   focusTo.unfocus();
                           // }
                         },
-                        maxHeight: 700,
+                        maxHeight: 700.h,
                         minHeight: 0,
                         defaultPanelState: PanelState.CLOSED,
                       ),

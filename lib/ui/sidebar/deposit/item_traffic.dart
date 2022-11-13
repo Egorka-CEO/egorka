@@ -1,6 +1,7 @@
 import 'package:egorka/model/traffic_deposit.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class ItemTraffic extends StatelessWidget {
@@ -108,56 +109,53 @@ class ItemTraffic extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Row(
             children: [
-              const SizedBox(
-                width: 70,
-                child: Text('Дата с...'),
+              SizedBox(
+                width: 70.w,
+                child: const Text('Дата с...'),
               ),
               CustomTextField(
                 hintText: 'ДД.ММ.ГГГГ',
                 textEditingController: TextEditingController(),
                 textInputType: TextInputType.number,
-                width: 120,
+                width: 120.w,
                 fillColor: Colors.white,
-                height: 50,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                height: 50.h,
+                contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 15),
+        SizedBox(height: 15.h),
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Row(
             children: [
-              const SizedBox(
-                width: 70,
-                child: Text('Дата по...'),
+              SizedBox(
+                width: 70.w,
+                child: const Text('Дата по...'),
               ),
               CustomTextField(
                 hintText: 'ДД.ММ.ГГГГ',
                 textEditingController: TextEditingController(),
                 textInputType: TextInputType.number,
-                width: 120,
+                width: 120.w,
                 fillColor: Colors.white,
-                height: 50,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                height: 50.h,
+                contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
               ),
-              const SizedBox(width: 20),
+              SizedBox(width: 20.w),
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  height: 50,
-                  width: 50,
+                  height: 50.w,
+                  width: 50.w,
                   decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(15)),
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(15.r),
+                  ),
                   child: const Center(
                     child: Icon(
                       Icons.search,
@@ -169,7 +167,7 @@ class ItemTraffic extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
         Expanded(
           child: ListView.builder(
             shrinkWrap: true,
@@ -177,80 +175,87 @@ class ItemTraffic extends StatelessWidget {
             itemBuilder: (context, index) {
               if (index == 0) {
                 return Container(
-                  height: 50,
+                  height: 50.h,
                   color: index % 2 == 0 ? Colors.white : Colors.grey[200],
                   child: Row(
-                    children: const [
-                      SizedBox(width: 10),
-                      Expanded(child: Text('№')),
-                      Expanded(
+                    children: [
+                      SizedBox(width: 10.w),
+                      const Expanded(child: Text('№')),
+                      const Expanded(
                         child: Text(
                           'Создано',
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'Оплачено',
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'Комментарий',
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'Сумма',
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'Статус',
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                     ],
                   ),
                 );
               }
               return Container(
-                height: 50,
+                height: 50.h,
                 color: index % 2 == 0 ? Colors.white : Colors.grey[200],
                 child: Row(
                   children: [
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                     Expanded(
                         child: Text(
                       '${depositTraffic[index - 1].number}',
                       style: const TextStyle(color: Colors.red),
                     )),
                     Expanded(
-                        child: Text(DateFormat.yMd('ru')
-                            .format(depositTraffic[index - 1].dateCreation),
-                          textAlign: TextAlign.center,)),
+                        child: Text(
+                      DateFormat.yMd('ru')
+                          .format(depositTraffic[index - 1].dateCreation),
+                      textAlign: TextAlign.center,
+                    )),
                     Expanded(
-                        child: Text(DateFormat.yMd('ru')
-                            .format(depositTraffic[index - 1].datePayment),
-                          textAlign: TextAlign.center,)),
+                        child: Text(
+                      DateFormat.yMd('ru')
+                          .format(depositTraffic[index - 1].datePayment),
+                      textAlign: TextAlign.center,
+                    )),
                     Expanded(
-                        child: Text(depositTraffic[index - 1].comment,
-                          textAlign: TextAlign.center,)),
+                        child: Text(
+                      depositTraffic[index - 1].comment,
+                      textAlign: TextAlign.center,
+                    )),
                     Expanded(
-                        child:
-                            Text('${depositTraffic[index - 1].rubles} руб.',
-                          textAlign: TextAlign.center,)),
+                        child: Text(
+                      '${depositTraffic[index - 1].rubles} руб.',
+                      textAlign: TextAlign.center,
+                    )),
                     Expanded(
                         child: Text(
                       depositTraffic[index - 1].status,
                       style: const TextStyle(color: Colors.orange),
-                          textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                     )),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                   ],
                 ),
               );

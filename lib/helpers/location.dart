@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:geolocator/geolocator.dart';
 
 class Location {
@@ -14,11 +12,6 @@ class Location {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      // if (Platform.isAndroid) {
-      //   if (!(await showUserRequest())) {
-      //     return false;
-      //   }
-      // }
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return false;

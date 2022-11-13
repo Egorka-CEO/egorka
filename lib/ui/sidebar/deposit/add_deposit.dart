@@ -3,6 +3,7 @@ import 'package:egorka/model/deposit_history.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class AddDeposit extends StatelessWidget {
@@ -133,54 +134,53 @@ class AddDeposit extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.w),
         child: Column(
-          // shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-          // padding: const EdgeInsets.symmetric(horizontal: 20),
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             const Text(
               'Укажите сумму пополнения:',
               style: CustomTextStyle.black15w500,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Row(
               children: [
                 CustomTextField(
                   hintText: '15 000',
                   textEditingController: TextEditingController(),
                   textInputType: TextInputType.number,
-                  width: 150,
+                  width: 150.w,
                   fillColor: Colors.white,
-                  height: 50,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                  height: 50.h,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
                   formatters: [
                     FilteringTextInputFormatter.allow(RegExp('[0-9]'))
                   ],
                 ),
-                const SizedBox(width: 15),
+                SizedBox(width: 15.w),
                 const Text('руб'),
                 const Spacer(),
                 GestureDetector(
                   onTap: () {},
                   child: Container(
-                    height: 50,
-                    width: 100,
+                    height: 50.h,
+                    width: 100.w,
                     decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(15)),
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(15.r),
+                    ),
                     child: Center(
                       child: Text(
                         'ПОПОЛНИТЬ',
-                        style: CustomTextStyle.white15w600.copyWith(fontSize: 13),
+                        style:
+                            CustomTextStyle.white15w600.copyWith(fontSize: 13),
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Text(
               'Ранее выставленные счета',
               style: CustomTextStyle.black15w700.copyWith(
@@ -188,7 +188,7 @@ class AddDeposit extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -196,16 +196,17 @@ class AddDeposit extends StatelessWidget {
                 itemBuilder: (context, index) {
                   if (index == 0) {
                     return Container(
-                      height: 50,
+                      height: 50.h,
                       color: index % 2 == 0 ? Colors.white : Colors.grey[200],
                       child: Row(
-                        children: const [
-                          SizedBox(width: 10),
-                          Expanded(flex: 2, child: Text('№')),
-                          SizedBox(width: 10),
-                          Expanded(flex: 4, child: Text('Дата выставления')),
-                          Expanded(flex: 3, child: Text('Сумма')),
-                          SizedBox(width: 10),
+                        children: [
+                          SizedBox(width: 10.w),
+                          const Expanded(flex: 2, child: Text('№')),
+                          SizedBox(width: 10.w),
+                          const Expanded(
+                              flex: 4, child: Text('Дата выставления')),
+                          const Expanded(flex: 3, child: Text('Сумма')),
+                          SizedBox(width: 10.w),
                         ],
                       ),
                     );
@@ -215,7 +216,7 @@ class AddDeposit extends StatelessWidget {
                     color: index % 2 == 0 ? Colors.white : Colors.grey[200],
                     child: Row(
                       children: [
-                        const SizedBox(width: 10),
+                        SizedBox(width: 10.w),
                         Expanded(
                             flex: 2,
                             child: Text('${depositHistory[index - 1].number}')),
@@ -225,9 +226,9 @@ class AddDeposit extends StatelessWidget {
                                 .format(depositHistory[index - 1].date))),
                         Expanded(
                             flex: 3,
-                            child:
-                                Text('${depositHistory[index - 1].rubles} руб.')),
-                        const SizedBox(width: 10),
+                            child: Text(
+                                '${depositHistory[index - 1].rubles} руб.')),
+                        SizedBox(width: 10.w),
                       ],
                     ),
                   );

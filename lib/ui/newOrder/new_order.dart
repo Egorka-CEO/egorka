@@ -8,6 +8,7 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 enum TypeAdd { sender, receiver }
@@ -69,7 +70,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                 const Spacer(),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    padding: EdgeInsets.only(left: 20.w, right: 20.w),
                     child: Row(
                       children: [
                         Expanded(
@@ -78,9 +79,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
                             children: [
                               GestureDetector(
                                 onTap: () => Navigator.pop(context),
-                                child: Text('Отмена',
-                                    style: CustomTextStyle.red15
-                                        .copyWith(fontSize: 17)),
+                                child: Text(
+                                  'Отмена',
+                                  style: CustomTextStyle.red15
+                                      .copyWith(fontSize: 17),
+                                ),
                               ),
                               Align(
                                 child: Text(
@@ -116,7 +119,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
                     routeOrderReceiver.add(RouteOrder(adress: current.value!));
                   }
                 }
-
                 return true;
               }, builder: (context, snapshot) {
                 return Expanded(
@@ -124,22 +126,23 @@ class _NewOrderPageState extends State<NewOrderPage> {
                     children: [
                       SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: EdgeInsets.symmetric(horizontal: 15.w),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(height: 15),
-                                  const Padding(
+                                  SizedBox(height: 15.h),
+                                  Padding(
                                     padding:
-                                        EdgeInsets.only(left: 8.0, bottom: 8),
-                                    child: Text(
+                                        EdgeInsets.only(left: 8.w, bottom: 8.w),
+                                    child: const Text(
                                       'Отправитель',
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                   ListView.builder(
@@ -152,27 +155,29 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       return Dismissible(
                                         key: Key('$index'),
                                         confirmDismiss: (direction) {
-                                          print(
-                                              'object ${routeOrderSender.length}');
                                           routeOrderSender.removeAt(index);
                                           return routeOrderSender.length == 1
                                               ? Future.value(false)
                                               : Future.value(true);
-                                          // return Future.value(false);
                                         },
                                         direction: DismissDirection.endToStart,
                                         background: Container(
-                                          // color: Colors.red,
                                           decoration: BoxDecoration(
                                             color: Colors.red,
                                             borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(index == 0 ? 15 : 0),
-                                              bottomRight: Radius.circular(index == routeOrderSender.length ? 15 : 0),
+                                              topRight: Radius.circular(
+                                                  index == 0 ? 15.r : 0),
+                                              bottomRight: Radius.circular(
+                                                  index ==
+                                                          routeOrderSender
+                                                              .length
+                                                      ? 15.r
+                                                      : 0),
                                             ),
                                           ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Align(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.r),
+                                            child: const Align(
                                               alignment: Alignment.centerRight,
                                               child: Text(
                                                 'Удалить',
@@ -183,14 +188,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           ),
                                         ),
                                         child: Container(
-                                          padding: const EdgeInsets.all(10.0),
+                                          padding: EdgeInsets.all(10.w),
                                           decoration: BoxDecoration(
-                                            // border: Border.all(
-                                            //   color: Colors.grey[200]!,
-                                            // ),
                                             color: Colors.white,
                                             borderRadius:
-                                                BorderRadius.circular(15),
+                                                BorderRadius.circular(15.r),
                                           ),
                                           child: Column(
                                             children: [
@@ -198,9 +200,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                 children: [
                                                   Image.asset(
                                                     'assets/images/from.png',
-                                                    height: 25,
+                                                    height: 25.h,
                                                   ),
-                                                  const SizedBox(width: 15),
+                                                  SizedBox(width: 15.w),
                                                   Flexible(
                                                     child: Text(
                                                       routeOrderSender[index]
@@ -213,7 +215,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                   ),
                                                 ],
                                               ),
-                                              const SizedBox(height: 15),
+                                              SizedBox(height: 15.h),
                                               Row(
                                                 children: [
                                                   Icon(
@@ -221,12 +223,23 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                         .arrow_downward_rounded,
                                                     color: Colors.grey[400],
                                                   ),
-                                                  const SizedBox(width: 15),
+                                                  SizedBox(width: 15.w),
                                                   GestureDetector(
-                                                    onTap: () => Navigator.of(context).pushNamed(AppRoute.detailsOrder, arguments: [TypeAdd.sender, routeOrderSender.length + 1]),
+                                                    onTap: () => Navigator.of(
+                                                            context)
+                                                        .pushNamed(
+                                                            AppRoute
+                                                                .detailsOrder,
+                                                            arguments: [
+                                                          TypeAdd.sender,
+                                                          routeOrderSender
+                                                                  .length +
+                                                              1
+                                                        ]),
                                                     child: Text(
                                                       'Указать детали',
-                                                      style: CustomTextStyle.red15
+                                                      style: CustomTextStyle
+                                                          .red15
                                                           .copyWith(
                                                               fontWeight:
                                                                   FontWeight
@@ -243,7 +256,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       );
                                     },
                                   ),
-                                  const SizedBox(height: 10),
+                                  SizedBox(height: 10.h),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -272,18 +285,19 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
+                              SizedBox(height: 20.h),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
+                                  Padding(
                                     padding:
-                                        EdgeInsets.only(left: 8.0, bottom: 8),
-                                    child: Text(
+                                        EdgeInsets.only(left: 8.w, bottom: 8.w),
+                                    child: const Text(
                                       'Получатель',
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                   ListView.builder(
@@ -296,27 +310,29 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       return Dismissible(
                                         key: Key('$index'),
                                         confirmDismiss: (direction) {
-                                          print(
-                                              'object ${routeOrderSender.length}');
                                           routeOrderReceiver.removeAt(index);
                                           return routeOrderReceiver.length == 1
                                               ? Future.value(false)
                                               : Future.value(true);
-                                          // return Future.value(false);
                                         },
                                         direction: DismissDirection.endToStart,
                                         background: Container(
-                                          // color: Colors.red,
                                           decoration: BoxDecoration(
                                             color: Colors.red,
                                             borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(index == 0 ? 15 : 0),
-                                              bottomRight: Radius.circular(index == routeOrderReceiver.length ? 15 : 0),
+                                              topRight: Radius.circular(
+                                                  index == 0 ? 15.r : 0),
+                                              bottomRight: Radius.circular(
+                                                  index ==
+                                                          routeOrderReceiver
+                                                              .length
+                                                      ? 15.r
+                                                      : 0),
                                             ),
                                           ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Align(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.w),
+                                            child: const Align(
                                               alignment: Alignment.centerRight,
                                               child: Text(
                                                 'Удалить',
@@ -327,13 +343,13 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           ),
                                         ),
                                         child: Container(
-                                          padding: const EdgeInsets.all(10.0),
+                                          padding: EdgeInsets.all(10.w),
                                           decoration: BoxDecoration(
                                             border: Border.all(
                                               color: Colors.grey[200]!,
                                             ),
                                             borderRadius:
-                                                BorderRadius.circular(15),
+                                                BorderRadius.circular(15.r),
                                           ),
                                           child: Column(
                                             children: [
@@ -341,9 +357,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                 children: [
                                                   Image.asset(
                                                     'assets/images/to.png',
-                                                    height: 25,
+                                                    height: 25.h,
                                                   ),
-                                                  const SizedBox(width: 15),
+                                                  SizedBox(width: 15.w),
                                                   Text(
                                                     routeOrderReceiver[index]
                                                         .adress,
@@ -353,7 +369,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                   ),
                                                 ],
                                               ),
-                                              const SizedBox(height: 15),
+                                              SizedBox(height: 15.h),
                                               Row(
                                                 children: [
                                                   Icon(
@@ -366,15 +382,27 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                             .arrow_downward_rounded,
                                                     color: Colors.grey[400],
                                                   ),
-                                                  const SizedBox(width: 15),
+                                                  SizedBox(width: 15.w),
                                                   GestureDetector(
-                                                    onTap: () => Navigator.of(context).pushNamed(AppRoute.detailsOrder, arguments: [TypeAdd.receiver, routeOrderReceiver.length + 1]),
+                                                    onTap: () => Navigator.of(
+                                                            context)
+                                                        .pushNamed(
+                                                            AppRoute
+                                                                .detailsOrder,
+                                                            arguments: [
+                                                          TypeAdd.receiver,
+                                                          routeOrderReceiver
+                                                                  .length +
+                                                              1
+                                                        ]),
                                                     child: Text(
                                                       'Указать детали',
-                                                      style: CustomTextStyle.red15
+                                                      style: CustomTextStyle
+                                                          .red15
                                                           .copyWith(
                                                               fontWeight:
-                                                                  FontWeight.w400),
+                                                                  FontWeight
+                                                                      .w400),
                                                     ),
                                                   )
                                                 ],
@@ -385,16 +413,18 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       );
                                     }),
                                   ),
-                                  const SizedBox(height: 10),
+                                  SizedBox(height: 10.h),
                                   GestureDetector(
                                     onTap: () {
                                       typeAdd = TypeAdd.receiver;
                                       BlocProvider.of<NewOrderPageBloc>(context)
                                           .add(NewOrderOpenBtmSheet());
-                                      panelController.animatePanelToPosition(1,
-                                          curve: Curves.easeInOutQuint,
-                                          duration: const Duration(
-                                              milliseconds: 1000));
+                                      panelController.animatePanelToPosition(
+                                        1,
+                                        curve: Curves.easeInOutQuint,
+                                        duration:
+                                            const Duration(milliseconds: 1000),
+                                      );
                                     },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -408,54 +438,26 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       ],
                                     ),
                                   ),
-                                  // GestureDetector(
-                                  //   onTap: () {
-                                  //     typeAdd = TypeAdd.receiver;
-                                  //     BlocProvider.of<NewOrderPageBloc>(context)
-                                  //         .add(NewOrderOpenBtmSheet());
-                                  //     panelController.animatePanelToPosition(1,
-                                  //         curve: Curves.easeInOutQuint,
-                                  //         duration: const Duration(
-                                  //             milliseconds: 1000));
-                                  //   },
-                                  //   child: Container(
-                                  //     height: 40,
-                                  //     decoration: BoxDecoration(
-                                  //       border: Border.all(
-                                  //         color: Colors.grey[200]!,
-                                  //       ),
-                                  //       borderRadius: BorderRadius.circular(15),
-                                  //     ),
-                                  //     child: Center(
-                                  //       child: Text(
-                                  //         'Добавить получателя',
-                                  //         style: CustomTextStyle.black15w500
-                                  //             .copyWith(
-                                  //           fontWeight: FontWeight.w400,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
                                 ],
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
+                                  Padding(
                                     padding: EdgeInsets.only(
-                                        left: 8.0, top: 10, bottom: 8),
-                                    child: Text(
+                                        left: 8.w, top: 10.w, bottom: 8.w),
+                                    child: const Text(
                                       'Что везем?',
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                   CustomTextField(
-                                    height: 50,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
+                                    height: 50.h,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 10.w),
                                     hintStyle: const TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                       fontSize: 16,
@@ -472,10 +474,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
+                                  Padding(
                                     padding: EdgeInsets.only(
-                                        left: 8.0, top: 10, bottom: 8),
-                                    child: Text(
+                                        left: 8.w, top: 10.w, bottom: 8.w),
+                                    child: const Text(
                                       'Ценность вашего груза?',
                                       style: TextStyle(
                                           fontSize: 15,
@@ -483,9 +485,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                     ),
                                   ),
                                   CustomTextField(
-                                    height: 50,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
+                                    height: 50.h,
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 10.w),
                                     hintStyle: const TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                       fontSize: 16,
@@ -498,7 +500,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 210)
+                              SizedBox(height: 210.h)
                             ],
                           ),
                         ),
@@ -506,34 +508,32 @@ class _NewOrderPageState extends State<NewOrderPage> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
-                          height: 200,
-                          padding: const EdgeInsets.only(bottom: 10),
+                          height: 200.h,
+                          padding: EdgeInsets.only(bottom: 10.h),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              topLeft: Radius.circular(15),
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15.r),
+                              topLeft: Radius.circular(15.r),
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 5,
                                 blurRadius: 7,
-                                offset: const Offset(
-                                    0, 3), // changes position of shadow
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 20,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 20.w,
                             ),
                             child: Column(
                               children: [
                                 SizedBox(
-                                  // height: 7,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -541,7 +541,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       Image.asset(
                                         'assets/images/ic_leg.png',
                                         color: Colors.red,
-                                        height: 80,
+                                        height: 80.h,
                                       ),
                                       Column(
                                         mainAxisAlignment:
@@ -588,28 +588,32 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           SizedBox(height: 3),
-                                          Text('0 ₽ доп. услуги',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500)),
+                                          Text(
+                                            '0 ₽ доп. услуги',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                           SizedBox(height: 3),
-                                          Text('11 ₽ сбор-плат. сист.',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500)),
+                                          Text(
+                                            '11 ₽ сбор-плат. сист.',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                         ],
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 20),
+                                SizedBox(height: 20.h),
                                 GestureDetector(
                                   child: Container(
-                                    height: 50,
+                                    height: 50.h,
                                     decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                     child: Center(
                                       child: Text(
                                         'ОПЛАТИТЬ ЗАКАЗ',
@@ -654,7 +658,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           //   focusTo.unfocus();
                           // }
                         },
-                        maxHeight: 700,
+                        maxHeight: 700.h,
                         minHeight: 0,
                         defaultPanelState: PanelState.CLOSED,
                       ),

@@ -456,8 +456,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                   CustomTextField(
                                     height: 50.h,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 10.w, vertical: 10.w),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 10.w),
                                     hintStyle: const TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                       fontSize: 16,
@@ -486,8 +486,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                   CustomTextField(
                                     height: 50.h,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 10.w, vertical: 10.w),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 10.w),
                                     hintStyle: const TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                       fontSize: 16,
@@ -509,7 +509,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
                         alignment: Alignment.bottomCenter,
                         child: Container(
                           height: 200.h,
-                          padding: EdgeInsets.only(bottom: 10.h),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -529,10 +528,34 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 10.w,
-                              vertical: 20.w,
+                              vertical: 10.w,
                             ),
                             child: Column(
                               children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 5.w,
+                                      left:
+                                          ((MediaQuery.of(context).size.width *
+                                                          45) /
+                                                      100)
+                                                  .w -
+                                              10.w,
+                                      right:
+                                          ((MediaQuery.of(context).size.width *
+                                                          45) /
+                                                      100)
+                                                  .w -
+                                              10.w,
+                                      bottom: 5.w),
+                                  child: Container(
+                                    height: 5.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25.r),
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
                                 SizedBox(
                                   child: Row(
                                     mainAxisAlignment:

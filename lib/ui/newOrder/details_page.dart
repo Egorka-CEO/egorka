@@ -184,24 +184,11 @@ class _DetailsPageState extends State<DetailsPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(width: 20.w),
-                              // Checkbox(
-                              //   value: false,
-                              //   fillColor:
-                              //       MaterialStateProperty.all(Colors.red),
-                              //   shape: const CircleBorder(),
-                              //   onChanged: ((value) {}),
-                              // ),
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
                                     controller.text = '';
                                     typeAdd = TypeAdd.sender;
-                                    // BlocProvider.of<NewOrderPageBloc>(
-                                    //               context)
-                                    //           .add(NewOrderOpenBtmSheet());
-                                    // BlocProvider.of<MarketPlacePageBloc>(
-                                    //         context)
-                                    //     .add(MarketPlaceOpenBtmSheet());
                                     setState(() {});
                                     panelController.animatePanelToPosition(
                                       1,
@@ -249,6 +236,8 @@ class _DetailsPageState extends State<DetailsPage> {
                             height: 50.h,
                             fillColor: Colors.white,
                             hintText: 'Подъезд',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 20.w),
                             textInputType: TextInputType.number,
                             textEditingController: TextEditingController(),
                           ),
@@ -259,6 +248,8 @@ class _DetailsPageState extends State<DetailsPage> {
                             height: 50.h,
                             fillColor: Colors.white,
                             hintText: 'Этаж',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 20.w),
                             textInputType: TextInputType.number,
                             textEditingController: TextEditingController(),
                           ),
@@ -269,6 +260,8 @@ class _DetailsPageState extends State<DetailsPage> {
                             height: 50.h,
                             fillColor: Colors.white,
                             hintText: 'Офис/кв.',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 20.w),
                             textInputType: TextInputType.number,
                             textEditingController: TextEditingController(),
                           ),
@@ -290,22 +283,12 @@ class _DetailsPageState extends State<DetailsPage> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: GestureDetector(
-                      onTap: () {
-                        // controller.text = '';
-                        // typeAdd = TypeAdd.sender;
-                        // BlocProvider.of<MarketPlacePageBloc>(context)
-                        //     .add(MarketPlaceOpenBtmSheet());
-                        // panelController.animatePanelToPosition(
-                        //   1,
-                        //   curve: Curves.easeInOutQuint,
-                        //   duration: const Duration(milliseconds: 1000),
-                        // );
-                      },
+                      onTap: () {},
                       child: CustomTextField(
                         height: 50.h,
-                        // contentPadding: const EdgeInsets.all(0),
                         fillColor: Colors.white,
                         hintText: 'Имя',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
                         textEditingController: TextEditingController(),
                       ),
                     ),
@@ -314,22 +297,11 @@ class _DetailsPageState extends State<DetailsPage> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: GestureDetector(
-                      onTap: () {
-                        // controller.text = '';
-                        // typeAdd = TypeAdd.sender;
-                        // BlocProvider.of<MarketPlacePageBloc>(context)
-                        //     .add(MarketPlaceOpenBtmSheet());
-                        // panelController.animatePanelToPosition(
-                        //   1,
-                        //   curve: Curves.easeInOutQuint,
-                        //   duration: const Duration(milliseconds: 1000),
-                        // );
-                      },
+                      onTap: () {},
                       child: CustomTextField(
                         height: 50.h,
-                        // contentPadding: const EdgeInsets.all(0),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
                         fillColor: Colors.white,
-                        // enabled: false,
                         hintText: '+7 (___) ___-__-__',
                         textEditingController: TextEditingController(),
                       ),
@@ -363,6 +335,8 @@ class _DetailsPageState extends State<DetailsPage> {
                               width: 100.w,
                               fillColor: Colors.white,
                               hintText: '',
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 20.w),
                               maxLines: 10,
                               textEditingController: TextEditingController(),
                             ),

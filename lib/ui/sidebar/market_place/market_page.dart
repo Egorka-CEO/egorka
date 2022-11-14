@@ -277,6 +277,8 @@ class _MarketPageState extends State<MarketPage> {
                                     child: CustomTextField(
                                       height: 50.h,
                                       fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
                                       hintText: 'Подъезд',
                                       textInputType: TextInputType.number,
                                       textEditingController: item1Controller,
@@ -288,6 +290,8 @@ class _MarketPageState extends State<MarketPage> {
                                       height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: 'Этаж',
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
                                       textInputType: TextInputType.number,
                                       textEditingController: item2Controller,
                                     ),
@@ -298,6 +302,8 @@ class _MarketPageState extends State<MarketPage> {
                                       height: 50.h,
                                       fillColor: Colors.white,
                                       hintText: 'Офис/кв.',
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
                                       textInputType: TextInputType.number,
                                       textEditingController: item3Controller,
                                     ),
@@ -431,6 +437,8 @@ class _MarketPageState extends State<MarketPage> {
                                     Expanded(
                                       child: CustomTextField(
                                         height: 50.h,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 10.w),
                                         fillColor: Colors.white,
                                         hintText: '',
                                         textEditingController:
@@ -473,6 +481,8 @@ class _MarketPageState extends State<MarketPage> {
                                   Expanded(
                                     child: CustomTextField(
                                       height: 50.h,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
                                       fillColor: Colors.white,
                                       hintText: 'Имя',
                                       textEditingController: nameController,
@@ -486,6 +496,8 @@ class _MarketPageState extends State<MarketPage> {
                                   Expanded(
                                     child: CustomTextField(
                                       height: 50.h,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
                                       fillColor: Colors.white,
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
@@ -513,6 +525,9 @@ class _MarketPageState extends State<MarketPage> {
                                         Expanded(
                                           child: CustomTextField(
                                             height: 50.h,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10.w),
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -562,6 +577,9 @@ class _MarketPageState extends State<MarketPage> {
                                         Expanded(
                                           child: CustomTextField(
                                             height: 50.h,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10.w),
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -601,7 +619,6 @@ class _MarketPageState extends State<MarketPage> {
                         alignment: Alignment.bottomCenter,
                         child: Container(
                           height: 200.h,
-                          padding: EdgeInsets.only(bottom: 40.h),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -609,8 +626,7 @@ class _MarketPageState extends State<MarketPage> {
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 5,
                                 blurRadius: 7,
-                                offset: const Offset(
-                                    0, 3), // changes position of shadow
+                                offset: const Offset(0, 3),
                               ),
                             ],
                             borderRadius: BorderRadius.circular(15.r),
@@ -623,6 +639,30 @@ class _MarketPageState extends State<MarketPage> {
                             ),
                             child: Column(
                               children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 5.w,
+                                      left:
+                                          ((MediaQuery.of(context).size.width *
+                                                          45) /
+                                                      100)
+                                                  .w -
+                                              10.w,
+                                      right:
+                                          ((MediaQuery.of(context).size.width *
+                                                          45) /
+                                                      100)
+                                                  .w -
+                                              10.w,
+                                      bottom: 5.w),
+                                  child: Container(
+                                    height: 5.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25.r),
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,

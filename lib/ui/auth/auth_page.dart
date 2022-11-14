@@ -33,13 +33,22 @@ class AuthPage extends StatelessWidget {
               const Spacer(),
               CustomTextField(
                 textEditingController: _loginController,
-                hintText: 'Логинaaa',
+                hintText: 'Логин',
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 20.w,
+                  vertical: 20.w,
+                ),
               ),
+              SizedBox(height: 15.h),
               CustomTextField(
                 textEditingController: _passwordController,
                 hintText: 'Пароль',
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 20.w,
+                  vertical: 20.w,
+                ),
               ),
-              const Spacer(),
+              SizedBox(height: 15.h),
               RoundedLoadingButton(
                 controller: _btnController,
                 onPressed: () => _signIn(context),

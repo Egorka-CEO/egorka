@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
@@ -108,7 +109,7 @@ class _MarketPageState extends State<MarketPage> {
       child: Builder(builder: (context) {
         BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
         return Scaffold(
-          backgroundColor: Colors.grey[50],
+          backgroundColor: backgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
             shadowColor: Colors.black.withOpacity(0.5),
@@ -128,8 +129,10 @@ class _MarketPageState extends State<MarketPage> {
                             children: [
                               GestureDetector(
                                 onTap: () => Navigator.pop(context),
-                                child: const Text('Отмена',
-                                    style: CustomTextStyle.red15),
+                                child: const Text(
+                                  'Отмена',
+                                  style: CustomTextStyle.red15,
+                                ),
                               ),
                               const Align(
                                 child: Text(
@@ -172,7 +175,7 @@ class _MarketPageState extends State<MarketPage> {
                     children: [
                       SingleChildScrollView(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,8 +192,9 @@ class _MarketPageState extends State<MarketPage> {
                               ),
                               SizedBox(height: 20.h),
                               Row(
-                                children: const [
-                                  Text(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
                                     'Откуда забрать?',
                                     style: CustomTextStyle.grey15bold,
                                   ),
@@ -202,7 +206,7 @@ class _MarketPageState extends State<MarketPage> {
                                   Container(
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15.r),
+                                      borderRadius: BorderRadius.circular(10.r),
                                     ),
                                     child: Row(
                                       crossAxisAlignment:
@@ -230,11 +234,12 @@ class _MarketPageState extends State<MarketPage> {
                                                 1,
                                                 curve: Curves.easeInOutQuint,
                                                 duration: const Duration(
-                                                    milliseconds: 1000),
+                                                  milliseconds: 1000,
+                                                ),
                                               );
                                             },
                                             child: CustomTextField(
-                                              height: 50.h,
+                                              height: 49.h,
                                               contentPadding:
                                                   const EdgeInsets.all(0),
                                               fillColor: Colors.white,
@@ -263,8 +268,9 @@ class _MarketPageState extends State<MarketPage> {
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Text(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
                                     'Не обязательно к заполнению',
                                     style: CustomTextStyle.grey15bold,
                                   ),
@@ -275,7 +281,7 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       fillColor: Colors.white,
                                       hintText: 'Подъезд',
                                       textInputType: TextInputType.number,
@@ -285,7 +291,7 @@ class _MarketPageState extends State<MarketPage> {
                                   SizedBox(width: 15.w),
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       fillColor: Colors.white,
                                       hintText: 'Этаж',
                                       textInputType: TextInputType.number,
@@ -295,7 +301,7 @@ class _MarketPageState extends State<MarketPage> {
                                   SizedBox(width: 15.w),
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       fillColor: Colors.white,
                                       hintText: 'Офис/кв.',
                                       textInputType: TextInputType.number,
@@ -306,16 +312,19 @@ class _MarketPageState extends State<MarketPage> {
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Text('Куда отвезти?',
-                                      style: CustomTextStyle.grey15bold),
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
+                                    'Куда отвезти?',
+                                    style: CustomTextStyle.grey15bold,
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 5.h),
                               Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.r),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                                 child: Column(
                                   children: [
@@ -371,7 +380,7 @@ class _MarketPageState extends State<MarketPage> {
                                             child: CustomTextField(
                                               contentPadding:
                                                   const EdgeInsets.all(0),
-                                              height: 50,
+                                              height: 45.h,
                                               fillColor: Colors.white,
                                               enabled: false,
                                               hintText: '',
@@ -413,8 +422,9 @@ class _MarketPageState extends State<MarketPage> {
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Text(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
                                     'Когда забрать?',
                                     style: CustomTextStyle.grey15bold,
                                   ),
@@ -430,7 +440,7 @@ class _MarketPageState extends State<MarketPage> {
                                   children: [
                                     Expanded(
                                       child: CustomTextField(
-                                        height: 50.h,
+                                        height: 45.h,
                                         fillColor: Colors.white,
                                         hintText: '',
                                         textEditingController:
@@ -448,20 +458,23 @@ class _MarketPageState extends State<MarketPage> {
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Expanded(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Expanded(
                                     child: Text(
                                       'Оформить доставку до Маркетплейса на завтра можно строго до 15:00.',
                                       style: CustomTextStyle.grey15,
                                       textAlign: TextAlign.justify,
                                     ),
                                   ),
+                                  SizedBox(width: 5.w),
                                 ],
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Text(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
                                     'Ваши контакты',
                                     style: CustomTextStyle.grey15bold,
                                   ),
@@ -472,9 +485,10 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       fillColor: Colors.white,
                                       hintText: 'Имя',
+                                      hintStyle: CustomTextStyle.textHintStyle,
                                       textEditingController: nameController,
                                     ),
                                   ),
@@ -485,7 +499,7 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       fillColor: Colors.white,
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
@@ -496,8 +510,9 @@ class _MarketPageState extends State<MarketPage> {
                               ),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Text(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
                                     'Кол-во коробок?',
                                     style: CustomTextStyle.grey15bold,
                                   ),
@@ -512,7 +527,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50.h,
+                                            height: 45.h,
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -530,7 +545,9 @@ class _MarketPageState extends State<MarketPage> {
                                           child: Slider(
                                             min: 0,
                                             max: 50,
-                                            thumbColor: Colors.red,
+                                            activeColor: Colors.red,
+                                            inactiveColor: Colors.grey[300],
+                                            thumbColor: Colors.white,
                                             value: snapshot.data!.toDouble(),
                                             onChanged: (value) {
                                               bucketController
@@ -545,8 +562,9 @@ class _MarketPageState extends State<MarketPage> {
                                   }),
                               SizedBox(height: 10.h),
                               Row(
-                                children: const [
-                                  Text(
+                                children: [
+                                  SizedBox(width: 5.w),
+                                  const Text(
                                     'Кол-во паллет?',
                                     style: CustomTextStyle.grey15bold,
                                   ),
@@ -561,7 +579,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50.h,
+                                            height: 45.h,
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -579,7 +597,9 @@ class _MarketPageState extends State<MarketPage> {
                                           child: Slider(
                                             min: 0,
                                             max: 50,
-                                            thumbColor: Colors.red,
+                                            activeColor: Colors.red,
+                                            inactiveColor: Colors.grey[300],
+                                            thumbColor: Colors.white,
                                             value: snapshot.data!.toDouble(),
                                             onChanged: (value) {
                                               palletController
@@ -613,7 +633,7 @@ class _MarketPageState extends State<MarketPage> {
                                     0, 3), // changes position of shadow
                               ),
                             ],
-                            borderRadius: BorderRadius.circular(15.r),
+                            borderRadius: BorderRadius.circular(10.r),
                             color: Colors.white,
                           ),
                           child: Padding(

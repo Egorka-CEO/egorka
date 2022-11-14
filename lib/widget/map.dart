@@ -129,7 +129,7 @@ class _MapViewState extends State<MapView> {
                         .map((e) => LatLng(e.latitude, e.longitude))
                         .toList()
                     : [],
-                color: Colors.red,
+                color: Color.fromARGB(255, 56, 197, 61),
               )
           },
           padding: EdgeInsets.zero,

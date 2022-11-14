@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/constant.dart';
 import 'package:flutter/material.dart';
 
 class AppTextStyle extends TextStyle {
@@ -21,8 +22,9 @@ class CustomTextStyle {
   );
 
   static const AppTextStyle red15 = AppTextStyle(
-    fontSize: 15,
+    fontSize: 14,
     color: Colors.red,
+    fontWeight: FontWeight.w400,
   );
 
   static const AppTextStyle black15w500 = AppTextStyle(
@@ -33,7 +35,7 @@ class CustomTextStyle {
 
   static const AppTextStyle black15w700 = AppTextStyle(
     fontSize: 15,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w600,
     color: Colors.black,
   );
 
@@ -45,12 +47,19 @@ class CustomTextStyle {
 
   static const AppTextStyle grey15bold = AppTextStyle(
     fontSize: 15,
-    fontWeight: FontWeight.bold,
-    color: Colors.grey,
+    fontWeight: FontWeight.w500,
+    color: helperTextColor,
   );
 
   static const AppTextStyle grey15 = AppTextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: helperTextColor,
+  );
+
+  static const AppTextStyle textHintStyle = AppTextStyle(
     fontSize: 15,
-    color: Colors.grey,
+    fontWeight: FontWeight.w500,
+    color: Color.fromARGB(255, 195, 195, 195),
   );
 }

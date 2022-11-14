@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/ui/sidebar/deposit/item_traffic.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         elevation: 0.5,
         title: const Text(
@@ -52,7 +54,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                 child: Container(
                   height: 50.h,
                   decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(15.r)),
                   child: Row(
                     children: [

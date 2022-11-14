@@ -41,7 +41,14 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewOrderPageBloc, NewOrderState>(
-        builder: (context, snapshot) {
+        buildWhen: (previous, current) {
+      if (current is NewOrderStatedOpenBtmSheet) {
+        Future.delayed(const Duration(milliseconds: 600), () {
+          focusFrom.requestFocus();
+        });
+      }
+      return true;
+    }, builder: (context, snapshot) {
       return _floatingPanel(context);
     });
   }

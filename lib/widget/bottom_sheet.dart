@@ -113,7 +113,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         ],
         color: Colors.white,
       ),
-      child: Column(
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.all(0),
         children: [
           Padding(
             padding: EdgeInsets.only(
@@ -297,7 +299,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 height:
                     blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
                         ? 95.h
-                        : 215.h,
+                        : null,
                 child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   buildWhen: (previous, current) {
                     if (current is ChangeAddressSuccess) {

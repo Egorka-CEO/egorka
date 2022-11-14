@@ -109,6 +109,7 @@ class _MarketPageState extends State<MarketPage> {
         BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
         return Scaffold(
           backgroundColor: Colors.grey[50],
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Colors.white,
             shadowColor: Colors.black.withOpacity(0.5),
@@ -610,7 +611,7 @@ class _MarketPageState extends State<MarketPage> {
                                       ],
                                     );
                                   }),
-                              SizedBox(height: 210.h)
+                              SizedBox(height: 300.h)
                             ],
                           ),
                         ),

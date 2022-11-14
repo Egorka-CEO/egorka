@@ -11,11 +11,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class DetailsPage extends StatefulWidget {
+class DetailsPage extends StatelessWidget {
   int index;
   TypeAdd typeAdd;
 
   DetailsPage({
+    super.key,
+    required this.index,
+    required this.typeAdd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+        providers: [
+        BlocProvider<NewOrderPageBloc>(
+          create: (context) => NewOrderPageBloc(),
+        ),
+      ],
+        child: DetailsPageTemp(
+          index: index,
+          typeAdd: typeAdd,
+        ));
+  }
+}
+
+class DetailsPageTemp extends StatefulWidget {
+  int index;
+  TypeAdd typeAdd;
+
+  DetailsPageTemp({
     super.key,
     required this.index,
     required this.typeAdd,
@@ -36,10 +61,10 @@ class DetailsPage extends StatefulWidget {
   );
 
   @override
-  State<DetailsPage> createState() => _DetailsPageState();
+  State<DetailsPageTemp> createState() => _DetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _DetailsPageState extends State<DetailsPageTemp> {
   List<RouteOrder> routeOrderSender = [
     RouteOrder(adress: 'москва солнечная 6'),
   ];
@@ -57,15 +82,10 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<NewOrderPageBloc>(
-          create: (context) => NewOrderPageBloc(),
-        ),
-      ],
-      child: Material(
+      return Material(
         color: Colors.white,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Colors.white,
             shadowColor: Colors.black.withOpacity(0.5),
@@ -187,9 +207,11 @@ class _DetailsPageState extends State<DetailsPage> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
+                                    BlocProvider.of<NewOrderPageBloc>(context)
+                                        .add(NewOrderOpenBtmSheet());
                                     controller.text = '';
                                     typeAdd = TypeAdd.sender;
-                                    setState(() {});
+                                    // setState(() {});
                                     panelController.animatePanelToPosition(
                                       1,
                                       curve: Curves.easeInOutQuint,
@@ -409,7 +431,7 @@ class _DetailsPageState extends State<DetailsPage> {
             ],
           ),
         ),
-      ),
+      // ),
     );
   }
 }

@@ -60,6 +60,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
       child: Material(
         color: Colors.white,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Colors.white,
             shadowColor: Colors.black.withOpacity(0.5),
@@ -500,7 +501,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 210.h)
+                              SizedBox(height: 350.h)
                             ],
                           ),
                         ),

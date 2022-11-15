@@ -95,7 +95,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
         },
         maxHeight: 735.h,
-        minHeight: bloc.isPolilyne ? 350.h : 215.h,
+        minHeight: bloc.isPolilyne ? 370.h : 215.h,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -119,7 +119,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         ],
         color: backgroundColor.withOpacity(1),
       ),
-      child: Column(
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.all(0),
         children: [
           Padding(
             padding: EdgeInsets.only(
@@ -180,6 +182,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   panelController.close();
                                   focusFrom.unfocus();
                                 },
+                                contentPadding: EdgeInsets.only(right: 10.w),
                                 textEditingController: fromController,
                                 onChanged: (value) {
                                   bloc.add(SearchAddress(value));
@@ -267,6 +270,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   focusTo.unfocus();
                                 },
                                 // enabled: !bloc.isPolilyne,
+                                contentPadding: EdgeInsets.only(right: 10.w),
                                 focusNode: focusTo,
                                 fillColor: Colors.white.withOpacity(0),
                                 hintText: 'Куда отвезти?',
@@ -332,8 +336,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               SizedBox(
                 height:
                     blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
-                        ? 80.h
-                        : 215.h,
+                        ? 95.h
+                        : null,
                 child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   buildWhen: (previous, current) {
                     if (current is ChangeAddressSuccess) {

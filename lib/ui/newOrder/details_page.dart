@@ -5,12 +5,12 @@ import 'package:egorka/model/receiver.dart';
 import 'package:egorka/model/route_order.dart';
 import 'package:egorka/model/sender.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -209,24 +209,11 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(width: 20.w),
-                            // Checkbox(
-                            //   value: false,
-                            //   fillColor:
-                            //       MaterialStateProperty.all(Colors.red),
-                            //   shape: const CircleBorder(),
-                            //   onChanged: ((value) {}),
-                            // ),
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
                                   controller.text = '';
                                   typeAdd = TypeAdd.sender;
-                                  // BlocProvider.of<NewOrderPageBloc>(
-                                  //               context)
-                                  //           .add(NewOrderOpenBtmSheet());
-                                  // BlocProvider.of<MarketPlacePageBloc>(
-                                  //         context)
-                                  //     .add(MarketPlaceOpenBtmSheet());
                                   setState(() {});
                                   panelController.animatePanelToPosition(
                                     1,
@@ -315,20 +302,9 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
-                    onTap: () {
-                      // controller.text = '';
-                      // typeAdd = TypeAdd.sender;
-                      // BlocProvider.of<MarketPlacePageBloc>(context)
-                      //     .add(MarketPlaceOpenBtmSheet());
-                      // panelController.animatePanelToPosition(
-                      //   1,
-                      //   curve: Curves.easeInOutQuint,
-                      //   duration: const Duration(milliseconds: 1000),
-                      // );
-                    },
+                    onTap: () {},
                     child: CustomTextField(
                       height: 50.h,
-                      // contentPadding: const EdgeInsets.all(0),
                       fillColor: Colors.white,
                       hintText: 'Имя',
                       textEditingController: TextEditingController(),
@@ -339,33 +315,14 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
-                    onTap: () {
-                      // controller.text = '';
-                      // typeAdd = TypeAdd.sender;
-                      // BlocProvider.of<MarketPlacePageBloc>(context)
-                      //     .add(MarketPlaceOpenBtmSheet());
-                      // panelController.animatePanelToPosition(
-                      //   1,
-                      //   curve: Curves.easeInOutQuint,
-                      //   duration: const Duration(milliseconds: 1000),
-                      // );
-                    },
+                    onTap: () {},
                     child: CustomTextField(
                       height: 50.h,
-                      // contentPadding: const EdgeInsets.all(0),
                       fillColor: Colors.white,
-                      // enabled: false,
                       hintText: '+7 (___) ___-__-__',
                       textEditingController: TextEditingController(),
                       formatters: [
-                        MaskTextInputFormatter(
-                          mask: '+@ (###) ###-##-##',
-                          filter: {
-                            "#": RegExp(r'[0-9]'),
-                            "@": RegExp(r'[7-8]')
-                          },
-                          type: MaskAutoCompletionType.lazy,
-                        )
+                        CustomInputFormatter(),
                       ],
                     ),
                   ),

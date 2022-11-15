@@ -26,10 +26,10 @@ class DetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-        BlocProvider<NewOrderPageBloc>(
-          create: (context) => NewOrderPageBloc(),
-        ),
-      ],
+          BlocProvider<NewOrderPageBloc>(
+            create: (context) => NewOrderPageBloc(),
+          ),
+        ],
         child: DetailsPageTemp(
           index: index,
           typeAdd: typeAdd,
@@ -411,6 +411,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
                     routeOrderReceiver.add(RouteOrder(adress: current.value!));
                   }
+                }
                 return true;
               },
               builder: (context, snapshot) {
@@ -456,7 +457,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
             ),
           ],
         ),
-      // ),
+      ),
     );
   }
 }

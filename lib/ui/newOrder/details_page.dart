@@ -83,47 +83,42 @@ class _DetailsPageState extends State<DetailsPageTemp> {
 
   @override
   Widget build(BuildContext context) {
-      return Material(
-        color: Colors.white,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            shadowColor: Colors.black.withOpacity(0.5),
-            leading: const SizedBox(),
-            elevation: 0.5,
-            flexibleSpace: Column(
-              children: [
-                const Spacer(),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 20.w, right: 20.w),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_back_ios,
-                                      size: 25.h,
-                                      color: Colors.red,
-                                    ),
-                                    Text(
-                                      'Назад',
-                                      style: CustomTextStyle.red15
-                                          .copyWith(fontSize: 17),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: Text('Удалить',
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NewOrderPageBloc>(
+          create: (context) => NewOrderPageBloc(),
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          shadowColor: Colors.black.withOpacity(0.5),
+          leading: const SizedBox(),
+          elevation: 0.5,
+          flexibleSpace: Column(
+            children: [
+              const Spacer(),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20.w, right: 20.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 25.h,
+                                    color: Colors.red,
+                                  ),
+                                  Text(
+                                    'Назад',
                                     style: CustomTextStyle.red15
                                         .copyWith(fontSize: 17),
                                   ),
@@ -199,56 +194,53 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Row(
-                      children: [
-                        Text(
-                          widget.typeAdd == TypeAdd.sender
-                              ? 'Откуда забрать?'
-                              : 'Куда отвезти?',
-                          style: CustomTextStyle.grey15bold,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15.r)),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(width: 20.w),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    BlocProvider.of<NewOrderPageBloc>(context)
-                                        .add(NewOrderOpenBtmSheet());
-                                    controller.text = '';
-                                    typeAdd = TypeAdd.sender;
-                                    // setState(() {});
-                                    panelController.animatePanelToPosition(
-                                      1,
-                                      curve: Curves.easeInOutQuint,
-                                      duration:
-                                          const Duration(milliseconds: 1000),
-                                    );
-                                  },
-                                  child: CustomTextField(
-                                    height: 50.h,
-                                    contentPadding: const EdgeInsets.all(0),
-                                    fillColor: Colors.white,
-                                    enabled: false,
-                                    hintText: '',
-                                    textEditingController: controller,
-                                  ),
+                ),
+                SizedBox(height: 10.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15.r)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(width: 20.w),
+                            // Checkbox(
+                            //   value: false,
+                            //   fillColor:
+                            //       MaterialStateProperty.all(Colors.red),
+                            //   shape: const CircleBorder(),
+                            //   onChanged: ((value) {}),
+                            // ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.text = '';
+                                  typeAdd = TypeAdd.sender;
+                                  // BlocProvider.of<NewOrderPageBloc>(
+                                  //               context)
+                                  //           .add(NewOrderOpenBtmSheet());
+                                  // BlocProvider.of<MarketPlacePageBloc>(
+                                  //         context)
+                                  //     .add(MarketPlaceOpenBtmSheet());
+                                  setState(() {});
+                                  panelController.animatePanelToPosition(
+                                    1,
+                                    curve: Curves.easeInOutQuint,
+                                    duration:
+                                        const Duration(milliseconds: 1000),
+                                  );
+                                },
+                                child: CustomTextField(
+                                  height: 50.h,
+                                  contentPadding: const EdgeInsets.all(0),
+                                  fillColor: Colors.white.withOpacity(0),
+                                  enabled: false,
+                                  hintText: '',
+                                  textEditingController: controller,
                                 ),
                               ),
                             ),
@@ -270,45 +262,39 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextField(
-                            height: 50.h,
-                            fillColor: Colors.white,
-                            hintText: 'Подъезд',
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 20.w),
-                            textInputType: TextInputType.number,
-                            textEditingController: TextEditingController(),
-                          ),
+                ),
+                SizedBox(height: 10.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                          height: 50.h,
+                          fillColor: Colors.white,
+                          hintText: 'Подъезд',
+                          textInputType: TextInputType.number,
+                          textEditingController: TextEditingController(),
                         ),
-                        SizedBox(width: 15.w),
-                        Expanded(
-                          child: CustomTextField(
-                            height: 50.h,
-                            fillColor: Colors.white,
-                            hintText: 'Этаж',
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 20.w),
-                            textInputType: TextInputType.number,
-                            textEditingController: TextEditingController(),
-                          ),
+                      ),
+                      SizedBox(width: 15.w),
+                      Expanded(
+                        child: CustomTextField(
+                          height: 50.h,
+                          fillColor: Colors.white,
+                          hintText: 'Этаж',
+                          textInputType: TextInputType.number,
+                          textEditingController: TextEditingController(),
                         ),
-                        SizedBox(width: 15.w),
-                        Expanded(
-                          child: CustomTextField(
-                            height: 50.h,
-                            fillColor: Colors.white,
-                            hintText: 'Офис/кв.',
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 20.w),
-                            textInputType: TextInputType.number,
-                            textEditingController: TextEditingController(),
-                          ),
+                      ),
+                      SizedBox(width: 15.w),
+                      Expanded(
+                        child: CustomTextField(
+                          height: 50.h,
+                          fillColor: Colors.white,
+                          hintText: 'Офис/кв.',
+                          textInputType: TextInputType.number,
+                          textEditingController: TextEditingController(),
                         ),
                       ),
                     ],
@@ -347,31 +333,40 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       textEditingController: TextEditingController(),
                     ),
                   ),
-                  SizedBox(height: 10.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: CustomTextField(
-                        height: 50.h,
-                        fillColor: Colors.white,
-                        hintText: 'Имя',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                        textEditingController: TextEditingController(),
-                      ),
+                ),
+                SizedBox(height: 10.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: GestureDetector(
+                    onTap: () {
+                      // controller.text = '';
+                      // typeAdd = TypeAdd.sender;
+                      // BlocProvider.of<MarketPlacePageBloc>(context)
+                      //     .add(MarketPlaceOpenBtmSheet());
+                      // panelController.animatePanelToPosition(
+                      //   1,
+                      //   curve: Curves.easeInOutQuint,
+                      //   duration: const Duration(milliseconds: 1000),
+                      // );
+                    },
+                    child: CustomTextField(
+                      height: 50.h,
+                      // contentPadding: const EdgeInsets.all(0),
+                      fillColor: Colors.white,
+                      // enabled: false,
+                      hintText: '+7 (___) ___-__-__',
+                      textEditingController: TextEditingController(),
                     ),
                   ),
-                  SizedBox(height: 10.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: CustomTextField(
-                        height: 50.h,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                        fillColor: Colors.white,
-                        hintText: '+7 (___) ___-__-__',
-                        textEditingController: TextEditingController(),
+                ),
+                SizedBox(height: 10.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    children: const [
+                      Text(
+                        'Поручения для Егорки',
+                        style: CustomTextStyle.grey15bold,
                       ),
                     ],
                   ),
@@ -403,20 +398,18 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
               ],
             ),
-              BlocBuilder<NewOrderPageBloc, NewOrderState>(
-                buildWhen: (previous, current) {
-                  if (current is NewOrderCloseBtmSheet) {
-                    btmSheet = false;
-                  } else if (current is NewOrderStatedOpenBtmSheet) {
-                    btmSheet = true;
-                  } else if (current is NewOrderStateCloseBtmSheet) {
-                    btmSheet = false;
-                    if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                      routeOrderSender.add(RouteOrder(adress: current.value!));
-                    } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                      routeOrderReceiver
-                          .add(RouteOrder(adress: current.value!));
-                    }
+            BlocBuilder<NewOrderPageBloc, NewOrderState>(
+              buildWhen: (previous, current) {
+                if (current is NewOrderCloseBtmSheet) {
+                  btmSheet = false;
+                } else if (current is NewOrderStatedOpenBtmSheet) {
+                  btmSheet = true;
+                } else if (current is NewOrderStateCloseBtmSheet) {
+                  btmSheet = false;
+                  if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                    routeOrderSender.add(RouteOrder(adress: current.value!));
+                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
+                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
                   }
                 return true;
               },

@@ -58,34 +58,31 @@ class _NewOrderPageState extends State<NewOrderPage> {
           create: (context) => NewOrderPageBloc(),
         ),
       ],
-      child: Material(
-        color: Colors.white,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            shadowColor: Colors.black.withOpacity(0.5),
-            leading: const SizedBox(),
-            elevation: 0.5,
-            flexibleSpace: Column(
-              children: [
-                const Spacer(),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 20.w, right: 20.w),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: Text(
-                                  'Отмена',
-                                  style: CustomTextStyle.red15
-                                      .copyWith(fontSize: 17),
-                                ),
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          shadowColor: Colors.black.withOpacity(0.5),
+          leading: const SizedBox(),
+          elevation: 0.5,
+          flexibleSpace: Column(
+            children: [
+              const Spacer(),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20.w, right: 20.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Text(
+                                'Отмена',
+                                style: CustomTextStyle.red15
+                                    .copyWith(fontSize: 17),
                               ),
                             ),
                             Align(
@@ -507,15 +504,20 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       ),
                                     ],
                                   ),
-                                  CustomTextField(
-                                    height: 50.h,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10.w),
-                                    hintStyle: const TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w400,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 8.w, top: 10.w, bottom: 8.w),
+                                  child: const Text(
+                                    'Что везем?',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
@@ -616,113 +618,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       children: const [
                                         Text(
                                           'Пеший',
-                                  CustomTextField(
-                                    height: 50.h,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10.w),
-                                    hintStyle: const TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    hintText: 'До 100000 ₽',
-                                    textEditingController:
-                                        TextEditingController(),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 350.h)
-                            ],
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 200.h,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(15.r),
-                              topLeft: Radius.circular(15.r),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 10.w,
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 5.w,
-                                      left:
-                                          ((MediaQuery.of(context).size.width *
-                                                          45) /
-                                                      100)
-                                                  .w -
-                                              10.w,
-                                      right:
-                                          ((MediaQuery.of(context).size.width *
-                                                          45) /
-                                                      100)
-                                                  .w -
-                                              10.w,
-                                      bottom: 5.w),
-                                  child: Container(
-                                    height: 5.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25.r),
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/ic_leg.png',
-                                        color: Colors.red,
-                                        height: 80.h,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: const [
-                                          Text(
-                                            'Пеший',
-                                            style: TextStyle(
-                                              fontSize: 19,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Text(
-                                            '1900 ₽',
-                                            style: TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Center(
-                                        child: Text(
-                                          '}',
                                           style: TextStyle(
                                             fontSize: 19,
                                             fontWeight: FontWeight.w400,

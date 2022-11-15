@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/history.dart';
@@ -131,7 +132,7 @@ class _BottomSheetDraggableState
             color: Colors.black12,
           ),
         ],
-        color: Colors.white,
+        color: backgroundColor,
       ),
       child: Column(
         children: [
@@ -196,7 +197,7 @@ class _BottomSheetDraggableState
             margin: EdgeInsets.only(top: 10.h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.r),
-              color: Colors.grey[50],
+              color: Colors.white,
             ),
             child: Row(
               children: [

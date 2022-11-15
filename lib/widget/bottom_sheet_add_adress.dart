@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -69,7 +70,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
             color: Colors.black12,
           ),
         ],
-        color: Colors.white,
+        color: backgroundColor.withOpacity(1),
       ),
       child: Column(
         children: [
@@ -97,7 +98,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                     height: 60.h,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.r),
-                      color: Colors.grey[200],
+                      color: Colors.white,
                     ),
                     child: Align(
                       alignment: Alignment.centerLeft,
@@ -121,7 +122,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                                 });
                               },
                               focusNode: focusFrom,
-                              fillColor: Colors.grey[200],
+                              fillColor: Colors.white.withOpacity(0),
                               hintText: widget.typeAdd == TypeAdd.sender
                                   ? 'Откуда забрать?'
                                   : 'Куда отвезти?',

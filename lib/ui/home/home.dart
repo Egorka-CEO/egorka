@@ -112,13 +112,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         GestureDetector(
                           onTap: () => markerPlace(context),
                           child: Container(
+                            margin: EdgeInsets.only(top: 10.h),
                             decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                gradient: LinearGradient(colors: [
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              gradient: LinearGradient(
+                                colors: [
                                   Color.fromRGBO(255, 0, 96, 1),
                                   Color.fromRGBO(216, 0, 255, 1)
-                                ])),
+                                ],
+                              ),
+                            ),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 8.w, vertical: 5.h),

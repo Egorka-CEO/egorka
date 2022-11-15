@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/book.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -22,6 +23,7 @@ class BookPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         elevation: 0.5,
         title: const Text(

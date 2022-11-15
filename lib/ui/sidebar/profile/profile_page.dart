@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -10,7 +11,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
@@ -116,8 +117,10 @@ class ProfilePage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Row(
                     children: const [
-                      Text('Основные данные',
-                          style: CustomTextStyle.black15w500),
+                      Text(
+                        'Основные данные',
+                        style: CustomTextStyle.black15w500,
+                      ),
                     ],
                   ),
                 ),
@@ -127,7 +130,7 @@ class ProfilePage extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(20.0.w),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Row(
@@ -231,7 +234,10 @@ class ProfilePage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Row(
                     children: const [
-                      Text('Пароль', style: CustomTextStyle.black15w500),
+                      Text(
+                        'Пароль',
+                        style: CustomTextStyle.black15w500,
+                      ),
                     ],
                   ),
                 ),
@@ -241,7 +247,7 @@ class ProfilePage extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(20.w),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Column(
@@ -260,7 +266,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               obscureText: true,
                               hintText: '',
-                              fillColor: Colors.white,
+                              fillColor: backgroundColor,
                               textEditingController:
                                   TextEditingController(text: 'password'),
                             ),
@@ -279,7 +285,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               obscureText: true,
                               hintText: '',
-                              fillColor: Colors.white,
+                              fillColor: backgroundColor,
                               textEditingController:
                                   TextEditingController(text: 'password'),
                             ),
@@ -298,7 +304,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               obscureText: true,
                               hintText: '',
-                              fillColor: Colors.white,
+                              fillColor: backgroundColor,
                               textEditingController:
                                   TextEditingController(text: 'password'),
                             ),

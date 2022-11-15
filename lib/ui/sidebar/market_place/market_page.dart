@@ -17,6 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class MarketPage extends StatefulWidget {
   HistoryModel? historyModel;
@@ -517,6 +518,16 @@ class _MarketPageState extends State<MarketPage> {
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
                                       textEditingController: phoneController,
+                                      formatters: [
+                                        MaskTextInputFormatter(
+                                          mask: '+@ (###) ###-##-##',
+                                          filter: {
+                                            "#": RegExp(r'[0-9]'),
+                                            "@": RegExp(r'[7-8]')
+                                          },
+                                          type: MaskAutoCompletionType.lazy,
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ],

@@ -42,7 +42,14 @@ class _BottomSheetDraggableState
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
-        builder: (context, snapshot) {
+        buildWhen: (previous, current) {
+      if (current is MarketPlaceStatedOpenBtmSheet) {
+        Future.delayed(const Duration(milliseconds: 600), () {
+          focusFrom.requestFocus();
+        });
+      }
+      return true;
+    }, builder: (context, snapshot) {
       return _floatingPanel(context);
     });
   }

@@ -114,6 +114,7 @@ class _BottomSheetDraggableState
                           ),
                           Expanded(
                             child: CustomTextField(
+                              height: 45.h,
                               onTap: () {
                                 Future.delayed(
                                     const Duration(milliseconds: 300), () {

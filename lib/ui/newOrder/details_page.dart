@@ -184,7 +184,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 20.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Row(
                     children: [
                       Text(
@@ -198,7 +198,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 10.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Column(
                     children: [
                       Container(
@@ -223,7 +223,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                                   );
                                 },
                                 child: CustomTextField(
-                                  height: 50.h,
+                                  height: 45.h,
                                   contentPadding: const EdgeInsets.all(0),
                                   fillColor: Colors.white.withOpacity(0),
                                   enabled: false,
@@ -239,9 +239,9 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 15.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Row(
                     children: const [
                       Text(
@@ -253,12 +253,12 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 10.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Row(
                     children: [
                       Expanded(
                         child: CustomTextField(
-                          height: 50.h,
+                          height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Подъезд',
                           textInputType: TextInputType.number,
@@ -268,7 +268,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       SizedBox(width: 15.w),
                       Expanded(
                         child: CustomTextField(
-                          height: 50.h,
+                          height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Этаж',
                           textInputType: TextInputType.number,
@@ -278,7 +278,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       SizedBox(width: 15.w),
                       Expanded(
                         child: CustomTextField(
-                          height: 50.h,
+                          height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Офис/кв.',
                           textInputType: TextInputType.number,
@@ -288,9 +288,9 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.w),
+                SizedBox(height: 15.w),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Row(
                     children: const [
                       Text('Контакты получателя',
@@ -300,11 +300,11 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 10.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: GestureDetector(
                     onTap: () {},
                     child: CustomTextField(
-                      height: 50.h,
+                      height: 45.h,
                       fillColor: Colors.white,
                       hintText: 'Имя',
                       textEditingController: TextEditingController(),
@@ -313,11 +313,11 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 10.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: GestureDetector(
                     onTap: () {},
                     child: CustomTextField(
-                      height: 50.h,
+                      height: 45.h,
                       fillColor: Colors.white,
                       hintText: '+7 (___) ___-__-__',
                       textEditingController: TextEditingController(),
@@ -329,7 +329,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 10.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Row(
                     children: const [
                       Text(
@@ -341,7 +341,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 ),
                 SizedBox(height: 5.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,

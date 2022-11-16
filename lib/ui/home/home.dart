@@ -57,8 +57,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           children: [
             Scaffold(
               resizeToAvoidBottomInset: false,
-              drawerEnableOpenDragGesture: false,
               drawer: const NavBar(),
+              drawerScrimColor: Colors.transparent,
               body: Stack(
                 children: [
                   AnimatedContainer(
@@ -183,22 +183,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 },
               ),
             ),
-            // Stack(
-            //   children: [
-            //     AnimatedOpacity(
-            //       onEnd: () {
-            //         hight = 0;
-            //         setState(() {});
-            //       },
-            //       duration: Duration(milliseconds: duration),
-            //       opacity: logoMoveBackgroundScale ? 0 : 1,
-            //       child: Container(
-            //         height: hight,
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ],
-            // ),
             Positioned.fill(
               child: Stack(
                 children: [

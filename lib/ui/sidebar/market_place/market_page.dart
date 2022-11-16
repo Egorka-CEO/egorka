@@ -241,7 +241,7 @@ class _MarketPageState extends State<MarketPage> {
                                               );
                                             },
                                             child: CustomTextField(
-                                              height: 49.h,
+                                              height: 45.h,
                                               contentPadding:
                                                   const EdgeInsets.all(0),
                                               fillColor: Colors.white,
@@ -448,7 +448,7 @@ class _MarketPageState extends State<MarketPage> {
                                   children: [
                                     Expanded(
                                       child: CustomTextField(
-                                        height: 50.h,
+                                        height: 45.h,
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 10.w),
                                         fillColor: Colors.white,
@@ -495,7 +495,7 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: 10.w),
                                       fillColor: Colors.white,
@@ -511,7 +511,7 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: 10.w),
                                       fillColor: Colors.white,
@@ -544,7 +544,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50.h,
+                                            height: 45.h,
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10.w),
@@ -599,7 +599,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50.h,
+                                            height: 45.h,
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10.w),

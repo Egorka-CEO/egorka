@@ -115,6 +115,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
                           ),
                           Expanded(
                             child: CustomTextField(
+                              height: 45.h,
                               onTap: () {
                                 Future.delayed(
                                     const Duration(milliseconds: 300), () {

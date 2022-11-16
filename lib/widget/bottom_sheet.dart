@@ -163,6 +163,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             ),
                             Expanded(
                               child: CustomTextField(
+                                height: 45.h,
                                 onTap: () {
                                   if (_flipController!.state!.isFront) {
                                     _flipController!.toggleCard();
@@ -253,6 +254,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             ),
                             Expanded(
                               child: CustomTextField(
+                                height: 45.h,
                                 onTap: () {
                                   if (!_flipController!.state!.isFront) {
                                     _flipController!.toggleCard();

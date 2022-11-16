@@ -5,6 +5,7 @@ import 'package:egorka/model/receiver.dart';
 import 'package:egorka/model/route_order.dart';
 import 'package:egorka/model/sender.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,10 @@ class DetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-        BlocProvider<NewOrderPageBloc>(
-          create: (context) => NewOrderPageBloc(),
-        ),
-      ],
+          BlocProvider<NewOrderPageBloc>(
+            create: (context) => NewOrderPageBloc(),
+          ),
+        ],
         child: DetailsPageTemp(
           index: index,
           typeAdd: typeAdd,
@@ -208,24 +209,11 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(width: 20.w),
-                            // Checkbox(
-                            //   value: false,
-                            //   fillColor:
-                            //       MaterialStateProperty.all(Colors.red),
-                            //   shape: const CircleBorder(),
-                            //   onChanged: ((value) {}),
-                            // ),
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
                                   controller.text = '';
                                   typeAdd = TypeAdd.sender;
-                                  // BlocProvider.of<NewOrderPageBloc>(
-                                  //               context)
-                                  //           .add(NewOrderOpenBtmSheet());
-                                  // BlocProvider.of<MarketPlacePageBloc>(
-                                  //         context)
-                                  //     .add(MarketPlaceOpenBtmSheet());
                                   setState(() {});
                                   panelController.animatePanelToPosition(
                                     1,
@@ -314,20 +302,9 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
-                    onTap: () {
-                      // controller.text = '';
-                      // typeAdd = TypeAdd.sender;
-                      // BlocProvider.of<MarketPlacePageBloc>(context)
-                      //     .add(MarketPlaceOpenBtmSheet());
-                      // panelController.animatePanelToPosition(
-                      //   1,
-                      //   curve: Curves.easeInOutQuint,
-                      //   duration: const Duration(milliseconds: 1000),
-                      // );
-                    },
+                    onTap: () {},
                     child: CustomTextField(
                       height: 50.h,
-                      // contentPadding: const EdgeInsets.all(0),
                       fillColor: Colors.white,
                       hintText: 'Имя',
                       textEditingController: TextEditingController(),
@@ -338,24 +315,15 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
-                    onTap: () {
-                      // controller.text = '';
-                      // typeAdd = TypeAdd.sender;
-                      // BlocProvider.of<MarketPlacePageBloc>(context)
-                      //     .add(MarketPlaceOpenBtmSheet());
-                      // panelController.animatePanelToPosition(
-                      //   1,
-                      //   curve: Curves.easeInOutQuint,
-                      //   duration: const Duration(milliseconds: 1000),
-                      // );
-                    },
+                    onTap: () {},
                     child: CustomTextField(
                       height: 50.h,
-                      // contentPadding: const EdgeInsets.all(0),
                       fillColor: Colors.white,
-                      // enabled: false,
                       hintText: '+7 (___) ___-__-__',
                       textEditingController: TextEditingController(),
+                      formatters: [
+                        CustomInputFormatter(),
+                      ],
                     ),
                   ),
                 ),
@@ -411,6 +379,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
                     routeOrderReceiver.add(RouteOrder(adress: current.value!));
                   }
+                }
                 return true;
               },
               builder: (context, snapshot) {
@@ -456,7 +425,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
             ),
           ],
         ),
-      // ),
+      ),
     );
   }
 }

@@ -12,6 +12,7 @@ import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoder2/geocoder2.dart';
@@ -517,6 +518,9 @@ class _MarketPageState extends State<MarketPage> {
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
                                       textEditingController: phoneController,
+                                      formatters: [
+                                        CustomInputFormatter(),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -797,6 +801,78 @@ class _MarketPageState extends State<MarketPage> {
           ),
         );
       }),
+    );
+  }
+}
+
+class CustomInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    var text = newValue.text;
+
+    if (newValue.text.length < oldValue.text.length) {
+      return newValue;
+    }
+
+    if (text.isNotEmpty && text[0] == '8') {
+      if (text.length == 1) {
+        return oldValue.copyWith(
+          text: '$text (',
+          selection: TextSelection.collapsed(offset: text.length + 2),
+        );
+      } else if (text.length == 6) {
+        return oldValue.copyWith(
+          text: '$text) ',
+          selection: TextSelection.collapsed(offset: text.length + 2),
+        );
+      } else if (text.length == 11) {
+        return oldValue.copyWith(
+          text: '$text-',
+          selection: TextSelection.collapsed(offset: text.length + 1),
+        );
+      } else if (text.length == 14) {
+        return oldValue.copyWith(
+          text: '$text-',
+          selection: TextSelection.collapsed(offset: text.length + 1),
+        );
+      }
+      if (text.length > 17) {
+        return oldValue;
+      }
+    } else if (text.isNotEmpty && text[0] == '7' || text[0] == '+') {
+      if (text.length == 1) {
+        return oldValue.copyWith(
+          text: '+$text (',
+          selection: TextSelection.collapsed(offset: text.length + 3),
+        );
+      } else if (text.length == 7) {
+        return oldValue.copyWith(
+          text: '$text) ',
+          selection: TextSelection.collapsed(offset: text.length + 2),
+        );
+      } else if (text.length == 12) {
+        return oldValue.copyWith(
+          text: '$text-',
+          selection: TextSelection.collapsed(offset: text.length + 1),
+        );
+      } else if (text.length == 15) {
+        return oldValue.copyWith(
+          text: '$text-',
+          selection: TextSelection.collapsed(offset: text.length + 1),
+        );
+      }
+
+      if (text.length > 18) {
+        return oldValue;
+      }
+    } else {
+      return oldValue;
+    }
+
+    return newValue.copyWith(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }

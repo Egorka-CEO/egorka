@@ -17,18 +17,21 @@ class NavBar extends StatelessWidget {
       height: MediaQuery.of(context).size.height,
       child: Stack(
         children: [
-          Blur(
-            blur: 100,
-            blurColor: Colors.white,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: 250,
-            ),
-          ),
+          Container(color: Colors.white),
+          // Blur(
+          //   blur: 100,
+          //   blurColor: Colors.white,
+          //   child: SizedBox(
+          //     height: MediaQuery.of(context).size.height,
+          //     width: 250,
+          //   ),
+          // ),
           Padding(
             padding: EdgeInsets.all(18.w),
-            child: ListView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 50.h),
                 SvgPicture.asset(
                   'assets/icons/logo_egorka.svg',
                   alignment: Alignment.center,
@@ -42,7 +45,7 @@ class NavBar extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.center,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
                           onTap: () => Navigator.pushNamed(
@@ -50,7 +53,7 @@ class NavBar extends StatelessWidget {
                           child: Text(
                             'Движение по депозиту',
                             style: CustomTextStyle.black15w500
-                                .copyWith(color: Colors.red),
+                                .copyWith(color: Colors.black),
                           ),
                         ),
                         SizedBox(width: 10.w),
@@ -72,11 +75,11 @@ class NavBar extends StatelessWidget {
                     color: Colors.transparent,
                     height: 50.h,
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'Профиль',
                         style: CustomTextStyle.black15w500
-                            .copyWith(color: Colors.red),
+                            .copyWith(color: Colors.black),
                       ),
                     ),
                   ),
@@ -88,11 +91,11 @@ class NavBar extends StatelessWidget {
                     color: Colors.transparent,
                     height: 50.h,
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'Текущий заказ',
                         style: CustomTextStyle.black15w500
-                            .copyWith(color: Colors.red),
+                            .copyWith(color: Colors.black),
                       ),
                     ),
                   ),
@@ -106,11 +109,11 @@ class NavBar extends StatelessWidget {
                     color: Colors.transparent,
                     height: 50.h,
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'История заказов',
                         style: CustomTextStyle.black15w500
-                            .copyWith(color: Colors.red),
+                            .copyWith(color: Colors.black),
                       ),
                     ),
                   ),
@@ -122,11 +125,11 @@ class NavBar extends StatelessWidget {
                     color: Colors.transparent,
                     height: 50.h,
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'Маркетплейсы',
                         style: CustomTextStyle.black15w500
-                            .copyWith(color: Colors.red),
+                            .copyWith(color: Colors.black),
                       ),
                     ),
                   ),
@@ -137,11 +140,11 @@ class NavBar extends StatelessWidget {
                     color: Colors.transparent,
                     height: 50.h,
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'Записная книжка',
                         style: CustomTextStyle.black15w500
-                            .copyWith(color: Colors.red),
+                            .copyWith(color: Colors.black),
                       ),
                     ),
                   ),
@@ -153,11 +156,11 @@ class NavBar extends StatelessWidget {
                     height: 50.h,
                     width: double.infinity,
                     child: Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'О приложении',
                         style: CustomTextStyle.black15w500
-                            .copyWith(color: Colors.red),
+                            .copyWith(color: Colors.black),
                       ),
                     ),
                   ),

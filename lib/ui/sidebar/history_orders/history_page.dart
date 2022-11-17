@@ -1,6 +1,8 @@
 import 'package:egorka/core/bloc/current_order/current_order_bloc.dart';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/route_order.dart';
+import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/mini_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +14,8 @@ class HistoryOrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<RouteOrder> routeOrder = [
-      RouteOrder(adress: 'москва солнечная 6'),
-      RouteOrder(adress: 'москва межевая 24'),
+      RouteOrder(adress: 'москва солнечная 6',pod: '1', etaj: '2', offic: '34', name: 'test', phone: '+7 898 898 8999', comment: 'test',),
+      RouteOrder(adress: 'москва межевая 24',pod: '1', etaj: '2', offic: '34', name: 'test', phone: '+7 898 898 8999', comment: 'test',),
     ];
 
     return MultiBlocProvider(
@@ -142,9 +144,20 @@ class HistoryOrdersPage extends StatelessWidget {
                                             color: Colors.grey[400],
                                           ),
                                           SizedBox(width: 15.w),
-                                          const Text(
-                                            'Посмотреть детали',
-                                            style: CustomTextStyle.red15,
+                                          GestureDetector(
+                                            onTap: () => Navigator.of(context)
+                                                .pushNamed(
+                                                    AppRoute
+                                                        .historyDetailsOrder,
+                                                    arguments: [
+                                                  TypeAdd.receiver,
+                                                  1,
+                                                  routeOrder[0]
+                                                ]),
+                                            child: const Text(
+                                              'Посмотреть детали',
+                                              style: CustomTextStyle.red15,
+                                            ),
                                           )
                                         ],
                                       ),
@@ -182,9 +195,19 @@ class HistoryOrdersPage extends StatelessWidget {
                                           color: Colors.grey[400],
                                         ),
                                         SizedBox(width: 15.w),
-                                        const Text(
-                                          'Посмотреть детали',
-                                          style: CustomTextStyle.red15,
+                                        GestureDetector(
+                                          onTap: () => Navigator.of(context)
+                                              .pushNamed(
+                                                  AppRoute.historyDetailsOrder,
+                                                  arguments: [
+                                                TypeAdd.receiver,
+                                                1,
+                                                routeOrder[1]
+                                              ]),
+                                          child: const Text(
+                                            'Посмотреть детали',
+                                            style: CustomTextStyle.red15,
+                                          ),
                                         )
                                       ],
                                     ),

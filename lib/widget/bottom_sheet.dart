@@ -121,7 +121,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       ),
       child: ListView(
         shrinkWrap: true,
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           Padding(
             padding: EdgeInsets.only(

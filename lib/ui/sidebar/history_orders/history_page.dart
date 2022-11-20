@@ -150,7 +150,7 @@ class HistoryOrdersPage extends StatelessWidget {
                                                     AppRoute
                                                         .historyDetailsOrder,
                                                     arguments: [
-                                                  TypeAdd.receiver,
+                                                  TypeAdd.sender,
                                                   1,
                                                   routeOrder[0]
                                                 ]),

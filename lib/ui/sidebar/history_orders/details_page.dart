@@ -5,8 +5,6 @@ import 'package:egorka/model/receiver.dart';
 import 'package:egorka/model/route_order.dart';
 import 'package:egorka/model/sender.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
-import 'package:egorka/ui/sidebar/market_place/market_page.dart';
-import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -208,171 +206,145 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         widget.typeAdd == TypeAdd.sender
                             ? 'Откуда забрать?'
                             : 'Куда отвезти?',
-                        style: CustomTextStyle.grey15bold,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.r)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 20.w),
-                            Expanded(
-                              child: GestureDetector(
-                                child: CustomTextField(
-                                  height: 45.h,
-                                  contentPadding: const EdgeInsets.all(0),
-                                  fillColor: Colors.white.withOpacity(0),
-                                  enabled: false,
-                                  hintText: '',
-                                  textEditingController: controllerTo,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                          ],
+                        style: CustomTextStyle.grey15bold.copyWith(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 15.h),
+                SizedBox(height: 20.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: Row(
-                    children: const [
-                      Text(
-                        'Не обязательно к заполнению',
-                        style: CustomTextStyle.grey15bold,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          enabled: false,
-                          height: 45.h,
-                          fillColor: Colors.white,
-                          hintText: 'Подъезд',
-                          textInputType: TextInputType.number,
-                          textEditingController: controllerPod,
-                        ),
-                      ),
-                      SizedBox(width: 15.w),
-                      Expanded(
-                        child: CustomTextField(
-                          enabled: false,
-                          height: 45.h,
-                          fillColor: Colors.white,
-                          hintText: 'Этаж',
-                          textInputType: TextInputType.number,
-                          textEditingController: controllerEtaj,
-                        ),
-                      ),
-                      SizedBox(width: 15.w),
-                      Expanded(
-                        child: CustomTextField(
-                          enabled: false,
-                          height: 45.h,
-                          fillColor: Colors.white,
-                          hintText: 'Офис/кв.',
-                          textInputType: TextInputType.number,
-                          textEditingController: controllerOffice,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15.w),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: Row(
-                    children: const [
-                      Text('Контакты получателя',
-                          style: CustomTextStyle.grey15bold),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: CustomTextField(
-                      enabled: false,
-                      height: 45.h,
-                      fillColor: Colors.white,
-                      hintText: 'Имя',
-                      textEditingController: controllerName,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: CustomTextField(
-                      enabled: false,
-                      height: 45.h,
-                      fillColor: Colors.white,
-                      hintText: '+7 (___) ___-__-__',
-                      textEditingController: controllerPhone,
-                      formatters: [
-                        CustomInputFormatter(),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: Row(
-                    children: const [
-                      Text(
-                        'Поручения для Егорки',
-                        style: CustomTextStyle.grey15bold,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 5.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.w),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15.r),
-                    ),
-                    child: Row(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.r)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: CustomTextField(
-                            enabled: false,
-                            height: 300.w,
-                            width: 100.w,
-                            fillColor: Colors.white.withOpacity(0),
-                            hintText: '',
-                            maxLines: 10,
-                            textEditingController: controllerComment,
+                        Text(
+                          controllerTo.text,
+                          style: CustomTextStyle.grey15bold.copyWith(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 10.w),
+                        SizedBox(height: 10.h),
+                        Row(
+                          children: [
+                            Text(
+                              'Подъезд ${controllerPod.text.isNotEmpty ? controllerPod.text : '-'}, ',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                            Text(
+                              'Этаж ${controllerEtaj.text.isNotEmpty ? controllerEtaj.text : '-'}, ',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                            Text(
+                              'Офис/кв. ${controllerOffice.text.isNotEmpty ? controllerOffice.text : '-'}',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        )
                       ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Контакты',
+                        style: CustomTextStyle.grey15bold.copyWith(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.w),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.r)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: 'Имя: ',
+                                  style: CustomTextStyle.grey15bold
+                                      .copyWith(fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                text: controllerName.text.isNotEmpty
+                                    ? controllerName.text
+                                    : '-',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: 'Телефон: ',
+                                  style: CustomTextStyle.grey15bold
+                                      .copyWith(fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                text: controllerPhone.text.isNotEmpty
+                                    ? controllerPhone.text
+                                    : '-',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Поручения для Егорки',
+                        style: CustomTextStyle.grey15bold.copyWith(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.w),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.r)),
+                    child: Text(
+                      '${controllerComment.text.isNotEmpty ? controllerComment.text : '-'} ',
+                      style: CustomTextStyle.grey15bold,
                     ),
                   ),
                 ),

@@ -263,7 +263,9 @@ class ProfilePage extends StatelessWidget {
                                 color: Colors.grey[700],
                               ),
                             ),
+                            SizedBox(height: 5.h),
                             CustomTextField(
+                              height: 45.h,
                               obscureText: true,
                               hintText: '',
                               fillColor: backgroundColor,
@@ -282,7 +284,9 @@ class ProfilePage extends StatelessWidget {
                                 color: Colors.grey[700],
                               ),
                             ),
+                            SizedBox(height: 5.h),
                             CustomTextField(
+                              height: 45.h,
                               obscureText: true,
                               hintText: '',
                               fillColor: backgroundColor,
@@ -301,7 +305,9 @@ class ProfilePage extends StatelessWidget {
                                 color: Colors.grey[700],
                               ),
                             ),
+                            SizedBox(height: 5.h),
                             CustomTextField(
+                              height: 45.h,
                               obscureText: true,
                               hintText: '',
                               fillColor: backgroundColor,

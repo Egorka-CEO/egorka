@@ -134,7 +134,7 @@ class AddDeposit extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.w),
+        padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.w),
         child: Column(
           children: [
             SizedBox(height: 20.h),
@@ -151,7 +151,7 @@ class AddDeposit extends StatelessWidget {
                   textInputType: TextInputType.number,
                   width: 150.w,
                   fillColor: Colors.white,
-                  height: 50.h,
+                  height: 45.h,
                   contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
                   formatters: [
                     FilteringTextInputFormatter.allow(RegExp('[0-9]'))
@@ -163,7 +163,7 @@ class AddDeposit extends StatelessWidget {
                 GestureDetector(
                   onTap: () {},
                   child: Container(
-                    height: 50.h,
+                    height: 45.h,
                     width: 100.w,
                     decoration: BoxDecoration(
                       color: Colors.red,
@@ -212,7 +212,7 @@ class AddDeposit extends StatelessWidget {
                     );
                   }
                   return Container(
-                    height: 50,
+                    height: 45.h,
                     color: index % 2 == 0 ? Colors.white : Colors.grey[200],
                     child: Row(
                       children: [

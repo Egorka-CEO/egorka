@@ -9,6 +9,7 @@ import 'package:egorka/ui/sidebar/book/book_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
 import 'package:egorka/ui/sidebar/deposit/add_deposit.dart';
 import 'package:egorka/ui/sidebar/deposit/traffic_deposit.dart';
+import 'package:egorka/ui/sidebar/history_orders/details_page.dart';
 import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_places.dart';
@@ -28,6 +29,7 @@ class AppRoute {
   static const trafficDeposit = '/trafficDeposit';
   static const addDeposit = '/addDeposit';
   static const detailsOrder = '/detailsOrder';
+  static const historyDetailsOrder = '/historyDetailsOrder';
   static const book = '/book';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
@@ -65,6 +67,10 @@ class AppRoute {
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(
             builder: (_) => DetailsPage(typeAdd: list[0], index: list[1]));
+      case historyDetailsOrder:
+        final list = route.arguments as List<dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => HistoryDetailsPage(typeAdd: list[0], index: list[1], routeOrder: list[2],));
       case book:
         return MaterialPageRoute(builder: (_) => BookPage());
       default:

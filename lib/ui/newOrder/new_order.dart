@@ -125,7 +125,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                   children: [
                     SingleChildScrollView(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -522,7 +522,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                 ),
                                 CustomTextField(
-                                  height: 50.h,
+                                  height: 45.h,
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 10.w, vertical: 10.w),
                                   hintStyle: const TextStyle(
@@ -552,7 +552,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                   ),
                                 ),
                                 CustomTextField(
-                                  height: 50.h,
+                                  height: 45.h,
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 10.w, vertical: 10.w),
                                   hintStyle: const TextStyle(

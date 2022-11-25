@@ -122,7 +122,7 @@ class ItemTraffic extends StatelessWidget {
                 textInputType: TextInputType.number,
                 width: 120.w,
                 fillColor: Colors.white,
-                height: 50.h,
+                height: 45.h,
                 contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
               ),
             ],
@@ -143,15 +143,15 @@ class ItemTraffic extends StatelessWidget {
                 textInputType: TextInputType.number,
                 width: 120.w,
                 fillColor: Colors.white,
-                height: 50.h,
+                height: 45.h,
                 contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
               ),
               SizedBox(width: 20.w),
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  height: 50.w,
-                  width: 50.w,
+                  height: 45.w,
+                  width: 45.w,
                   decoration: BoxDecoration(
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(15.r),

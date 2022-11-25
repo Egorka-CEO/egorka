@@ -17,6 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
+import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MarketPage extends StatefulWidget {
@@ -27,7 +29,7 @@ class MarketPage extends StatefulWidget {
   State<MarketPage> createState() => _MarketPageState();
 }
 
-class _MarketPageState extends State<MarketPage> {
+class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
   bool btmSheet = false;
 
   TypeAdd? typeAdd;
@@ -60,6 +62,9 @@ class _MarketPageState extends State<MarketPage> {
   final bucketController = StreamController<int>();
   final palletController = StreamController<int>();
 
+  final streamController = StreamController<bool>();
+  bool details = false;
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +88,7 @@ class _MarketPageState extends State<MarketPage> {
   void dispose() {
     bucketController.close();
     palletController.close();
+    startOrderController.clear();
     super.dispose();
   }
 
@@ -241,7 +247,7 @@ class _MarketPageState extends State<MarketPage> {
                                               );
                                             },
                                             child: CustomTextField(
-                                              height: 49.h,
+                                              height: 45.h,
                                               contentPadding:
                                                   const EdgeInsets.all(0),
                                               fillColor: Colors.white,
@@ -269,55 +275,96 @@ class _MarketPageState extends State<MarketPage> {
                                 ],
                               ),
                               SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Не обязательно к заполнению',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
+                              GestureDetector(
+                                onTap: () {
+                                  streamController.add(!details);
+                                },
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Text(
+                                      'Указать детали',
+                                      style: CustomTextStyle.red15,
+                                    ),
+                                  ],
+                                ),
                               ),
                               SizedBox(height: 5.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 45.h,
-                                      fillColor: Colors.white,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      hintText: 'Подъезд',
-                                      textInputType: TextInputType.number,
-                                      textEditingController: item1Controller,
-                                    ),
-                                  ),
-                                  SizedBox(width: 15.w),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 45.h,
-                                      fillColor: Colors.white,
-                                      hintText: 'Этаж',
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      textInputType: TextInputType.number,
-                                      textEditingController: item2Controller,
-                                    ),
-                                  ),
-                                  SizedBox(width: 15.w),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 45.h,
-                                      fillColor: Colors.white,
-                                      hintText: 'Офис/кв.',
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      textInputType: TextInputType.number,
-                                      textEditingController: item3Controller,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              StreamBuilder<bool>(
+                                  stream: streamController.stream,
+                                  initialData: false,
+                                  builder: (context, snapshot) {
+                                    details = snapshot.data!;
+                                    return AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 400),
+                                      height: snapshot.data! ? 65.h : 0.h,
+                                      child: Stack(
+                                        children: [
+                                          Row(
+                                            children: const [
+                                              Text(
+                                                'Не обязательно к заполнению',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 20.h),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: CustomTextField(
+                                                    height: 45.h,
+                                                    fillColor: Colors.white,
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10.w),
+                                                    hintText: 'Подъезд',
+                                                    textInputType:
+                                                        TextInputType.number,
+                                                    textEditingController:
+                                                        item1Controller,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15.w),
+                                                Expanded(
+                                                  child: CustomTextField(
+                                                    height: 45.h,
+                                                    fillColor: Colors.white,
+                                                    hintText: 'Этаж',
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10.w),
+                                                    textInputType:
+                                                        TextInputType.number,
+                                                    textEditingController:
+                                                        item2Controller,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15.w),
+                                                Expanded(
+                                                  child: CustomTextField(
+                                                    height: 45.h,
+                                                    fillColor: Colors.white,
+                                                    hintText: 'Офис/кв.',
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10.w),
+                                                    textInputType:
+                                                        TextInputType.number,
+                                                    textEditingController:
+                                                        item3Controller,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
                               SizedBox(height: 10.h),
                               Row(
                                 children: [
@@ -447,14 +494,71 @@ class _MarketPageState extends State<MarketPage> {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: CustomTextField(
-                                        height: 50.h,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 10.w),
-                                        fillColor: Colors.white,
-                                        hintText: '',
-                                        textEditingController:
-                                            startOrderController,
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          if (Platform.isAndroid) {
+                                            final value = await showDialog(
+                                                context: context,
+                                                builder: ((context) {
+                                                  return DatePickerDialog(
+                                                    initialEntryMode:
+                                                        DatePickerEntryMode
+                                                            .calendarOnly,
+                                                    initialDate: DateTime.now(),
+                                                    firstDate: DateTime(2010),
+                                                    lastDate: DateTime(2030),
+                                                  );
+                                                }));
+                                            if (value != null) {
+                                              startOrderController.text =
+                                                  DateFormat('dd.MM.yyyy')
+                                                      .format(value);
+                                            }
+                                          }
+                                          final value = await showDialog(
+                                            barrierDismissible: true,
+                                            useSafeArea: false,
+                                            barrierColor: Colors.transparent,
+                                            context: context,
+                                            builder: ((context) {
+                                              return Stack(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                children: [
+                                                  Container(
+                                                    height: 200.h,
+                                                    color: Colors.grey[200],
+                                                    child: CupertinoDatePicker(
+                                                      mode:
+                                                          CupertinoDatePickerMode
+                                                              .date,
+                                                      use24hFormat: true,
+                                                      onDateTimeChanged:
+                                                          (value) {
+                                                        startOrderController
+                                                            .text = DateFormat(
+                                                                'dd.MM.yyyy')
+                                                            .format(value);
+
+                                                        ;
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
+                                          );
+                                        },
+                                        child: CustomTextField(
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w),
+                                          fillColor: Colors.white,
+                                          hintText: '',
+                                          enabled: false,
+                                          textEditingController:
+                                              startOrderController,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(width: 10.w),
@@ -495,7 +599,7 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: 10.w),
                                       fillColor: Colors.white,
@@ -511,7 +615,7 @@ class _MarketPageState extends State<MarketPage> {
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
-                                      height: 50.h,
+                                      height: 45.h,
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: 10.w),
                                       fillColor: Colors.white,
@@ -544,7 +648,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50.h,
+                                            height: 45.h,
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10.w),
@@ -599,7 +703,7 @@ class _MarketPageState extends State<MarketPage> {
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
-                                            height: 50.h,
+                                            height: 45.h,
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10.w),

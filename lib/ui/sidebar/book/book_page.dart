@@ -40,7 +40,7 @@ class BookPage extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.w),
+        padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.w),
         child: Column(
           children: [
             SizedBox(height: 30.h),
@@ -54,14 +54,10 @@ class BookPage extends StatelessWidget {
                 CustomTextField(
                   hintText: 'По ключевым словам',
                   textEditingController: TextEditingController(),
-                  textInputType: TextInputType.number,
                   width: 250.w,
                   fillColor: Colors.white,
-                  height: 50.h,
+                  height: 45.h,
                   contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
-                  formatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                  ],
                 ),
                 const Spacer(),
                 GestureDetector(

@@ -121,7 +121,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       ),
       child: ListView(
         shrinkWrap: true,
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           Padding(
             padding: EdgeInsets.only(
@@ -163,6 +164,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             ),
                             Expanded(
                               child: CustomTextField(
+                                height: 45.h,
                                 onTap: () {
                                   if (_flipController!.state!.isFront) {
                                     _flipController!.toggleCard();
@@ -253,6 +255,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             ),
                             Expanded(
                               child: CustomTextField(
+                                height: 45.h,
                                 onTap: () {
                                   if (!_flipController!.state!.isFront) {
                                     _flipController!.toggleCard();

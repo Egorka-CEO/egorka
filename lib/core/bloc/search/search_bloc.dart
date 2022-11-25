@@ -1,9 +1,9 @@
-import 'dart:typed_data';
-
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/coast_advanced.dart' as cstAdvanced;
+import 'package:egorka/model/coast_base.dart' as cstBase;
 import 'package:egorka/model/directions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,6 +80,38 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/to.png', 90));
+
+      // final coast = await Repository().getCoastBase(
+      //   cstBase.CoastBase(
+      //     iD: '5DD6960E9F0AE203C30CDE62',
+      //     type: 'Walk',
+      //     description: 'Документы',
+      //     message:
+      //         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In interdum massa vitae purus consequat posuere. Ut feugiat aliquam magna, vitae hendrerit lectus tempus sed.',
+      //     promo: cstBase.Promo(code: 'TEST'),
+      //     locations: [
+      //       cstBase.Locations(
+      //         '2023-11-22 20:10:00',
+      //         cstBase.Point(
+      //           code: 'I/9iGRRyVHrQPmEuzSKw/6jTpIJeYqkPoaF7NIFFcuHxfP98yPct4irLr5H3iy3ZlXvvMcD6nMU/xlCk9MR9LA==',
+      //           entrance: '1',
+      //           floor: '3',
+      //           room: '45',
+      //         ),
+      //         cstBase.Contact(
+      //           name: 'oleg',
+      //           phoneMobile: '23223232323',
+      //           phoneOffice: '2313213',
+      //           phoneOfficeAdd: '3443434',
+      //         ),
+      //         'test mesage',
+      //       )
+      //     ],
+      //   ),
+      // );
+      // final coast =
+      //     await Repository().getCoastAdvanced(cstAdvanced.CoastAdvanced());
+
       emit(SearchAddressRoutePolilyne(directions, {
         Marker(
           icon: fromIcon,

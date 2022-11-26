@@ -1,5 +1,5 @@
 name: egorka
-description: A new Flutter project.
+description: Egorka
 
 publish_to: 'none'
 
@@ -30,6 +30,8 @@ dependencies:
   intl: ^0.17.0
   flip_card: ^0.6.0
   blur: ^3.1.0
+  flutter_secure_storage: ^6.0.0
+  get_ip_address: ^0.0.5
 
 dev_dependencies:
   flutter_test:

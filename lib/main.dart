@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Repository().UUUIDCreate();
+    Repository().UUIDCreate();
     return MultiBlocProvider(
       providers: [
         BlocProvider<SearchAddressBloc>(
@@ -29,15 +29,14 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: ScreenUtilInit(
-      designSize: const Size(428, 926),
-      builder: (context, child) {
-          return const MaterialApp(
-            debugShowCheckedModeBanner: false,
-            initialRoute: AppRoute.home,
-            onGenerateRoute: AppRoute.onGenerateRoute,
-          );
-        }
-      ),
+          designSize: const Size(428, 926),
+          builder: (context, child) {
+            return const MaterialApp(
+              debugShowCheckedModeBanner: false,
+              initialRoute: AppRoute.home,
+              onGenerateRoute: AppRoute.onGenerateRoute,
+            );
+          }),
     );
   }
 }

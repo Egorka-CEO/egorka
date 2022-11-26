@@ -219,7 +219,7 @@ class Repository {
 
   //Авторизация Пользователь
 
-  Future<void> UUUIDCreate() async {
+  Future<void> UUIDCreate() async {
     var authData = auth();
     await getIP();
     authData['UserIP'] = IP;
@@ -238,13 +238,14 @@ class Repository {
 
     if (response.data['Errors'] == null) {
       MySecureStorage().setID(response.data['Result']['ID']);
-      MySecureStorage().setSecure(response.data['Result']['ID']);
+      MySecureStorage().setSecure(response.data['Result']['Secure']);
+      UUIDRegister(response.data['Result']['ID']);
     }
 
-    print('response UUUIDCreate=${response.data}');
+    print('response UUIDCreate=${response.data}');
   }
 
-  Future<void> UUUIDRegister(String value) async {
+  Future<void> UUIDRegister(String value) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -262,10 +263,10 @@ class Repository {
       },
     );
 
-    print('response UUUIDRegister=${response.data}');
+    print('response UUIDRegister=${response.data}');
   }
 
-  Future<void> loginUsernameUser(String login, String password) async {
+  Future<bool> loginUsernameUser(String login, String password) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -285,9 +286,14 @@ class Repository {
     );
 
     print('response loginUsernameUsers=${response.data}');
+
+    if (response.data['Errors'] == null)
+      return true;
+    else
+      return false;
   }
 
-  Future<void> loginEmailUser(String login, String password) async {
+  Future<bool> loginEmailUser(String login, String password) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -307,9 +313,14 @@ class Repository {
     );
 
     print('response loginEmailUser=${response.data}');
+
+    if (response.data['Errors'] == null)
+      return true;
+    else
+      return false;
   }
 
-  Future<void> loginPhoneUser(String login, String password) async {
+  Future<bool> loginPhoneUser(String login, String password) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -329,10 +340,15 @@ class Repository {
     );
 
     print('response loginPhoneUser=${response.data}');
+
+    if (response.data['Errors'] == null)
+      return true;
+    else
+      return false;
   }
 
   //Авторизация Субагент или Корпорат
-  Future<void> loginUsernameAgent(
+  Future<bool> loginUsernameAgent(
       String login, String password, String company) async {
     var authData = auth();
     authData['UserIP'] = IP;
@@ -355,9 +371,14 @@ class Repository {
     );
 
     print('response loginUsernameAgent=${response.data}');
+
+    if (response.data['Errors'] == null)
+      return true;
+    else
+      return false;
   }
 
-  Future<void> loginEmailAgent(
+  Future<bool> loginEmailAgent(
       String login, String password, String company) async {
     var authData = auth();
     authData['UserIP'] = IP;
@@ -371,7 +392,7 @@ class Repository {
         "Method": "Login",
         "Body": {
           "Type": "Agent",
-          "Company": login,
+          "Company": company,
           "Email": login,
           "Password": password,
         },
@@ -380,9 +401,14 @@ class Repository {
     );
 
     print('response loginEmailAgent=${response.data}');
+
+    if (response.data['Errors'] == null)
+      return true;
+    else
+      return false;
   }
 
-  Future<void> loginPhoneAgent(
+  Future<bool> loginPhoneAgent(
       String login, String password, String company) async {
     var authData = auth();
     authData['UserIP'] = IP;
@@ -405,5 +431,10 @@ class Repository {
     );
 
     print('response loginPhoneAgent=${response.data}');
+
+    if (response.data['Errors'] == null)
+      return true;
+    else
+      return false;
   }
 }

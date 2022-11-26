@@ -486,13 +486,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               StandartButton(
                 label: 'Да',
                 color: Colors.green,
-                onTap: () => Navigator.pushNamed(context, AppRoute.auth).then(
-                  (value) {
-                    Navigator.of(context)
-                      ..pop()
-                      ..pushNamed(AppRoute.newOrder);
-                  },
-                ),
+                onTap: () => Navigator.pushNamed(context, AppRoute.auth),
               )
             ],
           );

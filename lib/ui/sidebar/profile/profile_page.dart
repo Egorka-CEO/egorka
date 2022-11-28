@@ -1,8 +1,10 @@
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -10,6 +12,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = BlocProvider.of<ProfileBloc>(context).getUser();
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -46,9 +49,9 @@ class ProfilePage extends StatelessWidget {
                           SizedBox(width: 20.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                'Иванов Дмитрий Игоревич, ИП',
+                                user!.result!.user!.name ?? '-',
                                 style: CustomTextStyle.black15w700,
                               ),
                             ],
@@ -148,8 +151,8 @@ class ProfilePage extends StatelessWidget {
                                       color: Colors.grey[700],
                                     ),
                                   ),
-                                  const TextSpan(
-                                    text: '+7 988 003 4712',
+                                  TextSpan(
+                                    text: user.result!.user!.username ?? '-',
                                     style: CustomTextStyle.black15w700,
                                   )
                                 ],
@@ -165,8 +168,8 @@ class ProfilePage extends StatelessWidget {
                                       color: Colors.grey[700],
                                     ),
                                   ),
-                                  const TextSpan(
-                                    text: '+7 988 003 4712',
+                                  TextSpan(
+                                    text: user.result!.user!.phoneMobile ?? '-',
                                     style: CustomTextStyle.black15w700,
                                   )
                                 ],
@@ -182,8 +185,8 @@ class ProfilePage extends StatelessWidget {
                                       color: Colors.grey[700],
                                     ),
                                   ),
-                                  const TextSpan(
-                                    text: '+7 988 003 4712',
+                                  TextSpan(
+                                    text: user.result!.user!.phoneOffice ?? '-',
                                     style: CustomTextStyle.black15w700,
                                   )
                                 ],
@@ -199,8 +202,8 @@ class ProfilePage extends StatelessWidget {
                                       color: Colors.grey[700],
                                     ),
                                   ),
-                                  const TextSpan(
-                                    text: 'test@mail.ru',
+                                  TextSpan(
+                                    text: user.result!.user!.email ?? '-',
                                     style: CustomTextStyle.black15w700,
                                   )
                                 ],

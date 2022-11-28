@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/router.dart';
+import 'package:egorka/model/user.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -187,7 +188,7 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void _signIn(BuildContext context) async {
-    late bool res;
+    AuthUser? res;
     _btnController.start();
     if (widget.typeSignIn == TypeSignIn.Company) {
       if (_loginController.text.isNotEmpty &&
@@ -207,7 +208,7 @@ class _AuthPageState extends State<AuthPage> {
                 _passwordController.text, _companyController.text);
             break;
           default:
-            res = false;
+            res = null;
         }
       }
     } else {
@@ -227,16 +228,20 @@ class _AuthPageState extends State<AuthPage> {
                 _loginController.text, _passwordController.text);
             break;
           default:
-            res = false;
+            res = null;
         }
       }
     }
-    if (res) {
+    if (res != null) {
       _btnController.success();
-      Navigator.of(context)
-        ..pop()
-        ..pop()
-        ..pushNamed(AppRoute.newOrder);
+      MySecureStorage storage = MySecureStorage();
+      storage.setTypeAuth(widget.typeSignIn == TypeSignIn.Company ? '1' : '0');
+      storage.setTypeAuth(logType.index.toString());
+      storage.setLogin(_loginController.text);
+      storage.setPassword(_passwordController.text);
+      storage.setCompany(
+          _companyController.text.isEmpty ? null : _companyController.text);
+      Navigator.of(context).pop(res);
     } else {
       _btnController.error();
     }

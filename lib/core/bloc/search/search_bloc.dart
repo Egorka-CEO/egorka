@@ -6,6 +6,7 @@ import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart' as cstAdvanced;
 import 'package:egorka/model/coast_base.dart' as cstBase;
 import 'package:egorka/model/directions.dart';
+import 'package:egorka/model/response_coast_base.dart' as respCoast;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
@@ -67,57 +68,57 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     isPolilyne = true;
 
     final locationFrom = await Geocoder2.getDataFromAddress(
-        address: event.from, googleMapApiKey: apiKey);
+        address: event.suggestionsStart.name, googleMapApiKey: apiKey);
     final locationTo = await Geocoder2.getDataFromAddress(
-        address: event.to, googleMapApiKey: apiKey);
+        address: event.suggestionsEnd.name, googleMapApiKey: apiKey);
 
     final directions = await DirectionsRepository(dio: null).getDirections(
         origin: LatLng(locationFrom.latitude, locationFrom.longitude),
         destination: LatLng(locationTo.latitude, locationTo.longitude));
     if (directions != null) {
-      // final Uint8List markerIcon =
-      //     await getBytesFromAsset('assets/images/flutter.png', 100);
       final fromIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/to.png', 90));
 
       String? iD = await MySecureStorage().getID();
-
       print('response id ${iD}');
+      print(
+          'response id ${event.suggestionsStart.iD} ${event.suggestionsEnd.iD}}');
 
-      // await Repository().UUUIDRegister(iD!);
+      List<String> type = ['Walk', 'Car'];
+      List<respCoast.CoastResponse> coasts = [];
 
-      final coast = await Repository().getCoastBase(
-        cstBase.CoastBase(
-          iD: iD,
-          // type: 'Walk',
-          // description: 'Документы',
-          // message:
-          //     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In interdum massa vitae purus consequat posuere. Ut feugiat aliquam magna, vitae hendrerit lectus tempus sed.',
-          // promo: cstBase.Promo(code: 'TEST'),
-          locations: [
-            cstBase.Locations(
-              '2023-11-22 20:10:00',
-              cstBase.Point(
-                code: 'I/9iGRRyVHrQPmEuzSKw/6jTpIJeYqkPoaF7NIFFcuHxfP98yPct4irLr5H3iy3ZlXvvMcD6nMU/xlCk9MR9LA==',
-                entrance: '1',
-                floor: '3',
-                room: '45',
+      for (var element in type) {
+        final res = await Repository().getCoastBase(
+          cstBase.CoastBase(
+            iD: null,
+            type: element,
+            locations: [
+              cstBase.Locations(
+                date: '2022-12-22 20:10:00',
+                point: cstBase.Point(
+                  code: event.suggestionsStart.iD,
+                  entrance: null,
+                  floor: null,
+                  room: null,
+                ),
               ),
-              cstBase.Contact(
-                // name: 'oleg',
-                // phoneMobile: '23223232323',
-                // phoneOffice: '2313213',
-                // phoneOfficeAdd: '3443434',
+              cstBase.Locations(
+                date: null,
+                point: cstBase.Point(
+                  code: event.suggestionsStart.iD,
+                  entrance: null,
+                  floor: null,
+                  room: null,
+                ),
               ),
-              'test mesage',
-            )
-          ],
-        ),
-      );
-      // final coast =
-      //     await Repository().getCoastAdvanced(cstAdvanced.CoastAdvanced());
+            ],
+            ancillaries: null,
+          ),
+        );
+        if (res != null) coasts.add(res);
+      }
 
       emit(SearchAddressRoutePolilyne(directions, {
         Marker(

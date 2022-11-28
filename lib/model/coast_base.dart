@@ -62,12 +62,12 @@ class Locations {
   Contact? contact;
   String? message;
 
-  Locations(
+  Locations({
     this.date,
     this.point,
     this.contact,
     this.message,
-  );
+  });
 
   Locations.fromJson(Map<String, dynamic> json) {
     date = json['Date'];
@@ -102,7 +102,7 @@ class Point {
     this.entrance,
     this.floor,
     this.room,
-  });
+});
 
   Point.fromJson(Map<String, dynamic> json) {
     code = json['Code'];
@@ -127,12 +127,12 @@ class Contact {
   String? phoneOffice;
   String? phoneOfficeAdd;
 
-  Contact({
+  Contact(
     this.name,
     this.phoneMobile,
     this.phoneOffice,
     this.phoneOfficeAdd,
-  });
+  );
 
   Contact.fromJson(Map<String, dynamic> json) {
     name = json['Name'];

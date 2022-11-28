@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/core/database/secure_storage.dart';
+import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/bottom_sheet_history_orders.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/map.dart';
@@ -27,6 +31,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    funcInit();
     startAnim();
   }
 
@@ -35,6 +40,56 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       logoMoveBackgroundScale = true;
       setState(() {});
     });
+  }
+
+  void funcInit() async {
+    final storage = MySecureStorage();
+    final type = await storage.getTypeUser();
+    if (type != null) {
+      String? login = await storage.getLogin();
+      String? password = await storage.getPassword();
+      String? company = await storage.getCompany();
+      AuthUser? res;
+
+      if (type == '0') {
+        switch (type) {
+          case '0':
+            res = await Repository().loginUsernameUser(login!, password!);
+            break;
+          case '1':
+            res = await Repository().loginEmailUser(login!, password!);
+            break;
+          case '2':
+            res = await Repository().loginPhoneUser(login!, password!);
+            break;
+          default:
+            res = null;
+        }
+      } else {
+        switch (type) {
+          case '0':
+            res = await Repository()
+                .loginUsernameAgent(login!, password!, company!);
+            break;
+          case '1':
+            res =
+                await Repository().loginEmailAgent(login!, password!, company!);
+            break;
+          case '2':
+            res =
+                await Repository().loginPhoneAgent(login!, password!, company!);
+            break;
+          default:
+            res = null;
+        }
+      }
+
+      if (res != null) {
+        BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
+      }
+    } else {
+      Repository().UUIDCreate();
+    }
   }
 
   int duration = 350;

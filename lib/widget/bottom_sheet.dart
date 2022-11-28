@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/user.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
@@ -41,6 +44,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   bool _visible = false;
 
   TypeAdd? typeAdd;
+
+  Suggestions? suggestionsStart;
+  Suggestions? suggestionsEnd;
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
@@ -470,27 +476,43 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   }
 
   void authShowDialog() async {
-    await showDialog(
-        context: context,
-        builder: (context) {
-          return StandartAlertDialog(
-            message: 'Хотите авторизоваться?',
-            buttons: [
-              StandartButton(
-                label: 'Нет',
-                color: Colors.red.withOpacity(0.9),
-                onTap: () => Navigator.of(context)
-                  ..pop()
-                  ..pushNamed(AppRoute.newOrder),
-              ),
-              StandartButton(
-                label: 'Да',
-                color: Colors.green,
-                onTap: () => Navigator.pushNamed(context, AppRoute.auth),
-              )
-            ],
-          );
-        });
+    final user = BlocProvider.of<ProfileBloc>(context).getUser();
+
+    if (user != null) {
+      Navigator.of(context).pushNamed(AppRoute.newOrder);
+    } else {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return StandartAlertDialog(
+              message: 'Хотите авторизоваться?',
+              buttons: [
+                StandartButton(
+                  label: 'Нет',
+                  color: Colors.red.withOpacity(0.9),
+                  onTap: () => Navigator.of(context)
+                    ..pop()
+                    ..pushNamed(AppRoute.newOrder),
+                ),
+                StandartButton(
+                  label: 'Да',
+                  color: Colors.green,
+                  onTap: () async {
+                    final result =
+                        await Navigator.pushNamed(context, AppRoute.auth);
+                    if (result != null) {
+                      BlocProvider.of<ProfileBloc>(context)
+                          .add(ProfileEventUpdate(result as AuthUser));
+                      Navigator.of(context)
+                        ..pop()
+                        ..pushNamed(AppRoute.newOrder);
+                    }
+                  },
+                )
+              ],
+            );
+          });
+    }
   }
 
   Column _pointCard(
@@ -506,9 +528,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 _flipController!.toggleCard();
               }
               if (focusFrom.hasFocus) {
+                suggestionsStart = state.address!.result.suggestions![index];
                 fromController.text =
                     state.address!.result.suggestions![index].name;
               } else if (focusTo.hasFocus) {
+                suggestionsEnd = state.address!.result.suggestions![index];
                 toController.text =
                     state.address!.result.suggestions![index].name;
               }
@@ -516,8 +540,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               if (toController.text.isNotEmpty &&
                   toController.text.isNotEmpty) {
                 BlocProvider.of<SearchAddressBloc>(context).add(
-                    SearchAddressPolilyne(
-                        fromController.text, toController.text));
+                    SearchAddressPolilyne(suggestionsStart!, suggestionsEnd!));
               } else {
                 BlocProvider.of<SearchAddressBloc>(context).add(
                   JumpToPointEvent(

@@ -24,10 +24,10 @@ class JumpToPointEvent extends SearchAddressEvent {
 }
 
 class SearchAddressPolilyne extends SearchAddressEvent {
-  String from;
-  String to;
+  Suggestions suggestionsStart;
+  Suggestions suggestionsEnd;
 
-  SearchAddressPolilyne(this.from, this.to);
+  SearchAddressPolilyne(this.suggestionsStart, this.suggestionsEnd);
 }
 
 class DeletePolilyneEvent extends SearchAddressEvent {}

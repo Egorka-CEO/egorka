@@ -6,6 +6,8 @@ import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/payment.dart';
+import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 
 class Repository {
@@ -61,7 +63,7 @@ class Repository {
       try {
         final address = Address.fromJson(response.data);
         if (address.errors == null) {
-          return Address.fromJson(response.data);
+          return address;
         }
       } catch (e) {
         return null;
@@ -96,7 +98,8 @@ class Repository {
     }
   }
 
-  Future<void> getCoastBase(CoastBase value) async {
+  Future<CoastResponse?> getCoastBase(CoastBase value) async {
+    //?
     final body = value.toJson();
     final response = await dio.post(
       '$server/delivery/',
@@ -110,9 +113,16 @@ class Repository {
     );
 
     print('response base=${response.data}');
+
+    if(response.data['Errors'] == null) {
+      final coast = CoastResponse.fromJson(response.data);
+      return coast;
+    }
+    return null;
   }
 
   Future<void> getCoastAdvanced(CoastAdvanced value) async {
+    //?
     final response = await dio.post(
       '$server/',
       options: header(),
@@ -128,6 +138,7 @@ class Repository {
   }
 
   Future<void> createForm(String value) async {
+    //?
     final response = await dio.post(
       '$server/delivery/',
       options: header(),
@@ -145,6 +156,7 @@ class Repository {
   }
 
   Future<void> infoForm(String number, String pin) async {
+    //?
     final response = await dio.post(
       '$server/delivery/',
       options: header(),
@@ -163,6 +175,7 @@ class Repository {
   }
 
   Future<void> cancelForm(String number, String pin) async {
+    //?
     final response = await dio.post(
       '$server/delivery/',
       options: header(),
@@ -181,6 +194,7 @@ class Repository {
   }
 
   Future<void> paymentDeposit(int id, int pin) async {
+    //?
     var authData = auth();
     authData['Account'] = 'ZZZZZZZZ-ZZZZ-ZZZZ-ZZZZ-ZZZZZZZZZZZZ';
 
@@ -198,6 +212,7 @@ class Repository {
   }
 
   Future<void> paymentCard(Payment payment) async {
+    //?
     final response = await dio.post(
       '$server/delivery/',
       options: header(),
@@ -219,7 +234,7 @@ class Repository {
 
   //Авторизация Пользователь
 
-  Future<void> UUIDCreate() async {
+  Future<bool> UUIDCreate() async {
     var authData = auth();
     await getIP();
     authData['UserIP'] = IP;
@@ -236,13 +251,16 @@ class Repository {
       },
     );
 
+    print('response UUIDCreate=${response.data}');
+
     if (response.data['Errors'] == null) {
       MySecureStorage().setID(response.data['Result']['ID']);
       MySecureStorage().setSecure(response.data['Result']['Secure']);
       UUIDRegister(response.data['Result']['ID']);
+      return true;
     }
 
-    print('response UUIDCreate=${response.data}');
+    return false;
   }
 
   Future<void> UUIDRegister(String value) async {
@@ -266,7 +284,7 @@ class Repository {
     print('response UUIDRegister=${response.data}');
   }
 
-  Future<bool> loginUsernameUser(String login, String password) async {
+  Future<AuthUser?> loginUsernameUser(String login, String password) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -287,13 +305,15 @@ class Repository {
 
     print('response loginUsernameUsers=${response.data}');
 
-    if (response.data['Errors'] == null)
-      return true;
-    else
-      return false;
+    if (response.data['Errors'] == null) {
+      final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
   }
 
-  Future<bool> loginEmailUser(String login, String password) async {
+  Future<AuthUser?> loginEmailUser(String login, String password) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -314,13 +334,15 @@ class Repository {
 
     print('response loginEmailUser=${response.data}');
 
-    if (response.data['Errors'] == null)
-      return true;
-    else
-      return false;
+    if (response.data['Errors'] == null) {
+      final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
   }
 
-  Future<bool> loginPhoneUser(String login, String password) async {
+  Future<AuthUser?> loginPhoneUser(String login, String password) async {
     var authData = auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -341,14 +363,16 @@ class Repository {
 
     print('response loginPhoneUser=${response.data}');
 
-    if (response.data['Errors'] == null)
-      return true;
-    else
-      return false;
+    if (response.data['Errors'] == null) {
+      final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
   }
 
   //Авторизация Субагент или Корпорат
-  Future<bool> loginUsernameAgent(
+  Future<AuthUser?> loginUsernameAgent(
       String login, String password, String company) async {
     var authData = auth();
     authData['UserIP'] = IP;
@@ -372,13 +396,15 @@ class Repository {
 
     print('response loginUsernameAgent=${response.data}');
 
-    if (response.data['Errors'] == null)
-      return true;
-    else
-      return false;
+    if (response.data['Errors'] == null) {
+      final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
   }
 
-  Future<bool> loginEmailAgent(
+  Future<AuthUser?> loginEmailAgent(
       String login, String password, String company) async {
     var authData = auth();
     authData['UserIP'] = IP;
@@ -402,13 +428,15 @@ class Repository {
 
     print('response loginEmailAgent=${response.data}');
 
-    if (response.data['Errors'] == null)
-      return true;
-    else
-      return false;
+    if (response.data['Errors'] == null) {
+      final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
   }
 
-  Future<bool> loginPhoneAgent(
+  Future<AuthUser?> loginPhoneAgent(
       String login, String password, String company) async {
     var authData = auth();
     authData['UserIP'] = IP;
@@ -432,9 +460,11 @@ class Repository {
 
     print('response loginPhoneAgent=${response.data}');
 
-    if (response.data['Errors'] == null)
-      return true;
-    else
-      return false;
+    if (response.data['Errors'] == null) {
+      final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
   }
 }

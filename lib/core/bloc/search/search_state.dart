@@ -2,13 +2,16 @@ part of 'search_bloc.dart';
 
 abstract class SearchAddressState {}
 
+class SearchLoading extends SearchAddressState {}
+
 class SearchAddressStated extends SearchAddressState {}
 
 class SearchAddressRoutePolilyne extends SearchAddressState {
   Directions routes;
   Set<Marker> markers;
+  List<respCoast.CoastResponse> coasts;
 
-  SearchAddressRoutePolilyne(this.routes, this.markers);
+  SearchAddressRoutePolilyne(this.routes, this.markers, this.coasts);
 }
 
 class DeletePolilyneState extends SearchAddressState {}

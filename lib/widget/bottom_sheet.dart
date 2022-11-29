@@ -6,6 +6,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/allert_dialog.dart';
@@ -14,6 +15,7 @@ import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,10 +51,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Suggestions? suggestionsEnd;
 
   List<DeliveryChocie> listChoice = [
-    DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
-    DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
-    DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
     DeliveryChocie(title: 'Пешком', icon: 'assets/images/ic_leg.png'),
+    DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
+    // DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
+    // DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
   ];
 
   bool showFront = true;
@@ -358,6 +360,15 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   },
                   builder: (context, state) {
                     var bloc = BlocProvider.of<SearchAddressBloc>(context);
+                    if (state is SearchLoading) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const [
+                          Text('Егорка рассчитывает стоимость'),
+                          CupertinoActivityIndicator(),
+                        ],
+                      );
+                    }
                     if (state is SearchAddressStated) {
                       return const SizedBox();
                     } else if (state is SearchAddressLoading) {
@@ -384,9 +395,39 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       } else {
                         return Container();
                       }
-                    } else if (blocs.isPolilyne &&
-                        !focusFrom.hasFocus &&
-                        !focusTo.hasFocus) {
+                    } else if (state is SearchAddressRoutePolilyne) {
+                      final coasts = state.coasts;
+                      if (coasts.isEmpty) {
+                        return Column(
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              color: Colors.red,
+                            ),
+                            const Text(
+                              'У Егорки не получилось рассчитать стоимость',
+                              textAlign: TextAlign.center,
+                            ),
+                            GestureDetector(
+                              onTap: (() {
+                                if (toController.text.isNotEmpty &&
+                                    toController.text.isNotEmpty) {
+                                  BlocProvider.of<SearchAddressBloc>(context)
+                                      .add(SearchAddressPolilyne(
+                                          suggestionsStart!, suggestionsEnd!));
+                                }
+                              }),
+                              child: const Text(
+                                'Повторите еще раз',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: listChoice.length,
@@ -394,7 +435,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                           return Padding(
                             padding: EdgeInsets.only(
                               left: index == 0 ? 20.w : 0,
-                              right: index == listChoice.length - 1 ? 5.w : 0,
+                              right: index == coasts.length - 1 ? 5.w : 0,
                             ),
                             child: GestureDetector(
                               onTap: () => streamDelivery.add(index),
@@ -429,7 +470,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                         ),
                                       ),
                                       Text(
-                                        '1999₽',
+                                        '${coasts[index].result!.totalPrice!.total}₽',
                                         style: TextStyle(
                                           color: snapshot.data! == index
                                               ? Colors.grey
@@ -452,23 +493,34 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               ),
               SizedBox(height: 10.h),
               if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: GestureDetector(
-                    onTap: authShowDialog,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.all(15.w),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10.r),
+                BlocBuilder<SearchAddressBloc, SearchAddressState>(
+                  builder: (context, state) {
+                    List<CoastResponse> coasts = [];
+                    var bloc = BlocProvider.of<SearchAddressBloc>(context);
+                    if (state is SearchAddressRoutePolilyne) {
+                      coasts.addAll(state.coasts);
+                    }
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: GestureDetector(
+                        onTap: coasts.isNotEmpty ? authShowDialog : null,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(15.w),
+                          decoration: BoxDecoration(
+                            color: coasts.isNotEmpty
+                                ? Colors.red
+                                : Colors.red.shade300,
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          child: const Center(
+                            child: Text('Перейти к оформлению',
+                                style: CustomTextStyle.white15w600),
+                          ),
+                        ),
                       ),
-                      child: const Center(
-                        child: Text('Перейти к оформлению',
-                            style: CustomTextStyle.white15w600),
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 )
             ],
           );

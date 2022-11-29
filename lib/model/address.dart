@@ -100,10 +100,10 @@ class Point {
 }
 
 class Errors {
-  String type;
-  int code;
-  String message;
-  String description;
+  String? type;
+  int? code;
+  String? message;
+  String? description;
 
   Errors(
       {required this.type,

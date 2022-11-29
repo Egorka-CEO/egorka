@@ -65,6 +65,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
   void _getPoliline(
       SearchAddressPolilyne event, Emitter<SearchAddressState> emit) async {
+    emit(SearchLoading());
     isPolilyne = true;
 
     final locationFrom = await Geocoder2.getDataFromAddress(
@@ -82,7 +83,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           await getBytesFromAsset('assets/images/to.png', 90));
 
       String? iD = await MySecureStorage().getID();
-      print('response id ${iD}');
+      // print('response id ${iD}');
       print(
           'response id ${event.suggestionsStart.iD} ${event.suggestionsEnd.iD}}');
 
@@ -92,48 +93,48 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       for (var element in type) {
         final res = await Repository().getCoastBase(
           cstBase.CoastBase(
-            iD: null,
             type: element,
             locations: [
               cstBase.Locations(
-                date: '2022-12-22 20:10:00',
                 point: cstBase.Point(
                   code: event.suggestionsStart.iD,
-                  entrance: null,
-                  floor: null,
-                  room: null,
                 ),
               ),
               cstBase.Locations(
-                date: null,
                 point: cstBase.Point(
                   code: event.suggestionsStart.iD,
-                  entrance: null,
-                  floor: null,
-                  room: null,
                 ),
               ),
             ],
-            ancillaries: null,
           ),
         );
-        if (res != null) coasts.add(res);
+        if (res != null) {
+          coasts.add(res);
+        }
       }
 
-      emit(SearchAddressRoutePolilyne(directions, {
-        Marker(
-          icon: fromIcon,
-          markerId: const MarkerId('start'),
-          position: LatLng(directions.polylinePoints.first.latitude,
-              directions.polylinePoints.first.longitude),
+      print('response coast base  ${coasts}');
+
+      emit(
+        SearchAddressRoutePolilyne(
+          directions,
+          {
+            Marker(
+              icon: fromIcon,
+              markerId: const MarkerId('start'),
+              position: LatLng(directions.polylinePoints.first.latitude,
+                  directions.polylinePoints.first.longitude),
+            ),
+            Marker(
+              icon: toIcon,
+              markerId: const MarkerId('finish'),
+              position: LatLng(directions.polylinePoints.last.latitude,
+                  directions.polylinePoints.last.longitude),
+            ),
+          },
+          coasts,
         ),
-        Marker(
-          icon: toIcon,
-          markerId: const MarkerId('finish'),
-          position: LatLng(directions.polylinePoints.last.latitude,
-              directions.polylinePoints.last.longitude),
-        ),
-      }));
+      );
     } else {
       isPolilyne = false;
     }

@@ -114,7 +114,7 @@ class Repository {
 
     print('response base=${response.data}');
 
-    if(response.data['Errors'] == null) {
+    if(response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
       return coast;
     }

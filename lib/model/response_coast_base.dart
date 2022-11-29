@@ -24,6 +24,7 @@ class CoastResponse {
     method = json['Method'];
     result = json['Result'] != null ? Result.fromJson(json['Result']) : null;
     if (json['Errors'] != null) {
+      errors = [];
       json['Errors'].forEach((v) {
         errors!.add(Errors.fromJson(v));
       });
@@ -74,6 +75,7 @@ class Result {
     recordDate = json['RecordDate'];
     recordDateStamp = json['RecordDateStamp'];
     if (json['Locations'] != null) {
+      locations = [];
       json['Locations'].forEach((v) {
         locations!.add(Location.fromJson(v));
       });
@@ -84,6 +86,7 @@ class Result {
       });
     }
     if (json['Calculation'] != null) {
+      calculation = [];
       json['Calculation'].forEach((v) {
         calculation!.add(Calculation.fromJson(v));
       });
@@ -142,7 +145,7 @@ class Calculation {
   );
 
   String? key;
-  String? value;
+  dynamic? value;
 
   Calculation.fromJson(Map<String, dynamic> json) {
     key = json['Key'];

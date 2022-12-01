@@ -1,4 +1,5 @@
 class RouteOrder {
+  String id;
   String adress;
   String? pod;
   String? etaj;
@@ -8,6 +9,7 @@ class RouteOrder {
   String? comment;
 
   RouteOrder({
+    required this.id,
     required this.adress,
     this.pod,
     this.etaj,

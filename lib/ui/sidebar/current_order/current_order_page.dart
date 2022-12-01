@@ -13,8 +13,8 @@ class CurrentOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<RouteOrder> routeOrder = [
-      RouteOrder(adress: 'москва солнечная 6'),
-      RouteOrder(adress: 'москва межевая 24'),
+      // RouteOrder(adress: 'москва солнечная 6'),
+      // RouteOrder(adress: 'москва межевая 24'),
     ];
 
     return MultiBlocProvider(

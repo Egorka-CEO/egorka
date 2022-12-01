@@ -2,9 +2,9 @@ import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/receiver.dart';
+import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/route_order.dart';
-import 'package:egorka/model/sender.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -15,43 +15,45 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 enum TypeAdd { sender, receiver }
 
 class NewOrderPage extends StatefulWidget {
-  const NewOrderPage({super.key});
-
-  static Sender sender = Sender(
-    firstName: 'Олег',
-    secondName: 'Бочко',
-    phone: '+79223747362',
-    address: 'г.Москва, ул.Кижеватова д.23',
-  );
-
-  static Receiver receiver = Receiver(
-    firstName: 'Максим',
-    secondName: 'Яковлев',
-    phone: '+79111119393',
-    address: 'г.Москва, ул.Солнечная д.6',
-  );
+  CoastResponse order;
+  DeliveryChocie deliveryChocie;
+  NewOrderPage({
+    required this.order,
+    required this.deliveryChocie,
+    super.key,
+  });
 
   @override
   State<NewOrderPage> createState() => _NewOrderPageState();
 }
 
 class _NewOrderPageState extends State<NewOrderPage> {
-  List<RouteOrder> routeOrderSender = [
-    RouteOrder(adress: 'москва солнечная 6'),
-  ];
-
-  List<RouteOrder> routeOrderReceiver = [
-    RouteOrder(adress: 'москва солнечная 6'),
-  ];
+  List<RouteOrder> routeOrderSender = [];
+  List<RouteOrder> routeOrderReceiver = [];
 
   TextEditingController fromController = TextEditingController();
-
   PanelController panelController = PanelController();
   bool btmSheet = false;
   TypeAdd? typeAdd;
 
   @override
+  void initState() {
+    super.initState();
+    routeOrderSender.add(
+      RouteOrder(
+          id: widget.order.result!.locations![0].point!.code!,
+          adress: widget.order.result!.locations![0].point!.address!),
+    );
+    routeOrderReceiver.add(
+      RouteOrder(
+          id: widget.order.result!.locations![1].point!.code!,
+          adress: widget.order.result!.locations![1].point!.address!),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // print('object ${widget.deliveryChocie.icon}');
     return MultiBlocProvider(
       providers: [
         BlocProvider<NewOrderPageBloc>(
@@ -113,9 +115,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
               } else if (current is NewOrderStateCloseBtmSheet) {
                 btmSheet = false;
                 if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                  routeOrderSender.add(RouteOrder(adress: current.value!));
+                  // routeOrderSender.add(RouteOrder(adress: current.value!));
                 } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                  routeOrderReceiver.add(RouteOrder(adress: current.value!));
+                  // routeOrderReceiver.add(RouteOrder(adress: current.value!));
                 }
               }
               return true;
@@ -429,12 +431,14 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                                   height: 25.h,
                                                 ),
                                                 SizedBox(width: 15.w),
-                                                Text(
-                                                  routeOrderReceiver[index]
-                                                      .adress,
-                                                  style: CustomTextStyle
-                                                      .black15w500
-                                                      .copyWith(fontSize: 16),
+                                                Flexible(
+                                                  child: Text(
+                                                    routeOrderReceiver[index]
+                                                        .adress,
+                                                    style: CustomTextStyle
+                                                        .black15w500
+                                                        .copyWith(fontSize: 16),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -606,7 +610,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     Image.asset(
-                                      'assets/images/ic_leg.png',
+                                      widget.deliveryChocie.icon,
                                       color: Colors.red,
                                       height: 80.h,
                                     ),
@@ -615,17 +619,17 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children: const [
+                                      children: [
                                         Text(
-                                          'Пеший',
+                                          widget.deliveryChocie.title,
                                           style: TextStyle(
                                             fontSize: 19,
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
                                         Text(
-                                          '1900 ₽',
-                                          style: TextStyle(
+                                          '${widget.order.result!.totalPrice!.total} ₽',
+                                          style: const TextStyle(
                                             fontSize: 25,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -649,7 +653,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                           CrossAxisAlignment.start,
                                       children: const [
                                         Text(
-                                          '400 ₽ доставка',
+                                          '0 ₽ доставка',
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w500),
@@ -663,7 +667,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         ),
                                         SizedBox(height: 3),
                                         Text(
-                                          '11 ₽ сбор-плат. сист.',
+                                          '0 ₽ сбор-плат. сист.',
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w500),

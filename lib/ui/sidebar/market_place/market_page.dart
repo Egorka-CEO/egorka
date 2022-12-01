@@ -35,11 +35,11 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
   TypeAdd? typeAdd;
 
   List<RouteOrder> routeOrderSender = [
-    RouteOrder(adress: 'москва солнечная 6'),
+    // RouteOrder(adress: 'москва солнечная 6'),
   ];
 
   List<RouteOrder> routeOrderReceiver = [
-    RouteOrder(adress: 'москва солнечная 6'),
+    // RouteOrder(adress: 'москва солнечная 6'),
   ];
 
   TextEditingController controller = TextEditingController();
@@ -170,9 +170,9 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                   btmSheet = false;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
                     fromController.text = controller.text;
-                    routeOrderSender.add(RouteOrder(adress: current.value!));
+                    // routeOrderSender.add(RouteOrder(adress: current.value!));
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
+                    // routeOrderReceiver.add(RouteOrder(adress: current.value!));
                     toController.text = controller.text;
                   }
                 }

@@ -1,5 +1,7 @@
+import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
+import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';
@@ -51,7 +53,16 @@ class AppRoute {
       case auth:
         return MaterialPageRoute(builder: (_) => const MainAuthPage());
       case newOrder:
-        return MaterialPageRoute(builder: (_) => const NewOrderPage());
+        var order;
+        var delivery;
+        if (route.arguments != null) {
+          final arg = route.arguments as List;
+          final list = arg[0] as CoastResponse;
+          final listChoice = arg[1] as DeliveryChocie;
+          order = list;
+          delivery = listChoice;
+        }
+        return MaterialPageRoute(builder: (_) => NewOrderPage(order: order, deliveryChocie: delivery));
       case historyOrder:
         return MaterialPageRoute(builder: (_) => const HistoryOrdersPage());
       case profile:
@@ -70,7 +81,11 @@ class AppRoute {
       case historyDetailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(
-            builder: (_) => HistoryDetailsPage(typeAdd: list[0], index: list[1], routeOrder: list[2],));
+            builder: (_) => HistoryDetailsPage(
+                  typeAdd: list[0],
+                  index: list[1],
+                  routeOrder: list[2],
+                ));
       case book:
         return MaterialPageRoute(builder: (_) => BookPage());
       default:

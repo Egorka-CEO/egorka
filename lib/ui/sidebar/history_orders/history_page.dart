@@ -14,8 +14,8 @@ class HistoryOrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<RouteOrder> routeOrder = [
-      RouteOrder(adress: 'москва солнечная 6',pod: '1', etaj: '2', offic: '34', name: 'test', phone: '+7 898 898 8999', comment: 'test',),
-      RouteOrder(adress: 'москва межевая 24',pod: '1', etaj: '2', offic: '34', name: 'test', phone: '+7 898 898 8999', comment: 'test',),
+      // RouteOrder(adress: 'москва солнечная 6',pod: '1', etaj: '2', offic: '34', name: 'test', phone: '+7 898 898 8999', comment: 'test',),
+      // RouteOrder(adress: 'москва межевая 24',pod: '1', etaj: '2', offic: '34', name: 'test', phone: '+7 898 898 8999', comment: 'test',),
     ];
 
     return MultiBlocProvider(

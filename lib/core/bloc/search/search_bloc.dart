@@ -84,8 +84,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
       String? iD = await MySecureStorage().getID();
       // print('response id ${iD}');
-      print(
-          'response id ${event.suggestionsStart.iD} ${event.suggestionsEnd.iD}}');
+      // print(
+      //     'response id ${event.suggestionsStart.iD} ${event.suggestionsEnd.iD}');
 
       List<String> type = ['Walk', 'Car'];
       List<respCoast.CoastResponse> coasts = [];
@@ -102,7 +102,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
               ),
               cstBase.Locations(
                 point: cstBase.Point(
-                  code: event.suggestionsStart.iD,
+                  code: event.suggestionsEnd.iD,
                 ),
               ),
             ],

@@ -71,11 +71,11 @@ class DetailsPageTemp extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPageTemp> {
   List<RouteOrder> routeOrderSender = [
-    RouteOrder(adress: 'москва солнечная 6'),
+    // RouteOrder(adress: 'москва солнечная 6'),
   ];
 
   List<RouteOrder> routeOrderReceiver = [
-    RouteOrder(adress: 'москва солнечная 6'),
+    // RouteOrder(adress: 'москва солнечная 6'),
   ];
 
   TextEditingController controllerTo = TextEditingController();

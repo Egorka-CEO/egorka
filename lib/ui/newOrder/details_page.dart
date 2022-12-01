@@ -68,11 +68,11 @@ class DetailsPageTemp extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPageTemp> {
   List<RouteOrder> routeOrderSender = [
-    RouteOrder(adress: 'москва солнечная 6'),
+    // RouteOrder(adress: 'москва солнечная 6'),
   ];
 
   List<RouteOrder> routeOrderReceiver = [
-    RouteOrder(adress: 'москва солнечная 6'),
+    // RouteOrder(adress: 'москва солнечная 6'),
   ];
 
   TextEditingController controller = TextEditingController();
@@ -375,9 +375,9 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 } else if (current is NewOrderStateCloseBtmSheet) {
                   btmSheet = false;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    routeOrderSender.add(RouteOrder(adress: current.value!));
+                    // routeOrderSender.add(RouteOrder(adress: current.value!));
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    routeOrderReceiver.add(RouteOrder(adress: current.value!));
+                    // routeOrderReceiver.add(RouteOrder(adress: current.value!));
                   }
                 }
                 return true;

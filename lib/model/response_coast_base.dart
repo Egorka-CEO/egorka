@@ -77,6 +77,7 @@ class Result {
     if (json['Locations'] != null) {
       locations = [];
       json['Locations'].forEach((v) {
+        print('response log ${v}');
         locations!.add(Location.fromJson(v));
       });
     }
@@ -195,6 +196,7 @@ class Location {
     date = json['Date'];
     type = json['Type'];
     route = json['Route'];
+    point = Point.fromJson(json['Point']);
     routeOrder = json['RouteOrder'];
   }
 }
@@ -233,14 +235,26 @@ class Point {
   });
 
   dynamic id;
-  String address;
-  String source;
-  String code;
-  double latitude;
-  double longitude;
-  String entrance;
-  String floor;
-  String room;
+  String? address;
+  String? source;
+  String? code;
+  double? latitude;
+  double? longitude;
+  String? entrance;
+  String? floor;
+  String? room;
+
+  Point.fromJson(Map<String, dynamic> json) {
+    id = json['ID'];
+    address = json['Address'];
+    source = json['Source'];
+    code = json['Code'];
+    latitude = json['Latitude'];
+    longitude = json['Longitude'];
+    entrance = json['Entrance'];
+    floor = json['Floor'];
+    room = json['Room'];
+  }
 }
 
 class TotalPrice {

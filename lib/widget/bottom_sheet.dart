@@ -50,6 +50,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   Suggestions? suggestionsStart;
   Suggestions? suggestionsEnd;
 
+  CoastResponse? coastResponse;
+  List<CoastResponse> coasts = [];
+
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(title: 'Пешком', icon: 'assets/images/ic_leg.png'),
     DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
@@ -336,11 +339,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   }
 
   Widget _searchList() {
+    var blocs = BlocProvider.of<SearchAddressBloc>(context);
     return StreamBuilder<int>(
+      initialData: 0,
         stream: streamDelivery.stream,
-        initialData: 1,
         builder: (context, snapshot) {
-          var blocs = BlocProvider.of<SearchAddressBloc>(context);
           return Column(
             children: [
               SizedBox(height: 10.h),
@@ -355,6 +358,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       if (fromController.text != current.geoData!.address) {
                         fromController.text = current.geoData!.address;
                       }
+                    }
+                    if (current is SearchAddressRoutePolilyne) {
+                      // coasts.clear();
+                      coasts.addAll(current.coasts);
+                      coastResponse = current.coasts.first;
+                      streamDelivery.add(0);
+                      // print('objectlogolg ${coastResponse!.result!.locations}');
                     }
                     return true;
                   },
@@ -396,7 +406,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         return Container();
                       }
                     } else if (state is SearchAddressRoutePolilyne) {
-                      final coasts = state.coasts;
                       if (coasts.isEmpty) {
                         return Column(
                           children: [
@@ -438,7 +447,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               right: index == coasts.length - 1 ? 5.w : 0,
                             ),
                             child: GestureDetector(
-                              onTap: () => streamDelivery.add(index),
+                              onTap: () {
+                                coastResponse = coasts[index];
+                                streamDelivery.add(index);
+                              },
                               child: Opacity(
                                 opacity: snapshot.data! == index ? 1 : 0.3,
                                 child: Container(
@@ -495,7 +507,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
                 BlocBuilder<SearchAddressBloc, SearchAddressState>(
                   builder: (context, state) {
-                    List<CoastResponse> coasts = [];
+                    // List<CoastResponse> coasts = [];
                     var bloc = BlocProvider.of<SearchAddressBloc>(context);
                     if (state is SearchAddressRoutePolilyne) {
                       coasts.addAll(state.coasts);
@@ -503,7 +515,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: GestureDetector(
-                        onTap: coasts.isNotEmpty ? authShowDialog : null,
+                        onTap: coasts.isNotEmpty ? () => authShowDialog(snapshot.data!) : null,
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.all(15.w),
@@ -527,11 +539,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         });
   }
 
-  void authShowDialog() async {
+  void authShowDialog(int index) async {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
 
     if (user != null) {
-      Navigator.of(context).pushNamed(AppRoute.newOrder);
+      Navigator.of(context)
+          .pushNamed(AppRoute.newOrder, arguments: [coastResponse, listChoice[index]]);
     } else {
       await showDialog(
           context: context,
@@ -544,7 +557,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   color: Colors.red.withOpacity(0.9),
                   onTap: () => Navigator.of(context)
                     ..pop()
-                    ..pushNamed(AppRoute.newOrder),
+                    ..pushNamed(AppRoute.newOrder, arguments: [coastResponse, listChoice[index]]),
                 ),
                 StandartButton(
                   label: 'Да',
@@ -557,7 +570,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                           .add(ProfileEventUpdate(result as AuthUser));
                       Navigator.of(context)
                         ..pop()
-                        ..pushNamed(AppRoute.newOrder);
+                        ..pushNamed(AppRoute.newOrder,
+                            arguments: [coastResponse, listChoice[index]]);
                     }
                   },
                 )
@@ -591,6 +605,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
               if (toController.text.isNotEmpty &&
                   toController.text.isNotEmpty) {
+                    coasts.clear();
                 BlocProvider.of<SearchAddressBloc>(context).add(
                     SearchAddressPolilyne(suggestionsStart!, suggestionsEnd!));
               } else {

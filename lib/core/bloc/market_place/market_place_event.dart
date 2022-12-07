@@ -7,15 +7,22 @@ class MarketPlaceOpenBtmSheet extends MarketPlaceEvent {}
 class MarketPlaceCloseBtmSheetEvent extends MarketPlaceEvent {}
 
 class MarketPlaceStatedCloseBtmSheet extends MarketPlaceEvent {
-  String? value;
+  Suggestions? address;
 
-  MarketPlaceStatedCloseBtmSheet(this.value);
+  MarketPlaceStatedCloseBtmSheet(this.address);
 }
 
 class MarketPlace extends MarketPlaceEvent {
   String value;
 
   MarketPlace(this.value);
+}
+
+class CalcOrder extends MarketPlaceEvent {
+  Suggestions? suggestion;
+  mrkt.Points? points;
+
+  CalcOrder(this.suggestion, this.points);
 }
 
 class GetMarketPlaces extends MarketPlaceEvent {}

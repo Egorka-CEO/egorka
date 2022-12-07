@@ -207,7 +207,7 @@ class _BottomSheetDraggableState
               state.address!.result.suggestions![index].name;
           BlocProvider.of<MarketPlacePageBloc>(context).add(
               MarketPlaceStatedCloseBtmSheet(
-                  state.address!.result.suggestions![index].name));
+                  state.address!.result.suggestions![index]));
 
           focusFrom.unfocus();
           widget.panelController.close();

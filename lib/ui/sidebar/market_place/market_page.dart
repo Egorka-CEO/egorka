@@ -4,6 +4,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/address.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/route_order.dart';
@@ -64,6 +65,11 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
 
   final streamController = StreamController<bool>();
   bool details = false;
+
+  Suggestions? suggestion;
+  Points? points;
+
+  String? coast;
 
   @override
   void initState() {
@@ -168,13 +174,23 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                   btmSheet = true;
                 } else if (current is MarketPlaceStateCloseBtmSheet) {
                   btmSheet = false;
+                  suggestion = current.address;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    fromController.text = controller.text;
+                    fromController.text = suggestion!.name;
                     // routeOrderSender.add(RouteOrder(adress: current.value!));
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
                     // routeOrderReceiver.add(RouteOrder(adress: current.value!));
-                    toController.text = controller.text;
+                    toController.text = suggestion!.name;
                   }
+                  if (suggestion != null && points != null) {
+                    BlocProvider.of<MarketPlacePageBloc>(context)
+                        .add(CalcOrder(suggestion, points));
+                  }
+                } else if (current is MarketPlacesSuccessState) {
+                  coast = current.coastResponse?.result!.totalPrice!.total
+                      .toString();
+                  print(
+                      'object ${current.coastResponse?.result!.totalPrice!.total}');
                 }
                 return true;
               }, builder: (context, snapshot) {
@@ -400,6 +416,22 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                                           context)
                                                   .marketPlaces;
                                               if (marketplaces != null) {
+                                                toController.text = marketplaces
+                                                    .result
+                                                    .points[0]
+                                                    .name[0]
+                                                    .name;
+                                                points = marketplaces
+                                                    .result.points[0];
+
+                                                if (suggestion != null &&
+                                                    points != null) {
+                                                  BlocProvider.of<
+                                                              MarketPlacePageBloc>(
+                                                          context)
+                                                      .add(CalcOrder(
+                                                          suggestion, points));
+                                                }
                                                 showCupertinoModalPopup<String>(
                                                   barrierColor:
                                                       Colors.transparent,
@@ -419,6 +451,20 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                                                   .points[value]
                                                                   .name[0]
                                                                   .name;
+                                                          points = marketplaces
+                                                              .result
+                                                              .points[value];
+
+                                                          if (suggestion !=
+                                                                  null &&
+                                                              points != null) {
+                                                            BlocProvider.of<
+                                                                        MarketPlacePageBloc>(
+                                                                    context)
+                                                                .add(CalcOrder(
+                                                                    suggestion,
+                                                                    points));
+                                                          }
                                                         },
                                                         itemExtent: 32.0,
                                                         children: marketplaces
@@ -514,40 +560,42 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                                   DateFormat('dd.MM.yyyy')
                                                       .format(value);
                                             }
-                                          }
-                                          final value = await showDialog(
-                                            barrierDismissible: true,
-                                            useSafeArea: false,
-                                            barrierColor: Colors.transparent,
-                                            context: context,
-                                            builder: ((context) {
-                                              return Stack(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                children: [
-                                                  Container(
-                                                    height: 200.h,
-                                                    color: Colors.grey[200],
-                                                    child: CupertinoDatePicker(
-                                                      mode:
-                                                          CupertinoDatePickerMode
-                                                              .date,
-                                                      use24hFormat: true,
-                                                      onDateTimeChanged:
-                                                          (value) {
-                                                        startOrderController
-                                                            .text = DateFormat(
-                                                                'dd.MM.yyyy')
-                                                            .format(value);
+                                          } else {
+                                            final value = await showDialog(
+                                              barrierDismissible: true,
+                                              useSafeArea: false,
+                                              barrierColor: Colors.transparent,
+                                              context: context,
+                                              builder: ((context) {
+                                                return Stack(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  children: [
+                                                    Container(
+                                                      height: 200.h,
+                                                      color: Colors.grey[200],
+                                                      child:
+                                                          CupertinoDatePicker(
+                                                        mode:
+                                                            CupertinoDatePickerMode
+                                                                .date,
+                                                        use24hFormat: true,
+                                                        onDateTimeChanged:
+                                                            (value) {
+                                                          startOrderController
+                                                              .text = DateFormat(
+                                                                  'dd.MM.yyyy')
+                                                              .format(value);
 
-                                                        ;
-                                                      },
+                                                          ;
+                                                        },
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              );
-                                            }),
-                                          );
+                                                  ],
+                                                );
+                                              }),
+                                            );
+                                          }
                                         },
                                         child: CustomTextField(
                                           height: 45.h,
@@ -744,7 +792,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Align(
+                      if(coast != null) Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
                           height: 200.h,
@@ -804,17 +852,17 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children: const [
-                                        Text(
-                                          'Пеший',
+                                      children: [
+                                        const Text(
+                                          "Автомобиль",
                                           style: TextStyle(
                                             fontSize: 24,
                                             fontWeight: FontWeight.w300,
                                           ),
                                         ),
                                         Text(
-                                          '1900 ₽',
-                                          style: TextStyle(
+                                          '$coast! ₽',
+                                          style: const TextStyle(
                                             fontSize: 25,
                                             fontWeight: FontWeight.w600,
                                           ),

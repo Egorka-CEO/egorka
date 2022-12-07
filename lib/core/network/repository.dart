@@ -121,20 +121,26 @@ class Repository {
     return null;
   }
 
-  Future<void> getCoastAdvanced(CoastAdvanced value) async {
+  Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
     //?
     final response = await dio.post(
-      '$server/',
+      '$server/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
-        "Method": "Location",
+        "Method": "Calculate",
         "Body": value.toJson(),
         "Params": params()
       },
     );
 
     print('response advanced=${response.data}');
+
+    if(response.data['Result'] != null) {
+      final coast = CoastResponse.fromJson(response.data);
+      return coast;
+    }
+    return null;
   }
 
   Future<void> createForm(String value) async {

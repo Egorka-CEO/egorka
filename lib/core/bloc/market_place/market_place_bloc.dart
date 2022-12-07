@@ -1,5 +1,7 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/coast_advanced.dart' as adv;
+import 'package:egorka/model/response_coast_base.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
@@ -18,6 +20,33 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     on<MarketPlaceCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
     on<GetMarketPlaces>(_getMarketPlaces);
     on<SelectMarketPlaces>(_selectMarketPlaces);
+    on<CalcOrder>(_calculateOrder);
+  }
+
+  void _calculateOrder(CalcOrder event, Emitter<MarketPlaceState> emit) async {
+    var result = await Repository().getCoastAdvanced(
+      adv.CoastAdvanced(
+        iD: null,
+        type: 'Walk',
+        locations: [
+          adv.Locations(
+            type: 'Pickup',
+            point: adv.Point(
+              code: event.suggestion!.iD,
+            ),
+          ),
+          adv.Locations(
+            type: 'Drop',
+            point: adv.Point(
+              code: event.points!.code,
+            ),
+          )
+        ],
+      ),
+    );
+    // if (result != null) {
+      emit(MarketPlacesSuccessState(result));
+    // }
   }
 
   void _searchAddress(MarketPlace event, Emitter<MarketPlaceState> emit) async {
@@ -39,14 +68,13 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     var result = await Repository().getMarketplaces();
     if (result != null) {
       marketPlaces = result;
-      emit(MarketPlacesSuccessState());
+      emit(MarketPlacesSuccessState(null));
     }
   }
 
   void _selectMarketPlaces(
       SelectMarketPlaces event, Emitter<MarketPlaceState> emit) async {
-
-      emit(MarketPlacesSelectPointState(event.points));
+    emit(MarketPlacesSelectPointState(event.points));
   }
 
   void _openBtmSheet(
@@ -54,8 +82,9 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
       emit(MarketPlaceStatedOpenBtmSheet());
 
   void _closeBtmSheet(MarketPlaceStatedCloseBtmSheet event,
-          Emitter<MarketPlaceState> emit) =>
-      emit(MarketPlaceStateCloseBtmSheet(event.value));
+      Emitter<MarketPlaceState> emit) async {
+    emit(MarketPlaceStateCloseBtmSheet(event.address));
+  }
 
   void _closeBtmSheetWithoutSearch(MarketPlaceCloseBtmSheetEvent event,
           Emitter<MarketPlaceState> emit) =>

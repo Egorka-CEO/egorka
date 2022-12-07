@@ -9,9 +9,9 @@ class MarketPlaceStatedOpenBtmSheet extends MarketPlaceState {}
 class MarketPlaceCloseBtmSheet extends MarketPlaceState {}
 
 class MarketPlaceStateCloseBtmSheet extends MarketPlaceState {
-  String? value;
+  Suggestions? address;
 
-  MarketPlaceStateCloseBtmSheet(this.value);
+  MarketPlaceStateCloseBtmSheet(this.address);
 }
 
 class MarketPlaceLoading extends MarketPlaceState {}
@@ -24,7 +24,11 @@ class MarketPlaceSuccess extends MarketPlaceState {
 
 class MarketPlaceFailed extends MarketPlaceState {}
 
-class MarketPlacesSuccessState extends MarketPlaceState {}
+class MarketPlacesSuccessState extends MarketPlaceState {
+  CoastResponse? coastResponse;
+
+  MarketPlacesSuccessState(this.coastResponse);
+}
 
 class MarketPlacesSelectPointState extends MarketPlaceState {
   mrkt.Points points;

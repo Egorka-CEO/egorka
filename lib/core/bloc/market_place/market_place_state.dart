@@ -16,6 +16,8 @@ class MarketPlaceStateCloseBtmSheet extends MarketPlaceState {
 
 class MarketPlaceLoading extends MarketPlaceState {}
 
+class CalcLoading extends MarketPlaceState {}
+
 class MarketPlaceSuccess extends MarketPlaceState {
   Address? address;
 

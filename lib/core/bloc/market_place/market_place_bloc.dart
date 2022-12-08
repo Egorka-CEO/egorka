@@ -1,11 +1,11 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
-import 'package:egorka/model/coast_advanced.dart' as adv;
+import 'package:egorka/model/coast_base.dart' as base;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
-
+import 'package:intl/intl.dart';
 part 'market_place_event.dart';
 part 'market_place_state.dart';
 
@@ -24,29 +24,33 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
   }
 
   void _calculateOrder(CalcOrder event, Emitter<MarketPlaceState> emit) async {
-    var result = await Repository().getCoastAdvanced(
-      adv.CoastAdvanced(
-        iD: null,
-        type: 'Walk',
+    emit(CalcLoading());
+    var result = await Repository().getCoastBase(
+      base.CoastBase(
         locations: [
-          adv.Locations(
-            type: 'Pickup',
-            point: adv.Point(
-              code: event.suggestion!.iD,
-            ),
-          ),
-          adv.Locations(
-            type: 'Drop',
-            point: adv.Point(
+          base.Locations(
+              date: event.time != null
+                  ? DateFormat('YYYY.MM.DD HH:MM:SS').format(event.time!)
+                  : null,
+              point: base.Point(
+                code: event.suggestion!.iD,
+                entrance: event.entrance,
+                floor: event.floor,
+                room: event.room,
+              ),
+              contact: base.Contact(
+                name: event.name,
+                phoneMobile: event.phone,
+              )),
+          base.Locations(
+            point: base.Point(
               code: event.points!.code,
             ),
           )
         ],
       ),
     );
-    // if (result != null) {
-      emit(MarketPlacesSuccessState(result));
-    // }
+    emit(MarketPlacesSuccessState(result));
   }
 
   void _searchAddress(MarketPlace event, Emitter<MarketPlaceState> emit) async {

@@ -127,11 +127,11 @@ class Contact {
   String? phoneOffice;
   String? phoneOfficeAdd;
 
-  Contact(
+  Contact({
     this.name,
     this.phoneMobile,
     this.phoneOffice,
-    this.phoneOfficeAdd,
+    this.phoneOfficeAdd,}
   );
 
   Contact.fromJson(Map<String, dynamic> json) {

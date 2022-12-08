@@ -2,6 +2,7 @@ import 'package:custom_map_markers/custom_map_markers.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/marketplaces.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -78,7 +79,7 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
         customMarkers: marker,
         builder: (context, markers) {
           if (markers == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CupertinoActivityIndicator());
           }
           return GoogleMap(
             markers: markers,

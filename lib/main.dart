@@ -6,6 +6,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
@@ -33,10 +34,11 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
           designSize: const Size(428, 926),
           builder: (context, child) {
-            return const MaterialApp(
+            return MaterialApp(
               debugShowCheckedModeBanner: false,
               initialRoute: AppRoute.home,
               onGenerateRoute: AppRoute.onGenerateRoute,
+              builder: FlutterSmartDialog.init(),
             );
           }),
     );

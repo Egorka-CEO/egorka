@@ -7,10 +7,10 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/model/route_order.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,33 +22,44 @@ import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class MarketPage extends StatefulWidget {
+class MarketPage extends StatelessWidget {
   HistoryModel? historyModel;
   MarketPage({super.key, this.historyModel});
-
   @override
-  State<MarketPage> createState() => _MarketPageState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MarketPlacePageBloc>(
+          create: (context) => MarketPlacePageBloc(),
+        ),
+      ],
+      child: MarketPages(
+        historyModel: historyModel,
+      ),
+    );
+  }
 }
 
-class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
-  bool btmSheet = false;
+class MarketPages extends StatefulWidget {
+  HistoryModel? historyModel;
+  MarketPages({super.key, this.historyModel});
 
+  @override
+  State<MarketPages> createState() => _MarketPageState();
+}
+
+class _MarketPageState extends State<MarketPages>
+    with TickerProviderStateMixin {
+  bool details = false;
   TypeAdd? typeAdd;
-
-  List<RouteOrder> routeOrderSender = [
-    // RouteOrder(adress: 'москва солнечная 6'),
-  ];
-
-  List<RouteOrder> routeOrderReceiver = [
-    // RouteOrder(adress: 'москва солнечная 6'),
-  ];
+  Suggestions? suggestion;
+  Points? points;
+  String? coast;
+  DateTime? time;
 
   TextEditingController controller = TextEditingController();
-
   TextEditingController fromController = TextEditingController();
-
   TextEditingController toController = TextEditingController();
-
   TextEditingController item1Controller = TextEditingController();
   TextEditingController item2Controller = TextEditingController();
   TextEditingController item3Controller = TextEditingController();
@@ -62,14 +73,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
 
   final bucketController = StreamController<int>();
   final palletController = StreamController<int>();
-
   final streamController = StreamController<bool>();
-  bool details = false;
-
-  Suggestions? suggestion;
-  Points? points;
-
-  String? coast;
 
   @override
   void initState() {
@@ -113,13 +117,8 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<MarketPlacePageBloc>(
-          create: (context) => MarketPlacePageBloc(),
-        ),
-      ],
-      child: Builder(builder: (context) {
+    return Builder(
+      builder: (context) {
         BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
         return Scaffold(
           backgroundColor: backgroundColor,
@@ -168,29 +167,20 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
             children: [
               BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
                   buildWhen: (previous, current) {
-                if (current is MarketPlaceCloseBtmSheet) {
-                  btmSheet = false;
-                } else if (current is MarketPlaceStatedOpenBtmSheet) {
-                  btmSheet = true;
-                } else if (current is MarketPlaceStateCloseBtmSheet) {
-                  btmSheet = false;
+                if (current is MarketPlaceStateCloseBtmSheet) {
                   suggestion = current.address;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
                     fromController.text = suggestion!.name;
-                    // routeOrderSender.add(RouteOrder(adress: current.value!));
                   } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    // routeOrderReceiver.add(RouteOrder(adress: current.value!));
                     toController.text = suggestion!.name;
                   }
                   if (suggestion != null && points != null) {
                     BlocProvider.of<MarketPlacePageBloc>(context)
-                        .add(CalcOrder(suggestion, points));
+                        .add(CalcOrder(suggestion, points, time));
                   }
                 } else if (current is MarketPlacesSuccessState) {
                   coast = current.coastResponse?.result!.totalPrice!.total
                       .toString();
-                  print(
-                      'object ${current.coastResponse?.result!.totalPrice!.total}');
                 }
                 return true;
               }, builder: (context, snapshot) {
@@ -276,9 +266,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                         ),
                                         SizedBox(width: 10.w),
                                         GestureDetector(
-                                          onTap: () {
-                                            _findMe();
-                                          },
+                                          onTap: _findMe,
                                           child: const Icon(
                                             Icons.gps_fixed,
                                             color: Colors.red,
@@ -292,9 +280,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                               ),
                               SizedBox(height: 10.h),
                               GestureDetector(
-                                onTap: () {
-                                  streamController.add(!details);
-                                },
+                                onTap: () => streamController.add(!details),
                                 child: Row(
                                   children: [
                                     SizedBox(width: 5.w),
@@ -423,59 +409,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                                     .name;
                                                 points = marketplaces
                                                     .result.points[0];
-
-                                                if (suggestion != null &&
-                                                    points != null) {
-                                                  BlocProvider.of<
-                                                              MarketPlacePageBloc>(
-                                                          context)
-                                                      .add(CalcOrder(
-                                                          suggestion, points));
-                                                }
-                                                showCupertinoModalPopup<String>(
-                                                  barrierColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return SizedBox(
-                                                      height: 200.h,
-                                                      child: CupertinoPicker(
-                                                        backgroundColor:
-                                                            Colors.grey[200],
-                                                        onSelectedItemChanged:
-                                                            (value) {
-                                                          toController.text =
-                                                              marketplaces
-                                                                  .result
-                                                                  .points[value]
-                                                                  .name[0]
-                                                                  .name;
-                                                          points = marketplaces
-                                                              .result
-                                                              .points[value];
-
-                                                          if (suggestion !=
-                                                                  null &&
-                                                              points != null) {
-                                                            BlocProvider.of<
-                                                                        MarketPlacePageBloc>(
-                                                                    context)
-                                                                .add(CalcOrder(
-                                                                    suggestion,
-                                                                    points));
-                                                          }
-                                                        },
-                                                        itemExtent: 32.0,
-                                                        children: marketplaces
-                                                            .result.points
-                                                            .map((e) => Text(
-                                                                e.name[0].name))
-                                                            .toList(),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
+                                                showMarketPlaces(marketplaces);
                                               }
                                             },
                                             child: CustomTextField(
@@ -504,9 +438,21 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                                       AppRoute.marketplacesMap,
                                                       arguments: marketplaces);
                                               if (result != null) {
-                                                final points = result as Points;
+                                                final pointsRes =
+                                                    result as Points;
                                                 toController.text =
-                                                    points.name[0].name;
+                                                    pointsRes.name[0].name;
+
+                                                points = points;
+
+                                                if (suggestion != null &&
+                                                    points != null) {
+                                                  BlocProvider.of<
+                                                              MarketPlacePageBloc>(
+                                                          context)
+                                                      .add(CalcOrder(suggestion,
+                                                          points, time));
+                                                }
                                               }
                                             }
                                           },
@@ -541,62 +487,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                   children: [
                                     Expanded(
                                       child: GestureDetector(
-                                        onTap: () async {
-                                          if (Platform.isAndroid) {
-                                            final value = await showDialog(
-                                                context: context,
-                                                builder: ((context) {
-                                                  return DatePickerDialog(
-                                                    initialEntryMode:
-                                                        DatePickerEntryMode
-                                                            .calendarOnly,
-                                                    initialDate: DateTime.now(),
-                                                    firstDate: DateTime(2010),
-                                                    lastDate: DateTime(2030),
-                                                  );
-                                                }));
-                                            if (value != null) {
-                                              startOrderController.text =
-                                                  DateFormat('dd.MM.yyyy')
-                                                      .format(value);
-                                            }
-                                          } else {
-                                            final value = await showDialog(
-                                              barrierDismissible: true,
-                                              useSafeArea: false,
-                                              barrierColor: Colors.transparent,
-                                              context: context,
-                                              builder: ((context) {
-                                                return Stack(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  children: [
-                                                    Container(
-                                                      height: 200.h,
-                                                      color: Colors.grey[200],
-                                                      child:
-                                                          CupertinoDatePicker(
-                                                        mode:
-                                                            CupertinoDatePickerMode
-                                                                .date,
-                                                        use24hFormat: true,
-                                                        onDateTimeChanged:
-                                                            (value) {
-                                                          startOrderController
-                                                              .text = DateFormat(
-                                                                  'dd.MM.yyyy')
-                                                              .format(value);
-
-                                                          ;
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              }),
-                                            );
-                                          }
-                                        },
+                                        onTap: showDateTime,
                                         child: CustomTextField(
                                           height: 45.h,
                                           contentPadding: EdgeInsets.symmetric(
@@ -670,9 +561,7 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                                       hintText: '+7 (999) 888-77-66',
                                       textInputType: TextInputType.number,
                                       textEditingController: phoneController,
-                                      formatters: [
-                                        CustomInputFormatter(),
-                                      ],
+                                      formatters: [CustomInputFormatter()],
                                     ),
                                   ),
                                 ],
@@ -689,49 +578,48 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                               ),
                               SizedBox(height: 5.h),
                               StreamBuilder<int>(
-                                  stream: bucketController.stream,
-                                  initialData: 0,
-                                  builder: (context, snapshot) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomTextField(
-                                            height: 45.h,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 10.w),
-                                            fillColor: Colors.white,
-                                            hintText: '0',
-                                            textInputType: TextInputType.number,
-                                            textEditingController:
-                                                countBucketController,
-                                          ),
+                                stream: bucketController.stream,
+                                initialData: 0,
+                                builder: (context, snapshot) {
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextField(
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w),
+                                          fillColor: Colors.white,
+                                          hintText: '0',
+                                          textInputType: TextInputType.number,
+                                          textEditingController:
+                                              countBucketController,
                                         ),
-                                        SizedBox(width: 10.w),
-                                        const Icon(
-                                          Icons.help_outline_outlined,
-                                          color: Colors.red,
+                                      ),
+                                      SizedBox(width: 10.w),
+                                      const Icon(
+                                        Icons.help_outline_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Slider(
+                                          min: 0,
+                                          max: 50,
+                                          activeColor: Colors.red,
+                                          inactiveColor: Colors.grey[300],
+                                          thumbColor: Colors.white,
+                                          value: snapshot.data!.toDouble(),
+                                          onChanged: (value) {
+                                            bucketController.add(value.toInt());
+                                            countBucketController.text =
+                                                value.toInt().toString();
+                                          },
                                         ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Slider(
-                                            min: 0,
-                                            max: 50,
-                                            activeColor: Colors.red,
-                                            inactiveColor: Colors.grey[300],
-                                            thumbColor: Colors.white,
-                                            value: snapshot.data!.toDouble(),
-                                            onChanged: (value) {
-                                              bucketController
-                                                  .add(value.toInt());
-                                              countBucketController.text =
-                                                  value.toInt().toString();
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  }),
+                                      )
+                                    ],
+                                  );
+                                },
+                              ),
                               SizedBox(height: 10.h),
                               Row(
                                 children: [
@@ -792,122 +680,131 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      if(coast != null) Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 200.h,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(10.r),
-                            color: Colors.white,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 10.w,
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 5.w,
-                                      left:
-                                          ((MediaQuery.of(context).size.width *
-                                                          45) /
-                                                      100)
-                                                  .w -
-                                              10.w,
-                                      right:
-                                          ((MediaQuery.of(context).size.width *
-                                                          45) /
-                                                      100)
-                                                  .w -
-                                              10.w,
-                                      bottom: 5.w),
-                                  child: Container(
-                                    height: 5.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25.r),
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/ic_leg.png',
-                                      color: Colors.red,
-                                      height: 90.h,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Автомобиль",
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                        Text(
-                                          '$coast! ₽',
-                                          style: const TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const Text(
-                                      '}',
-                                      style: TextStyle(
-                                        fontSize: 60,
-                                        fontWeight: FontWeight.w200,
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: const [
-                                        Text('400 ₽ доставка'),
-                                        Text('0 ₽ доп. услуги'),
-                                        Text('11 ₽ сбор-плат. сист.'),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                GestureDetector(
-                                  child: Container(
-                                    height: 50.h,
-                                    decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Center(
-                                      child: Text(
-                                        'ОПЛАТИТЬ ЗАКАЗ',
-                                        style: CustomTextStyle.white15w600
-                                            .copyWith(letterSpacing: 1),
-                                      ),
-                                    ),
-                                  ),
+                      if (coast != null)
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: 200.h,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
                                 ),
                               ],
+                              borderRadius: BorderRadius.circular(10.r),
+                              color: Colors.white,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 10.w,
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 5.w,
+                                      left: (MediaQuery.of(context).size.width *
+                                                  45 /
+                                                  100)
+                                              .w -
+                                          10.w,
+                                      right:
+                                          (MediaQuery.of(context).size.width *
+                                                      45 /
+                                                      100)
+                                                  .w -
+                                              10.w,
+                                      bottom: 5.w,
+                                    ),
+                                    child: Container(
+                                      height: 5.h,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(25.r),
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/ic_car.png',
+                                        color: Colors.red,
+                                        height: 90.h,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            "Автомобиль",
+                                            style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                          Text(
+                                            '$coast! ₽',
+                                            style: const TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Text(
+                                        '}',
+                                        style: TextStyle(
+                                          fontSize: 60,
+                                          fontWeight: FontWeight.w200,
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: const [
+                                          Text('400 ₽ доставка'),
+                                          Text('0 ₽ доп. услуги'),
+                                          Text('11 ₽ сбор-плат. сист.'),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (!validate()) {
+                                        MessageDialogs().showMessage(
+                                            'Погодите-ка',
+                                            'Укажите Ваше Имя и номер телефона');
+                                      }
+                                    },
+                                    child: Container(
+                                      height: 50.h,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Center(
+                                        child: Text(
+                                          'ОПЛАТИТЬ ЗАКАЗ',
+                                          style: CustomTextStyle.white15w600
+                                              .copyWith(letterSpacing: 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       SlidingUpPanel(
                         controller: panelController,
                         renderPanelSheet: false,
@@ -918,33 +815,60 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
                           fromController: controller,
                           panelController: panelController,
                         ),
-                        onPanelClosed: () {
-                          // if (typeAdd == TypeAdd.sender) {
-                          //   fromController.text = controller.text;
-                          // } else if (typeAdd == TypeAdd.receiver) {
-                          //   toController.text = controller.text;
-                          // }
-                          // controller.text = '';
-                          // focusFrom.unfocus();
-                          // focusTo.unfocus();
-                          // _visible = false;
-                        },
-                        onPanelOpened: () {
-                          // _visible = true;
-                          // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-                          //   panelController.close();
-                          // }
-                        },
-                        onPanelSlide: (size) {
-                          // if (size.toStringAsFixed(1) == (0.5).toString()) {
-                          //   focusFrom.unfocus();
-                          //   focusTo.unfocus();
-                          // }
-                        },
+                        onPanelClosed: () {},
+                        onPanelOpened: () {},
+                        onPanelSlide: (size) {},
                         maxHeight: 700.h,
                         minHeight: 0,
                         defaultPanelState: PanelState.CLOSED,
                       ),
+                      if (snapshot is CalcLoading)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.grey.withOpacity(0.1),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const CupertinoActivityIndicator(),
+                                      const SizedBox(height: 10),
+                                      Column(
+                                        children: const [
+                                          Text(
+                                            'Егорке нужно все посчитать',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          Text(
+                                            '🙃',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                     ],
                   ),
                 );
@@ -952,8 +876,147 @@ class _MarketPageState extends State<MarketPage> with TickerProviderStateMixin {
             ],
           ),
         );
-      }),
+      },
     );
+  }
+
+  void showMarketPlaces(MarketPlaces marketplaces) {
+    showCupertinoModalPopup<String>(
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext ctx) {
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.grey),
+                    ),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      if (suggestion != null && points != null) {
+                        BlocProvider.of<MarketPlacePageBloc>(context)
+                            .add(CalcOrder(suggestion, points, time));
+                      }
+                    },
+                    child: const Text('Готово'),
+                  ),
+                ),
+                SizedBox(
+                  height: 200.h,
+                  child: CupertinoPicker(
+                    backgroundColor: Colors.grey[200],
+                    onSelectedItemChanged: (value) {
+                      toController.text =
+                          marketplaces.result.points[value].name[0].name;
+                      points = marketplaces.result.points[value];
+                    },
+                    itemExtent: 32.0,
+                    children: marketplaces.result.points
+                        .map((e) => Text(e.name[0].name))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showDateTime() async {
+    if (Platform.isAndroid) {
+      final value = await showDialog(
+          context: context,
+          builder: (context) {
+            return DatePickerDialog(
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2010),
+              lastDate: DateTime(2030),
+            );
+          });
+      if (value != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(
+            hour: TimeOfDay.now().hour,
+            minute: TimeOfDay.now().minute,
+          ),
+        );
+        final DateTime temp = DateTime(
+          value.year,
+          value.month,
+          value.day,
+          timePicked != null ? timePicked.hour : 0,
+          timePicked != null ? timePicked.minute : 0,
+        );
+        startOrderController.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
+        time = temp;
+      }
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        useSafeArea: false,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (ctx) {
+          return Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.grey),
+                      ),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        if (suggestion != null && points != null) {
+                          BlocProvider.of<MarketPlacePageBloc>(context)
+                              .add(CalcOrder(suggestion, points, time));
+                        }
+                      },
+                      child: const Text('Готово'),
+                    ),
+                  ),
+                  Container(
+                    height: 200.h,
+                    color: Colors.grey[200],
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.dateAndTime,
+                      use24hFormat: true,
+                      onDateTimeChanged: (value) {
+                        startOrderController.text =
+                            DateFormat('dd.MM.yyyy HH:mm').format(value);
+                        time = value;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  bool validate() {
+    if (nameController.text.isEmpty || phoneController.text.isEmpty)
+      return false;
+    return true;
   }
 }
 

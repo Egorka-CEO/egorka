@@ -20,9 +20,15 @@ class MarketPlace extends MarketPlaceEvent {
 
 class CalcOrder extends MarketPlaceEvent {
   Suggestions? suggestion;
+  DateTime? time;
   mrkt.Points? points;
+  String? name;
+  String? phone;
+  String? entrance;
+  String? floor;
+  String? room;
 
-  CalcOrder(this.suggestion, this.points);
+  CalcOrder(this.suggestion, this.points, this.time);
 }
 
 class GetMarketPlaces extends MarketPlaceEvent {}

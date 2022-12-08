@@ -5,6 +5,7 @@ import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -167,9 +168,7 @@ class _BottomSheetDraggableState
               } else if (state is MarketPlaceLoading) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                  ],
+                  children: const [CupertinoActivityIndicator()],
                 );
               } else if (state is MarketPlaceSuccess) {
                 return address != null
@@ -196,47 +195,55 @@ class _BottomSheetDraggableState
     );
   }
 
-  Container _pointCard(
-      MarketPlaceSuccess state, int index, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
-      height: 50.h,
-      child: InkWell(
-        onTap: () {
-          widget.fromController.text =
-              state.address!.result.suggestions![index].name;
-          BlocProvider.of<MarketPlacePageBloc>(context).add(
-              MarketPlaceStatedCloseBtmSheet(
-                  state.address!.result.suggestions![index]));
+  Widget _pointCard(MarketPlaceSuccess state, int index, BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+          height: 50.h,
+          child: InkWell(
+            onTap: () {
+              widget.fromController.text =
+                  state.address!.result.suggestions![index].name;
+              BlocProvider.of<MarketPlacePageBloc>(context).add(
+                  MarketPlaceStatedCloseBtmSheet(
+                      state.address!.result.suggestions![index]));
 
-          focusFrom.unfocus();
-          widget.panelController.close();
-        },
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: CustomWidget.iconGPSSmall(
-                    color: widget.typeAdd == TypeAdd.sender
-                        ? Colors.red
-                        : Colors.blue),
-              ),
+              focusFrom.unfocus();
+              widget.panelController.close();
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: CustomWidget.iconGPSSmall(
+                        color: widget.typeAdd == TypeAdd.sender
+                            ? Colors.red
+                            : Colors.blue),
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  flex: 10,
+                  child: Text(
+                    state.address!.result.suggestions![index].name,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 15),
-            Expanded(
-              flex: 10,
-              child: Text(
-                state.address!.result.suggestions![index].name,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                maxLines: 2,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        Container(
+          height: 0.5.h,
+          color: Colors.grey[400],
+          width: double.infinity,
+        ),
+      ],
     );
   }
 }

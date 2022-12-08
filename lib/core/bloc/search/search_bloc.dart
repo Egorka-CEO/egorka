@@ -1,10 +1,8 @@
-import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart' as cstAdvanced;
-import 'package:egorka/model/coast_base.dart' as cstBase;
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/response_coast_base.dart' as respCoast;
 import 'package:flutter/services.dart';
@@ -19,13 +17,13 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   GeoData? data;
   bool isPolilyne = false;
   SearchAddressBloc() : super(SearchAddressStated()) {
-    on<SearchAddress>((event, emit) => _searchAddress(event, emit));
+    on<SearchAddress>(_searchAddress);
     on<SearchAddressClear>((event, emit) => _clearAddress());
-    on<ChangeMapPosition>((event, emit) => _changeMapPosition(event, emit));
+    on<ChangeMapPosition>(_changeMapPosition);
     on<SearchMeEvent>((event, emit) => emit(FindMeState()));
-    on<DeletePolilyneEvent>((event, emit) => _deletePolyline(event, emit));
+    on<DeletePolilyneEvent>(_deletePolyline);
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
-    on<SearchAddressPolilyne>((event, emit) => _getPoliline(event, emit));
+    on<SearchAddressPolilyne>(_getPoliline);
   }
 
   void _deletePolyline(
@@ -69,9 +67,9 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     isPolilyne = true;
 
     final locationFrom = await Geocoder2.getDataFromAddress(
-        address: event.suggestionsStart.name, googleMapApiKey: apiKey);
+        address: event.suggestionsStart.first.name, googleMapApiKey: apiKey);
     final locationTo = await Geocoder2.getDataFromAddress(
-        address: event.suggestionsEnd.name, googleMapApiKey: apiKey);
+        address: event.suggestionsEnd.last.name, googleMapApiKey: apiKey);
 
     final directions = await DirectionsRepository(dio: null).getDirections(
         origin: LatLng(locationFrom.latitude, locationFrom.longitude),
@@ -81,39 +79,40 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/to.png', 90));
-
-      String? iD = await MySecureStorage().getID();
-      // print('response id ${iD}');
-      // print(
-      //     'response id ${event.suggestionsStart.iD} ${event.suggestionsEnd.iD}');
-
+ 
       List<String> type = ['Walk', 'Car'];
       List<respCoast.CoastResponse> coasts = [];
+      List<cstAdvanced.Locations> locations = [];
+
+      for (var element in event.suggestionsStart) {
+        locations.add(cstAdvanced.Locations(
+          type: 'Pickup',
+          point: cstAdvanced.Point(
+            code: element.iD,
+          ),
+        ));
+      }
+
+      for (var element in event.suggestionsEnd) {
+        locations.add(cstAdvanced.Locations(
+          type: 'Drop',
+          point: cstAdvanced.Point(
+            code: element.iD,
+          ),
+        ));
+      }
 
       for (var element in type) {
-        final res = await Repository().getCoastBase(
-          cstBase.CoastBase(
+        final res = await Repository().getCoastAdvanced(
+          cstAdvanced.CoastAdvanced(
             type: element,
-            locations: [
-              cstBase.Locations(
-                point: cstBase.Point(
-                  code: event.suggestionsStart.iD,
-                ),
-              ),
-              cstBase.Locations(
-                point: cstBase.Point(
-                  code: event.suggestionsEnd.iD,
-                ),
-              ),
-            ],
+            locations: locations,
           ),
         );
         if (res != null) {
           coasts.add(res);
         }
       }
-
-      print('response coast base  ${coasts}');
 
       emit(
         SearchAddressRoutePolilyne(

@@ -342,253 +342,254 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     var blocs = BlocProvider.of<SearchAddressBloc>(context);
     return StreamBuilder<int>(
       initialData: 0,
-        stream: streamDelivery.stream,
-        builder: (context, snapshot) {
-          return Column(
-            children: [
-              SizedBox(height: 10.h),
-              SizedBox(
-                height:
-                    blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
-                        ? 95.h
-                        : null,
-                child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
-                  buildWhen: (previous, current) {
-                    if (current is ChangeAddressSuccess) {
-                      if (fromController.text != current.geoData!.address) {
-                        fromController.text = current.geoData!.address;
-                      }
+      stream: streamDelivery.stream,
+      builder: (context, snapshot) {
+        return Column(
+          children: [
+            SizedBox(height: 10.h),
+            SizedBox(
+              height:
+                  blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
+                      ? 95.h
+                      : null,
+              child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
+                buildWhen: (previous, current) {
+                  if (current is ChangeAddressSuccess) {
+                    if (fromController.text != current.geoData!.address) {
+                      fromController.text = current.geoData!.address;
                     }
-                    if (current is SearchAddressRoutePolilyne) {
-                      // coasts.clear();
-                      coasts.addAll(current.coasts);
-                      coastResponse = current.coasts.first;
-                      streamDelivery.add(0);
-                      // print('objectlogolg ${coastResponse!.result!.locations}');
-                    }
-                    return true;
-                  },
-                  builder: (context, state) {
-                    var bloc = BlocProvider.of<SearchAddressBloc>(context);
-                    if (state is SearchLoading) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
-                          Text('Егорка рассчитывает стоимость'),
-                          CupertinoActivityIndicator(),
-                        ],
-                      );
-                    }
-                    if (state is SearchAddressStated) {
-                      return const SizedBox();
-                    } else if (state is SearchAddressLoading) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          CircularProgressIndicator(),
-                        ],
-                      );
-                    } else if (state is SearchAddressSuccess) {
-                      if (_visible) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount:
-                                state.address!.result.suggestions!.length,
-                            itemBuilder: (context, index) {
-                              return _pointCard(state, index, context);
-                            },
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    } else if (state is SearchAddressRoutePolilyne) {
-                      if (coasts.isEmpty) {
-                        return Column(
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              color: Colors.red,
-                            ),
-                            const Text(
-                              'У Егорки не получилось рассчитать стоимость',
-                              textAlign: TextAlign.center,
-                            ),
-                            GestureDetector(
-                              onTap: (() {
-                                if (toController.text.isNotEmpty &&
-                                    toController.text.isNotEmpty) {
-                                  BlocProvider.of<SearchAddressBloc>(context)
-                                      .add(SearchAddressPolilyne(
-                                          suggestionsStart!, suggestionsEnd!));
-                                }
-                              }),
-                              child: const Text(
-                                'Повторите еще раз',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: listChoice.length,
-                        itemBuilder: ((context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              left: index == 0 ? 20.w : 0,
-                              right: index == coasts.length - 1 ? 5.w : 0,
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                coastResponse = coasts[index];
-                                streamDelivery.add(index);
-                              },
-                              child: Opacity(
-                                opacity: snapshot.data! == index ? 1 : 0.3,
-                                child: Container(
-                                  width: 80.w,
-                                  decoration: BoxDecoration(
-                                    color: snapshot.data! == index
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(15.r),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      SizedBox(
-                                        height: 45.h,
-                                        child: Image.asset(
-                                          listChoice[index].icon,
-                                          color: snapshot.data! == index
-                                              ? Colors.black
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        listChoice[index].title,
-                                        style: TextStyle(
-                                          color: snapshot.data! == index
-                                              ? Colors.black
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${coasts[index].result!.totalPrice!.total}₽',
-                                        style: TextStyle(
-                                          color: snapshot.data! == index
-                                              ? Colors.grey
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
+                  }
+                  if (current is SearchAddressRoutePolilyne) {
+                    // coasts.clear();
+                    coasts.addAll(current.coasts);
+                    coastResponse = current.coasts.first;
+                    streamDelivery.add(0);
+                    // print('objectlogolg ${coastResponse!.result!.locations}');
+                  }
+                  return true;
+                },
+                builder: (context, state) {
+                  var bloc = BlocProvider.of<SearchAddressBloc>(context);
+                  if (state is SearchLoading) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: const [
+                        Text('Егорка рассчитывает стоимость'),
+                        CupertinoActivityIndicator(),
+                      ],
+                    );
+                  }
+                  if (state is SearchAddressStated) {
+                    return const SizedBox();
+                  } else if (state is SearchAddressLoading) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [CupertinoActivityIndicator()],
+                    );
+                  } else if (state is SearchAddressSuccess) {
+                    if (_visible) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.address!.result.suggestions!.length,
+                          itemBuilder: (context, index) {
+                            return _pointCard(state, index, context);
+                          },
+                        ),
                       );
                     } else {
-                      return const Text('');
+                      return Container();
                     }
-                  },
-                ),
+                  } else if (state is SearchAddressRoutePolilyne) {
+                    if (coasts.isEmpty) {
+                      return Column(
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                          ),
+                          const Text(
+                            'У Егорки не получилось рассчитать стоимость',
+                            textAlign: TextAlign.center,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (toController.text.isNotEmpty &&
+                                  toController.text.isNotEmpty) {
+                                BlocProvider.of<SearchAddressBloc>(context).add(
+                                    SearchAddressPolilyne([suggestionsStart!],
+                                        [suggestionsEnd!]));
+                              }
+                            },
+                            child: const Text(
+                              'Повторите еще раз',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: listChoice.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? 20.w : 0,
+                            right: index == coasts.length - 1 ? 5.w : 0,
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              coastResponse = coasts[index];
+                              streamDelivery.add(index);
+                            },
+                            child: Opacity(
+                              opacity: snapshot.data! == index ? 1 : 0.3,
+                              child: Container(
+                                width: 80.w,
+                                decoration: BoxDecoration(
+                                  color: snapshot.data! == index
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      height: 45.h,
+                                      child: Image.asset(
+                                        listChoice[index].icon,
+                                        color: snapshot.data! == index
+                                            ? Colors.black
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      listChoice[index].title,
+                                      style: TextStyle(
+                                        color: snapshot.data! == index
+                                            ? Colors.black
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${coasts[index].result!.totalPrice!.total}₽',
+                                      style: TextStyle(
+                                        color: snapshot.data! == index
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Text('');
+                  }
+                },
               ),
-              SizedBox(height: 10.h),
-              if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
-                BlocBuilder<SearchAddressBloc, SearchAddressState>(
-                  builder: (context, state) {
-                    // List<CoastResponse> coasts = [];
-                    var bloc = BlocProvider.of<SearchAddressBloc>(context);
-                    if (state is SearchAddressRoutePolilyne) {
-                      coasts.addAll(state.coasts);
-                    }
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: GestureDetector(
-                        onTap: coasts.isNotEmpty ? () => authShowDialog(snapshot.data!) : null,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.all(15.w),
-                          decoration: BoxDecoration(
-                            color: coasts.isNotEmpty
-                                ? Colors.red
-                                : Colors.red.shade300,
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          child: const Center(
-                            child: Text('Перейти к оформлению',
-                                style: CustomTextStyle.white15w600),
-                          ),
+            ),
+            SizedBox(height: 10.h),
+            if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
+              BlocBuilder<SearchAddressBloc, SearchAddressState>(
+                builder: (context, state) {
+                  var bloc = BlocProvider.of<SearchAddressBloc>(context);
+                  if (state is SearchAddressRoutePolilyne) {
+                    coasts.addAll(state.coasts);
+                  }
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: GestureDetector(
+                      onTap: coasts.isNotEmpty
+                          ? () => authShowDialog(snapshot.data!)
+                          : null,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.all(15.w),
+                        decoration: BoxDecoration(
+                          color: coasts.isNotEmpty
+                              ? Colors.red
+                              : Colors.red.shade300,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: const Center(
+                          child: Text('Перейти к оформлению',
+                              style: CustomTextStyle.white15w600),
                         ),
                       ),
-                    );
-                  },
-                )
-            ],
-          );
-        });
+                    ),
+                  );
+                },
+              )
+          ],
+        );
+      },
+    );
   }
 
   void authShowDialog(int index) async {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
 
     if (user != null) {
-      Navigator.of(context)
-          .pushNamed(AppRoute.newOrder, arguments: [coastResponse, listChoice[index]]);
+      Navigator.of(context).pushNamed(AppRoute.newOrder,
+          arguments: [coastResponse, listChoice[index]]);
     } else {
       await showDialog(
-          context: context,
-          builder: (context) {
-            return StandartAlertDialog(
-              message: 'Хотите авторизоваться?',
-              buttons: [
-                StandartButton(
-                  label: 'Нет',
-                  color: Colors.red.withOpacity(0.9),
-                  onTap: () => Navigator.of(context)
-                    ..pop()
-                    ..pushNamed(AppRoute.newOrder, arguments: [coastResponse, listChoice[index]]),
-                ),
-                StandartButton(
-                  label: 'Да',
-                  color: Colors.green,
-                  onTap: () async {
-                    final result =
-                        await Navigator.pushNamed(context, AppRoute.auth);
-                    if (result != null) {
-                      BlocProvider.of<ProfileBloc>(context)
-                          .add(ProfileEventUpdate(result as AuthUser));
-                      Navigator.of(context)
-                        ..pop()
-                        ..pushNamed(AppRoute.newOrder,
-                            arguments: [coastResponse, listChoice[index]]);
-                    }
-                  },
-                )
-              ],
-            );
-          });
+        context: context,
+        builder: (context) {
+          return StandartAlertDialog(
+            message: 'Хотите авторизоваться?',
+            buttons: [
+              StandartButton(
+                label: 'Нет',
+                color: Colors.red.withOpacity(0.9),
+                onTap: () => Navigator.of(context)
+                  ..pop()
+                  ..pushNamed(AppRoute.newOrder,
+                      arguments: [coastResponse, listChoice[index]]),
+              ),
+              StandartButton(
+                label: 'Да',
+                color: Colors.green,
+                onTap: () async {
+                  final result =
+                      await Navigator.pushNamed(context, AppRoute.auth);
+                  if (result != null) {
+                    BlocProvider.of<ProfileBloc>(context)
+                        .add(ProfileEventUpdate(result as AuthUser));
+                    Navigator.of(context)
+                      ..pop()
+                      ..pushNamed(AppRoute.newOrder,
+                          arguments: [coastResponse, listChoice[index]]);
+                  }
+                },
+              )
+            ],
+          );
+        },
+      );
     }
   }
 
-  Column _pointCard(
+  Widget _pointCard(
       SearchAddressSuccess state, int index, BuildContext context) {
     return Column(
       children: [
         Container(
           margin: EdgeInsets.only(top: 5.w, bottom: 5.w),
           height: 50.h,
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
               if (!_flipController!.state!.isFront) {
                 _flipController!.toggleCard();
@@ -603,11 +604,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     state.address!.result.suggestions![index].name;
               }
 
-              if (toController.text.isNotEmpty &&
+              if (fromController.text.isNotEmpty &&
                   toController.text.isNotEmpty) {
-                    coasts.clear();
+                coasts.clear();
                 BlocProvider.of<SearchAddressBloc>(context).add(
-                    SearchAddressPolilyne(suggestionsStart!, suggestionsEnd!));
+                    SearchAddressPolilyne(
+                        [suggestionsStart!], [suggestionsEnd!]));
               } else {
                 BlocProvider.of<SearchAddressBloc>(context).add(
                   JumpToPointEvent(

@@ -199,45 +199,54 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
     );
   }
 
-  Container _pointCard(NewOrderSuccess state, int index, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
-      height: 50.h,
-      child: InkWell(
-        onTap: () {
-          BlocProvider.of<NewOrderPageBloc>(context).add(
-              NewOrderStatedCloseBtmSheet(
-                  state.address!.result.suggestions![index].name));
-          widget.fromController.text =
-              state.address!.result.suggestions![index].name;
-          focusFrom.unfocus();
-          widget.panelController.close();
-        },
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: CustomWidget.iconGPSSmall(
-                    color: widget.typeAdd == TypeAdd.sender
-                        ? Colors.red
-                        : Colors.blue),
-              ),
+  Widget _pointCard(NewOrderSuccess state, int index, BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+          height: 50.h,
+          child: InkWell(
+            onTap: () {
+              BlocProvider.of<NewOrderPageBloc>(context).add(
+                  NewOrderStatedCloseBtmSheet(
+                      state.address!.result.suggestions![index].name));
+              widget.fromController.text =
+                  state.address!.result.suggestions![index].name;
+              focusFrom.unfocus();
+              widget.panelController.close();
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: CustomWidget.iconGPSSmall(
+                        color: widget.typeAdd == TypeAdd.sender
+                            ? Colors.red
+                            : Colors.blue),
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  flex: 10,
+                  child: Text(
+                    state.address!.result.suggestions![index].name,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 15),
-            Expanded(
-              flex: 10,
-              child: Text(
-                state.address!.result.suggestions![index].name,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                maxLines: 2,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        Container(
+          height: 0.5.h,
+          color: Colors.grey[400],
+          width: double.infinity,
+        ),
+      ],
     );
   }
 }

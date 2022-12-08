@@ -443,7 +443,7 @@ class _MarketPageState extends State<MarketPages>
                                                 toController.text =
                                                     pointsRes.name[0].name;
 
-                                                points = points;
+                                                points = pointsRes;
 
                                                 if (suggestion != null &&
                                                     points != null) {

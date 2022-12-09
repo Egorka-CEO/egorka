@@ -54,8 +54,16 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   List<CoastResponse> coasts = [];
 
   List<DeliveryChocie> listChoice = [
-    DeliveryChocie(title: 'Пешком', icon: 'assets/images/ic_leg.png'),
-    DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
+    DeliveryChocie(
+      title: 'Пешком',
+      icon: 'assets/images/ic_leg.png',
+      type: 'Walk',
+    ),
+    DeliveryChocie(
+      title: 'Легковая',
+      icon: 'assets/images/ic_car.png',
+      type: 'Car',
+    ),
     // DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
     // DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
   ];
@@ -542,8 +550,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
 
     if (user != null) {
-      Navigator.of(context).pushNamed(AppRoute.newOrder,
-          arguments: [coastResponse, listChoice[index]]);
+      Navigator.of(context).pushNamed(AppRoute.newOrder, arguments: [
+        coastResponse,
+        listChoice[index],
+        suggestionsStart,
+        suggestionsEnd,
+      ]);
     } else {
       await showDialog(
         context: context,
@@ -556,8 +568,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 color: Colors.red.withOpacity(0.9),
                 onTap: () => Navigator.of(context)
                   ..pop()
-                  ..pushNamed(AppRoute.newOrder,
-                      arguments: [coastResponse, listChoice[index]]),
+                  ..pushNamed(AppRoute.newOrder, arguments: [
+                    coastResponse,
+                    listChoice[index],
+                    suggestionsStart,
+                    suggestionsEnd,
+                  ]),
               ),
               StandartButton(
                 label: 'Да',
@@ -570,8 +586,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         .add(ProfileEventUpdate(result as AuthUser));
                     Navigator.of(context)
                       ..pop()
-                      ..pushNamed(AppRoute.newOrder,
-                          arguments: [coastResponse, listChoice[index]]);
+                      ..pushNamed(AppRoute.newOrder, arguments: [
+                        coastResponse,
+                        listChoice[index],
+                        suggestionsStart,
+                        suggestionsEnd,
+                      ]);
                   }
                 },
               )

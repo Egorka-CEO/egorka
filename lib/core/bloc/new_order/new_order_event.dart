@@ -7,7 +7,7 @@ class NewOrderOpenBtmSheet extends NewOrderEvent {}
 class NewOrderCloseBtmSheetEvent extends NewOrderEvent {}
 
 class NewOrderStatedCloseBtmSheet extends NewOrderEvent {
-  String? value;
+  Suggestions? value;
 
   NewOrderStatedCloseBtmSheet(this.value);
 }
@@ -16,4 +16,12 @@ class NewOrder extends NewOrderEvent {
   String value;
 
   NewOrder(this.value);
+}
+
+class CalculateCoastEvent extends NewOrderEvent {
+  List<PointDetails> start;
+  List<PointDetails> end;
+  String typeCoast;
+
+  CalculateCoastEvent(this.start, this.end, this.typeCoast);
 }

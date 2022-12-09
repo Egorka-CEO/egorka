@@ -1,19 +1,21 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/poinDetails.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
+import 'package:egorka/model/coast_advanced.dart' as cstAdvanced;
+import 'package:egorka/model/response_coast_base.dart' as respCoast;
 part 'new_order_event.dart';
 part 'new_order_state.dart';
 
 class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
   late GeoData data;
   NewOrderPageBloc() : super(NewOrderStated()) {
-    on<NewOrder>((event, emit) => _searchAddress(event, emit));
-    on<NewOrderOpenBtmSheet>((event, emit) => _openBtmSheet(event, emit));
-    on<NewOrderStatedCloseBtmSheet>(
-        (event, emit) => _closeBtmSheet(event, emit));
-    on<NewOrderCloseBtmSheetEvent>(
-        (event, emit) => _closeBtmSheetWithoutSearch(event, emit));
+    on<NewOrder>(_searchAddress);
+    on<NewOrderOpenBtmSheet>(_openBtmSheet);
+    on<NewOrderStatedCloseBtmSheet>(_closeBtmSheet);
+    on<NewOrderCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
+    on<CalculateCoastEvent>(_calcCoast);
   }
 
   void _searchAddress(NewOrder event, Emitter<NewOrderState> emit) async {
@@ -40,4 +42,63 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
   void _closeBtmSheetWithoutSearch(
           NewOrderCloseBtmSheetEvent event, Emitter<NewOrderState> emit) =>
       emit(NewOrderCloseBtmSheet());
+
+  void _calcCoast(
+      CalculateCoastEvent event, Emitter<NewOrderState> emit) async {
+    emit(CalcLoading());
+
+    respCoast.CoastResponse? coasts;
+    List<cstAdvanced.Locations> locations = [];
+
+    for (var element in event.start) {
+      locations.add(
+        cstAdvanced.Locations(
+          type: 'Pickup',
+          point: cstAdvanced.Point(
+            code: element.suggestions.iD,
+            entrance: element.details?.entrance,
+            floor: element.details?.floor,
+            room: element.details?.room,
+          ),
+          contact: cstAdvanced.Contact(
+            name: element.details?.name,
+            phoneMobile: element.details?.phone,
+          ),
+        ),
+      );
+    }
+
+    for (var element in event.end) {
+      locations.add(
+        cstAdvanced.Locations(
+          type: 'Drop',
+          point: cstAdvanced.Point(
+            code: element.suggestions.iD,
+            entrance: element.details?.entrance,
+            floor: element.details?.floor,
+            room: element.details?.room,
+          ),
+          contact: cstAdvanced.Contact(
+            name: element.details?.name,
+            phoneMobile: element.details?.phone,
+          ),
+        ),
+      );
+    }
+
+    final res = await Repository().getCoastAdvanced(
+      cstAdvanced.CoastAdvanced(
+        type: event.typeCoast,
+        locations: locations,
+      ),
+    );
+
+    if (res != null) {
+      coasts = res;
+    }
+
+    print('object  log ${locations.length} ${res?.result!.totalPrice?.total}');
+
+    emit(CalcSuccess(coasts));
+  }
 }

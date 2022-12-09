@@ -2,6 +2,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 class CustomTextField extends StatelessWidget {
   final Function? onTap;
@@ -81,7 +82,20 @@ class CustomTextField extends StatelessWidget {
     return SizedBox(
       height: height,
       width: widthOfScreen,
-      child: Center(
+      child: KeyboardActions(
+        disableScroll: true,
+        config: KeyboardActionsConfig(
+          defaultDoneWidget: GestureDetector(
+            onTap: () => focusNode?.unfocus(),
+            child: const Text('Готово'),
+          ),
+          actions: [
+            KeyboardActionsItem(
+              focusNode: focusNode ?? FocusNode(),
+              onTapAction: () => focusNode?.unfocus(),
+            ),
+          ],
+        ),
         child: TextFormField(
           onFieldSubmitted: onFieldSubmitted,
           enabled: enabled,

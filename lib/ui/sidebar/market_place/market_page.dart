@@ -187,412 +187,319 @@ class _MarketPageState extends State<MarketPages>
                 return Expanded(
                   child: Stack(
                     children: [
-                      SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 15.h),
-                              const Text(
-                                'Доставка до маркетплейса',
-                                style: CustomTextStyle.black15w700,
-                              ),
-                              SizedBox(height: 5.h),
-                              const Text(
-                                'Как это работает?',
-                                style: CustomTextStyle.red15,
-                              ),
-                              SizedBox(height: 20.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Откуда забрать?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10.r),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Checkbox(
-                                          value: false,
-                                          fillColor: MaterialStateProperty.all(
-                                              Colors.red),
-                                          shape: const CircleBorder(),
-                                          onChanged: ((value) {}),
-                                        ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              controller.text = '';
-                                              typeAdd = TypeAdd.sender;
-                                              BlocProvider.of<
-                                                          MarketPlacePageBloc>(
-                                                      context)
-                                                  .add(
-                                                      MarketPlaceOpenBtmSheet());
-                                              panelController
-                                                  .animatePanelToPosition(
-                                                1,
-                                                curve: Curves.easeInOutQuint,
-                                                duration: const Duration(
-                                                  milliseconds: 1000,
-                                                ),
-                                              );
-                                            },
-                                            child: CustomTextField(
-                                              height: 45.h,
-                                              contentPadding:
-                                                  const EdgeInsets.all(0),
-                                              fillColor: Colors.white,
-                                              enabled: false,
-                                              hintText: '',
-                                              textEditingController:
-                                                  fromController,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        GestureDetector(
-                                          onTap: _findMe,
-                                          child: const Icon(
-                                            Icons.gps_fixed,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10.h),
-                              GestureDetector(
-                                onTap: () => streamController.add(!details),
-                                child: Row(
+                      ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.w),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 15.h),
+                                const Text(
+                                  'Доставка до маркетплейса',
+                                  style: CustomTextStyle.black15w700,
+                                ),
+                                SizedBox(height: 5.h),
+                                const Text(
+                                  'Как это работает?',
+                                  style: CustomTextStyle.red15,
+                                ),
+                                SizedBox(height: 20.h),
+                                Row(
                                   children: [
                                     SizedBox(width: 5.w),
                                     const Text(
-                                      'Указать детали',
-                                      style: CustomTextStyle.red15,
+                                      'Откуда забрать?',
+                                      style: CustomTextStyle.grey15bold,
                                     ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 5.h),
-                              StreamBuilder<bool>(
-                                  stream: streamController.stream,
-                                  initialData: false,
-                                  builder: (context, snapshot) {
-                                    details = snapshot.data!;
-                                    return AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 400),
-                                      height: snapshot.data! ? 65.h : 0.h,
-                                      child: Stack(
+                                SizedBox(height: 5.h),
+                                Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10.r),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Row(
-                                            children: const [
-                                              Text(
-                                                'Не обязательно к заполнению',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                            ],
+                                          Checkbox(
+                                            value: false,
+                                            fillColor: MaterialStateProperty.all(
+                                                Colors.red),
+                                            shape: const CircleBorder(),
+                                            onChanged: ((value) {}),
                                           ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 20.h),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    height: 45.h,
-                                                    fillColor: Colors.white,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w),
-                                                    hintText: 'Подъезд',
-                                                    textInputType:
-                                                        TextInputType.number,
-                                                    textEditingController:
-                                                        item1Controller,
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                controller.text = '';
+                                                typeAdd = TypeAdd.sender;
+                                                BlocProvider.of<
+                                                            MarketPlacePageBloc>(
+                                                        context)
+                                                    .add(
+                                                        MarketPlaceOpenBtmSheet());
+                                                panelController
+                                                    .animatePanelToPosition(
+                                                  1,
+                                                  curve: Curves.easeInOutQuint,
+                                                  duration: const Duration(
+                                                    milliseconds: 1000,
                                                   ),
-                                                ),
-                                                SizedBox(width: 15.w),
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    height: 45.h,
-                                                    fillColor: Colors.white,
-                                                    hintText: 'Этаж',
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w),
-                                                    textInputType:
-                                                        TextInputType.number,
-                                                    textEditingController:
-                                                        item2Controller,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 15.w),
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    height: 45.h,
-                                                    fillColor: Colors.white,
-                                                    hintText: 'Офис/кв.',
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w),
-                                                    textInputType:
-                                                        TextInputType.number,
-                                                    textEditingController:
-                                                        item3Controller,
-                                                  ),
+                                                );
+                                              },
+                                              child: CustomTextField(
+                                                height: 45.h,
+                                                contentPadding:
+                                                    const EdgeInsets.all(0),
+                                                fillColor: Colors.white,
+                                                enabled: false,
+                                                hintText: '',
+                                                textEditingController:
+                                                    fromController,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          GestureDetector(
+                                            onTap: _findMe,
+                                            child: const Icon(
+                                              Icons.gps_fixed,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.h),
+                                GestureDetector(
+                                  onTap: () => streamController.add(!details),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 5.w),
+                                      const Text(
+                                        'Указать детали',
+                                        style: CustomTextStyle.red15,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 5.h),
+                                StreamBuilder<bool>(
+                                    stream: streamController.stream,
+                                    initialData: false,
+                                    builder: (context, snapshot) {
+                                      details = snapshot.data!;
+                                      return AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        height: snapshot.data! ? 65.h : 0.h,
+                                        child: Stack(
+                                          children: [
+                                            Row(
+                                              children: const [
+                                                Text(
+                                                  'Не обязательно к заполнению',
+                                                  style:
+                                                      CustomTextStyle.grey15bold,
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Куда отвезти?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Checkbox(
-                                          value: false,
-                                          fillColor: MaterialStateProperty.all(
-                                              Colors.blue),
-                                          shape: const CircleBorder(),
-                                          onChanged: ((value) {}),
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 20.h),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomTextField(
+                                                      height: 45.h,
+                                                      fillColor: Colors.white,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      hintText: 'Подъезд',
+                                                      textInputType:
+                                                          TextInputType.number,
+                                                      textEditingController:
+                                                          item1Controller,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15.w),
+                                                  Expanded(
+                                                    child: CustomTextField(
+                                                      height: 45.h,
+                                                      fillColor: Colors.white,
+                                                      hintText: 'Этаж',
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      textInputType:
+                                                          TextInputType.number,
+                                                      textEditingController:
+                                                          item2Controller,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15.w),
+                                                  Expanded(
+                                                    child: CustomTextField(
+                                                      height: 45.h,
+                                                      fillColor: Colors.white,
+                                                      hintText: 'Офис/кв.',
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      textInputType:
+                                                          TextInputType.number,
+                                                      textEditingController:
+                                                          item3Controller,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
+                                      );
+                                    }),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Text(
+                                      'Куда отвезти?',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.h),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Checkbox(
+                                            value: false,
+                                            fillColor: MaterialStateProperty.all(
+                                                Colors.blue),
+                                            shape: const CircleBorder(),
+                                            onChanged: ((value) {}),
+                                          ),
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                final marketplaces = BlocProvider
+                                                        .of<MarketPlacePageBloc>(
+                                                            context)
+                                                    .marketPlaces;
+                                                if (marketplaces != null) {
+                                                  toController.text = marketplaces
+                                                      .result
+                                                      .points[0]
+                                                      .name[0]
+                                                      .name;
+                                                  points = marketplaces
+                                                      .result.points[0];
+                                                  showMarketPlaces(marketplaces);
+                                                }
+                                              },
+                                              child: CustomTextField(
+                                                contentPadding:
+                                                    const EdgeInsets.all(0),
+                                                height: 45.h,
+                                                fillColor: Colors.white,
+                                                enabled: false,
+                                                hintText: '',
+                                                textEditingController:
+                                                    toController,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          GestureDetector(
+                                            onTap: () async {
                                               final marketplaces = BlocProvider
                                                       .of<MarketPlacePageBloc>(
                                                           context)
                                                   .marketPlaces;
                                               if (marketplaces != null) {
-                                                toController.text = marketplaces
-                                                    .result
-                                                    .points[0]
-                                                    .name[0]
-                                                    .name;
-                                                points = marketplaces
-                                                    .result.points[0];
-                                                showMarketPlaces(marketplaces);
-                                              }
-                                            },
-                                            child: CustomTextField(
-                                              contentPadding:
-                                                  const EdgeInsets.all(0),
-                                              height: 45.h,
-                                              fillColor: Colors.white,
-                                              enabled: false,
-                                              hintText: '',
-                                              textEditingController:
-                                                  toController,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            final marketplaces = BlocProvider
-                                                    .of<MarketPlacePageBloc>(
+                                                final result = await Navigator.of(
                                                         context)
-                                                .marketPlaces;
-                                            if (marketplaces != null) {
-                                              final result = await Navigator.of(
-                                                      context)
-                                                  .pushNamed(
-                                                      AppRoute.marketplacesMap,
-                                                      arguments: marketplaces);
-                                              if (result != null) {
-                                                final pointsRes =
-                                                    result as Points;
-                                                toController.text =
-                                                    pointsRes.name[0].name;
+                                                    .pushNamed(
+                                                        AppRoute.marketplacesMap,
+                                                        arguments: marketplaces);
+                                                if (result != null) {
+                                                  final pointsRes =
+                                                      result as Points;
+                                                  toController.text =
+                                                      pointsRes.name[0].name;
 
-                                                points = pointsRes;
+                                                  points = pointsRes;
 
-                                                if (suggestion != null &&
-                                                    points != null) {
-                                                  BlocProvider.of<
-                                                              MarketPlacePageBloc>(
-                                                          context)
-                                                      .add(CalcOrder(suggestion,
-                                                          points, time));
+                                                  if (suggestion != null &&
+                                                      points != null) {
+                                                    BlocProvider.of<
+                                                                MarketPlacePageBloc>(
+                                                            context)
+                                                        .add(CalcOrder(suggestion,
+                                                            points, time));
+                                                  }
                                                 }
                                               }
-                                            }
-                                          },
-                                          child: const Icon(
-                                            Icons.map_outlined,
-                                            color: Colors.red,
+                                            },
+                                            child: const Icon(
+                                              Icons.map_outlined,
+                                              color: Colors.red,
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Когда забрать?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.w),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: showDateTime,
-                                        child: CustomTextField(
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w),
-                                          fillColor: Colors.white,
-                                          hintText: '',
-                                          enabled: false,
-                                          textEditingController:
-                                              startOrderController,
-                                        ),
+                                          SizedBox(width: 10.w),
+                                        ],
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Text(
+                                      'Когда забрать?',
+                                      style: CustomTextStyle.grey15bold,
                                     ),
-                                    SizedBox(width: 10.w),
-                                    const Icon(
-                                      Icons.help_outline_outlined,
-                                      color: Colors.red,
-                                    ),
-                                    SizedBox(width: 10.w),
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Expanded(
-                                    child: Text(
-                                      'Оформить доставку до Маркетплейса на завтра можно строго до 15:00.',
-                                      style: CustomTextStyle.grey15,
-                                      textAlign: TextAlign.justify,
-                                    ),
+                                SizedBox(height: 5.h),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15.w),
                                   ),
-                                  SizedBox(width: 5.w),
-                                ],
-                              ),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Ваши контакты',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 45.h,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      fillColor: Colors.white,
-                                      hintText: 'Имя',
-                                      hintStyle: CustomTextStyle.textHintStyle,
-                                      textEditingController: nameController,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      height: 45.h,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      fillColor: Colors.white,
-                                      hintText: '+7 (999) 888-77-66',
-                                      textInputType: TextInputType.number,
-                                      textEditingController: phoneController,
-                                      formatters: [CustomInputFormatter()],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Кол-во коробок?',
-                                    style: CustomTextStyle.grey15bold,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              StreamBuilder<int>(
-                                stream: bucketController.stream,
-                                initialData: 0,
-                                builder: (context, snapshot) {
-                                  return Row(
+                                  child: Row(
                                     children: [
                                       Expanded(
-                                        child: CustomTextField(
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w),
-                                          fillColor: Colors.white,
-                                          hintText: '0',
-                                          textInputType: TextInputType.number,
-                                          textEditingController:
-                                              countBucketController,
+                                        child: GestureDetector(
+                                          onTap: showDateTime,
+                                          child: CustomTextField(
+                                            height: 45.h,
+                                            contentPadding: EdgeInsets.symmetric(
+                                                horizontal: 10.w),
+                                            fillColor: Colors.white,
+                                            hintText: '',
+                                            enabled: false,
+                                            textEditingController:
+                                                startOrderController,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 10.w),
@@ -600,54 +507,97 @@ class _MarketPageState extends State<MarketPages>
                                         Icons.help_outline_outlined,
                                         color: Colors.red,
                                       ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Slider(
-                                          min: 0,
-                                          max: 50,
-                                          activeColor: Colors.red,
-                                          inactiveColor: Colors.grey[300],
-                                          thumbColor: Colors.white,
-                                          value: snapshot.data!.toDouble(),
-                                          onChanged: (value) {
-                                            bucketController.add(value.toInt());
-                                            countBucketController.text =
-                                                value.toInt().toString();
-                                          },
-                                        ),
-                                      )
+                                      SizedBox(width: 10.w),
                                     ],
-                                  );
-                                },
-                              ),
-                              SizedBox(height: 10.h),
-                              Row(
-                                children: [
-                                  SizedBox(width: 5.w),
-                                  const Text(
-                                    'Кол-во паллет?',
-                                    style: CustomTextStyle.grey15bold,
                                   ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              StreamBuilder<int>(
-                                  stream: palletController.stream,
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Expanded(
+                                      child: Text(
+                                        'Оформить доставку до Маркетплейса на завтра можно строго до 15:00.',
+                                        style: CustomTextStyle.grey15,
+                                        textAlign: TextAlign.justify,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w),
+                                  ],
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Text(
+                                      'Ваши контакты',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextField(
+                                        maxLines: 1,
+                                        height: 45.h,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 10.w),
+                                        fillColor: Colors.white,
+                                        hintText: 'Имя',
+                                        hintStyle: CustomTextStyle.textHintStyle,
+                                        textEditingController: nameController,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextField(
+                                        focusNode: FocusNode(),
+                                        height: 45.h,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 10.w),
+                                        fillColor: Colors.white,
+                                        hintText: '+7 (999) 888-77-66',
+                                        textInputType: TextInputType.number,
+                                        textEditingController: phoneController,
+                                        formatters: [CustomInputFormatter()],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Text(
+                                      'Кол-во коробок?',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.h),
+                                StreamBuilder<int>(
+                                  stream: bucketController.stream,
                                   initialData: 0,
                                   builder: (context, snapshot) {
                                     return Row(
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
+                                            focusNode: FocusNode(),
                                             height: 45.h,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 10.w),
+                                            contentPadding: EdgeInsets.symmetric(
+                                                horizontal: 10.w),
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
                                             textEditingController:
-                                                countPalletController,
+                                                countBucketController,
                                           ),
                                         ),
                                         SizedBox(width: 10.w),
@@ -665,20 +615,78 @@ class _MarketPageState extends State<MarketPages>
                                             thumbColor: Colors.white,
                                             value: snapshot.data!.toDouble(),
                                             onChanged: (value) {
-                                              palletController
-                                                  .add(value.toInt());
-                                              countPalletController.text =
+                                              bucketController.add(value.toInt());
+                                              countBucketController.text =
                                                   value.toInt().toString();
                                             },
                                           ),
                                         )
                                       ],
                                     );
-                                  }),
-                              SizedBox(height: 300.h)
-                            ],
+                                  },
+                                ),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    SizedBox(width: 5.w),
+                                    const Text(
+                                      'Кол-во паллет?',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.h),
+                                StreamBuilder<int>(
+                                    stream: palletController.stream,
+                                    initialData: 0,
+                                    builder: (context, snapshot) {
+                                      return Row(
+                                        children: [
+                                          Expanded(
+                                            child: CustomTextField(
+                                              maxLines: 1,
+                                              focusNode: FocusNode(),
+                                              height: 45.h,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 10.w),
+                                              fillColor: Colors.white,
+                                              hintText: '0',
+                                              textInputType: TextInputType.number,
+                                              textEditingController:
+                                                  countPalletController,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          const Icon(
+                                            Icons.help_outline_outlined,
+                                            color: Colors.red,
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Slider(
+                                              min: 0,
+                                              max: 50,
+                                              activeColor: Colors.red,
+                                              inactiveColor: Colors.grey[300],
+                                              thumbColor: Colors.white,
+                                              value: snapshot.data!.toDouble(),
+                                              onChanged: (value) {
+                                                palletController
+                                                    .add(value.toInt());
+                                                countPalletController.text =
+                                                    value.toInt().toString();
+                                              },
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    }),
+                                SizedBox(height: 300.h)
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                       if (coast != null)
                         Align(

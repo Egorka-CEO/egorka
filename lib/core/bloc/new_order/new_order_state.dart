@@ -8,8 +8,16 @@ class NewOrderStatedOpenBtmSheet extends NewOrderState {}
 
 class NewOrderCloseBtmSheet extends NewOrderState {}
 
+class CalcLoading extends NewOrderState {}
+
+class CalcSuccess extends NewOrderState {
+  respCoast.CoastResponse? coasts;
+
+  CalcSuccess(this.coasts);
+}
+
 class NewOrderStateCloseBtmSheet extends NewOrderState {
-  String? value;
+  Suggestions? value;
 
   NewOrderStateCloseBtmSheet(this.value);
 }

@@ -1,3 +1,4 @@
+import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
@@ -55,14 +56,26 @@ class AppRoute {
       case newOrder:
         var order;
         var delivery;
+        var start;
+        var end;
         if (route.arguments != null) {
           final arg = route.arguments as List;
           final list = arg[0] as CoastResponse;
           final listChoice = arg[1] as DeliveryChocie;
+          final startPoint = arg[2] as Suggestions;
+          final endPoint = arg[3] as Suggestions;
           order = list;
           delivery = listChoice;
+          start = startPoint;
+          end = endPoint;
         }
-        return MaterialPageRoute(builder: (_) => NewOrderPage(order: order, deliveryChocie: delivery));
+        return MaterialPageRoute(
+            builder: (_) => NewOrderPage(
+                  order: order,
+                  deliveryChocie: delivery,
+                  start: start,
+                  end: end,
+                ));
       case historyOrder:
         return MaterialPageRoute(builder: (_) => const HistoryOrdersPage());
       case profile:

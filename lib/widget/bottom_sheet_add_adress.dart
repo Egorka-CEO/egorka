@@ -6,6 +6,7 @@ import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,12 +31,12 @@ class AddAdressBottomSheetDraggable extends StatefulWidget {
 class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   FocusNode focusFrom = FocusNode();
 
-  List<DeliveryChocie> listChoice = [
-    DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
-    DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
-    DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
-    DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png'),
-  ];
+  // List<DeliveryChocie> listChoice = [
+  //   DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png', type: ''),
+  //   DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png', type: ''),
+  //   DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png', type: ''),
+  //   DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png', type: ''),
+  // ];
 
   Address? address;
 
@@ -170,9 +171,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
               } else if (state is NewOrderLoading) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                  ],
+                  children: const [CupertinoActivityIndicator()],
                 );
               } else if (state is NewOrderSuccess) {
                 return address != null
@@ -209,7 +208,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
             onTap: () {
               BlocProvider.of<NewOrderPageBloc>(context).add(
                   NewOrderStatedCloseBtmSheet(
-                      state.address!.result.suggestions![index].name));
+                      state.address!.result.suggestions![index]));
               widget.fromController.text =
                   state.address!.result.suggestions![index].name;
               focusFrom.unfocus();

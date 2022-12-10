@@ -90,7 +90,8 @@ class AppRoute {
       case detailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(
-            builder: (_) => DetailsPage(typeAdd: list[0], index: list[1]));
+            builder: (_) => DetailsPage(
+                typeAdd: list[0], index: list[1], routeOrder: list[2]));
       case historyDetailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(

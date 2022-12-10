@@ -1,9 +1,7 @@
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/receiver.dart';
-import 'package:egorka/model/route_order.dart';
-import 'package:egorka/model/sender.dart';
+import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
@@ -16,11 +14,13 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class DetailsPage extends StatelessWidget {
   int index;
   TypeAdd typeAdd;
+  PointDetails routeOrder;
 
   DetailsPage({
     super.key,
     required this.index,
     required this.typeAdd,
+    required this.routeOrder,
   });
 
   @override
@@ -34,6 +34,7 @@ class DetailsPage extends StatelessWidget {
         child: DetailsPageTemp(
           index: index,
           typeAdd: typeAdd,
+          routeOrder: routeOrder,
         ));
   }
 }
@@ -41,46 +42,42 @@ class DetailsPage extends StatelessWidget {
 class DetailsPageTemp extends StatefulWidget {
   int index;
   TypeAdd typeAdd;
+  PointDetails routeOrder;
 
   DetailsPageTemp({
     super.key,
     required this.index,
     required this.typeAdd,
+    required this.routeOrder,
   });
-
-  static Sender sender = Sender(
-    firstName: 'Олег',
-    secondName: 'Бочко',
-    phone: '+79223747362',
-    address: 'г.Москва, ул.Кижеватова д.23',
-  );
-
-  static Receiver receiver = Receiver(
-    firstName: 'Максим',
-    secondName: 'Яковлев',
-    phone: '+79111119393',
-    address: 'г.Москва, ул.Солнечная д.6',
-  );
 
   @override
   State<DetailsPageTemp> createState() => _DetailsPageState();
 }
 
 class _DetailsPageState extends State<DetailsPageTemp> {
-  List<RouteOrder> routeOrderSender = [
-    // RouteOrder(adress: 'москва солнечная 6'),
-  ];
-
-  List<RouteOrder> routeOrderReceiver = [
-    // RouteOrder(adress: 'москва солнечная 6'),
-  ];
-
   TextEditingController controller = TextEditingController();
-
+  TextEditingController controllerEntrance = TextEditingController();
+  TextEditingController controllerFloor = TextEditingController();
+  TextEditingController controllerRoom = TextEditingController();
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerPhone = TextEditingController();
+  TextEditingController controllerComment = TextEditingController();
   PanelController panelController = PanelController();
 
   bool btmSheet = false;
   TypeAdd? typeAdd;
+
+  @override
+  void initState() {
+    super.initState();
+    controllerEntrance.text = widget.routeOrder.details?.entrance ?? '';
+    controllerFloor.text = widget.routeOrder.details?.floor ?? '';
+    controllerRoom.text = widget.routeOrder.details?.room ?? '';
+    controllerName.text = widget.routeOrder.details?.name ?? '';
+    controllerPhone.text = widget.routeOrder.details?.phone ?? '';
+    controllerComment.text = widget.routeOrder.details?.comment ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +107,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           alignment: Alignment.centerRight,
                           children: [
                             GestureDetector(
-                              onTap: () => Navigator.pop(context),
+                              onTap: () => Navigator.pop(
+                                  context, widget.routeOrder.details),
                               child: Row(
                                 children: [
                                   Icon(
@@ -261,8 +259,13 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Подъезд',
+                          focusNode: FocusNode(),
+                          onFieldSubmitted: (value) {
+                            widget.routeOrder.details?.entrance =
+                                controllerEntrance.text;
+                          },
                           textInputType: TextInputType.number,
-                          textEditingController: TextEditingController(),
+                          textEditingController: controllerEntrance,
                         ),
                       ),
                       SizedBox(width: 15.w),
@@ -271,8 +274,13 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Этаж',
+                          focusNode: FocusNode(),
+                          onFieldSubmitted: (value) {
+                            widget.routeOrder.details?.floor =
+                                controllerFloor.text;
+                          },
                           textInputType: TextInputType.number,
-                          textEditingController: TextEditingController(),
+                          textEditingController: controllerFloor,
                         ),
                       ),
                       SizedBox(width: 15.w),
@@ -281,8 +289,13 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Офис/кв.',
+                          focusNode: FocusNode(),
+                          onFieldSubmitted: (value) {
+                            widget.routeOrder.details?.room =
+                                controllerRoom.text;
+                          },
                           textInputType: TextInputType.number,
-                          textEditingController: TextEditingController(),
+                          textEditingController: controllerRoom,
                         ),
                       ),
                     ],
@@ -307,7 +320,10 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       height: 45.h,
                       fillColor: Colors.white,
                       hintText: 'Имя',
-                      textEditingController: TextEditingController(),
+                      onFieldSubmitted: (value) {
+                        widget.routeOrder.details?.name = controllerName.text;
+                      },
+                      textEditingController: controllerName,
                     ),
                   ),
                 ),
@@ -320,7 +336,10 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       height: 45.h,
                       fillColor: Colors.white,
                       hintText: '+7 (___) ___-__-__',
-                      textEditingController: TextEditingController(),
+                      onFieldSubmitted: (value) {
+                        widget.routeOrder.details?.phone = controllerPhone.text;
+                      },
+                      textEditingController: controllerPhone,
                       formatters: [
                         CustomInputFormatter(),
                       ],
@@ -355,8 +374,12 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             width: 100.w,
                             fillColor: Colors.white.withOpacity(0),
                             hintText: '',
+                            onFieldSubmitted: (value) {
+                              widget.routeOrder.details?.comment =
+                                  controllerComment.text;
+                            },
                             maxLines: 10,
-                            textEditingController: TextEditingController(),
+                            textEditingController: controllerComment,
                           ),
                         ),
                         SizedBox(width: 10.w),
@@ -375,10 +398,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 } else if (current is NewOrderStateCloseBtmSheet) {
                   btmSheet = false;
                   if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                    // routeOrderSender.add(RouteOrder(adress: current.value!));
-                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                    // routeOrderReceiver.add(RouteOrder(adress: current.value!));
-                  }
+                  } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {}
                 }
                 return true;
               },
@@ -394,29 +414,9 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     fromController: controller,
                     panelController: panelController,
                   ),
-                  onPanelClosed: () {
-                    // if (typeAdd == TypeAdd.sender) {
-                    //   fromController.text = controller.text;
-                    // } else if (typeAdd == TypeAdd.receiver) {
-                    //   toController.text = controller.text;
-                    // }
-                    // controller.text = '';
-                    // focusFrom.unfocus();
-                    // focusTo.unfocus();
-                    // _visible = false;
-                  },
-                  onPanelOpened: () {
-                    // _visible = true;
-                    // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-                    //   panelController.close();
-                    // }
-                  },
-                  onPanelSlide: (size) {
-                    // if (size.toStringAsFixed(1) == (0.5).toString()) {
-                    //   focusFrom.unfocus();
-                    //   focusTo.unfocus();
-                    // }
-                  },
+                  onPanelClosed: () {},
+                  onPanelOpened: () {},
+                  onPanelSlide: (size) {},
                   maxHeight: 700.h,
                   minHeight: 0,
                   defaultPanelState: PanelState.CLOSED,

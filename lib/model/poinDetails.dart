@@ -8,7 +8,7 @@ class PointDetails {
 }
 
 class Details {
-  Suggestions suggestions;
+  Suggestions? suggestions;
   String? entrance;
   String? floor;
   String? room;
@@ -17,7 +17,7 @@ class Details {
   String? comment;
 
   Details({
-    required this.suggestions,
+     this.suggestions,
     this.entrance,
     this.floor,
     this.room,

@@ -78,13 +78,16 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   @override
   void initState() {
     super.initState();
-    routeOrderSender.add(PointDetails(suggestions: widget.start!));
-    routeOrderReceiver.add(PointDetails(suggestions: widget.end!));
+    routeOrderSender
+        .add(PointDetails(suggestions: widget.start!, details: Details()));
+    routeOrderReceiver
+        .add(PointDetails(suggestions: widget.end!, details: Details()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -302,14 +305,31 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                               ),
                                               SizedBox(width: 15.w),
                                               GestureDetector(
-                                                onTap: () => Navigator.of(
-                                                        context)
-                                                    .pushNamed(
-                                                        AppRoute.detailsOrder,
-                                                        arguments: [
-                                                      TypeAdd.sender,
-                                                      routeOrderSender.length
-                                                    ]),
+                                                onTap: () async {
+                                                  dynamic details =
+                                                      await Navigator.of(
+                                                              context)
+                                                          .pushNamed(
+                                                              AppRoute
+                                                                  .detailsOrder,
+                                                              arguments: [
+                                                        TypeAdd.sender,
+                                                        routeOrderSender.length,
+                                                        routeOrderSender[index],
+                                                      ]);
+
+                                                  routeOrderSender[index]
+                                                      .details = details;
+
+                                                  BlocProvider.of<
+                                                              NewOrderPageBloc>(
+                                                          context)
+                                                      .add(CalculateCoastEvent(
+                                                    routeOrderSender,
+                                                    routeOrderReceiver,
+                                                    widget.deliveryChocie.type,
+                                                  ));
+                                                },
                                                 child: Text(
                                                   'Указать детали',
                                                   style: CustomTextStyle.red15
@@ -493,14 +513,33 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                               ),
                                               SizedBox(width: 15.w),
                                               GestureDetector(
-                                                onTap: () => Navigator.of(
-                                                        context)
-                                                    .pushNamed(
-                                                        AppRoute.detailsOrder,
-                                                        arguments: [
-                                                      TypeAdd.receiver,
-                                                      routeOrderReceiver.length
-                                                    ]),
+                                                onTap: () async {
+                                                  dynamic details =
+                                                      await Navigator.of(
+                                                              context)
+                                                          .pushNamed(
+                                                              AppRoute
+                                                                  .detailsOrder,
+                                                              arguments: [
+                                                        TypeAdd.receiver,
+                                                        routeOrderReceiver
+                                                            .length,
+                                                        routeOrderReceiver[
+                                                            index],
+                                                      ]);
+
+                                                  routeOrderReceiver[index]
+                                                      .details = details;
+
+                                                  BlocProvider.of<
+                                                              NewOrderPageBloc>(
+                                                          context)
+                                                      .add(CalculateCoastEvent(
+                                                    routeOrderSender,
+                                                    routeOrderReceiver,
+                                                    widget.deliveryChocie.type,
+                                                  ));
+                                                },
                                                 child: Text(
                                                   'Указать детали',
                                                   style: CustomTextStyle.red15

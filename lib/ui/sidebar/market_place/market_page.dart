@@ -176,8 +176,19 @@ class _MarketPageState extends State<MarketPages>
                     toController.text = suggestion!.name;
                   }
                   if (suggestion != null && points != null) {
-                    BlocProvider.of<MarketPlacePageBloc>(context)
-                        .add(CalcOrder(suggestion, points, time));
+                    BlocProvider.of<MarketPlacePageBloc>(context).add(CalcOrder(
+                      suggestion,
+                      points,
+                      time,
+                      nameController.text,
+                      phoneController.text,
+                      countBucketController.text.isEmpty
+                          ? null
+                          : int.parse(countBucketController.text),
+                      countPalletController.text.isEmpty
+                          ? null
+                          : int.parse(countPalletController.text),
+                    ));
                   }
                 } else if (current is MarketPlacesSuccessState) {
                   coast = current.coastResponse;
@@ -463,9 +474,24 @@ class _MarketPageState extends State<MarketPages>
                                                                 MarketPlacePageBloc>(
                                                             context)
                                                         .add(CalcOrder(
-                                                            suggestion,
-                                                            points,
-                                                            time));
+                                                      suggestion,
+                                                      points,
+                                                      time,
+                                                      nameController.text,
+                                                      phoneController.text,
+                                                      countBucketController
+                                                              .text.isEmpty
+                                                          ? null
+                                                          : int.parse(
+                                                              countBucketController
+                                                                  .text),
+                                                      countPalletController
+                                                              .text.isEmpty
+                                                          ? null
+                                                          : int.parse(
+                                                              countPalletController
+                                                                  .text),
+                                                    ));
                                                   }
                                                 }
                                               }
@@ -553,6 +579,31 @@ class _MarketPageState extends State<MarketPages>
                                   children: [
                                     Expanded(
                                       child: CustomTextField(
+                                        onFieldSubmitted: (value) {
+                                          if (suggestion != null &&
+                                              points != null) {
+                                            BlocProvider.of<
+                                                        MarketPlacePageBloc>(
+                                                    context)
+                                                .add(CalcOrder(
+                                              suggestion,
+                                              points,
+                                              time,
+                                              nameController.text,
+                                              phoneController.text,
+                                              countBucketController.text.isEmpty
+                                                  ? null
+                                                  : int.parse(
+                                                      countBucketController
+                                                          .text),
+                                              countPalletController.text.isEmpty
+                                                  ? null
+                                                  : int.parse(
+                                                      countPalletController
+                                                          .text),
+                                            ));
+                                          }
+                                        },
                                         maxLines: 1,
                                         height: 45.h,
                                         contentPadding: EdgeInsets.symmetric(
@@ -571,6 +622,31 @@ class _MarketPageState extends State<MarketPages>
                                   children: [
                                     Expanded(
                                       child: CustomTextField(
+                                        onFieldSubmitted: (value) {
+                                          if (suggestion != null &&
+                                              points != null) {
+                                            BlocProvider.of<
+                                                        MarketPlacePageBloc>(
+                                                    context)
+                                                .add(CalcOrder(
+                                              suggestion,
+                                              points,
+                                              time,
+                                              nameController.text,
+                                              phoneController.text,
+                                              countBucketController.text.isEmpty
+                                                  ? null
+                                                  : int.parse(
+                                                      countBucketController
+                                                          .text),
+                                              countPalletController.text.isEmpty
+                                                  ? null
+                                                  : int.parse(
+                                                      countPalletController
+                                                          .text),
+                                            ));
+                                          }
+                                        },
                                         focusNode: FocusNode(),
                                         height: 45.h,
                                         contentPadding: EdgeInsets.symmetric(
@@ -603,6 +679,33 @@ class _MarketPageState extends State<MarketPages>
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
+                                            onFieldSubmitted: (value) {
+                                              if (suggestion != null &&
+                                                  points != null) {
+                                                BlocProvider.of<
+                                                            MarketPlacePageBloc>(
+                                                        context)
+                                                    .add(CalcOrder(
+                                                  suggestion,
+                                                  points,
+                                                  time,
+                                                  nameController.text,
+                                                  phoneController.text,
+                                                  countBucketController
+                                                          .text.isEmpty
+                                                      ? null
+                                                      : int.parse(
+                                                          countBucketController
+                                                              .text),
+                                                  countPalletController
+                                                          .text.isEmpty
+                                                      ? null
+                                                      : int.parse(
+                                                          countPalletController
+                                                              .text),
+                                                ));
+                                              }
+                                            },
                                             focusNode: FocusNode(),
                                             height: 45.h,
                                             contentPadding:
@@ -660,6 +763,33 @@ class _MarketPageState extends State<MarketPages>
                                         children: [
                                           Expanded(
                                             child: CustomTextField(
+                                              onFieldSubmitted: (value) {
+                                                if (suggestion != null &&
+                                                    points != null) {
+                                                  BlocProvider.of<
+                                                              MarketPlacePageBloc>(
+                                                          context)
+                                                      .add(CalcOrder(
+                                                    suggestion,
+                                                    points,
+                                                    time,
+                                                    nameController.text,
+                                                    phoneController.text,
+                                                    countBucketController
+                                                            .text.isEmpty
+                                                        ? null
+                                                        : int.parse(
+                                                            countBucketController
+                                                                .text),
+                                                    countPalletController
+                                                            .text.isEmpty
+                                                        ? null
+                                                        : int.parse(
+                                                            countPalletController
+                                                                .text),
+                                                  ));
+                                                }
+                                              },
                                               maxLines: 1,
                                               focusNode: FocusNode(),
                                               height: 45.h,
@@ -980,7 +1110,19 @@ class _MarketPageState extends State<MarketPages>
                       Navigator.of(ctx).pop();
                       if (suggestion != null && points != null) {
                         BlocProvider.of<MarketPlacePageBloc>(context)
-                            .add(CalcOrder(suggestion, points, time));
+                            .add(CalcOrder(
+                          suggestion,
+                          points,
+                          time,
+                          nameController.text,
+                          phoneController.text,
+                          countBucketController.text.isEmpty
+                              ? null
+                              : int.parse(countBucketController.text),
+                          countPalletController.text.isEmpty
+                              ? null
+                              : int.parse(countPalletController.text),
+                        ));
                       }
                     },
                     child: const Text('Готово'),
@@ -1062,7 +1204,19 @@ class _MarketPageState extends State<MarketPages>
                         Navigator.of(ctx).pop();
                         if (suggestion != null && points != null) {
                           BlocProvider.of<MarketPlacePageBloc>(context)
-                              .add(CalcOrder(suggestion, points, time));
+                              .add(CalcOrder(
+                            suggestion,
+                            points,
+                            time,
+                            nameController.text,
+                            phoneController.text,
+                            countBucketController.text.isEmpty
+                                ? null
+                                : int.parse(countBucketController.text),
+                            countPalletController.text.isEmpty
+                                ? null
+                                : int.parse(countPalletController.text),
+                          ));
                         }
                       },
                       child: const Text('Готово'),

@@ -86,7 +86,12 @@ class CustomTextField extends StatelessWidget {
         disableScroll: true,
         config: KeyboardActionsConfig(
           defaultDoneWidget: GestureDetector(
-            onTap: () => focusNode?.unfocus(),
+            onTap: () {
+              focusNode?.unfocus();
+              if(onFieldSubmitted != null) {
+                onFieldSubmitted!(textEditingController.text);
+              }
+            },
             child: const Text('Готово'),
           ),
           actions: [

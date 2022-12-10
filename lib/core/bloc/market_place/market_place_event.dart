@@ -24,11 +24,22 @@ class CalcOrder extends MarketPlaceEvent {
   mrkt.Points? points;
   String? name;
   String? phone;
+  int? bucket;
+  int? pallet;
+
   String? entrance;
   String? floor;
   String? room;
 
-  CalcOrder(this.suggestion, this.points, this.time);
+  CalcOrder(
+    this.suggestion,
+    this.points,
+    this.time,
+    this.name,
+    this.phone,
+    this.bucket,
+    this.pallet,
+  );
 }
 
 class GetMarketPlaces extends MarketPlaceEvent {}

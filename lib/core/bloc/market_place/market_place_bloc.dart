@@ -41,20 +41,20 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
               room: event.room,
             ),
             contact: base.Contact(
-                name: 'тест имя 1',
-                phoneMobile: 'тест телефон 1',
-                phoneOffice: 'тест телефон 1',
-                phoneOfficeAdd: 'тест телефон 1'),
+                name: event.name,
+                phoneMobile: event.phone,
+                phoneOffice: event.phone,
+                phoneOfficeAdd: event.phone),
           ),
           base.Locations(
             point: base.Point(
               code: event.points!.code,
             ),
             contact: base.Contact(
-                name: 'тест имя 2',
-                phoneMobile: 'тест телефон 2',
-                phoneOffice: 'тест телефон 2',
-                phoneOfficeAdd: 'тест телефон 2'),
+                name: event.name,
+                phoneMobile: event.phone,
+                phoneOffice: event.phone,
+                phoneOfficeAdd: event.phone),
           )
         ],
       ),

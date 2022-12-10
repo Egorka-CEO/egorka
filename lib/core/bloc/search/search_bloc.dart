@@ -91,12 +91,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
             point: cstAdvanced.Point(
               code: element.iD,
             ),
-            contact: cstAdvanced.Contact(
-              name: 'тест имя 1',
-              phoneMobile: 'тест телефон 1',
-              phoneOffice: 'тест телефон 1',
-              phoneOfficeAdd: 'тест телефон 1',
-            ),
           ),
         );
       }
@@ -107,12 +101,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
             type: 'Drop',
             point: cstAdvanced.Point(
               code: element.iD,
-            ),
-            contact: cstAdvanced.Contact(
-              name: 'тест имя 1',
-              phoneMobile: 'тест телефон 1',
-              phoneOffice: 'тест телефон 1',
-              phoneOfficeAdd: 'тест телефон 1',
             ),
           ),
         );

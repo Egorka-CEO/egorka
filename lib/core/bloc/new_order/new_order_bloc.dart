@@ -65,6 +65,8 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
           contact: cstAdvanced.Contact(
             name: element.details?.name,
             phoneMobile: element.details?.phone,
+            phoneOffice: element.details?.phone,
+            phoneOfficeAdd: element.details?.phone,
           ),
         ),
       );
@@ -83,6 +85,8 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
           contact: cstAdvanced.Contact(
             name: element.details?.name,
             phoneMobile: element.details?.phone,
+            phoneOffice: element.details?.phone,
+            phoneOfficeAdd: element.details?.phone,
           ),
         ),
       );

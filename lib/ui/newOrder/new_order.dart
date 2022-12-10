@@ -7,8 +7,12 @@ import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
+import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/done_anim.dart';
+import 'package:egorka/widget/fail_anim.dart';
+import 'package:egorka/widget/load_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -142,7 +146,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
             } else if (current is NewOrderStateCloseBtmSheet) {
               btmSheet = false;
               if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                routeOrderSender.add(PointDetails(suggestions: current.value!, details: Details()));
+                routeOrderSender.add(PointDetails(
+                    suggestions: current.value!, details: Details()));
                 BlocProvider.of<NewOrderPageBloc>(context)
                     .add(CalculateCoastEvent(
                   routeOrderSender,
@@ -150,8 +155,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                   widget.deliveryChocie.type,
                 ));
               } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
-                routeOrderReceiver
-                    .add(PointDetails(suggestions: current.value!, details: Details()));
+                routeOrderReceiver.add(PointDetails(
+                    suggestions: current.value!, details: Details()));
                 BlocProvider.of<NewOrderPageBloc>(context)
                     .add(CalculateCoastEvent(
                   routeOrderSender,
@@ -161,9 +166,10 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               }
             } else if (current is CalcSuccess) {
               widget.order = current.coasts ?? widget.order;
-            } else if (current is CreateFormSuccess) {
-              Navigator.of(context).pop();
             }
+            // else if (current is CreateFormSuccess) {
+            //   Navigator.of(context).pop();
+            // }
             return true;
           }, builder: (context, snapshot) {
             return Expanded(
@@ -802,94 +808,33 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                   if (snapshot is CalcLoading)
                     Positioned.fill(
                       child: Container(
-                        color: Colors.grey.withOpacity(0.1),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15.r),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const CupertinoActivityIndicator(),
-                                  const SizedBox(height: 10),
-                                  Column(
-                                    children: const [
-                                      Text(
-                                        'Егорке нужно все посчитать',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                      Text(
-                                        '🙃',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                        color: Colors.transparent,
+                        child: CalculateLoadingDialog(),
                       ),
                     ),
                   if (snapshot is CreateFormState)
                     Positioned.fill(
                       child: Container(
-                        color: Colors.grey.withOpacity(0.1),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15.r),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const CupertinoActivityIndicator(),
-                                  const SizedBox(height: 10),
-                                  Column(
-                                    children: const [
-                                      Text(
-                                        'Создание заявки',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                      Text(
-                                        '🙃',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                        color: Colors.transparent,
+                        child: LoadForm(),
+                      ),
+                    ),
+                  if (snapshot is CreateFormSuccess)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.transparent,
+                        child: DoneAnim(),
+                      ),
+                    ),
+                  if (snapshot is CreateFormFail)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.transparent,
+                        child: FailAnim(
+                          callBack: () {
+                            BlocProvider.of<NewOrderPageBloc>(context)
+                                .add(NewOrderUpdateState());
+                          },
                         ),
                       ),
                     )

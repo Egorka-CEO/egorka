@@ -55,3 +55,5 @@ class SelectMarketPlaces extends MarketPlaceEvent {
 
   SelectMarketPlaces(this.points);
 }
+
+class MarketUpdateState extends MarketPlaceEvent {}

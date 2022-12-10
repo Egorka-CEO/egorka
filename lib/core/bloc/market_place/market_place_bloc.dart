@@ -23,6 +23,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     on<SelectMarketPlaces>(_selectMarketPlaces);
     on<CalcOrder>(_calculateOrder);
     on<CreateForm>(_createForm);
+    on<MarketUpdateState>(_updateState);
   }
 
   void _calculateOrder(CalcOrder event, Emitter<MarketPlaceState> emit) async {
@@ -113,4 +114,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
   void _closeBtmSheetWithoutSearch(MarketPlaceCloseBtmSheetEvent event,
           Emitter<MarketPlaceState> emit) =>
       emit(MarketPlaceCloseBtmSheet());
+
+  void _updateState(MarketUpdateState event, Emitter<MarketPlaceState> emit) =>
+      emit(UpdateState());
 }

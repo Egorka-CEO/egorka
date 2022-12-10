@@ -9,8 +9,12 @@ import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
+import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/done_anim.dart';
+import 'package:egorka/widget/fail_anim.dart';
+import 'package:egorka/widget/load_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -192,9 +196,10 @@ class _MarketPageState extends State<MarketPages>
                   }
                 } else if (current is MarketPlacesSuccessState) {
                   coast = current.coastResponse;
-                } else if (current is CreateFormSuccess) {
-                  Navigator.of(context).pop();
                 }
+                // else if (current is CreateFormSuccess) {
+                //   Navigator.of(context).pop();
+                // } else if (current is CreateFormFail) {}
                 return true;
               }, builder: (context, snapshot) {
                 return Expanded(
@@ -925,9 +930,9 @@ class _MarketPageState extends State<MarketPages>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: const [
-                                          Text('400 ₽ доставка'),
+                                          Text('0 ₽ доставка'),
                                           Text('0 ₽ доп. услуги'),
-                                          Text('11 ₽ сбор-плат. сист.'),
+                                          Text('0 ₽ сбор-плат. сист.'),
                                         ],
                                       ),
                                     ],
@@ -985,94 +990,33 @@ class _MarketPageState extends State<MarketPages>
                       if (snapshot is CalcLoading)
                         Positioned.fill(
                           child: Container(
-                            color: Colors.grey.withOpacity(0.1),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 5,
-                                        blurRadius: 7,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const CupertinoActivityIndicator(),
-                                      const SizedBox(height: 10),
-                                      Column(
-                                        children: const [
-                                          Text(
-                                            'Егорке нужно все посчитать',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 15),
-                                          ),
-                                          Text(
-                                            '🙃',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                            color: Colors.transparent,
+                            child: CalculateLoadingDialog(),
                           ),
                         ),
                       if (snapshot is CreateFormState)
                         Positioned.fill(
                           child: Container(
-                            color: Colors.grey.withOpacity(0.1),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 5,
-                                        blurRadius: 7,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const CupertinoActivityIndicator(),
-                                      const SizedBox(height: 10),
-                                      Column(
-                                        children: const [
-                                          Text(
-                                            'Создание заявки...',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 15),
-                                          ),
-                                          Text(
-                                            '🙃',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            color: Colors.transparent,
+                            child: LoadForm(),
+                          ),
+                        ),
+                      if (snapshot is CreateFormSuccess)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.transparent,
+                            child: DoneAnim(),
+                          ),
+                        ),
+                      if (snapshot is CreateFormFail)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.transparent,
+                            child: FailAnim(
+                              callBack: () {
+                                BlocProvider.of<MarketPlacePageBloc>(context)
+                                    .add(MarketUpdateState());
+                              },
                             ),
                           ),
                         )

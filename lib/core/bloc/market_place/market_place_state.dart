@@ -8,6 +8,8 @@ class MarketPlaceStatedOpenBtmSheet extends MarketPlaceState {}
 
 class MarketPlaceCloseBtmSheet extends MarketPlaceState {}
 
+class UpdateState extends MarketPlaceState {}
+
 class MarketPlaceStateCloseBtmSheet extends MarketPlaceState {
   Suggestions? address;
 

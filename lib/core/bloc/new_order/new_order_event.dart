@@ -4,6 +4,8 @@ abstract class NewOrderEvent {}
 
 class NewOrderOpenBtmSheet extends NewOrderEvent {}
 
+class NewOrderUpdateState extends NewOrderEvent {}
+
 class NewOrderCloseBtmSheetEvent extends NewOrderEvent {}
 
 class NewOrderStatedCloseBtmSheet extends NewOrderEvent {

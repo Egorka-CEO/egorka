@@ -18,6 +18,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
     on<NewOrderCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
     on<CalculateCoastEvent>(_calcCoast);
     on<CreateForm>(_createForm);
+    on<NewOrderUpdateState>(_updateState);
   }
 
   void _searchAddress(NewOrder event, Emitter<NewOrderState> emit) async {
@@ -116,4 +117,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
       emit(CreateFormFail());
     }
   }
+
+  void _updateState(NewOrderUpdateState event, Emitter<NewOrderState> emit) =>
+      emit(UpdateState());
 }

@@ -142,7 +142,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
             } else if (current is NewOrderStateCloseBtmSheet) {
               btmSheet = false;
               if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                routeOrderSender.add(PointDetails(suggestions: current.value!));
+                routeOrderSender.add(PointDetails(suggestions: current.value!, details: Details()));
                 BlocProvider.of<NewOrderPageBloc>(context)
                     .add(CalculateCoastEvent(
                   routeOrderSender,
@@ -151,7 +151,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 ));
               } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
                 routeOrderReceiver
-                    .add(PointDetails(suggestions: current.value!));
+                    .add(PointDetails(suggestions: current.value!, details: Details()));
                 BlocProvider.of<NewOrderPageBloc>(context)
                     .add(CalculateCoastEvent(
                   routeOrderSender,

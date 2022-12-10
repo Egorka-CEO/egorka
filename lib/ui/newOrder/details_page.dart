@@ -260,7 +260,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           fillColor: Colors.white,
                           hintText: 'Подъезд',
                           focusNode: FocusNode(),
-                          onFieldSubmitted: (value) {
+                          onChanged: (value) {
                             widget.routeOrder.details?.entrance =
                                 controllerEntrance.text;
                           },
@@ -275,7 +275,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           fillColor: Colors.white,
                           hintText: 'Этаж',
                           focusNode: FocusNode(),
-                          onFieldSubmitted: (value) {
+                          onChanged: (value) {
                             widget.routeOrder.details?.floor =
                                 controllerFloor.text;
                           },
@@ -290,7 +290,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           fillColor: Colors.white,
                           hintText: 'Офис/кв.',
                           focusNode: FocusNode(),
-                          onFieldSubmitted: (value) {
+                          onChanged: (value) {
                             widget.routeOrder.details?.room =
                                 controllerRoom.text;
                           },
@@ -320,7 +320,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       height: 45.h,
                       fillColor: Colors.white,
                       hintText: 'Имя',
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         widget.routeOrder.details?.name = controllerName.text;
                       },
                       textEditingController: controllerName,
@@ -336,7 +336,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       height: 45.h,
                       fillColor: Colors.white,
                       hintText: '+7 (___) ___-__-__',
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         widget.routeOrder.details?.phone = controllerPhone.text;
                       },
                       textEditingController: controllerPhone,
@@ -374,7 +374,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             width: 100.w,
                             fillColor: Colors.white.withOpacity(0),
                             hintText: '',
-                            onFieldSubmitted: (value) {
+                            onChanged: (value) {
                               widget.routeOrder.details?.comment =
                                   controllerComment.text;
                             },

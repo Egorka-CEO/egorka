@@ -21,6 +21,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:egorka/model/response_coast_base.dart' as basecst;
 
 class MarketPage extends StatelessWidget {
   HistoryModel? historyModel;
@@ -54,7 +55,7 @@ class _MarketPageState extends State<MarketPages>
   TypeAdd? typeAdd;
   Suggestions? suggestion;
   Points? points;
-  String? coast;
+  basecst.CoastResponse? coast;
   DateTime? time;
 
   TextEditingController controller = TextEditingController();
@@ -179,8 +180,9 @@ class _MarketPageState extends State<MarketPages>
                         .add(CalcOrder(suggestion, points, time));
                   }
                 } else if (current is MarketPlacesSuccessState) {
-                  coast = current.coastResponse?.result!.totalPrice!.total
-                      .toString();
+                  coast = current.coastResponse;
+                } else if (current is CreateFormSuccess) {
+                  Navigator.of(context).pop();
                 }
                 return true;
               }, builder: (context, snapshot) {
@@ -222,7 +224,8 @@ class _MarketPageState extends State<MarketPages>
                                     Container(
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10.r),
+                                        borderRadius:
+                                            BorderRadius.circular(10.r),
                                       ),
                                       child: Row(
                                         crossAxisAlignment:
@@ -230,8 +233,9 @@ class _MarketPageState extends State<MarketPages>
                                         children: [
                                           Checkbox(
                                             value: false,
-                                            fillColor: MaterialStateProperty.all(
-                                                Colors.red),
+                                            fillColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.red),
                                             shape: const CircleBorder(),
                                             onChanged: ((value) {}),
                                           ),
@@ -309,13 +313,14 @@ class _MarketPageState extends State<MarketPages>
                                               children: const [
                                                 Text(
                                                   'Не обязательно к заполнению',
-                                                  style:
-                                                      CustomTextStyle.grey15bold,
+                                                  style: CustomTextStyle
+                                                      .grey15bold,
                                                 ),
                                               ],
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.only(top: 20.h),
+                                              padding:
+                                                  EdgeInsets.only(top: 20.h),
                                               child: Row(
                                                 children: [
                                                   Expanded(
@@ -391,8 +396,9 @@ class _MarketPageState extends State<MarketPages>
                                         children: [
                                           Checkbox(
                                             value: false,
-                                            fillColor: MaterialStateProperty.all(
-                                                Colors.blue),
+                                            fillColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.blue),
                                             shape: const CircleBorder(),
                                             onChanged: ((value) {}),
                                           ),
@@ -404,14 +410,16 @@ class _MarketPageState extends State<MarketPages>
                                                             context)
                                                     .marketPlaces;
                                                 if (marketplaces != null) {
-                                                  toController.text = marketplaces
-                                                      .result
-                                                      .points[0]
-                                                      .name[0]
-                                                      .name;
+                                                  toController.text =
+                                                      marketplaces
+                                                          .result
+                                                          .points[0]
+                                                          .name[0]
+                                                          .name;
                                                   points = marketplaces
                                                       .result.points[0];
-                                                  showMarketPlaces(marketplaces);
+                                                  showMarketPlaces(
+                                                      marketplaces);
                                                 }
                                               },
                                               child: CustomTextField(
@@ -434,11 +442,13 @@ class _MarketPageState extends State<MarketPages>
                                                           context)
                                                   .marketPlaces;
                                               if (marketplaces != null) {
-                                                final result = await Navigator.of(
-                                                        context)
+                                                final result = await Navigator
+                                                        .of(context)
                                                     .pushNamed(
-                                                        AppRoute.marketplacesMap,
-                                                        arguments: marketplaces);
+                                                        AppRoute
+                                                            .marketplacesMap,
+                                                        arguments:
+                                                            marketplaces);
                                                 if (result != null) {
                                                   final pointsRes =
                                                       result as Points;
@@ -452,8 +462,10 @@ class _MarketPageState extends State<MarketPages>
                                                     BlocProvider.of<
                                                                 MarketPlacePageBloc>(
                                                             context)
-                                                        .add(CalcOrder(suggestion,
-                                                            points, time));
+                                                        .add(CalcOrder(
+                                                            suggestion,
+                                                            points,
+                                                            time));
                                                   }
                                                 }
                                               }
@@ -492,8 +504,9 @@ class _MarketPageState extends State<MarketPages>
                                           onTap: showDateTime,
                                           child: CustomTextField(
                                             height: 45.h,
-                                            contentPadding: EdgeInsets.symmetric(
-                                                horizontal: 10.w),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10.w),
                                             fillColor: Colors.white,
                                             hintText: '',
                                             enabled: false,
@@ -546,7 +559,8 @@ class _MarketPageState extends State<MarketPages>
                                             horizontal: 10.w),
                                         fillColor: Colors.white,
                                         hintText: 'Имя',
-                                        hintStyle: CustomTextStyle.textHintStyle,
+                                        hintStyle:
+                                            CustomTextStyle.textHintStyle,
                                         textEditingController: nameController,
                                       ),
                                     ),
@@ -591,8 +605,9 @@ class _MarketPageState extends State<MarketPages>
                                           child: CustomTextField(
                                             focusNode: FocusNode(),
                                             height: 45.h,
-                                            contentPadding: EdgeInsets.symmetric(
-                                                horizontal: 10.w),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10.w),
                                             fillColor: Colors.white,
                                             hintText: '0',
                                             textInputType: TextInputType.number,
@@ -615,7 +630,8 @@ class _MarketPageState extends State<MarketPages>
                                             thumbColor: Colors.white,
                                             value: snapshot.data!.toDouble(),
                                             onChanged: (value) {
-                                              bucketController.add(value.toInt());
+                                              bucketController
+                                                  .add(value.toInt());
                                               countBucketController.text =
                                                   value.toInt().toString();
                                             },
@@ -652,7 +668,8 @@ class _MarketPageState extends State<MarketPages>
                                                       horizontal: 10.w),
                                               fillColor: Colors.white,
                                               hintText: '0',
-                                              textInputType: TextInputType.number,
+                                              textInputType:
+                                                  TextInputType.number,
                                               textEditingController:
                                                   countPalletController,
                                             ),
@@ -759,7 +776,7 @@ class _MarketPageState extends State<MarketPages>
                                             ),
                                           ),
                                           Text(
-                                            '$coast! ₽',
+                                            '${coast?.result?.totalPrice?.total}! ₽',
                                             style: const TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.w600,
@@ -791,6 +808,11 @@ class _MarketPageState extends State<MarketPages>
                                         MessageDialogs().showMessage(
                                             'Погодите-ка',
                                             'Укажите Ваше Имя и номер телефона');
+                                      } else {
+                                        BlocProvider.of<MarketPlacePageBloc>(
+                                                context)
+                                            .add(
+                                                CreateForm(coast!.result!.id!));
                                       }
                                     },
                                     child: Container(
@@ -860,6 +882,53 @@ class _MarketPageState extends State<MarketPages>
                                         children: const [
                                           Text(
                                             'Егорке нужно все посчитать',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          Text(
+                                            '🙃',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (snapshot is CreateFormState)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.grey.withOpacity(0.1),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const CupertinoActivityIndicator(),
+                                      const SizedBox(height: 10),
+                                      Column(
+                                        children: const [
+                                          Text(
+                                            'Создание заявки...',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(fontSize: 15),
                                           ),
@@ -1022,8 +1091,9 @@ class _MarketPageState extends State<MarketPages>
   }
 
   bool validate() {
-    if (nameController.text.isEmpty || phoneController.text.isEmpty)
+    if (nameController.text.isEmpty || phoneController.text.isEmpty) {
       return false;
+    }
     return true;
   }
 }

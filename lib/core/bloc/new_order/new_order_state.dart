@@ -31,3 +31,9 @@ class NewOrderSuccess extends NewOrderState {
 }
 
 class NewOrderFailed extends NewOrderState {}
+
+class CreateFormState extends NewOrderState {}
+
+class CreateFormSuccess extends NewOrderState {}
+
+class CreateFormFail extends NewOrderState {}

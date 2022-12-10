@@ -37,3 +37,9 @@ class MarketPlacesSelectPointState extends MarketPlaceState {
 
   MarketPlacesSelectPointState(this.points);
 }
+
+class CreateFormState extends MarketPlaceState {}
+
+class CreateFormSuccess extends MarketPlaceState {}
+
+class CreateFormFail extends MarketPlaceState {}

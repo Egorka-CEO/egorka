@@ -79,27 +79,43 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/to.png', 90));
- 
+
       List<String> type = ['Walk', 'Car'];
       List<respCoast.CoastResponse> coasts = [];
       List<cstAdvanced.Locations> locations = [];
 
       for (var element in event.suggestionsStart) {
-        locations.add(cstAdvanced.Locations(
-          type: 'Pickup',
-          point: cstAdvanced.Point(
-            code: element.iD,
+        locations.add(
+          cstAdvanced.Locations(
+            type: 'Pickup',
+            point: cstAdvanced.Point(
+              code: element.iD,
+            ),
+            contact: cstAdvanced.Contact(
+              name: 'тест имя 1',
+              phoneMobile: 'тест телефон 1',
+              phoneOffice: 'тест телефон 1',
+              phoneOfficeAdd: 'тест телефон 1',
+            ),
           ),
-        ));
+        );
       }
 
       for (var element in event.suggestionsEnd) {
-        locations.add(cstAdvanced.Locations(
-          type: 'Drop',
-          point: cstAdvanced.Point(
-            code: element.iD,
+        locations.add(
+          cstAdvanced.Locations(
+            type: 'Drop',
+            point: cstAdvanced.Point(
+              code: element.iD,
+            ),
+            contact: cstAdvanced.Contact(
+              name: 'тест имя 1',
+              phoneMobile: 'тест телефон 1',
+              phoneOffice: 'тест телефон 1',
+              phoneOfficeAdd: 'тест телефон 1',
+            ),
           ),
-        ));
+        );
       }
 
       for (var element in type) {

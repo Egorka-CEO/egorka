@@ -4,6 +4,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/payment.dart';
 import 'package:egorka/model/response_coast_base.dart';
@@ -112,9 +113,7 @@ class Repository {
       },
     );
 
-    print('response base=${response.data}');
-
-    if(response.data['Result'] != null) {
+    if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
       return coast;
     }
@@ -122,7 +121,6 @@ class Repository {
   }
 
   Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
-    //?
     final response = await dio.post(
       '$server/delivery/',
       options: header(),
@@ -134,17 +132,14 @@ class Repository {
       },
     );
 
-    print('response advanced=${response.data}');
-
-    if(response.data['Result'] != null) {
+    if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
       return coast;
     }
     return null;
   }
 
-  Future<void> createForm(String value) async {
-    //?
+  Future<CreateFormModel?> createForm(String value) async {
     final response = await dio.post(
       '$server/delivery/',
       options: header(),
@@ -158,7 +153,13 @@ class Repository {
       },
     );
 
-    print('response createForm=${response.data}');
+    if (response.data['Result'] != null) {
+      final createForm = CreateFormModel.fromJson(response.data);
+      return createForm;
+    }
+    print('object RESP CREATEFORM ${response.data}');
+
+    return null;
   }
 
   Future<void> infoForm(String number, String pin) async {
@@ -176,8 +177,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response infoForm=${response.data}');
   }
 
   Future<void> cancelForm(String number, String pin) async {
@@ -195,8 +194,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response cancelForm=${response.data}');
   }
 
   Future<void> paymentDeposit(int id, int pin) async {
@@ -213,8 +210,6 @@ class Repository {
         "Gate": "Account",
       },
     );
-
-    print('response paymentDeposit=${response.data}');
   }
 
   Future<void> paymentCard(Payment payment) async {
@@ -234,8 +229,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response paymentCard=${response.data}');
   }
 
   //Авторизация Пользователь
@@ -256,8 +249,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response UUIDCreate=${response.data}');
 
     if (response.data['Errors'] == null) {
       MySecureStorage().setID(response.data['Result']['ID']);
@@ -286,8 +277,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response UUIDRegister=${response.data}');
   }
 
   Future<AuthUser?> loginUsernameUser(String login, String password) async {
@@ -308,8 +297,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response loginUsernameUsers=${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
@@ -338,8 +325,6 @@ class Repository {
       },
     );
 
-    print('response loginEmailUser=${response.data}');
-
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
@@ -366,8 +351,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response loginPhoneUser=${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
@@ -400,8 +383,6 @@ class Repository {
       },
     );
 
-    print('response loginUsernameAgent=${response.data}');
-
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
@@ -432,8 +413,6 @@ class Repository {
       },
     );
 
-    print('response loginEmailAgent=${response.data}');
-
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
@@ -463,8 +442,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    print('response loginPhoneAgent=${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);

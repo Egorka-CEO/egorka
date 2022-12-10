@@ -8,6 +8,7 @@ import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -157,6 +158,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               }
             } else if (current is CalcSuccess) {
               widget.order = current.coasts ?? widget.order;
+            } else if (current is CreateFormSuccess) {
+              Navigator.of(context).pop();
             }
             return true;
           }, builder: (context, snapshot) {
@@ -707,6 +710,16 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                             ),
                             SizedBox(height: 20.h),
                             GestureDetector(
+                              onTap: () {
+                                if (!validate()) {
+                                  MessageDialogs().showMessage('Погодите-ка',
+                                      'Укажите Ваше Имя и номер телефона');
+                                } else {
+                                  BlocProvider.of<NewOrderPageBloc>(context)
+                                      .add(
+                                          CreateForm(widget.order.result!.id!));
+                                }
+                              },
                               child: Container(
                                 height: 50.h,
                                 decoration: BoxDecoration(
@@ -793,6 +806,53 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           ],
                         ),
                       ),
+                    ),
+                  if (snapshot is CreateFormState)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.grey.withOpacity(0.1),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const CupertinoActivityIndicator(),
+                                  const SizedBox(height: 10),
+                                  Column(
+                                    children: const [
+                                      Text(
+                                        'Создание заявки',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      Text(
+                                        '🙃',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     )
                 ],
               ),
@@ -801,5 +861,12 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         ],
       ),
     );
+  }
+
+  bool validate() {
+    // if (nameController.text.isEmpty || phoneController.text.isEmpty) {
+    //   return false;
+    // }
+    return true;
   }
 }

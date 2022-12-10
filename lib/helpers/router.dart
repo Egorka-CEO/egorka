@@ -3,7 +3,7 @@ import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
-import 'package:egorka/ui/auth/main_aut.dart';
+import 'package:egorka/ui/auth/auth_page.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -52,7 +52,7 @@ class AppRoute {
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
-        return MaterialPageRoute(builder: (_) => const MainAuthPage());
+        return MaterialPageRoute(builder: (_) => const AuthPage());
       case newOrder:
         var order;
         var delivery;

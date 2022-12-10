@@ -77,7 +77,6 @@ class Result {
     if (json['Locations'] != null) {
       locations = [];
       json['Locations'].forEach((v) {
-        print('response log ${v}');
         locations!.add(Location.fromJson(v));
       });
     }

@@ -2,21 +2,14 @@ import 'dart:async';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/user.dart';
-import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-enum TypeLogin { Username, Email, Phone }
-
 class AuthPage extends StatefulWidget {
-  TypeSignIn typeSignIn;
-  AuthPage({
-    required this.typeSignIn,
-    super.key,
-  });
+  const AuthPage({super.key});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -24,16 +17,11 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final TextEditingController _loginController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-
   final TextEditingController _companyController = TextEditingController();
-
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
-
   final streamSwap = StreamController<int>();
-  late TypeLogin logType;
 
   FocusNode focusNode1 = FocusNode();
   FocusNode focusNode2 = FocusNode();
@@ -68,27 +56,15 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle labelStyle =
+        const TextStyle(fontWeight: FontWeight.w300, fontSize: 16);
     return StreamBuilder<int>(
         stream: streamSwap.stream,
         initialData: 0,
         builder: (context, snapshot) {
-          logType = TypeLogin.values[snapshot.data!];
-          String hint = '';
-          switch (logType) {
-            case TypeLogin.Username:
-              hint = 'Никнейм';
-              break;
-            case TypeLogin.Email:
-              hint = 'Email';
-              break;
-            case TypeLogin.Phone:
-              hint = 'Телефон';
-              break;
-            default:
-          }
           return AnimatedPadding(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.symmetric(vertical: state ? 10.h : 100.h),
+            padding: EdgeInsets.symmetric(vertical: 0.h),
             child: Material(
               child: SafeArea(
                 bottom: false,
@@ -96,51 +72,67 @@ class _AuthPageState extends State<AuthPage> {
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SvgPicture.asset(
-                        'assets/icons/logo_egorka.svg',
-                        height: 60.h,
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: state ? 20.h : 80.h,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SvgPicture.asset(
+                              'assets/icons/logo_egorka.svg',
+                              height: 60.h,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Егорка готов! Входите и начнём',
+                            style: TextStyle(fontSize: 23.sp),
+                          ),
+                        ],
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         height: state ? 20.h : 30.h,
+                      ),
+                      Text(
+                        'Логин компании',
+                        style: labelStyle,
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: CustomTextField(
                               focusNode: focusNode1,
-                              textEditingController: _loginController,
-                              hintText: hint,
+                              textEditingController: _companyController,
+                              hintText: '...',
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 20.w,
                                 vertical: 20.w,
                               ),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              _loginController.text = '';
-                              int index = snapshot.data!;
-                              if (index == 2)
-                                index = 0;
-                              else
-                                ++index;
-                              this.index = index;
-                              streamSwap.add(index);
-                            },
-                            child: Icon(Icons.swap_horiz_sharp),
-                          )
                         ],
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         height: state ? 10.h : 20.h,
                       ),
+                      Text(
+                        'Логин пользователя',
+                        style: labelStyle,
+                      ),
                       CustomTextField(
                         focusNode: focusNode2,
-                        textEditingController: _passwordController,
-                        hintText: 'Пароль',
+                        textEditingController: _loginController,
+                        hintText: '...',
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 20.w,
                           vertical: 20.w,
@@ -150,30 +142,33 @@ class _AuthPageState extends State<AuthPage> {
                         duration: const Duration(milliseconds: 200),
                         height: state ? 10.h : 20.h,
                       ),
-                      if (widget.typeSignIn == TypeSignIn.Company)
-                        Column(
-                          children: [
-                            CustomTextField(
-                              focusNode: focusNode3,
-                              textEditingController: _companyController,
-                              hintText: 'Компания',
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 20.w,
-                              ),
+                      Text(
+                        'Пароль',
+                        style: labelStyle,
+                      ),
+                      Column(
+                        children: [
+                          CustomTextField(
+                            focusNode: focusNode3,
+                            textEditingController: _passwordController,
+                            hintText: '...',
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 20.w,
                             ),
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              height: state ? 10.h : 20.h,
-                            ),
-                          ],
-                        ),
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: state ? 10.h : 20.h,
+                          ),
+                        ],
+                      ),
                       RoundedLoadingButton(
                         controller: _btnController,
-                        onPressed: () => _signIn(context),
-                        color: Colors.black,
+                        onPressed: _signIn,
+                        color: Colors.red,
                         child: const Text(
-                          'Войти',
+                          'Авторизация',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -187,56 +182,21 @@ class _AuthPageState extends State<AuthPage> {
         });
   }
 
-  void _signIn(BuildContext context) async {
+  void _signIn() async {
     AuthUser? res;
     _btnController.start();
-    if (widget.typeSignIn == TypeSignIn.Company) {
-      if (_loginController.text.isNotEmpty &&
-          _passwordController.text.isNotEmpty &&
-          _companyController.text.isNotEmpty) {
-        switch (logType) {
-          case TypeLogin.Username:
-            res = await Repository().loginUsernameAgent(_loginController.text,
-                _passwordController.text, _companyController.text);
-            break;
-          case TypeLogin.Email:
-            res = await Repository().loginEmailAgent(_loginController.text,
-                _passwordController.text, _companyController.text);
-            break;
-          case TypeLogin.Phone:
-            res = await Repository().loginPhoneAgent(_loginController.text,
-                _passwordController.text, _companyController.text);
-            break;
-          default:
-            res = null;
-        }
-      }
+    if (_companyController.text.isNotEmpty) {
+      res = await Repository().loginUsernameAgent(_loginController.text,
+          _passwordController.text, _companyController.text);
     } else {
-      if (_loginController.text.isNotEmpty &&
-          _passwordController.text.isNotEmpty) {
-        switch (logType) {
-          case TypeLogin.Username:
-            res = await Repository().loginUsernameUser(
-                _loginController.text, _passwordController.text);
-            break;
-          case TypeLogin.Email:
-            res = await Repository().loginEmailUser(
-                _loginController.text, _passwordController.text);
-            break;
-          case TypeLogin.Phone:
-            res = await Repository().loginPhoneUser(
-                _loginController.text, _passwordController.text);
-            break;
-          default:
-            res = null;
-        }
-      }
+      res = await Repository()
+          .loginUsernameUser(_loginController.text, _passwordController.text);
     }
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
-      storage.setTypeAuth(widget.typeSignIn == TypeSignIn.Company ? '1' : '0');
-      storage.setTypeAuth(logType.index.toString());
+      // storage.setTypeAuth(widget.typeSignIn == TypeSignIn.Company ? '1' : '0');
+      // storage.setTypeAuth(logType.index.toString());
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
       storage.setCompany(

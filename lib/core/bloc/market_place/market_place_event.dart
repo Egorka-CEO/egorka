@@ -33,6 +33,12 @@ class CalcOrder extends MarketPlaceEvent {
 
 class GetMarketPlaces extends MarketPlaceEvent {}
 
+class CreateForm extends MarketPlaceEvent {
+  String id;
+
+  CreateForm(this.id);
+}
+
 class SelectMarketPlaces extends MarketPlaceEvent {
   mrkt.Points points;
 

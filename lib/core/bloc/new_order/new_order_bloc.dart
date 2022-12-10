@@ -1,5 +1,6 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/poinDetails.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
@@ -16,6 +17,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
     on<NewOrderStatedCloseBtmSheet>(_closeBtmSheet);
     on<NewOrderCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
     on<CalculateCoastEvent>(_calcCoast);
+    on<CreateForm>(_createForm);
   }
 
   void _searchAddress(NewOrder event, Emitter<NewOrderState> emit) async {
@@ -97,8 +99,17 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
       coasts = res;
     }
 
-    print('object  log ${locations.length} ${res?.result!.totalPrice?.total}');
-
     emit(CalcSuccess(coasts));
+  }
+
+  void _createForm(CreateForm event, Emitter<NewOrderState> emit) async {
+    emit(CreateFormState());
+    CreateFormModel? result = await Repository().createForm(event.id);
+
+    if (result != null) {
+      emit(CreateFormSuccess());
+    } else {
+      emit(CreateFormFail());
+    }
   }
 }

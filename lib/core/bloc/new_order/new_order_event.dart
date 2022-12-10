@@ -25,3 +25,9 @@ class CalculateCoastEvent extends NewOrderEvent {
 
   CalculateCoastEvent(this.start, this.end, this.typeCoast);
 }
+
+class CreateForm extends NewOrderEvent {
+  String id;
+
+  CreateForm(this.id);
+}

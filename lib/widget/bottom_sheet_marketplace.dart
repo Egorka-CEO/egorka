@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/address.dart';
-import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
@@ -174,13 +173,17 @@ class _BottomSheetDraggableState
                 return address != null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: state.address!.result.suggestions!.length,
-                          itemBuilder: (context, index) {
-                            return _pointCard(state, index, context);
-                          },
+                        child: SizedBox(
+                          height: 300.h,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount:
+                                state.address!.result.suggestions!.length,
+                            itemBuilder: (context, index) {
+                              return _pointCard(state, index, context);
+                            },
+                          ),
                         ),
                       )
                     : Container();

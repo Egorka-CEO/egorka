@@ -398,13 +398,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     if (_visible) {
                       return Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: state.address!.result.suggestions!.length,
-                          itemBuilder: (context, index) {
-                            return _pointCard(state, index, context);
-                          },
+                        child: SizedBox(
+                          height: 300.h,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount:
+                                state.address!.result.suggestions!.length,
+                            itemBuilder: (context, index) {
+                              return _pointCard(state, index, context);
+                            },
+                          ),
                         ),
                       );
                     } else {

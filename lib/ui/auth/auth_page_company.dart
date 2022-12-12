@@ -2,23 +2,24 @@ import 'dart:async';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/user.dart';
+import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-class AuthPage extends StatefulWidget {
-  AuthPage({super.key});
+class AuthPageCompany extends StatefulWidget {
+  AuthPageCompany({super.key});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<AuthPageCompany> createState() => _AuthPageCompanyState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _AuthPageCompanyState extends State<AuthPageCompany> {
+  final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
   final streamSwap = StreamController<int>();
@@ -103,7 +104,7 @@ class _AuthPageState extends State<AuthPage> {
                         height: state ? 20.h : 30.h,
                       ),
                       Text(
-                        'Телефон',
+                        'Логин компании',
                         style: labelStyle,
                       ),
                       Row(
@@ -111,19 +112,32 @@ class _AuthPageState extends State<AuthPage> {
                           Expanded(
                             child: CustomTextField(
                               focusNode: focusNode1,
-                              textEditingController: _phoneController,
-                              hintText: '+7 (___) ___-__-__',
+                              textEditingController: _companyController,
+                              hintText: 'Gazprom',
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 20.w,
                                 vertical: 20.w,
                               ),
-                              formatters: [
-                                CustomInputFormatter(),
-                                LengthLimitingTextInputFormatter(18)
-                              ],
                             ),
                           ),
                         ],
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: state ? 10.h : 20.h,
+                      ),
+                      Text(
+                        'Логин пользователя',
+                        style: labelStyle,
+                      ),
+                      CustomTextField(
+                        focusNode: focusNode2,
+                        textEditingController: _loginController,
+                        hintText: 'Admin',
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 20.w,
+                        ),
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
@@ -172,15 +186,17 @@ class _AuthPageState extends State<AuthPage> {
   void _signIn() async {
     AuthUser? res;
     _btnController.start();
-    // if (_companyController.text.isNotEmpty) {
-    res = await Repository()
-        .loginPhoneUser(_phoneController.text, _passwordController.text);
-    // }
+    if (_companyController.text.isNotEmpty) {
+      res = await Repository().loginUsernameAgent(_loginController.text,
+          _passwordController.text, _companyController.text);
+    }
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
-      storage.setLogin(_phoneController.text);
+      storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
+      storage.setCompany(
+          _companyController.text.isEmpty ? null : _companyController.text);
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();
@@ -188,71 +204,5 @@ class _AuthPageState extends State<AuthPage> {
     Future.delayed(const Duration(seconds: 1), (() {
       _btnController.reset();
     }));
-  }
-}
-
-class CustomInputFormatter extends TextInputFormatter {
-  // +7 (___) ___-__-__
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-
-    print('object $text ${newValue.selection.baseOffset}');
-
-    if (newValue.text.length > oldValue.text.length) {
-      if (newValue.text[0] == '7') {
-        return newValue.copyWith(
-            text: '+7 (', selection: const TextSelection.collapsed(offset: 4));
-      }
-      if (newValue.selection.baseOffset == 2) {
-        return newValue.copyWith(
-            text: '${newValue.text} (',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 2));
-      }
-      if (newValue.selection.baseOffset == 7) {
-        return newValue.copyWith(
-            text: '${newValue.text}) ',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 2));
-      }
-      if (newValue.selection.baseOffset == 12) {
-        return newValue.copyWith(
-            text: '${newValue.text}-',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 1));
-      }
-      if (newValue.selection.baseOffset == 15) {
-        return newValue.copyWith(
-            text: '${newValue.text}-',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 1));
-      }
-    }
-
-    // if (text.length == 18) {
-    //   return oldValue;
-    // }
-
-    // var buffer = StringBuffer();
-    // if (text.length <= 15) {
-    //   for (int i = 0; i < text.length; i++) {
-    //     buffer.write(text[i]);
-    //     var nonZeroIndex = i + 1;
-    //     if (nonZeroIndex % 3 == 0 && nonZeroIndex != text.length && i < 5) {
-    //       buffer.write(
-    //           ' '); // Replace this with anything you want to put after each 4 numbers
-    //     } else if (nonZeroIndex % 2 == 0 &&
-    //         nonZeroIndex != text.length &&
-    //         i >= 5) {
-    //       buffer.write(' ');
-    //     }
-    //   }
-    // }
-
-    // var string = buffer.toString();
-    return newValue.copyWith(
-        text: text, selection: TextSelection.collapsed(offset: text.length));
   }
 }

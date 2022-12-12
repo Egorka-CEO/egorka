@@ -75,6 +75,9 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   List<PointDetails> routeOrderReceiver = [];
 
   TextEditingController fromController = TextEditingController();
+  TextEditingController documentController = TextEditingController();
+  TextEditingController coastController = TextEditingController();
+
   PanelController panelController = PanelController();
   bool btmSheet = false;
   TypeAdd? typeAdd;
@@ -615,7 +618,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 ),
                                 hintText:
                                     'Документы / Цветы / Техника / Личная вещь',
-                                textEditingController: TextEditingController(),
+                                textEditingController: documentController,
                               ),
                             ],
                           ),
@@ -643,7 +646,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 hintText: 'До 100000 ₽',
-                                textEditingController: TextEditingController(),
+                                textEditingController: coastController,
                               ),
                             ],
                           ),

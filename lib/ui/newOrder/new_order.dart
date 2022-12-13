@@ -91,6 +91,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         .add(PointDetails(suggestions: widget.end!, details: Details()));
   }
 
+  ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,6 +181,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               child: Stack(
                 children: [
                   SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    controller: scrollController,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
                       child: Column(
@@ -206,19 +210,25 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 padding: const EdgeInsets.all(0),
                                 itemBuilder: (context, index) {
                                   return Dismissible(
-                                    key: Key('$index'),
-                                    confirmDismiss: (direction) {
-                                      routeOrderSender.removeAt(index);
-                                      BlocProvider.of<NewOrderPageBloc>(context)
-                                          .add(CalculateCoastEvent(
-                                        routeOrderSender,
-                                        routeOrderReceiver,
-                                        widget.deliveryChocie.type,
-                                      ));
-                                      return routeOrderSender.length == 1
-                                          ? Future.value(false)
-                                          : Future.value(true);
-                                    },
+                                    key: UniqueKey(),
+                                    confirmDismiss: routeOrderSender.length == 1
+                                        ? (direction) {
+                                            return Future.value(false);
+                                          }
+                                        : (direction) {
+                                            routeOrderSender.removeAt(index);
+                                            BlocProvider.of<NewOrderPageBloc>(
+                                                    context)
+                                                .add(CalculateCoastEvent(
+                                              routeOrderSender,
+                                              routeOrderReceiver,
+                                              widget.deliveryChocie.type,
+                                            ));
+                                            
+                                            return routeOrderSender.length == 1
+                                                ? Future.value(false)
+                                                : Future.value(true);
+                                          },
                                     direction: DismissDirection.endToStart,
                                     background: Container(
                                       decoration: BoxDecoration(
@@ -406,19 +416,36 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 padding: const EdgeInsets.all(0),
                                 itemBuilder: ((context, index) {
                                   return Dismissible(
-                                    key: Key('$index'),
-                                    confirmDismiss: (direction) {
-                                      routeOrderReceiver.removeAt(index);
-                                      BlocProvider.of<NewOrderPageBloc>(context)
-                                          .add(CalculateCoastEvent(
-                                        routeOrderSender,
-                                        routeOrderReceiver,
-                                        widget.deliveryChocie.type,
-                                      ));
-                                      return routeOrderReceiver.length == 1
-                                          ? Future.value(false)
-                                          : Future.value(true);
-                                    },
+                                    key: UniqueKey(),
+                                    confirmDismiss: routeOrderReceiver.length ==
+                                            1
+                                        ? (direction) {
+                                            return Future.value(false);
+                                          }
+                                        : (direction) {
+                                            routeOrderReceiver.removeAt(index);
+
+                                            // List<PointDetails> routeOrderReceiverTemp = [];
+                                            // for (var i = 0; i < routeOrderReceiver.length-1; i++) {
+                                            //   if(i!=index) {
+                                            //     routeOrderReceiverTemp.add(routeOrderReceiver[index]);
+                                            //   }
+                                            // }
+                                            // routeOrderReceiver.clear();
+                                            // routeOrderReceiver.addAll(routeOrderReceiverTemp);
+                                            BlocProvider.of<NewOrderPageBloc>(
+                                                    context)
+                                                .add(CalculateCoastEvent(
+                                              routeOrderSender,
+                                              routeOrderReceiver,
+                                              widget.deliveryChocie.type,
+                                            ));
+
+                                            setState(() {
+                                              
+                                            });
+                                            return Future.value(true);
+                                          },
                                     direction: DismissDirection.endToStart,
                                     background: Container(
                                       decoration: BoxDecoration(
@@ -427,9 +454,12 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                           topRight: Radius.circular(
                                               index == 0 ? 15.r : 0),
                                           bottomRight: Radius.circular(
-                                              index == routeOrderReceiver.length
-                                                  ? 15.r
-                                                  : 0),
+                                            index ==
+                                                    routeOrderReceiver.length -
+                                                        1
+                                                ? 15.r
+                                                : 0,
+                                          ),
                                         ),
                                       ),
                                       child: Padding(
@@ -636,6 +666,13 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 ),
                               ),
                               CustomTextField(
+                                onTap: () {
+                                  scrollController.animateTo(
+                                    scrollController.position.maxScrollExtent,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.bounceIn,
+                                  );
+                                },
                                 height: 45.h,
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 10.w, vertical: 10.w),
@@ -650,7 +687,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 210.h)
+                          SizedBox(height: 400.h)
                         ],
                       ),
                     ),

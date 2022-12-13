@@ -120,6 +120,8 @@ class _MarketPageState extends State<MarketPages>
     }
   }
 
+  ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Builder(
@@ -206,6 +208,8 @@ class _MarketPageState extends State<MarketPages>
                   child: Stack(
                     children: [
                       ListView(
+                        physics: const ClampingScrollPhysics(),
+                        controller: scrollController,
                         shrinkWrap: true,
                         children: [
                           Padding(
@@ -684,6 +688,15 @@ class _MarketPageState extends State<MarketPages>
                                       children: [
                                         Expanded(
                                           child: CustomTextField(
+                                            onTap: () {
+                                              scrollController.animateTo(
+                                                scrollController
+                                                    .position.maxScrollExtent,
+                                                duration: const Duration(
+                                                    milliseconds: 300),
+                                                curve: Curves.bounceIn,
+                                              );
+                                            },
                                             onFieldSubmitted: (value) {
                                               if (suggestion != null &&
                                                   points != null) {
@@ -768,6 +781,15 @@ class _MarketPageState extends State<MarketPages>
                                         children: [
                                           Expanded(
                                             child: CustomTextField(
+                                              onTap: () {
+                                                scrollController.animateTo(
+                                                  scrollController
+                                                      .position.maxScrollExtent,
+                                                  duration: const Duration(
+                                                      milliseconds: 300),
+                                                  curve: Curves.bounceIn,
+                                                );
+                                              },
                                               onFieldSubmitted: (value) {
                                                 if (suggestion != null &&
                                                     points != null) {
@@ -834,7 +856,7 @@ class _MarketPageState extends State<MarketPages>
                                         ],
                                       );
                                     }),
-                                SizedBox(height: 300.h)
+                                SizedBox(height: 400.h)
                               ],
                             ),
                           ),

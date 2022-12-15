@@ -198,8 +198,6 @@ class CustomInputFormatter extends TextInputFormatter {
       TextEditingValue oldValue, TextEditingValue newValue) {
     var text = newValue.text;
 
-    print('object $text ${newValue.selection.baseOffset}');
-
     if (newValue.text.length > oldValue.text.length) {
       if (newValue.text[0] == '7') {
         return newValue.copyWith(
@@ -231,27 +229,6 @@ class CustomInputFormatter extends TextInputFormatter {
       }
     }
 
-    // if (text.length == 18) {
-    //   return oldValue;
-    // }
-
-    // var buffer = StringBuffer();
-    // if (text.length <= 15) {
-    //   for (int i = 0; i < text.length; i++) {
-    //     buffer.write(text[i]);
-    //     var nonZeroIndex = i + 1;
-    //     if (nonZeroIndex % 3 == 0 && nonZeroIndex != text.length && i < 5) {
-    //       buffer.write(
-    //           ' '); // Replace this with anything you want to put after each 4 numbers
-    //     } else if (nonZeroIndex % 2 == 0 &&
-    //         nonZeroIndex != text.length &&
-    //         i >= 5) {
-    //       buffer.write(' ');
-    //     }
-    //   }
-    // }
-
-    // var string = buffer.toString();
     return newValue.copyWith(
         text: text, selection: TextSelection.collapsed(offset: text.length));
   }

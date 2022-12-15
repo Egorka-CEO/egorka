@@ -13,6 +13,8 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
+    BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
+    
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -62,58 +64,66 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: Container(
-                    padding: EdgeInsets.all(15.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
+                BlocBuilder<ProfileBloc, ProfileState>(
+                  builder: (context, snapshot) {
+                    String cash = '0 RUB';
+                    if(snapshot is UpdateDeposit) {
+                      cash = '${snapshot.accounts.amount} ${snapshot.accounts.currency}';
+                    }
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                      child: Container(
+                        padding: EdgeInsets.all(15.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              'Депозит:',
-                              style: CustomTextStyle.black15w700
-                                  .copyWith(fontSize: 24),
-                            ),
-                            SizedBox(height: 10.h),
-                            Row(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '200 367 ₽',
-                                  style: CustomTextStyle.black15w700.copyWith(
-                                    fontSize: 30,
-                                    color: Colors.green[600],
-                                  ),
+                                  'Депозит:',
+                                  style: CustomTextStyle.black15w700
+                                      .copyWith(fontSize: 24),
                                 ),
-                                SizedBox(width: 20.w),
-                                GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
-                                      context, AppRoute.addDeposit),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(20.r),
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: [
+                                    Text(
+                                      cash,
+                                      style: CustomTextStyle.black15w700.copyWith(
+                                        fontSize: 30,
+                                        color: Colors.green[600],
+                                      ),
                                     ),
-                                    child: const Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
+                                    SizedBox(width: 20.w),
+                                    GestureDetector(
+                                      onTap: () => Navigator.pushNamed(
+                                          context, AppRoute.addDeposit),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(20.r),
+                                        ),
+                                        child: const Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }
                 ),
                 SizedBox(height: 20.h),
                 Padding(

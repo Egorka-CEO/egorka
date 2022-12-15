@@ -9,3 +9,5 @@ class ProfileEventUpdate extends ProfileEvent {
 
   ProfileEventUpdate(this._user);
 }
+
+class GetDepositeEvent extends ProfileEvent {}

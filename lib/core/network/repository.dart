@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
@@ -444,6 +445,27 @@ class Repository {
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
+      return user;
+    } else {
+      return null;
+    }
+  }
+
+  // депозит
+  Future<AccountsDeposit?> getDeposit() async {
+    final response = await dio.post(
+      '$server/account/',
+      options: header(),
+      data: {
+        "Auth": auth(),
+        "Method": "Details",
+        "Body": {},
+        "Params": params()
+      },
+    );
+
+    if (response.data['Errors'] == null) {
+      final user = AccountsDeposit.fromJson(response.data);
       return user;
     } else {
       return null;

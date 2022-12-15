@@ -9,3 +9,9 @@ class ProfileStatedUpdate extends ProfileState {
 
   ProfileStatedUpdate(this.user);
 }
+
+class UpdateDeposit extends ProfileState {
+  Accounts accounts;
+
+  UpdateDeposit(this.accounts);
+}

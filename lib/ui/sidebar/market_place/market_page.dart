@@ -326,21 +326,24 @@ class _MarketPageState extends State<MarketPages>
                                       return AnimatedContainer(
                                         duration:
                                             const Duration(milliseconds: 400),
-                                        height: snapshot.data! ? 65.h : 0.h,
+                                        height: snapshot.data! ? 85.h : 0.h,
                                         child: Stack(
                                           children: [
-                                            Row(
-                                              children: const [
-                                                Text(
-                                                  'Не обязательно к заполнению',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ],
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    'Не обязательно к заполнению',
+                                                    style: CustomTextStyle
+                                                        .grey15bold.copyWith(color: Colors.grey[500]),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                             Padding(
                                               padding:
-                                                  EdgeInsets.only(top: 20.h),
+                                                  EdgeInsets.only(top: 30.h),
                                               child: Row(
                                                 children: [
                                                   Expanded(

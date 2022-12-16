@@ -330,13 +330,17 @@ class _MarketPageState extends State<MarketPages>
                                         child: Stack(
                                           children: [
                                             Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
                                               child: Row(
                                                 children: [
                                                   Text(
                                                     'Не обязательно к заполнению',
                                                     style: CustomTextStyle
-                                                        .grey15bold.copyWith(color: Colors.grey[500]),
+                                                        .grey15bold
+                                                        .copyWith(
+                                                            color: Colors
+                                                                .grey[500]),
                                                   ),
                                                 ],
                                               ),
@@ -964,16 +968,15 @@ class _MarketPageState extends State<MarketPages>
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      if (!validate()) {
-                                        MessageDialogs().showMessage(
-                                            'Погодите-ка',
-                                            'Укажите Ваше Имя и номер телефона');
-                                      } else {
-                                        BlocProvider.of<MarketPlacePageBloc>(
-                                                context)
-                                            .add(
-                                                CreateForm(coast!.result!.id!));
-                                      }
+                                      // if (!validate()) {
+                                      //   MessageDialogs().showMessage(
+                                      //       'Погодите-ка',
+                                      //       'Укажите Ваше Имя и номер телефона');
+                                      // } else {
+                                      BlocProvider.of<MarketPlacePageBloc>(
+                                              context)
+                                          .add(CreateForm(coast!.result!.id!));
+                                      // }
                                     },
                                     child: Container(
                                       height: 50.h,
@@ -1037,12 +1040,21 @@ class _MarketPageState extends State<MarketPages>
                         Positioned.fill(
                           child: Container(
                             color: Colors.transparent,
-                            child: FailAnim(
-                              callBack: () {
-                                BlocProvider.of<MarketPlacePageBloc>(context)
-                                    .add(MarketUpdateState());
-                              },
-                            ),
+                            child: StreamBuilder<Object>(
+                                builder: (context, snapshot) {
+                              String errors = '';
+                              for (var element in coast!.errors!) {
+                                errors +=
+                                    '${element.messagePrepend!}${element.message!}\n';
+                              }
+                              return FailAnim(
+                                text: errors,
+                                callBack: () {
+                                  BlocProvider.of<MarketPlacePageBloc>(context)
+                                      .add(MarketUpdateState());
+                                },
+                              );
+                            }),
                           ),
                         )
                     ],

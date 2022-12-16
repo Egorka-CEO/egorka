@@ -1,3 +1,5 @@
+import 'package:egorka/model/address.dart';
+
 class CreateFormModel {
   CreateFormModel({
     required this.time,
@@ -5,14 +7,14 @@ class CreateFormModel {
     required this.execution,
     required this.method,
     required this.result,
-    this.errors,
+    required this.errors,
   });
   late final String time;
   late final int timeStamp;
   late final double execution;
   late final String method;
   late final Result result;
-  late final Null errors;
+  late final Errors? errors;
 
   CreateFormModel.fromJson(Map<String, dynamic> json) {
     time = json['Time'];
@@ -20,7 +22,9 @@ class CreateFormModel {
     execution = json['Execution'];
     method = json['Method'];
     result = Result.fromJson(json['Result']);
-    errors = null;
+    if(json['Errors'] != null){
+      errors = Errors.fromJson(json['Errors']);
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -13,7 +13,6 @@ import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/done_anim.dart';
 import 'package:egorka/widget/fail_anim.dart';
 import 'package:egorka/widget/load_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -440,10 +439,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                               routeOrderReceiver,
                                               widget.deliveryChocie.type,
                                             ));
-
-                                            setState(() {
-                                              
-                                            });
+                                            setState(() {});
                                             return Future.value(true);
                                           },
                                     direction: DismissDirection.endToStart,
@@ -796,14 +792,18 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                             SizedBox(height: 20.h),
                             GestureDetector(
                               onTap: () {
-                                if (!validate()) {
-                                  MessageDialogs().showMessage('Погодите-ка',
-                                      'Укажите Ваше Имя и номер телефона');
-                                } else {
-                                  BlocProvider.of<NewOrderPageBloc>(context)
-                                      .add(
-                                          CreateForm(widget.order.result!.id!));
-                                }
+                                // if (!validate()) {
+                                //   String errors = '';
+                                //   for (var element in widget.order.errors!) {
+                                //     errors +=
+                                //         '${element.messagePrepend!}${element.message!}\n';
+                                //   }
+                                //   MessageDialogs()
+                                //       .showMessage('Погодите-ка', errors);
+                                // } else {
+                                BlocProvider.of<NewOrderPageBloc>(context)
+                                    .add(CreateForm(widget.order.result!.id!));
+                                // }
                               },
                               child: Container(
                                 height: 50.h,
@@ -870,12 +870,21 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                     Positioned.fill(
                       child: Container(
                         color: Colors.transparent,
-                        child: FailAnim(
-                          callBack: () {
-                            BlocProvider.of<NewOrderPageBloc>(context)
-                                .add(NewOrderUpdateState());
-                          },
-                        ),
+                        child:
+                            StreamBuilder<Object>(builder: (context, snapshot) {
+                          String errors = '';
+                          for (var element in widget.order.errors!) {
+                            errors +=
+                                '${element.messagePrepend!}${element.message!}\n';
+                          }
+                          return FailAnim(
+                            text: errors,
+                            callBack: () {
+                              BlocProvider.of<NewOrderPageBloc>(context)
+                                  .add(NewOrderUpdateState());
+                            },
+                          );
+                        }),
                       ),
                     )
                 ],
@@ -888,9 +897,10 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   }
 
   bool validate() {
-    // if (nameController.text.isEmpty || phoneController.text.isEmpty) {
-    //   return false;
-    // }
+    if (widget.order.errors != null && widget.order.errors!.isNotEmpty) {
+      return false;
+    }
+
     return true;
   }
 }

@@ -104,23 +104,27 @@ class Errors {
   int? code;
   String? message;
   String? description;
+  String? messagePrepend;
 
   Errors(
       {required this.type,
       required this.code,
       required this.message,
-      required this.description});
+      required this.description,
+      required this.messagePrepend,});
 
   factory Errors.fromJson(Map<String, dynamic> json) {
     final type = json['Type'];
     final code = json['Code'];
     final message = json['Message'];
     final description = json['Description'];
+    final messagePrepend = json['MessagePrepend'];
     return Errors(
       type: type,
       code: code,
       message: message,
       description: description,
+      messagePrepend: messagePrepend,
     );
   }
 }

@@ -4,7 +4,11 @@ import 'package:lottie/lottie.dart';
 
 class FailAnim extends StatefulWidget {
   VoidCallback callBack;
-  FailAnim({required this.callBack});
+  String? text;
+  FailAnim({
+    required this.callBack,
+    this.text,
+  });
   @override
   State<FailAnim> createState() => _FailAnimState();
 }
@@ -40,8 +44,6 @@ class _FailAnimState extends State<FailAnim>
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 300.h,
-        width: 300.h,
         decoration: BoxDecoration(
             color: Colors.grey.withOpacity(0.8),
             borderRadius: BorderRadius.circular(20.r)),
@@ -50,13 +52,17 @@ class _FailAnimState extends State<FailAnim>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Lottie.asset("assets/anim/fail.json",
-                    controller: lottieController,
-                    repeat: false, onLoaded: (composition) {
-                  lottieController.duration = composition.duration;
-                  lottieController.forward();
-                }),
+              SizedBox(
+                height: 300.h,
+                width: 300.h,
+                child: Expanded(
+                  child: Lottie.asset("assets/anim/fail.json",
+                      controller: lottieController,
+                      repeat: false, onLoaded: (composition) {
+                    lottieController.duration = composition.duration;
+                    lottieController.forward();
+                  }),
+                ),
               ),
               const Text(
                 'Отклонено',
@@ -65,6 +71,14 @@ class _FailAnimState extends State<FailAnim>
                   color: Colors.white,
                 ),
               ),
+              if (widget.text != null)
+                Text(
+                  widget.text!,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.white,
+                  ),
+                ),
             ],
           ),
         ),

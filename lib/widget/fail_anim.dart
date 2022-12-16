@@ -44,6 +44,8 @@ class _FailAnimState extends State<FailAnim>
   Widget build(BuildContext context) {
     return Center(
       child: Container(
+        height: 400.h,
+        width: 300.h,
         decoration: BoxDecoration(
             color: Colors.grey.withOpacity(0.8),
             borderRadius: BorderRadius.circular(20.r)),
@@ -52,17 +54,13 @@ class _FailAnimState extends State<FailAnim>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: 300.h,
-                width: 300.h,
-                child: Expanded(
-                  child: Lottie.asset("assets/anim/fail.json",
-                      controller: lottieController,
-                      repeat: false, onLoaded: (composition) {
-                    lottieController.duration = composition.duration;
-                    lottieController.forward();
-                  }),
-                ),
+              Expanded(
+                child: Lottie.asset("assets/anim/fail.json",
+                    controller: lottieController,
+                    repeat: false, onLoaded: (composition) {
+                  lottieController.duration = composition.duration;
+                  lottieController.forward();
+                }),
               ),
               const Text(
                 'Отклонено',

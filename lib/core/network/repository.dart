@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/constant.dart';
@@ -6,11 +7,14 @@ import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/payment.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Repository {
   var dio = Dio();
@@ -49,7 +53,7 @@ class Repository {
 
   Future<Address?> getAddress(String value) async {
     final response = await dio.post(
-      '$server/delivery/dictionary/',
+      '$server/service/delivery/dictionary/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -78,7 +82,7 @@ class Repository {
 
   Future<mrkt.MarketPlaces?> getMarketplaces() async {
     final response = await dio.post(
-      '$server/delivery/dictionary/',
+      '$server/service/delivery/dictionary/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -104,7 +108,7 @@ class Repository {
     //?
     final body = value.toJson();
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -123,7 +127,7 @@ class Repository {
 
   Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -142,7 +146,7 @@ class Repository {
 
   Future<CreateFormModel?> createForm(String value) async {
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -165,7 +169,7 @@ class Repository {
   Future<void> infoForm(String number, String pin) async {
     //?
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -182,7 +186,7 @@ class Repository {
   Future<void> cancelForm(String number, String pin) async {
     //?
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -202,7 +206,7 @@ class Repository {
     authData['Account'] = 'ZZZZZZZZ-ZZZZ-ZZZZ-ZZZZ-ZZZZZZZZZZZZ';
 
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "ID": id,
@@ -215,7 +219,7 @@ class Repository {
   Future<void> paymentCard(Payment payment) async {
     //?
     final response = await dio.post(
-      '$server/delivery/',
+      '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -240,7 +244,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/user/',
+      '$server/service/auth/user/',
       options: header(),
       data: {
         "Auth": authData,
@@ -266,7 +270,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/user/',
+      '$server/service/auth/user/',
       options: header(),
       data: {
         "Auth": authData,
@@ -285,7 +289,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/user/',
+      '$server/service/auth/user/',
       options: header(),
       data: {
         "Auth": authData,
@@ -312,7 +316,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/user/',
+      '$server/service/auth/user/',
       options: header(),
       data: {
         "Auth": authData,
@@ -339,7 +343,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/user/',
+      '$server/service/auth/user/',
       options: header(),
       data: {
         "Auth": authData,
@@ -368,7 +372,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/agent/',
+      '$server/service/auth/agent/',
       options: header(),
       data: {
         "Auth": authData,
@@ -398,7 +402,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/agent/',
+      '$server/service/auth/agent/',
       options: header(),
       data: {
         "Auth": authData,
@@ -428,7 +432,7 @@ class Repository {
     authData['UserUUID'] = '';
 
     final response = await dio.post(
-      '$server/auth/agent/',
+      '$server/service/auth/agent/',
       options: header(),
       data: {
         "Auth": authData,
@@ -454,7 +458,7 @@ class Repository {
   // депозит
   Future<AccountsDeposit?> getDeposit() async {
     final response = await dio.post(
-      '$server/account/',
+      '$server/service/account/',
       options: header(),
       data: {
         "Auth": auth(),
@@ -470,5 +474,92 @@ class Repository {
     } else {
       return null;
     }
+  }
+
+  Future<InvoiceModel?> createInvoice(int value) async {
+    final response = await dio.post(
+      '$server/service/invoice/',
+      options: header(),
+      data: {
+        "Auth": auth(),
+        "Method": "Create",
+        "Body": {
+          "Amount": value,
+          "Currency": "RUB",
+        },
+        "Params": params()
+      },
+    );
+
+    if (response.data['Result'] != null) {
+      final invoice = InvoiceModel.fromJson(response.data);
+      return invoice;
+    } else {
+      return null;
+    }
+  }
+
+  Future<dynamic> getPDF(int id, int pin) async {
+    String savePath = await getFilePath('$id$pin.pdf');
+    final response = await dio.get(
+      '$server/export/invoice/pdf/?ID=$id$pin',
+      options: Options(
+        responseType: ResponseType.bytes,
+        followRedirects: false,
+      ),
+    );
+
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+    ].request();
+
+    if (statuses[Permission.storage]!.isGranted) {
+      File file = File(savePath);
+      var raf = file.openSync(mode: FileMode.write);
+      raf.writeFromSync(response.data);
+      await raf.close();
+    }
+
+    return response;
+  }
+
+  Future<dynamic> getEXCEL(int id, int pin) async {
+    String savePath = await getFilePath('$id$pin.xlsx');
+    final response = await dio.get(
+      '$server/export/invoice/excel/?ID=$id$pin',
+      options: Options(
+        responseType: ResponseType.bytes,
+        followRedirects: false,
+      ),
+    );
+
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+    ].request();
+
+    if (statuses[Permission.storage]!.isGranted) {
+      File file = File(savePath);
+      var raf = file.openSync(mode: FileMode.write);
+      raf.writeFromSync(response.data);
+      await raf.close();
+    }
+
+    return response;
+  }
+
+  Future<String> getFilePath(uniqueFileName) async {
+    String path = '';
+
+    Directory? dir;
+    if(Platform.isAndroid) {
+      dir = (await getExternalStorageDirectories(type: StorageDirectory.downloads))
+            ?.first;
+    } else {
+      dir = await getApplicationDocumentsDirectory();
+    }
+
+    path = '${dir!.path}/$uniqueFileName';
+
+    return path;
   }
 }

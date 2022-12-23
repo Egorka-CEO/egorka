@@ -154,14 +154,14 @@ class Locations {
   late final Null ExternalData;
   late final String Key;
   late final int Num;
-  late final Null Date;
+  late final int? Date;
   late final Null DateTo;
   late final String Type;
   late final int Route;
   late final int RouteOrder;
   late final Point point;
   late final Contact contact;
-  late final Null Message;
+  late final String? Message;
   late final List<dynamic> Params;
   late final String Status;
 
@@ -171,14 +171,14 @@ class Locations {
     ExternalData = null;
     Key = json['Key'];
     Num = json['Num'];
-    Date = null;
+    Date = json['Date'];
     DateTo = null;
     Type = json['Type'];
     Route = json['Route'];
     RouteOrder = json['RouteOrder'];
     point = Point.fromJson(json['Point']);
     contact = Contact.fromJson(json['Contact']);
-    Message = null;
+    Message = json['Message'];
     Params = List.castFrom<dynamic, dynamic>(json['Params']);
     Status = json['Status'];
   }
@@ -222,9 +222,9 @@ class Point {
   late final String Code;
   late final double Latitude;
   late final double Longitude;
-  late final Null Entrance;
-  late final Null Floor;
-  late final Null Room;
+  late final String? Entrance;
+  late final String? Floor;
+  late final String? Room;
 
   Point.fromJson(Map<String, dynamic> json) {
     ID = null;
@@ -233,9 +233,9 @@ class Point {
     Code = json['Code'];
     Latitude = json['Latitude'];
     Longitude = json['Longitude'];
-    Entrance = null;
-    Floor = null;
-    Room = null;
+    Entrance = json['Entrance'];
+    Floor = json['Floor'];
+    Room = json['Room'];
   }
 
   Map<String, dynamic> toJson() {

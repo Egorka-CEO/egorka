@@ -1,5 +1,6 @@
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
@@ -40,7 +41,8 @@ class AppRoute {
       case home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case currentOrder:
-        return MaterialPageRoute(builder: (_) => const CurrentOrderPage());
+        final list = route.arguments as CreateFormModel;
+        return MaterialPageRoute(builder: (_) => CurrentOrderPage(coast: list));
       case marketplaces:
         var history;
         if (route.arguments != null) {
@@ -77,7 +79,9 @@ class AppRoute {
                   end: end,
                 ));
       case historyOrder:
-        return MaterialPageRoute(builder: (_) => const HistoryOrdersPage());
+        final list = route.arguments as CreateFormModel;
+        return MaterialPageRoute(
+            builder: (_) => HistoryOrdersPage(coast: list));
       case profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case marketplacesMap:
@@ -98,7 +102,7 @@ class AppRoute {
             builder: (_) => HistoryDetailsPage(
                   typeAdd: list[0],
                   index: list[1],
-                  routeOrder: list[2],
+                  locations: list[2],
                 ));
       case book:
         return MaterialPageRoute(builder: (_) => BookPage());

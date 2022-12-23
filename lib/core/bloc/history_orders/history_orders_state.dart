@@ -7,3 +7,12 @@ class HistoryOrdesrStated extends HistoryOrdersState {}
 class HistoryOpenBtmSheetState extends HistoryOrdersState {}
 
 class HistoryCloseBtmSheetState extends HistoryOrdersState {}
+
+class HistoryUpdateList extends HistoryOrdersState {}
+
+class HistoryOrderRoutePolilyne extends HistoryOrdersState {
+  Directions routes;
+  Set<Marker> markers;
+
+  HistoryOrderRoutePolilyne(this.routes, this.markers);
+}

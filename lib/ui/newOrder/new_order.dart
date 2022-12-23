@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
@@ -9,7 +10,6 @@ import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/done_anim.dart';
 import 'package:egorka/widget/fail_anim.dart';
 import 'package:egorka/widget/load_form.dart';
@@ -170,10 +170,10 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               }
             } else if (current is CalcSuccess) {
               widget.order = current.coasts ?? widget.order;
+            } else if (current is CreateFormSuccess) {
+              BlocProvider.of<HistoryOrdersBloc>(context)
+                  .add(HistoryUpdateListEvent(current.createFormModel));
             }
-            // else if (current is CreateFormSuccess) {
-            //   Navigator.of(context).pop();
-            // }
             return true;
           }, builder: (context, snapshot) {
             return Expanded(
@@ -223,7 +223,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                               routeOrderReceiver,
                                               widget.deliveryChocie.type,
                                             ));
-                                            
+
                                             return routeOrderSender.length == 1
                                                 ? Future.value(false)
                                                 : Future.value(true);

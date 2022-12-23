@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
@@ -11,7 +12,6 @@ import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/done_anim.dart';
 import 'package:egorka/widget/fail_anim.dart';
 import 'package:egorka/widget/load_form.dart';
@@ -198,10 +198,9 @@ class _MarketPageState extends State<MarketPages>
                   }
                 } else if (current is MarketPlacesSuccessState) {
                   coast = current.coastResponse;
+                } else if(current is CreateFormSuccess) {
+                  BlocProvider.of<HistoryOrdersBloc>(context).add(HistoryUpdateListEvent(current.createFormModel));
                 }
-                // else if (current is CreateFormSuccess) {
-                //   Navigator.of(context).pop();
-                // } else if (current is CreateFormFail) {}
                 return true;
               }, builder: (context, snapshot) {
                 return Expanded(

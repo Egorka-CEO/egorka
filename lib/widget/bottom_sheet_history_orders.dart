@@ -1,9 +1,12 @@
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/model/address.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/history.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
@@ -20,94 +23,7 @@ class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
 
 class _BottomSheetDraggableState
     extends State<HistoryOrdersBottomSheetDraggable> {
-  List<HistoryModel> listHistory = [
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибиревоsssss sssssss sssss ssss sssssss ssssss',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '11.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: false,
-    ),
-    HistoryModel(
-      date: '10.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '9.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '9.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: false,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: true,
-    ),
-    HistoryModel(
-      date: '12.10.2021',
-      adress: 'Метро Бибирево',
-      title: 'Байк',
-      icon: 'assets/images/ic_bike.png',
-      status: false,
-    ),
-  ];
-
-  Address? address;
+  List<CreateFormModel> coast = [];
 
   @override
   Widget build(BuildContext context) {
@@ -163,28 +79,51 @@ class _BottomSheetDraggableState
   }
 
   Widget _searchList() {
+    final bloc = BlocProvider.of<HistoryOrdersBloc>(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        itemCount: listHistory.length,
-        itemBuilder: (context, index) {
-          return _pointCard(listHistory[index], index, context);
-        },
-      ),
+      child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
+          bloc: bloc,
+          buildWhen: (previous, current) {
+            if (current is HistoryUpdateList) {
+              coast = bloc.coast;
+              return true;
+            }
+            return false;
+          },
+          builder: (context, snapshot) {
+            return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              itemCount: coast.length,
+              itemBuilder: (context, index) {
+                return _pointCard(coast[index], index, context);
+              },
+            );
+          }),
     );
   }
 
-  Container _pointCard(HistoryModel state, int index, BuildContext context) {
+  Container _pointCard(CreateFormModel state, int index, BuildContext context) {
+    final hour =
+        DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000).hour;
+    String period = 'вечером';
+    if (hour >= 0 && hour < 6) {
+      period = 'ночью';
+    } else if (hour >= 6 && hour < 12) {
+      period = 'утром';
+    } else if (hour >= 12 && hour < 18) {
+      period = 'днём';
+    }
     return Container(
       margin: EdgeInsets.only(top: 5.h, bottom: 15.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            state.date!,
+            DateFormat('dd.MM.yyy').format(
+                DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000)),
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 20,
@@ -212,46 +151,37 @@ class _BottomSheetDraggableState
                           GestureDetector(
                             onTap: () {
                               widget.panelController.close();
-                              Navigator.of(context)
-                                  .pushNamed(AppRoute.historyOrder);
+                              Navigator.of(context).pushNamed(
+                                  AppRoute.historyOrder,
+                                  arguments: coast[index]);
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Поездка днём, в 16:16',
-                                  style: TextStyle(
+                                Text(
+                                  'Поездка $period в, ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000))}',
+                                  style: const TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 SizedBox(height: 10.h),
                                 Text(
-                                  state.adress!,
+                                  state.result.locations[index].point.Address,
                                   style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                state.status!
-                                    ? const Text(
-                                        'Выполнено',
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    : const Text(
-                                        'Отменено',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                Text(
+                                  state.result.Status,
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ],
                             ),
                           ),
@@ -278,16 +208,16 @@ class _BottomSheetDraggableState
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: GestureDetector(
-                    onTap: () {
-                      widget.panelController.close();
-                      Navigator.of(context).pushNamed(AppRoute.historyOrder);
-                    },
-                    child: Image.asset(state.icon!),
-                  ),
-                ),
+                // Expanded(
+                //   flex: 2,
+                //   child: GestureDetector(
+                //     onTap: () {
+                //       widget.panelController.close();
+                //       Navigator.of(context).pushNamed(AppRoute.historyOrder);
+                //     },
+                //     child: Image.asset(state.icon!),
+                //   ),
+                // ),
               ],
             ),
           ),

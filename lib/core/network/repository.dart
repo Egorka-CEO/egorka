@@ -200,26 +200,33 @@ class Repository {
     );
   }
 
-  Future<void> paymentDeposit(int id, int pin) async {
-    //?
+  Future<bool> paymentDeposit(int id, int pin) async {
     var authData = auth();
     authData['Account'] = 'ZZZZZZZZ-ZZZZ-ZZZZ-ZZZZ-ZZZZZZZZZZZZ';
 
     final response = await dio.post(
-      '$server/service/delivery/',
+      '$server/service/payment/',
       options: header(),
       data: {
-        "ID": id,
-        "PIN": pin,
-        "Gate": "Account",
+        "Auth": auth(),
+        "Method": "Request",
+        "Body": {
+          "ID": id,
+          "PIN": pin,
+          "Gate": "Account",
+        },
+        "Params": params()
       },
     );
+
+    print('object ${id} ${pin} ${response}');
+    return true;
   }
 
   Future<void> paymentCard(Payment payment) async {
     //?
     final response = await dio.post(
-      '$server/service/delivery/',
+      '$server/service/payment/',
       options: header(),
       data: {
         "Auth": auth(),

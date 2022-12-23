@@ -34,7 +34,11 @@ class NewOrderFailed extends NewOrderState {}
 
 class CreateFormState extends NewOrderState {}
 
-class CreateFormSuccess extends NewOrderState {}
+class CreateFormSuccess extends NewOrderState {
+  CreateFormModel createFormModel;
+
+  CreateFormSuccess(this.createFormModel);
+}
 
 class CreateFormFail extends NewOrderState {}
 

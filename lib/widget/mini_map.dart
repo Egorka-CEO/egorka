@@ -1,6 +1,6 @@
-import 'package:egorka/core/bloc/current_order/current_order_bloc.dart';
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/directions.dart';
-import 'package:egorka/model/route_order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,12 +8,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MiniMapView extends StatefulWidget {
-  List<RouteOrder> routeOrder;
+  List<Locations> locations;
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(56.159646, 35.469827),
     zoom: 4,
   );
-  MiniMapView({Key? key, required this.routeOrder}) : super(key: key);
+  MiniMapView({Key? key, required this.locations}) : super(key: key);
 
   @override
   State<MiniMapView> createState() => _MiniMapViewState();
@@ -36,11 +36,11 @@ class _MiniMapViewState extends State<MiniMapView> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<CurrentOrderBloc>(context).add(CurrentOrderPolilyne(
-        widget.routeOrder[0].adress, widget.routeOrder[1].adress));
-    return BlocBuilder<CurrentOrderBloc, CurrentOrderState>(
+    BlocProvider.of<HistoryOrdersBloc>(context)
+        .add(HistoryOrderPolilyne(widget.locations));
+    return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
         buildWhen: (previous, current) {
-      if (current is CurrentOrderRoutePolilyne) {
+      if (current is HistoryOrderRoutePolilyne) {
         routes = current.routes;
         marker = current.markers;
         mapController!.animateCamera(

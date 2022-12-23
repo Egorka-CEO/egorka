@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
@@ -20,16 +21,8 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await Firebase.initializeApp();
-  await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  
+  await FirebaseMessaging.instance.requestPermission();
+
   runApp(const MyApp());
 }
 
@@ -40,13 +33,15 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<SearchAddressBloc>(
-          create: (context) => SearchAddressBloc(),
-        ),
+            create: (context) => SearchAddressBloc()),
         BlocProvider<HistoryOrdersBloc>(
           create: (context) => HistoryOrdersBloc(),
         ),
         BlocProvider<ProfileBloc>(
           create: (context) => ProfileBloc(),
+        ),
+        BlocProvider<DepositBloc>(
+          create: (context) => DepositBloc(),
         ),
       ],
       child: ScreenUtilInit(

@@ -91,7 +91,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     CreateFormModel? result = await Repository().createForm(event.id);
 
     if (result != null) {
-      emit(CreateFormSuccess());
+      emit(CreateFormSuccess(result));
     } else {
       emit(CreateFormFail());
     }

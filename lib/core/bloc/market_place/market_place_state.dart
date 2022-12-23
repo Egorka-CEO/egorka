@@ -42,6 +42,10 @@ class MarketPlacesSelectPointState extends MarketPlaceState {
 
 class CreateFormState extends MarketPlaceState {}
 
-class CreateFormSuccess extends MarketPlaceState {}
+class CreateFormSuccess extends MarketPlaceState {
+  CreateFormModel createFormModel;
+
+  CreateFormSuccess(this.createFormModel);
+}
 
 class CreateFormFail extends MarketPlaceState {}

@@ -4,10 +4,14 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/load_form.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 // import 'package:tinkoff_sdk/tinkoff_sdk.dart';
 
 class AddDeposit extends StatelessWidget {
@@ -53,6 +57,7 @@ class AddDeposit extends StatelessWidget {
                   width: 150.w,
                   fillColor: Colors.white,
                   height: 45.h,
+                  focusNode: FocusNode(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
                   formatters: [
                     FilteringTextInputFormatter.allow(RegExp('[0-9]'))
@@ -110,33 +115,33 @@ class AddDeposit extends StatelessWidget {
                 //   ),
                 // ),
                 // SizedBox(width: 5.w),
-                GestureDetector(
-                  onTap: () async {
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                  ),
+                  onPressed: () async {
                     if (controllerAmount.text.isEmpty) {
                       MessageDialogs()
                           .showAlert('Ошибка', 'Введите сумму пополнения');
                     } else {
+                      MessageDialogs()
+                          .showLoadDialog('Формирование депозита...');
                       final res = await Repository()
                           .createInvoice(int.parse(controllerAmount.text));
                       if (res != null) {
                         depositHistory.add(res.result!.invoice!);
                         streamController.add(depositHistory);
                       }
+                      SmartDialog.dismiss();
                     }
                   },
-                  child: Container(
-                    height: 45.h,
-                    width: 120.w,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(15.r),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'CФОРМИРОВАТЬ',
-                        style:
-                            CustomTextStyle.white15w600.copyWith(fontSize: 12),
-                      ),
+                  child: Center(
+                    child: Text(
+                      'CФОРМИРОВАТЬ',
+                      style: CustomTextStyle.white15w600.copyWith(fontSize: 12),
                     ),
                   ),
                 ),
@@ -213,9 +218,13 @@ class AddDeposit extends StatelessWidget {
                                   SizedBox(width: 10.w),
                                   TextButton(
                                     onPressed: () async {
-                                      final pdf = await Repository().getPDF(
+                                      MessageDialogs().showLoadDialog(
+                                          'Скачивание и открытие...');
+                                      String pdf = await Repository().getPDF(
                                           depositHistory[index - 1].iD!,
                                           depositHistory[index - 1].pIN!);
+                                      await OpenFile.open(pdf);
+                                      SmartDialog.dismiss();
                                     },
                                     child: const Text(
                                       'Скачать PDF',
@@ -225,9 +234,14 @@ class AddDeposit extends StatelessWidget {
                                   SizedBox(width: 10.w),
                                   TextButton(
                                     onPressed: () async {
-                                      final excel = await Repository().getEXCEL(
-                                          depositHistory[index - 1].iD!,
-                                          depositHistory[index - 1].pIN!);
+                                      MessageDialogs().showLoadDialog(
+                                          'Скачивание и открытие...');
+                                      String excel = await Repository()
+                                          .getEXCEL(
+                                              depositHistory[index - 1].iD!,
+                                              depositHistory[index - 1].pIN!);
+                                      await OpenFile.open(excel);
+                                      SmartDialog.dismiss();
                                     },
                                     child: const Text(
                                       'Скачать EXCEL',

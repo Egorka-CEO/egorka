@@ -499,7 +499,7 @@ class Repository {
     }
   }
 
-  Future<dynamic> getPDF(int id, int pin) async {
+  Future<String> getPDF(int id, int pin) async {
     String savePath = await getFilePath('$id$pin.pdf');
     final response = await dio.get(
       '$server/export/invoice/pdf/?ID=$id$pin',
@@ -520,10 +520,10 @@ class Repository {
       await raf.close();
     }
 
-    return response;
+    return savePath;
   }
 
-  Future<dynamic> getEXCEL(int id, int pin) async {
+  Future<String> getEXCEL(int id, int pin) async {
     String savePath = await getFilePath('$id$pin.xlsx');
     final response = await dio.get(
       '$server/export/invoice/excel/?ID=$id$pin',
@@ -544,16 +544,17 @@ class Repository {
       await raf.close();
     }
 
-    return response;
+    return savePath;
   }
 
   Future<String> getFilePath(uniqueFileName) async {
     String path = '';
 
     Directory? dir;
-    if(Platform.isAndroid) {
-      dir = (await getExternalStorageDirectories(type: StorageDirectory.downloads))
-            ?.first;
+    if (Platform.isAndroid) {
+      dir = (await getExternalStorageDirectories(
+              type: StorageDirectory.downloads))
+          ?.first;
     } else {
       dir = await getApplicationDocumentsDirectory();
     }

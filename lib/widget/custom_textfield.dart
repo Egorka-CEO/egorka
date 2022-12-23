@@ -66,7 +66,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color hintTextColor = Colors.grey;
-    height = height ?? 75.h;
+    height = height ?? 175.h;
     hintStyle = hintStyle ??
         TextStyle(
           overflow: TextOverflow.ellipsis,

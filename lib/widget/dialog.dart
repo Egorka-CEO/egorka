@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -74,6 +75,29 @@ class MessageDialogs {
             ),
         alignment: Alignment.topLeft,
         maskColor: Colors.transparent);
+  }
+
+  void showLoadDialog(String text) {
+    SmartDialog.show(
+        maskColor: Colors.transparent,
+        clickMaskDismiss: false,
+        backDismiss: false,
+        builder: (context) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.grey[300],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CupertinoActivityIndicator(),
+                Text(text)
+              ],
+            ),
+          );
+        });
   }
   //TODO прикрутить логику вывода алертов с Валерой
 

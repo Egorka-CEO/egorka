@@ -166,7 +166,7 @@ class _BottomSheetDraggableState
                                 ),
                                 SizedBox(height: 10.h),
                                 Text(
-                                  state.result.locations[index].point.Address,
+                                  state.result.locations[0].point.Address,
                                   style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),

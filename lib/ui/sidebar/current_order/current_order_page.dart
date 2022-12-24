@@ -452,6 +452,11 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                 invoice.result!.invoice!.iD!,
                                 invoice.result!.invoice!.pIN!);
                             SmartDialog.dismiss();
+                            resPayed
+                                ? MessageDialogs()
+                                    .completeDialog(text: 'Оплачено')
+                                : MessageDialogs()
+                                    .errorDialog(text: 'Ошибка оплаты');
                             setState(() {});
                           }
                         },

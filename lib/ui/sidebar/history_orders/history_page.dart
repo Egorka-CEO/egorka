@@ -452,6 +452,11 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                   invoice.result!.invoice!.iD!,
                                   invoice.result!.invoice!.pIN!);
                               SmartDialog.dismiss();
+                              resPayed
+                                  ? MessageDialogs()
+                                      .completeDialog(text: 'Оплачено')
+                                  : MessageDialogs()
+                                      .errorDialog(text: 'Ошибка оплаты');
                               setState(() {});
                             }
                           },

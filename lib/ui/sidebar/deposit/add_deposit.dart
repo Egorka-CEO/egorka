@@ -5,8 +5,6 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
-import 'package:egorka/widget/load_form.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +15,7 @@ import 'package:open_file/open_file.dart';
 // import 'package:tinkoff_sdk/tinkoff_sdk.dart';
 
 class AddDeposit extends StatelessWidget {
-  final depositHistory = <InvoiceModel>[];
+  InvoiceModel? depositHistory;
 
   TextEditingController controllerAmount = TextEditingController();
   final streamController = StreamController<List<InvoiceModel>>();
@@ -25,7 +23,7 @@ class AddDeposit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blocInvoice = BlocProvider.of<DepositBloc>(context).invoiceModel;
-    if (blocInvoice != null) depositHistory.add(blocInvoice);
+    if (blocInvoice != null) depositHistory = blocInvoice;
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
@@ -138,7 +136,7 @@ class AddDeposit extends StatelessWidget {
                       if (res != null) {
                         BlocProvider.of<DepositBloc>(context)
                             .add(CreateDeposotEvent(res));
-                        depositHistory.add(res);
+                        depositHistory = res;
                         streamController.add([res]);
                       }
                       SmartDialog.dismiss();
@@ -169,7 +167,7 @@ class AddDeposit extends StatelessWidget {
                   builder: (context, snapshot) {
                     return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: depositHistory.length + 1,
+                      itemCount: 2,
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return Container(
@@ -203,21 +201,19 @@ class AddDeposit extends StatelessWidget {
                                   Expanded(
                                       flex: 2,
                                       child: Text(
-                                          '${depositHistory[index - 1].result!.invoice!.date}')),
+                                          '${depositHistory!.result!.invoice!.date}')),
                                   Expanded(
                                       flex: 4,
                                       child: Text(DateFormat.yMMMMd('ru')
                                           .format(DateTime
                                               .fromMillisecondsSinceEpoch(
-                                                  depositHistory[index - 1]
-                                                          .result!
-                                                          .invoice!
-                                                          .date! *
+                                                  depositHistory!.result!
+                                                          .invoice!.date! *
                                                       1000)))),
                                   Expanded(
                                       flex: 3,
                                       child: Text(
-                                          '${depositHistory[index - 1].result!.invoice!.amount} руб.')),
+                                          '${depositHistory!.result!.invoice!.amount} руб.')),
                                   SizedBox(width: 10.w),
                                 ],
                               ),
@@ -229,14 +225,9 @@ class AddDeposit extends StatelessWidget {
                                       MessageDialogs().showLoadDialog(
                                           'Скачивание и открытие...');
                                       String pdf = await Repository().getPDF(
-                                          depositHistory[index - 1]
-                                              .result!
-                                              .invoice!
-                                              .iD!,
-                                          depositHistory[index - 1]
-                                              .result!
-                                              .invoice!
-                                              .pIN!);
+                                          depositHistory!.result!.invoice!.iD!,
+                                          depositHistory!
+                                              .result!.invoice!.pIN!);
                                       await OpenFile.open(pdf);
                                       SmartDialog.dismiss();
                                     },
@@ -252,14 +243,10 @@ class AddDeposit extends StatelessWidget {
                                           'Скачивание и открытие...');
                                       String excel = await Repository()
                                           .getEXCEL(
-                                              depositHistory[index - 1]
-                                                  .result!
-                                                  .invoice!
-                                                  .iD!,
-                                              depositHistory[index - 1]
-                                                  .result!
-                                                  .invoice!
-                                                  .pIN!);
+                                              depositHistory!
+                                                  .result!.invoice!.iD!,
+                                              depositHistory!
+                                                  .result!.invoice!.pIN!);
                                       await OpenFile.open(excel);
                                       SmartDialog.dismiss();
                                     },

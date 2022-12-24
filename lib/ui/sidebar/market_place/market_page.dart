@@ -12,8 +12,7 @@ import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/done_anim.dart';
-import 'package:egorka/widget/fail_anim.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -198,8 +197,20 @@ class _MarketPageState extends State<MarketPages>
                   }
                 } else if (current is MarketPlacesSuccessState) {
                   coast = current.coastResponse;
-                } else if(current is CreateFormSuccess) {
-                  BlocProvider.of<HistoryOrdersBloc>(context).add(HistoryUpdateListEvent(current.createFormModel));
+                } else if (current is CreateFormSuccess) {
+                  MessageDialogs()
+                      .completeDialog(text: 'Заявка создана')
+                      .then((value) {
+                    BlocProvider.of<HistoryOrdersBloc>(context)
+                        .add(HistoryUpdateListEvent(current.createFormModel));
+                    Navigator.of(context).pop();
+                  });
+                } else if (current is CreateFormFail) {
+                  String errors = '';
+                  for (var element in coast!.errors!) {
+                    errors += '${element.messagePrepend!}${element.message!}\n';
+                  }
+                  MessageDialogs().errorDialog(text: 'Отклонено', error: errors);
                 }
                 return true;
               }, builder: (context, snapshot) {
@@ -1028,34 +1039,6 @@ class _MarketPageState extends State<MarketPages>
                             child: LoadForm(),
                           ),
                         ),
-                      if (snapshot is CreateFormSuccess)
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.transparent,
-                            child: DoneAnim(),
-                          ),
-                        ),
-                      if (snapshot is CreateFormFail)
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.transparent,
-                            child: StreamBuilder<Object>(
-                                builder: (context, snapshot) {
-                              String errors = '';
-                              for (var element in coast!.errors!) {
-                                errors +=
-                                    '${element.messagePrepend!}${element.message!}\n';
-                              }
-                              return FailAnim(
-                                text: errors,
-                                callBack: () {
-                                  BlocProvider.of<MarketPlacePageBloc>(context)
-                                      .add(MarketUpdateState());
-                                },
-                              );
-                            }),
-                          ),
-                        )
                     ],
                   ),
                 );

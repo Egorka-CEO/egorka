@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:lottie/lottie.dart';
 
 class MessageDialogs {
   void showMessage(String? from, String message) {
@@ -91,20 +93,184 @@ class MessageDialogs {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                const CupertinoActivityIndicator(),
-                Text(text)
-              ],
+              children: [const CupertinoActivityIndicator(), Text(text)],
             ),
           );
         });
   }
-  //TODO прикрутить логику вывода алертов с Валерой
 
-  // String _getStatus(String message) {
-  //   if (message == 'cancel booking') {
-  //     return 'Ваша бронь была отменена';
-  //   }
+  Future completeDialog({String text = ''}) async {
+    await SmartDialog.show(
+      clickMaskDismiss: false,
+      builder: (context) {
+        return DoneAnim(text);
+      },
+    );
+  }
 
-  // }
+  Future errorDialog({String text = '', String error = ''}) async {
+    await SmartDialog.show(
+      clickMaskDismiss: false,
+      builder: (context) {
+        return ErrorAnim(text, error);
+      },
+    );
+  }
+}
+
+class DoneAnim extends StatefulWidget {
+  String text;
+
+  DoneAnim(this.text);
+
+  @override
+  State<DoneAnim> createState() => _DoneAnimState();
+}
+
+class _DoneAnimState extends State<DoneAnim>
+    with SingleTickerProviderStateMixin {
+  late AnimationController lottieController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    lottieController = AnimationController(
+      vsync: this,
+    );
+
+    lottieController.addStatusListener((status) async {
+      if (status == AnimationStatus.completed) {
+        SmartDialog.dismiss();
+        lottieController.reset();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    lottieController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        height: 300.h,
+        width: 300.h,
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(10.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Lottie.asset("assets/anim/done.json",
+                    controller: lottieController,
+                    repeat: false, onLoaded: (composition) {
+                  lottieController.duration = composition.duration;
+                  lottieController.forward();
+                }),
+              ),
+              Text(
+                widget.text,
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ErrorAnim extends StatefulWidget {
+  String text;
+  String error;
+
+  ErrorAnim(this.text, this.error);
+
+  @override
+  State<ErrorAnim> createState() => _ErrorAnimState();
+}
+
+class _ErrorAnimState extends State<ErrorAnim>
+    with SingleTickerProviderStateMixin {
+  late AnimationController lottieController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    lottieController = AnimationController(
+      vsync: this,
+    );
+
+    lottieController.addStatusListener((status) async {
+      if (status == AnimationStatus.completed) {
+        SmartDialog.dismiss();
+        lottieController.reset();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    lottieController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        height: 250.h,
+        width: 200.h,
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(10.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Lottie.asset(
+                  "assets/anim/fail.json",
+                  controller: lottieController,
+                  repeat: false,
+                  onLoaded: (composition) {
+                    lottieController.duration = composition.duration;
+                    lottieController.forward();
+                  },
+                ),
+              ),
+              Text(
+                widget.text,
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                widget.error,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

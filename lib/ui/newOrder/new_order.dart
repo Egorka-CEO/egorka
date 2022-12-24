@@ -10,8 +10,7 @@ import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/done_anim.dart';
-import 'package:egorka/widget/fail_anim.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -171,8 +170,19 @@ class _NewOrderPageState extends State<NewOrderPageState> {
             } else if (current is CalcSuccess) {
               widget.order = current.coasts ?? widget.order;
             } else if (current is CreateFormSuccess) {
-              BlocProvider.of<HistoryOrdersBloc>(context)
-                  .add(HistoryUpdateListEvent(current.createFormModel));
+              MessageDialogs()
+                  .completeDialog(text: 'Заявка создана')
+                  .then((value) {
+                BlocProvider.of<HistoryOrdersBloc>(context)
+                    .add(HistoryUpdateListEvent(current.createFormModel));
+                Navigator.of(context).pop();
+              });
+            } else if (current is CreateFormFail) {
+              String errors = '';
+              for (var element in widget.order.errors!) {
+                errors += '${element.messagePrepend!}${element.message!}\n';
+              }
+              MessageDialogs().errorDialog(text: 'Отклонено', error: errors);
             }
             return true;
           }, builder: (context, snapshot) {
@@ -424,14 +434,6 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                         : (direction) {
                                             routeOrderReceiver.removeAt(index);
 
-                                            // List<PointDetails> routeOrderReceiverTemp = [];
-                                            // for (var i = 0; i < routeOrderReceiver.length-1; i++) {
-                                            //   if(i!=index) {
-                                            //     routeOrderReceiverTemp.add(routeOrderReceiver[index]);
-                                            //   }
-                                            // }
-                                            // routeOrderReceiver.clear();
-                                            // routeOrderReceiver.addAll(routeOrderReceiverTemp);
                                             BlocProvider.of<NewOrderPageBloc>(
                                                     context)
                                                 .add(CalculateCoastEvent(
@@ -791,20 +793,9 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                             ),
                             SizedBox(height: 20.h),
                             GestureDetector(
-                              onTap: () {
-                                // if (!validate()) {
-                                //   String errors = '';
-                                //   for (var element in widget.order.errors!) {
-                                //     errors +=
-                                //         '${element.messagePrepend!}${element.message!}\n';
-                                //   }
-                                //   MessageDialogs()
-                                //       .showMessage('Погодите-ка', errors);
-                                // } else {
-                                BlocProvider.of<NewOrderPageBloc>(context)
-                                    .add(CreateForm(widget.order.result!.id!));
-                                // }
-                              },
+                              onTap: () => BlocProvider.of<NewOrderPageBloc>(
+                                      context)
+                                  .add(CreateForm(widget.order.result!.id!)),
                               child: Container(
                                 height: 50.h,
                                 decoration: BoxDecoration(
@@ -859,34 +850,6 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         child: LoadForm(),
                       ),
                     ),
-                  if (snapshot is CreateFormSuccess)
-                    Positioned.fill(
-                      child: Container(
-                        color: Colors.transparent,
-                        child: DoneAnim(),
-                      ),
-                    ),
-                  if (snapshot is CreateFormFail)
-                    Positioned.fill(
-                      child: Container(
-                        color: Colors.transparent,
-                        child:
-                            StreamBuilder<Object>(builder: (context, snapshot) {
-                          String errors = '';
-                          for (var element in widget.order.errors!) {
-                            errors +=
-                                '${element.messagePrepend!}${element.message!}\n';
-                          }
-                          return FailAnim(
-                            text: errors,
-                            callBack: () {
-                              BlocProvider.of<NewOrderPageBloc>(context)
-                                  .add(NewOrderUpdateState());
-                            },
-                          );
-                        }),
-                      ),
-                    )
                 ],
               ),
             );
@@ -894,13 +857,5 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         ],
       ),
     );
-  }
-
-  bool validate() {
-    if (widget.order.errors != null && widget.order.errors!.isNotEmpty) {
-      return false;
-    }
-
-    return true;
   }
 }

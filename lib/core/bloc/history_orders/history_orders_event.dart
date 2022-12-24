@@ -19,3 +19,5 @@ class HistoryOrderPolilyne extends HistoryOrdersEvent {
 
   HistoryOrderPolilyne(this.locations);
 }
+
+class GetListOrdersEvent extends HistoryOrdersEvent {}

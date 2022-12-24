@@ -123,6 +123,7 @@ class _MarketPageState extends State<MarketPages>
 
   @override
   Widget build(BuildContext context) {
+    bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
     return Builder(
       builder: (context) {
         BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
@@ -210,7 +211,8 @@ class _MarketPageState extends State<MarketPages>
                   for (var element in coast!.errors!) {
                     errors += '${element.messagePrepend!}${element.message!}\n';
                   }
-                  MessageDialogs().errorDialog(text: 'Отклонено', error: errors);
+                  MessageDialogs()
+                      .errorDialog(text: 'Отклонено', error: errors);
                 }
                 return true;
               }, builder: (context, snapshot) {
@@ -632,6 +634,7 @@ class _MarketPageState extends State<MarketPages>
                                         },
                                         maxLines: 1,
                                         height: 45.h,
+                                        focusNode: FocusNode(),
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 10.w),
                                         fillColor: Colors.white,
@@ -873,7 +876,9 @@ class _MarketPageState extends State<MarketPages>
                                         ],
                                       );
                                     }),
-                                SizedBox(height: 400.h)
+                                keyBoardVisible
+                                    ? SizedBox(height: 0.h)
+                                    : SizedBox(height: 400.h)
                               ],
                             ),
                           ),
@@ -996,7 +1001,7 @@ class _MarketPageState extends State<MarketPages>
                                               BorderRadius.circular(15)),
                                       child: Center(
                                         child: Text(
-                                          'ОПЛАТИТЬ ЗАКАЗ',
+                                          'ОФОРМИТЬ ЗАКАЗ',
                                           style: CustomTextStyle.white15w600
                                               .copyWith(letterSpacing: 1),
                                         ),

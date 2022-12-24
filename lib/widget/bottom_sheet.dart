@@ -237,7 +237,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 onTap: () {
                                   focusFrom.unfocus();
                                   focusTo.unfocus();
-                                  panelController.close();
+                                  // panelController.close();
                                   bloc.add(SearchMeEvent());
                                 },
                                 child: const Icon(
@@ -362,18 +362,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       : null,
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
-                  if (current is ChangeAddressSuccess) {
-                    if (fromController.text != current.geoData!.address) {
-                      fromController.text = current.geoData!.address;
-                    }
-                  }
+                  // if (current is ChangeAddressSuccess) {
+                    // if (fromController.text != current.geoData!.address) {
+                      // fromController.text = current.geoData!.address;
+                    // }
+                  // }
                   if (current is SearchAddressRoutePolilyne) {
-                    // coasts.clear();
                     coasts.addAll(current.coasts);
                     coastResponse = current.coasts.first;
                     streamDelivery.add(0);
-                    // print('objectlogolg ${coastResponse!.result!.locations}');
                   }
+                  if (current is FindMeState) return false;
+
                   return true;
                 },
                 builder: (context, state) {

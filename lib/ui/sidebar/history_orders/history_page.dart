@@ -449,8 +449,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                               MessageDialogs().showLoadDialog(
                                   'Производится оплата с вашего депозита');
                               resPayed = await Repository().paymentDeposit(
-                                  invoice.result!.invoice!.iD!,
-                                  invoice.result!.invoice!.pIN!);
+                                  invoice[0].iD!, invoice[0].pIN!);
                               SmartDialog.dismiss();
                               resPayed
                                   ? MessageDialogs()

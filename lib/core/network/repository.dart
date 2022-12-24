@@ -6,7 +6,7 @@ import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
-import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/create_form_model.dart' as crtOrd;
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/payment.dart';
@@ -144,7 +144,7 @@ class Repository {
     return null;
   }
 
-  Future<CreateFormModel?> createForm(String value) async {
+  Future<crtOrd.CreateFormModel?> createForm(String value) async {
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -159,8 +159,40 @@ class Repository {
     );
 
     if (response.data['Result'] != null) {
-      final createForm = CreateFormModel.fromJson(response.data);
+      final createForm = crtOrd.CreateFormModel.fromJson(response.data);
       return createForm;
+    }
+
+    return null;
+  }
+
+  Future<List<crtOrd.CreateFormModel>?> getListForm() async {
+    final response = await dio.post(
+      '$server/service/delivery/',
+      options: header(),
+      data: {
+        "Auth": auth(),
+        "Method": "Orders",
+        "Body": {
+          "Limit": 20,
+          "Offset": 0,
+        },
+        "Params": {"Language": "RU"}
+      },
+    );
+
+    if (response.data['Result'] != null) {
+      List<crtOrd.CreateFormModel> list = [];
+      for (var element in response.data['Result']['Orders']) {
+        list.add(crtOrd.CreateFormModel(
+            time: null,
+            timeStamp: null,
+            execution: null,
+            method: null,
+            errors: null,
+            result: crtOrd.Result.fromJson(element)));
+      }
+      return list;
     }
 
     return null;
@@ -220,7 +252,12 @@ class Repository {
     );
 
     print('object ${id} ${pin} ${response}');
-    return true;
+
+    if(response.data['Errors'] == null) {
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> paymentCard(Payment payment) async {
@@ -483,7 +520,7 @@ class Repository {
     }
   }
 
-  Future<InvoiceModel?> createInvoice(int value) async {
+  Future<Invoice?> createInvoice(int value) async {
     final response = await dio.post(
       '$server/service/invoice/',
       options: header(),
@@ -500,7 +537,33 @@ class Repository {
 
     if (response.data['Result'] != null) {
       final invoice = InvoiceModel.fromJson(response.data);
-      return invoice;
+      return invoice.result?.invoice;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Invoice>?> getAllInvoice() async {
+    final response = await dio.post(
+      '$server/service/invoice/',
+      options: header(),
+      data: {
+        "Auth": auth(),
+        "Method": "List",
+        "Body": {
+          "Limit": 20,
+          "Offset": 0,
+        },
+        "Params": {"Language": "RU"}
+      },
+    );
+
+    if (response.data['Result'] != null) {
+      List<Invoice> list = [];
+      for (var element in response.data['Result']['Invoices']) {
+        list.add(Invoice.fromJson(element));
+      }
+      return list;
     } else {
       return null;
     }

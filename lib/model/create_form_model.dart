@@ -9,10 +9,10 @@ class CreateFormModel {
     required this.result,
     required this.errors,
   });
-  late final String time;
-  late final int timeStamp;
-  late final double execution;
-  late final String method;
+  late final String? time;
+  late final int? timeStamp;
+  late final double? execution;
+  late final String? method;
   late final Result result;
   late final Errors? errors;
 

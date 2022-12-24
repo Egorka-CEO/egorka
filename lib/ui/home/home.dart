@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
@@ -33,6 +34,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     funcInit();
     startAnim();
+    BlocProvider.of<DepositBloc>(context).add(LoadAllDepositEvent());
+    BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
   }
 
   void startAnim() async {

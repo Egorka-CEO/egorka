@@ -1,4 +1,5 @@
 import 'package:egorka/core/network/directions_repository.dart';
+import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/directions.dart';
@@ -14,10 +15,11 @@ part 'history_orders_state.dart';
 class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
   List<CreateFormModel> coast = [];
   HistoryOrdersBloc() : super(HistoryOrdesrStated()) {
-    on<OpenBtmSheetHistoryEvent>((event, emit) => _openBtmSheet(event, emit));
-    on<CloseBtmSheetHistoryEvent>((event, emit) => _closeBtmSheet(event, emit));
-    on<HistoryUpdateListEvent>((event, emit) => _updateList(event, emit));
-    on<HistoryOrderPolilyne>((event, emit) => _getPoliline(event, emit));
+    on<OpenBtmSheetHistoryEvent>(_openBtmSheet);
+    on<CloseBtmSheetHistoryEvent>(_closeBtmSheet);
+    on<HistoryUpdateListEvent>(_updateList);
+    on<HistoryOrderPolilyne>(_getPoliline);
+    on<GetListOrdersEvent>(_getListOrders);
   }
 
   void _openBtmSheet(
@@ -30,8 +32,21 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
 
   void _updateList(
       HistoryUpdateListEvent event, Emitter<HistoryOrdersState> emit) {
-    coast.add(event.coast);
+    List<CreateFormModel> coastTemp = [];
+    coastTemp.add(event.coast);
+    coastTemp.addAll(coast);
+    coast.clear();
+    coast.addAll(coastTemp);
     emit(HistoryUpdateList());
+  }
+
+  void _getListOrders(
+      GetListOrdersEvent event, Emitter<HistoryOrdersState> emit) async {
+    List<CreateFormModel>? list = await Repository().getListForm();
+    if (list != null) {
+      coast.addAll(list);
+      emit(HistoryUpdateList());
+    }
   }
 
   void _getPoliline(

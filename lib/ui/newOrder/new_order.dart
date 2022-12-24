@@ -93,6 +93,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
 
   @override
   Widget build(BuildContext context) {
+    bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
@@ -685,7 +686,9 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 400.h)
+                          keyBoardVisible
+                              ? SizedBox(height: 0.h)
+                              : SizedBox(height: 400.h)
                         ],
                       ),
                     ),
@@ -804,7 +807,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    'ОПЛАТИТЬ ЗАКАЗ',
+                                    'ОФОРМИТЬ ЗАКАЗ',
                                     style: CustomTextStyle.white15w600.copyWith(
                                         letterSpacing: 1,
                                         fontWeight: FontWeight.w500),

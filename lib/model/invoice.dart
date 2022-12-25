@@ -54,7 +54,7 @@ class Invoice {
   List<dynamic> items = [];
   List<dynamic> options = [];
   List<dynamic> payments = [];
-  int? amount;
+  String? amount;
   String? currency;
   String? status;
 
@@ -95,7 +95,10 @@ class Invoice {
     direction = json['Direction'];
     externalID = json['ExternalID'];
     externalNumber = json['ExternalNumber'];
-    amount = json['Amount'];
+    double amounttemp = json['Amount'] / 100;
+    final arrayAmount = amounttemp.toString().split('.');
+    String ends = arrayAmount.last.length == 1 ? '00' : arrayAmount.last;
+    amount = '${arrayAmount.first}.$ends';
     currency = json['Currency'];
     status = json['Status'];
   }

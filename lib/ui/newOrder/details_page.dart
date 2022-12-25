@@ -68,6 +68,13 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   bool btmSheet = false;
   TypeAdd? typeAdd;
 
+  final FocusNode podFocus = FocusNode();
+  final FocusNode etajFocus = FocusNode();
+  final FocusNode officeFocus = FocusNode();
+  final FocusNode nameFocus = FocusNode();
+  final FocusNode phoneFocus = FocusNode();
+  final FocusNode commentFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -222,6 +229,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                                 },
                                 child: CustomTextField(
                                   height: 45.h,
+                                  focusNode: FocusNode(),
                                   contentPadding: const EdgeInsets.all(0),
                                   fillColor: Colors.white.withOpacity(0),
                                   enabled: false,
@@ -259,7 +267,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Подъезд',
-                          focusNode: FocusNode(),
+                          focusNode: podFocus,
                           onChanged: (value) {
                             widget.routeOrder.details?.entrance =
                                 controllerEntrance.text;
@@ -274,7 +282,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Этаж',
-                          focusNode: FocusNode(),
+                          focusNode: etajFocus,
                           onChanged: (value) {
                             widget.routeOrder.details?.floor =
                                 controllerFloor.text;
@@ -289,7 +297,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           height: 45.h,
                           fillColor: Colors.white,
                           hintText: 'Офис/кв.',
-                          focusNode: FocusNode(),
+                          focusNode: officeFocus,
                           onChanged: (value) {
                             widget.routeOrder.details?.room =
                                 controllerRoom.text;
@@ -318,6 +326,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     onTap: () {},
                     child: CustomTextField(
                       height: 45.h,
+                      focusNode: nameFocus,
                       fillColor: Colors.white,
                       hintText: 'Имя',
                       onChanged: (value) {
@@ -334,8 +343,10 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     onTap: () {},
                     child: CustomTextField(
                       height: 45.h,
+                      focusNode: phoneFocus,
                       fillColor: Colors.white,
                       hintText: '+7 (___) ___-__-__',
+                      textInputType: TextInputType.phone,
                       onChanged: (value) {
                         widget.routeOrder.details?.phone = controllerPhone.text;
                       },
@@ -372,6 +383,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           child: CustomTextField(
                             height: 300.w,
                             width: 100.w,
+                            focusNode: commentFocus,
                             fillColor: Colors.white.withOpacity(0),
                             hintText: '',
                             onChanged: (value) {

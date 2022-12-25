@@ -91,6 +91,9 @@ class _NewOrderPageState extends State<NewOrderPageState> {
 
   ScrollController scrollController = ScrollController();
 
+  final FocusNode whatDrive = FocusNode();
+  final FocusNode whatCoast = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -637,6 +640,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               ),
                               CustomTextField(
                                 height: 45.h,
+                                focusNode: whatDrive,
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 10.w, vertical: 10.w),
                                 hintStyle: const TextStyle(
@@ -665,6 +669,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 ),
                               ),
                               CustomTextField(
+                                focusNode: whatCoast,
                                 onTap: () {
                                   scrollController.animateTo(
                                     scrollController.position.maxScrollExtent,

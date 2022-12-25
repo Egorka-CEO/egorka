@@ -118,6 +118,7 @@ class ItemTraffic extends StatelessWidget {
               ),
               CustomTextField(
                 hintText: 'ДД.ММ.ГГГГ',
+                focusNode: FocusNode(),
                 textEditingController: TextEditingController(),
                 textInputType: TextInputType.number,
                 width: 120.w,
@@ -139,6 +140,7 @@ class ItemTraffic extends StatelessWidget {
               ),
               CustomTextField(
                 hintText: 'ДД.ММ.ГГГГ',
+                focusNode: FocusNode(),
                 textEditingController: TextEditingController(),
                 textInputType: TextInputType.number,
                 width: 120.w,

@@ -7,7 +7,7 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 class CustomTextField extends StatelessWidget {
   final Function? onTap;
   final bool? readOnly;
-  final FocusNode? focusNode;
+  final FocusNode focusNode;
   final TextInputAction? inputAction;
   final String hintText;
   final Icon? icon;
@@ -37,7 +37,7 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.readOnly,
     this.inputAction,
-    this.focusNode,
+    required this.focusNode,
     required this.hintText,
     this.icon,
     this.onChanged,
@@ -87,7 +87,7 @@ class CustomTextField extends StatelessWidget {
         config: KeyboardActionsConfig(
           defaultDoneWidget: GestureDetector(
             onTap: () {
-              focusNode?.unfocus();
+              focusNode.unfocus();
               if(onFieldSubmitted != null) {
                 onFieldSubmitted!(textEditingController.text);
               }
@@ -96,8 +96,8 @@ class CustomTextField extends StatelessWidget {
           ),
           actions: [
             KeyboardActionsItem(
-              focusNode: focusNode ?? FocusNode(),
-              onTapAction: () => focusNode?.unfocus(),
+              focusNode: focusNode,
+              onTapAction: () => focusNode,
             ),
           ],
         ),

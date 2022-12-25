@@ -52,6 +52,7 @@ class BookPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 CustomTextField(
+                  focusNode: FocusNode(),
                   hintText: 'По ключевым словам',
                   textEditingController: TextEditingController(),
                   width: 250.w,

@@ -79,6 +79,14 @@ class _MarketPageState extends State<MarketPages>
   final palletController = StreamController<int>();
   final streamController = StreamController<bool>();
 
+  final FocusNode contactFocus = FocusNode();
+  final FocusNode phoneFocus = FocusNode();
+  final FocusNode bucketFocus = FocusNode();
+  final FocusNode palletFocus = FocusNode();
+  final FocusNode podFocus = FocusNode();
+  final FocusNode etajFocus = FocusNode();
+  final FocusNode officeFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -292,6 +300,7 @@ class _MarketPageState extends State<MarketPages>
                                               },
                                               child: CustomTextField(
                                                 height: 45.h,
+                                                focusNode: FocusNode(),
                                                 contentPadding:
                                                     const EdgeInsets.all(0),
                                                 fillColor: Colors.white,
@@ -365,6 +374,7 @@ class _MarketPageState extends State<MarketPages>
                                                   Expanded(
                                                     child: CustomTextField(
                                                       height: 45.h,
+                                                      focusNode: podFocus,
                                                       fillColor: Colors.white,
                                                       contentPadding:
                                                           EdgeInsets.symmetric(
@@ -380,6 +390,7 @@ class _MarketPageState extends State<MarketPages>
                                                   Expanded(
                                                     child: CustomTextField(
                                                       height: 45.h,
+                                                      focusNode: etajFocus,
                                                       fillColor: Colors.white,
                                                       hintText: 'Этаж',
                                                       contentPadding:
@@ -395,6 +406,7 @@ class _MarketPageState extends State<MarketPages>
                                                   Expanded(
                                                     child: CustomTextField(
                                                       height: 45.h,
+                                                      focusNode: officeFocus,
                                                       fillColor: Colors.white,
                                                       hintText: 'Офис/кв.',
                                                       contentPadding:
@@ -465,6 +477,7 @@ class _MarketPageState extends State<MarketPages>
                                                 contentPadding:
                                                     const EdgeInsets.all(0),
                                                 height: 45.h,
+                                                focusNode: FocusNode(),
                                                 fillColor: Colors.white,
                                                 enabled: false,
                                                 hintText: '',
@@ -558,6 +571,7 @@ class _MarketPageState extends State<MarketPages>
                                           onTap: showDateTime,
                                           child: CustomTextField(
                                             height: 45.h,
+                                            focusNode: FocusNode(),
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10.w),
@@ -634,7 +648,7 @@ class _MarketPageState extends State<MarketPages>
                                         },
                                         maxLines: 1,
                                         height: 45.h,
-                                        focusNode: FocusNode(),
+                                        focusNode: contactFocus,
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 10.w),
                                         fillColor: Colors.white,
@@ -676,7 +690,7 @@ class _MarketPageState extends State<MarketPages>
                                             ));
                                           }
                                         },
-                                        focusNode: FocusNode(),
+                                        focusNode: phoneFocus,
                                         height: 45.h,
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 10.w),
@@ -744,7 +758,7 @@ class _MarketPageState extends State<MarketPages>
                                                 ));
                                               }
                                             },
-                                            focusNode: FocusNode(),
+                                            focusNode: bucketFocus,
                                             height: 45.h,
                                             contentPadding:
                                                 EdgeInsets.symmetric(
@@ -838,7 +852,7 @@ class _MarketPageState extends State<MarketPages>
                                                 }
                                               },
                                               maxLines: 1,
-                                              focusNode: FocusNode(),
+                                              focusNode: palletFocus,
                                               height: 45.h,
                                               contentPadding:
                                                   EdgeInsets.symmetric(

@@ -83,7 +83,7 @@ class AppRoute {
         return MaterialPageRoute(
             builder: (_) => HistoryOrdersPage(coast: list));
       case profile:
-        return MaterialPageRoute(builder: (_) => const ProfilePage());
+        return MaterialPageRoute(builder: (_) => ProfilePage());
       case marketplacesMap:
         final value = route.arguments as mrkt.MarketPlaces;
         return MaterialPageRoute(builder: (_) => MarketPlacesMap(value));

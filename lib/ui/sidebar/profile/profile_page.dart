@@ -8,7 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+
+  final FocusNode password1Focus = FocusNode();
+  final FocusNode password2Focus = FocusNode();
+  final FocusNode password3Focus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +285,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               height: 45.h,
                               obscureText: true,
-                              focusNode: FocusNode(),
+                              focusNode: password1Focus,
                               hintText: '',
                               fillColor: backgroundColor,
                               textEditingController:
@@ -303,7 +307,7 @@ class ProfilePage extends StatelessWidget {
                             CustomTextField(
                               height: 45.h,
                               obscureText: true,
-                              focusNode: FocusNode(),
+                              focusNode: password2Focus,
                               hintText: '',
                               fillColor: backgroundColor,
                               textEditingController:
@@ -324,7 +328,7 @@ class ProfilePage extends StatelessWidget {
                             SizedBox(height: 5.h),
                             CustomTextField(
                               height: 45.h,
-                              focusNode: FocusNode(),
+                              focusNode: password3Focus,
                               obscureText: true,
                               hintText: '',
                               fillColor: backgroundColor,

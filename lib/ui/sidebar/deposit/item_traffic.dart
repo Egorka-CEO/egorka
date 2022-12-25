@@ -104,6 +104,9 @@ class ItemTraffic extends StatelessWidget {
     ),
   ];
 
+  final FocusNode date1Focus = FocusNode();
+  final FocusNode date2Focus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -118,7 +121,7 @@ class ItemTraffic extends StatelessWidget {
               ),
               CustomTextField(
                 hintText: 'ДД.ММ.ГГГГ',
-                focusNode: FocusNode(),
+                focusNode: date1Focus,
                 textEditingController: TextEditingController(),
                 textInputType: TextInputType.number,
                 width: 120.w,
@@ -140,7 +143,7 @@ class ItemTraffic extends StatelessWidget {
               ),
               CustomTextField(
                 hintText: 'ДД.ММ.ГГГГ',
-                focusNode: FocusNode(),
+                focusNode: date1Focus,
                 textEditingController: TextEditingController(),
                 textInputType: TextInputType.number,
                 width: 120.w,

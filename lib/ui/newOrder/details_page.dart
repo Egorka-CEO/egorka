@@ -229,7 +229,6 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                                 },
                                 child: CustomTextField(
                                   height: 45.h,
-                                  focusNode: FocusNode(),
                                   contentPadding: const EdgeInsets.all(0),
                                   fillColor: Colors.white.withOpacity(0),
                                   enabled: false,

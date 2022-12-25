@@ -300,7 +300,6 @@ class _MarketPageState extends State<MarketPages>
                                               },
                                               child: CustomTextField(
                                                 height: 45.h,
-                                                focusNode: FocusNode(),
                                                 contentPadding:
                                                     const EdgeInsets.all(0),
                                                 fillColor: Colors.white,
@@ -477,7 +476,6 @@ class _MarketPageState extends State<MarketPages>
                                                 contentPadding:
                                                     const EdgeInsets.all(0),
                                                 height: 45.h,
-                                                focusNode: FocusNode(),
                                                 fillColor: Colors.white,
                                                 enabled: false,
                                                 hintText: '',
@@ -571,7 +569,6 @@ class _MarketPageState extends State<MarketPages>
                                           onTap: showDateTime,
                                           child: CustomTextField(
                                             height: 45.h,
-                                            focusNode: FocusNode(),
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 10.w),

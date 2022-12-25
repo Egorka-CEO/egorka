@@ -55,8 +55,6 @@ class AddDeposit extends StatelessWidget {
                 CustomTextField(
                   hintText: '15 000',
                   textEditingController: controllerAmount,
-                  textInputType:
-                      const TextInputType.numberWithOptions(decimal: true),
                   width: 150.w,
                   fillColor: Colors.white,
                   height: 45.h,
@@ -275,54 +273,12 @@ class DepositFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.text.length > oldValue.text.length) {
-      final lastEnteredLetter = newValue.text[newValue.text.length - 1];
-      final array = newValue.text.split('.');
-
-      if (array.length >= 2) {
-        if (array.last.length == 3) {
-          print('object ${array.last.length}');
-          return TextEditingValue(
-            text: oldValue.text,
-            selection: TextSelection.collapsed(offset: oldValue.selection.end),
-          );
-        }
+      final alphanumeric = RegExp(r'([0-9])|([0-9][.])|([0-9][.][0-9]{2})$');
+      if (alphanumeric.hasMatch(newValue.text)) {
+        return newValue;
       }
-      // if (!RegExp(r'[0-9]').hasMatch(lastEnteredLetter)) {
-      //   return oldValue;
-      // }
-
-      // If the next index place is a separator, then modify the
-      // text editing value.
-      // if (sampleValue.length != newValue.text.length &&
-      //     sampleValue[newValue.text.length] == '/') {
-      //   final lastTwoDigits = newValue.text.substring(newValue.text.length - 2);
-      //   String? modifiedString;
-
-      //   if (newValue.text.length == 2) {
-      //     int value = int.parse(lastTwoDigits);
-      //     if (value > 31) {
-      //       value = value ~/ 10;
-      //       modifiedString = '0$value';
-      //     }
-      //   }
-
-      //   if (newValue.text.length == 5) {
-      //     int value = int.parse(lastTwoDigits);
-      //     if (value > 12) {
-      //       value = value ~/ 10;
-      //       modifiedString =
-      //           '${newValue.text.substring(0, newValue.text.length - 2)}0$value';
-      //     }
-      //   }
-
-      // return TextEditingValue(
-      //   text: '${modifiedString ?? newValue.text}/',
-      //   selection:
-      //       TextSelection.collapsed(offset: newValue.selection.end + 1),
-      // );
-      // }
+      return oldValue;
     }
-
     return newValue;
   }
 }

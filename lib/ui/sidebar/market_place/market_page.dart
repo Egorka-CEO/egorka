@@ -378,11 +378,14 @@ class _MarketPageState extends State<MarketPages>
                                                         focusNode: podFocus,
                                                         fillColor: Colors.white,
                                                         contentPadding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 10.w),
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10.w),
                                                         hintText: 'Подъезд',
                                                         textInputType:
-                                                            TextInputType.number,
+                                                            TextInputType
+                                                                .number,
                                                         textEditingController:
                                                             item1Controller,
                                                       ),
@@ -395,10 +398,13 @@ class _MarketPageState extends State<MarketPages>
                                                         fillColor: Colors.white,
                                                         hintText: 'Этаж',
                                                         contentPadding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 10.w),
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10.w),
                                                         textInputType:
-                                                            TextInputType.number,
+                                                            TextInputType
+                                                                .number,
                                                         textEditingController:
                                                             item2Controller,
                                                       ),
@@ -411,10 +417,13 @@ class _MarketPageState extends State<MarketPages>
                                                         fillColor: Colors.white,
                                                         hintText: 'Офис/кв.',
                                                         contentPadding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal: 10.w),
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10.w),
                                                         textInputType:
-                                                            TextInputType.number,
+                                                            TextInputType
+                                                                .number,
                                                         textEditingController:
                                                             item3Controller,
                                                       ),
@@ -891,7 +900,7 @@ class _MarketPageState extends State<MarketPages>
                                       );
                                     }),
                                 keyBoardVisible
-                                    ? SizedBox(height: 0.h)
+                                    ? SizedBox(height: 220.h)
                                     : SizedBox(height: 400.h)
                               ],
                             ),

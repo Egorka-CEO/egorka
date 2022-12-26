@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     startAnim();
     BlocProvider.of<DepositBloc>(context).add(LoadAllDepositEvent());
     BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
+    BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
   }
 
   void startAnim() async {

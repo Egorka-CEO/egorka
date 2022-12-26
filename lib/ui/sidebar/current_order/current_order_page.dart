@@ -1,5 +1,6 @@
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
@@ -455,10 +456,12 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                         onPressed: () async {
                           final invoice = BlocProvider.of<DepositBloc>(context)
                               .invoiceModel;
+                          final deposit =
+                              BlocProvider.of<ProfileBloc>(context).deposit;
                           MessageDialogs().showLoadDialog(
                               'Производится оплата с вашего депозита');
                           resPayed = await Repository()
-                              .paymentDeposit(invoice[0].iD!, invoice[0].pIN!);
+                              .paymentDeposit(invoice[0].iD!, invoice[0].pIN!, deposit!.result!.accounts.first.key);
                           SmartDialog.dismiss();
                           resPayed
                               ? MessageDialogs()

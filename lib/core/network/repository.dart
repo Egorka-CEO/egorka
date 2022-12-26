@@ -232,15 +232,15 @@ class Repository {
     );
   }
 
-  Future<bool> paymentDeposit(int id, int pin) async {
+  Future<bool> paymentDeposit(int id, int pin, String key) async {
     var authData = auth();
-    authData['Account'] = 'ZZZZZZZZ-ZZZZ-ZZZZ-ZZZZ-ZZZZZZZZZZZZ';
+    authData['Account'] = key;
 
     final response = await dio.post(
       '$server/service/payment/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Request",
         "Body": {
           "ID": id,
@@ -251,9 +251,9 @@ class Repository {
       },
     );
 
-    print('object ${id} ${pin} ${response}');
+    print('object ${id} ${pin} ${authData} ${response}');
 
-    if(response.data['Errors'] == null) {
+    if (response.data['Errors'] == null) {
       return true;
     }
 

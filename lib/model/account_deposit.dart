@@ -43,6 +43,7 @@ class Result {
 class Accounts {
   String iD;
   int number;
+  String key;
   int amount;
   int credit;
   String currency;
@@ -52,6 +53,7 @@ class Accounts {
   Accounts({
     required this.iD,
     required this.number,
+    required this.key,
     required this.amount,
     required this.credit,
     required this.currency,
@@ -62,6 +64,7 @@ class Accounts {
   factory Accounts.fromJson(Map<String, dynamic> json) {
     String iD = json['ID'];
     int number = json['Number'];
+    String key = json['Key'];
     int amount = json['Amount'];
     int credit = json['Credit'];
     String currency = json['Currency'];
@@ -70,6 +73,7 @@ class Accounts {
     return Accounts(
       iD: iD,
       number: number,
+      key: key,
       amount: amount,
       credit: credit,
       currency: currency,

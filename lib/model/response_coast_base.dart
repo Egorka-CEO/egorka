@@ -272,7 +272,7 @@ class TotalPrice {
   int? discount;
   int? bonus;
   int? tip;
-  int? total;
+  String? total;
   String? currency;
 
   TotalPrice.fromJson(Map<String, dynamic> json) {
@@ -281,7 +281,10 @@ class TotalPrice {
     discount = json['Discount'];
     bonus = json['Bonus'];
     tip = json['Tip'];
-    total = json['Total'];
+    double amounttemp = json['Total'] / 100;
+    final arrayAmount = amounttemp.toString().split('.');
+    String ends = arrayAmount.last.length == 1 ? '00' : arrayAmount.last;
+    total = '${arrayAmount.first}.$ends';
     currency = json['Currency'];
   }
 }

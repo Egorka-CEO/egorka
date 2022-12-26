@@ -8,6 +8,7 @@ part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   AuthUser? _user;
+  AccountsDeposit? deposit;
   ProfileBloc() : super(ProfileStated()) {
     on<ProfileEventInit>(_init);
     on<ProfileEventUpdate>(_updateUser);
@@ -24,6 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _getDeposite(GetDepositeEvent event, Emitter<ProfileState> emit) async {
     final accounts = await Repository().getDeposit();
     if (accounts != null) {
+      deposit = accounts;
       emit(UpdateDeposit(accounts.result!.accounts[0]));
     }
   }

@@ -48,6 +48,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void funcInit() async {
     final storage = MySecureStorage();
     final type = await storage.getTypeUser();
+
+    print('object ${type}');
     if (type != null) {
       String? login = await storage.getLogin();
       String? password = await storage.getPassword();
@@ -55,36 +57,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       AuthUser? res;
 
       if (type == '0') {
-        switch (type) {
-          case '0':
-            res = await Repository().loginUsernameUser(login!, password!);
-            break;
-          case '1':
-            res = await Repository().loginEmailUser(login!, password!);
-            break;
-          case '2':
-            res = await Repository().loginPhoneUser(login!, password!);
-            break;
-          default:
-            res = null;
-        }
+        // switch (type) {
+        // case '0':
+        res = await Repository().loginUsernameUser(login!, password!);
+        // break;
+        // case '1':
+        // res = await Repository().loginEmailUser(login!, password!);
+        // break;
+        // case '2':
+        //   res = await Repository().loginPhoneUser(login!, password!);
+        //   break;
+        // default:
+        //   res = null;
+        // }
       } else {
-        switch (type) {
-          case '0':
-            res = await Repository()
-                .loginUsernameAgent(login!, password!, company!);
-            break;
-          case '1':
-            res =
-                await Repository().loginEmailAgent(login!, password!, company!);
-            break;
-          case '2':
-            res =
-                await Repository().loginPhoneAgent(login!, password!, company!);
-            break;
-          default:
-            res = null;
-        }
+        // switch (type) {
+        //   case '0':
+        res =
+            await Repository().loginUsernameAgent(login!, password!, company!);
+        //     break;
+        //   case '1':
+        //     res =
+        //         await Repository().loginEmailAgent(login!, password!, company!);
+        //     break;
+        //   case '2':
+        //     res =
+        //         await Repository().loginPhoneAgent(login!, password!, company!);
+        //     break;
+        //   default:
+        //     res = null;
+        // }
       }
 
       if (res != null) {

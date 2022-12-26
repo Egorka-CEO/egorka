@@ -31,9 +31,7 @@ class _MainAuthPageState extends State<MainAuthPage> {
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         leading: GestureDetector(
-          onTap: () => Navigator.of(context)
-            ..pop()
-            ..pop(),
+          onTap: () => Navigator.of(context).pop(),
           child: const Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,

@@ -393,12 +393,13 @@ class Repository {
         "Auth": authData,
         "Method": "Login",
         "Body": {
-          "Phone": login,
+          "Username": login,
           "Password": password,
         },
         "Params": params()
       },
     );
+    print('object log ${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);

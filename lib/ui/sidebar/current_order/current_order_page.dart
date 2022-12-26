@@ -235,78 +235,88 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100.r),
-                            child: Image.asset(
-                              'assets/images/deliver.jpeg',
-                              height: 80.h,
-                            ),
-                          ),
-                          SizedBox(width: 20.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Евгений',
-                                style: CustomTextStyle.black15w700,
-                              ),
-                              SizedBox(height: 10.h),
-                              const Text(
-                                'Румянцев',
-                                style: CustomTextStyle.black15w700,
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: const Text(
+                      'Курьер еще не назначен на Ваш заказ. '
+                      'Как только логисты закончат планирование, '
+                      'Вам придёт пуш-уведомление и здесь отобразятся '
+                      'данные водителя и его ТС.',
+                      textAlign: TextAlign.justify,
+                    ),
                   ),
-                  SizedBox(height: 10.h),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 80.w,
-                            width: 80.w,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(100.r),
-                            ),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/ic_leg.png',
-                                  color: Colors.red,
-                                  height: 50.h,
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 20.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Lada Largus / У081МО799',
-                                style: CustomTextStyle.black15w700,
-                              ),
-                              SizedBox(height: 10.h),
-                              const Text(
-                                'Цвет: белый',
-                                style: CustomTextStyle.black15w700,
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
+                  // Column(
+                  //   children: [
+                  //     Row(
+                  //       children: [
+                  //         ClipRRect(
+                  //           borderRadius: BorderRadius.circular(100.r),
+                  //           child: Image.asset(
+                  //             'assets/images/deliver.jpeg',
+                  //             height: 80.h,
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 20.w),
+                  //         Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             const Text(
+                  //               'Евгений',
+                  //               style: CustomTextStyle.black15w700,
+                  //             ),
+                  //             SizedBox(height: 10.h),
+                  //             const Text(
+                  //               'Румянцев',
+                  //               style: CustomTextStyle.black15w700,
+                  //             ),
+                  //           ],
+                  //         )
+                  //       ],
+                  //     )
+                  //   ],
+                  // ),
+                  // SizedBox(height: 10.h),
+                  // Column(
+                  //   children: [
+                  //     Row(
+                  //       children: [
+                  //         Container(
+                  //           height: 80.w,
+                  //           width: 80.w,
+                  //           decoration: BoxDecoration(
+                  //             color: Colors.grey[200],
+                  //             borderRadius: BorderRadius.circular(100.r),
+                  //           ),
+                  //           child: Stack(
+                  //             alignment: Alignment.center,
+                  //             children: [
+                  //               Image.asset(
+                  //                 'assets/images/ic_leg.png',
+                  //                 color: Colors.red,
+                  //                 height: 50.h,
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 20.w),
+                  //         Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             const Text(
+                  //               'Lada Largus / У081МО799',
+                  //               style: CustomTextStyle.black15w700,
+                  //             ),
+                  //             SizedBox(height: 10.h),
+                  //             const Text(
+                  //               'Цвет: белый',
+                  //               style: CustomTextStyle.black15w700,
+                  //             ),
+                  //           ],
+                  //         )
+                  //       ],
+                  //     )
+                  //   ],
+                  // ),
                   SizedBox(height: 30.h),
                   Row(
                     children: const [
@@ -410,7 +420,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 200.h),
+                  SizedBox(height: 140.h),
                 ],
               ),
             ),

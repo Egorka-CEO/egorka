@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -71,12 +73,12 @@ class _AuthPageState extends State<AuthPage> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 20.h : 80.h,
+                        height: state ? 5.h : 80.h,
                       ),
                       Row(
                         children: [
@@ -100,10 +102,10 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 20.h : 30.h,
+                        height: state ? 5.h : 30.h,
                       ),
                       Text(
-                        'Телефон',
+                        'Логин',
                         style: labelStyle,
                       ),
                       Row(
@@ -112,43 +114,42 @@ class _AuthPageState extends State<AuthPage> {
                             child: CustomTextField(
                               focusNode: focusNode1,
                               textEditingController: _phoneController,
-                              hintText: '+7 (___) ___-__-__',
+                              // hintText: '+7 (___) ___-__-__',
+                              hintText: 'Arcadi',
+                              height: 60.h,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 20.w,
                                 vertical: 20.w,
                               ),
-                              formatters: [
-                                CustomInputFormatter(),
-                                LengthLimitingTextInputFormatter(18)
-                              ],
+                              // formatters: [
+                                // CustomInputFormatter(),
+                                // LengthLimitingTextInputFormatter(18)
+                              // ],
                             ),
                           ),
                         ],
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 10.h : 20.h,
+                        height: state ? 5.h : 20.h,
                       ),
                       Text(
                         'Пароль',
                         style: labelStyle,
                       ),
-                      Column(
-                        children: [
-                          CustomTextField(
-                            focusNode: focusNode3,
-                            textEditingController: _passwordController,
-                            hintText: '******',
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 20.w,
-                            ),
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 10.h : 20.h,
-                          ),
-                        ],
+                      CustomTextField(
+                        focusNode: focusNode3,
+                        textEditingController: _passwordController,
+                        hintText: '******',
+                        height: 60.h,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 20.w,
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: state ? 5.h : 20.h,
                       ),
                       RoundedLoadingButton(
                         controller: _btnController,
@@ -179,8 +180,10 @@ class _AuthPageState extends State<AuthPage> {
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
+      storage.setTypeUser('0');
       storage.setLogin(_phoneController.text);
       storage.setPassword(_passwordController.text);
+      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();

@@ -77,7 +77,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                     children: [
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 20.h : 80.h,
+                        height: state ? 5.h : 80.h,
                       ),
                       Row(
                         children: [
@@ -101,7 +101,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 20.h : 30.h,
+                        height: state ? 5.h : 30.h,
                       ),
                       Text(
                         'Логин компании',
@@ -114,6 +114,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               focusNode: focusNode1,
                               textEditingController: _companyController,
                               hintText: 'Gazprom',
+                              height: 60.h,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 20.w,
                                 vertical: 20.w,
@@ -124,7 +125,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 10.h : 20.h,
+                        height: state ? 5.h : 20.h,
                       ),
                       Text(
                         'Логин пользователя',
@@ -134,6 +135,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                         focusNode: focusNode2,
                         textEditingController: _loginController,
                         hintText: 'Admin',
+                        height: 60.h,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 20.w,
                           vertical: 20.w,
@@ -141,28 +143,25 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: state ? 10.h : 20.h,
+                        height: state ? 5.h : 20.h,
                       ),
                       Text(
                         'Пароль',
                         style: labelStyle,
                       ),
-                      Column(
-                        children: [
-                          CustomTextField(
-                            focusNode: focusNode3,
-                            textEditingController: _passwordController,
-                            hintText: '******',
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 20.w,
-                            ),
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 10.h : 20.h,
-                          ),
-                        ],
+                      CustomTextField(
+                        focusNode: focusNode3,
+                        textEditingController: _passwordController,
+                        hintText: '******',
+                        height: 60.h,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 20.w,
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: state ? 5.h : 20.h,
                       ),
                       RoundedLoadingButton(
                         controller: _btnController,
@@ -193,6 +192,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
+      storage.setTypeUser('1');
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
       storage.setCompany(

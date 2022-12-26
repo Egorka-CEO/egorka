@@ -347,80 +347,83 @@ class _MarketPageState extends State<MarketPages>
                                         duration:
                                             const Duration(milliseconds: 400),
                                         height: snapshot.data! ? 85.h : 0.h,
-                                        child: Stack(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5.w),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    'Не обязательно к заполнению',
-                                                    style: CustomTextStyle
-                                                        .grey15bold
-                                                        .copyWith(
-                                                            color: Colors
-                                                                .grey[500]),
-                                                  ),
-                                                ],
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Stack(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5.w),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      'Не обязательно к заполнению',
+                                                      style: CustomTextStyle
+                                                          .grey15bold
+                                                          .copyWith(
+                                                              color: Colors
+                                                                  .grey[500]),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 30.h),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: CustomTextField(
-                                                      height: 45.h,
-                                                      focusNode: podFocus,
-                                                      fillColor: Colors.white,
-                                                      contentPadding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.w),
-                                                      hintText: 'Подъезд',
-                                                      textInputType:
-                                                          TextInputType.number,
-                                                      textEditingController:
-                                                          item1Controller,
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 30.h),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: CustomTextField(
+                                                        height: 45.h,
+                                                        focusNode: podFocus,
+                                                        fillColor: Colors.white,
+                                                        contentPadding:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal: 10.w),
+                                                        hintText: 'Подъезд',
+                                                        textInputType:
+                                                            TextInputType.number,
+                                                        textEditingController:
+                                                            item1Controller,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(width: 15.w),
-                                                  Expanded(
-                                                    child: CustomTextField(
-                                                      height: 45.h,
-                                                      focusNode: etajFocus,
-                                                      fillColor: Colors.white,
-                                                      hintText: 'Этаж',
-                                                      contentPadding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.w),
-                                                      textInputType:
-                                                          TextInputType.number,
-                                                      textEditingController:
-                                                          item2Controller,
+                                                    SizedBox(width: 15.w),
+                                                    Expanded(
+                                                      child: CustomTextField(
+                                                        height: 45.h,
+                                                        focusNode: etajFocus,
+                                                        fillColor: Colors.white,
+                                                        hintText: 'Этаж',
+                                                        contentPadding:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal: 10.w),
+                                                        textInputType:
+                                                            TextInputType.number,
+                                                        textEditingController:
+                                                            item2Controller,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(width: 15.w),
-                                                  Expanded(
-                                                    child: CustomTextField(
-                                                      height: 45.h,
-                                                      focusNode: officeFocus,
-                                                      fillColor: Colors.white,
-                                                      hintText: 'Офис/кв.',
-                                                      contentPadding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.w),
-                                                      textInputType:
-                                                          TextInputType.number,
-                                                      textEditingController:
-                                                          item3Controller,
+                                                    SizedBox(width: 15.w),
+                                                    Expanded(
+                                                      child: CustomTextField(
+                                                        height: 45.h,
+                                                        focusNode: officeFocus,
+                                                        fillColor: Colors.white,
+                                                        hintText: 'Офис/кв.',
+                                                        contentPadding:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal: 10.w),
+                                                        textInputType:
+                                                            TextInputType.number,
+                                                        textEditingController:
+                                                            item3Controller,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       );
                                     }),

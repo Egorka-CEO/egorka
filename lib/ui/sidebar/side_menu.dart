@@ -14,7 +14,6 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
         builder: (context, snapshot) {
-      final blocProfile = BlocProvider.of<ProfileBloc>(context);
       final blocHistory = BlocProvider.of<HistoryOrdersBloc>(context);
       return SizedBox(
         width: 270.w,
@@ -35,6 +34,25 @@ class NavBar extends StatelessWidget {
                     height: 40.w,
                   ),
                   SizedBox(height: 30.h),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    if (auth != null) return const SizedBox();
+                    return TextButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed(AppRoute.auth),
+                      style: ButtonStyle(
+                          padding:
+                              const MaterialStatePropertyAll(EdgeInsets.all(0)),
+                          foregroundColor:
+                              const MaterialStatePropertyAll(Colors.red),
+                          overlayColor:
+                              MaterialStatePropertyAll(Colors.grey[300])),
+                      child: const Text('Авторизоваться'),
+                    );
+                  }),
+                  // SizedBox(height: 30.h),
                   Container(
                     color: Colors.transparent,
                     height: 50.h,
@@ -64,8 +82,12 @@ class NavBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (blocProfile.getUser() != null)
-                    GestureDetector(
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    if (auth == null) return const SizedBox();
+                    return GestureDetector(
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoute.profile),
                       child: Container(
@@ -80,7 +102,8 @@ class NavBar extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    );
+                  }),
                   if (blocHistory.coast.isNotEmpty)
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(

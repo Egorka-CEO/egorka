@@ -142,50 +142,91 @@ class _BottomSheetDraggableState
               children: [
                 Expanded(
                   flex: 10,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              widget.panelController.close();
-                              Navigator.of(context).pushNamed(
-                                  AppRoute.historyOrder,
-                                  arguments: coast[index]);
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Поездка $period в, ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000))}',
-                                  style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                SizedBox(height: 10.h),
-                                Text(
-                                  state.result.locations[0].point.Address,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  state.result.Status,
-                                  style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                widget.panelController.close();
+                                Navigator.of(context).pushNamed(
+                                    AppRoute.historyOrder,
+                                    arguments: coast[index]);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Поездка $period в, ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000))}',
+                                    style: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/from.png',
+                                        height: 25.h,
+                                      ),
+                                      SizedBox(width: 10.h),
+                                      Flexible(
+                                        child: Text(
+                                          state.result.locations.first.point
+                                              .Address,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/to.png',
+                                        height: 25.h,
+                                      ),
+                                      SizedBox(width: 10.h),
+                                      Flexible(
+                                        child: Text(
+                                          state.result.locations.last.point
+                                              .Address,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  Text(
+                                    state.result.Status,
+                                    style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          GestureDetector(
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 5.h),
+                      ClipOval(
+                        child: Material(
+                          color: Colors.grey[200],
+                          child: InkWell(
                             onTap: () => Navigator.of(context)
                                 .pushNamed(AppRoute.marketplaces, arguments: [
                               HistoryModel(
@@ -201,23 +242,17 @@ class _BottomSheetDraggableState
                                 countPallet: 10,
                               )
                             ]),
-                            child: const Icon(Icons.refresh),
-                          )
-                        ],
-                      ),
+                            child: SizedBox(
+                              width: 40.h,
+                              height: 40.h,
+                              child: const Icon(Icons.refresh),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
-                // Expanded(
-                //   flex: 2,
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       widget.panelController.close();
-                //       Navigator.of(context).pushNamed(AppRoute.historyOrder);
-                //     },
-                //     child: Image.asset(state.icon!),
-                //   ),
-                // ),
               ],
             ),
           ),

@@ -1,4 +1,4 @@
-import 'package:egorka/model/address.dart';
+import 'package:egorka/model/suggestions.dart';
 
 class PointDetails {
   Suggestions suggestions;
@@ -17,7 +17,7 @@ class Details {
   String? comment;
 
   Details({
-     this.suggestions,
+    this.suggestions,
     this.entrance,
     this.floor,
     this.room,

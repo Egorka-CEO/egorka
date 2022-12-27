@@ -1,6 +1,6 @@
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/locations.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +9,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class HistoryDetailsPage extends StatelessWidget {
   int index;
   TypeAdd typeAdd;
-  Locations locations;
+  Location locations;
 
   HistoryDetailsPage({
     super.key,
@@ -31,7 +31,7 @@ class HistoryDetailsPage extends StatelessWidget {
 class DetailsPageTemp extends StatefulWidget {
   int index;
   TypeAdd typeAdd;
-  Locations locations;
+  Location locations;
 
   DetailsPageTemp({
     super.key,
@@ -61,13 +61,16 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   @override
   void initState() {
     super.initState();
-    controllerTo.text = widget.locations.point.Address;
-    controllerPod.text = widget.locations.point.Room ?? '';
-    controllerEtaj.text = widget.locations.point.Entrance ?? '';
-    controllerOffice.text = widget.locations.point.Floor ?? '';
-    controllerName.text = widget.locations.contact.Name;
-    controllerPhone.text = widget.locations.contact.PhoneMobile;
-    controllerComment.text = widget.locations.Message ?? '';
+    controllerTo.text = widget.locations.point!.address!;
+    controllerPod.text = widget.locations.point!.room ?? '';
+    controllerEtaj.text = widget.locations.point!.entrance ?? '';
+    controllerOffice.text = widget.locations.point!.floor ?? '';
+    if (widget.locations.contact != null) {
+      controllerName.text = widget.locations.contact!.name ?? '';
+      controllerPhone.text = widget.locations.contact!.phoneMobile ?? '';
+    }
+
+    controllerComment.text = widget.locations.message ?? '';
   }
 
   @override

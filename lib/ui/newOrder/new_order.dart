@@ -3,10 +3,10 @@ import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -350,8 +350,9 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                                         routeOrderSender[index],
                                                       ]);
 
-                                                  routeOrderSender[index]
-                                                      .details = details;
+                                                  routeOrderSender[index] =
+                                                      details!;
+                                                  // routeOrderSender[index].suggestions = details;
 
                                                   BlocProvider.of<
                                                               NewOrderPageBloc>(
@@ -569,8 +570,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                                             index],
                                                       ]);
 
-                                                  routeOrderReceiver[index]
-                                                      .details = details;
+                                                  routeOrderReceiver[index] =
+                                                      details;
 
                                                   BlocProvider.of<
                                                               NewOrderPageBloc>(

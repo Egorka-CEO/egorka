@@ -14,6 +14,8 @@ class ChangeMapPosition extends SearchAddressEvent {
   ChangeMapPosition(this.coordinates);
 }
 
+class GetAddressPosition extends SearchAddressEvent {}
+
 class SearchAddressClear extends SearchAddressEvent {}
 
 class SearchMeEvent extends SearchAddressEvent {}
@@ -24,10 +26,12 @@ class JumpToPointEvent extends SearchAddressEvent {
 }
 
 class SearchAddressPolilyne extends SearchAddressEvent {
-  List<Suggestions> suggestionsStart;
-  List<Suggestions> suggestionsEnd;
+  List<Suggestions?> suggestionsStart;
+  List<Suggestions?> suggestionsEnd;
 
   SearchAddressPolilyne(this.suggestionsStart, this.suggestionsEnd);
 }
 
 class DeletePolilyneEvent extends SearchAddressEvent {}
+
+class DeleteGeoDateEvent extends SearchAddressEvent {}

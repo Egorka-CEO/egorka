@@ -4,12 +4,16 @@ import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
+// import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
-import 'package:egorka/model/create_form_model.dart' as crtOrd;
+import 'package:egorka/model/create_form_model.dart' as crtForm;
+import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
-import 'package:egorka/model/marketplaces.dart' as mrkt;
+import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/payment.dart';
+import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -68,9 +72,9 @@ class Repository {
     if (response.statusCode == 200) {
       try {
         final address = Address.fromJson(response.data);
-        if (address.errors == null) {
-          return address;
-        }
+        // if (address == null) {
+        return address;
+        // }
       } catch (e) {
         return null;
       }
@@ -80,7 +84,7 @@ class Repository {
     }
   }
 
-  Future<mrkt.MarketPlaces?> getMarketplaces() async {
+  Future<MarketPlaces?> getMarketplaces() async {
     final response = await dio.post(
       '$server/service/delivery/dictionary/',
       options: header(),
@@ -94,7 +98,7 @@ class Repository {
 
     if (response.statusCode == 200) {
       try {
-        final marketplace = mrkt.MarketPlaces.fromJson(response.data);
+        final marketplace = MarketPlaces.fromJson(response.data);
         return marketplace;
       } catch (e) {
         return null;
@@ -105,7 +109,6 @@ class Repository {
   }
 
   Future<CoastResponse?> getCoastBase(CoastBase value) async {
-    //?
     final body = value.toJson();
     final response = await dio.post(
       '$server/service/delivery/',
@@ -126,13 +129,14 @@ class Repository {
   }
 
   Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
+    final body = value.toJson();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
         "Auth": auth(),
         "Method": "Calculate",
-        "Body": value.toJson(),
+        "Body": body,
         "Params": params()
       },
     );
@@ -144,7 +148,7 @@ class Repository {
     return null;
   }
 
-  Future<crtOrd.CreateFormModel?> createForm(String value) async {
+  Future<crtForm.CreateFormModel?> createForm(String value) async {
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -159,14 +163,14 @@ class Repository {
     );
 
     if (response.data['Result'] != null) {
-      final createForm = crtOrd.CreateFormModel.fromJson(response.data);
+      final createForm = crtForm.CreateFormModel.fromJson(response.data);
       return createForm;
     }
 
     return null;
   }
 
-  Future<List<crtOrd.CreateFormModel>?> getListForm() async {
+  Future<List<crtForm.CreateFormModel>?> getListForm() async {
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -182,15 +186,15 @@ class Repository {
     );
 
     if (response.data['Result'] != null) {
-      List<crtOrd.CreateFormModel> list = [];
+      List<CreateFormModel> list = [];
       for (var element in response.data['Result']['Orders']) {
-        list.add(crtOrd.CreateFormModel(
+        list.add(crtForm.CreateFormModel(
             time: null,
             timeStamp: null,
             execution: null,
             method: null,
             errors: null,
-            result: crtOrd.Result.fromJson(element)));
+            result: crtForm.Result.fromJson(element)));
       }
       return list;
     }
@@ -198,7 +202,7 @@ class Repository {
     return null;
   }
 
-  Future<void> infoForm(String number, String pin) async {
+  Future<InfoForm?> infoForm(String recordNumber, String recordPin) async {
     //?
     final response = await dio.post(
       '$server/service/delivery/',
@@ -207,12 +211,18 @@ class Repository {
         "Auth": auth(),
         "Method": "Check",
         "Body": {
-          "RecordNumber": number,
-          "RecordPIN": pin,
+          "RecordNumber": recordNumber,
+          "RecordPIN": recordPin,
         },
         "Params": params()
       },
     );
+
+    if (response.data['Result'] != null) {
+      final res = InfoForm.fromJson(response.data);
+      return res;
+    }
+    return null;
   }
 
   Future<void> cancelForm(String number, String pin) async {
@@ -232,7 +242,7 @@ class Repository {
     );
   }
 
-  Future<bool> paymentDeposit(int id, int pin, String key) async {
+  Future<String?> paymentDeposit(int id, int pin, String key) async {
     var authData = auth();
     authData['Account'] = key;
 
@@ -251,13 +261,14 @@ class Repository {
       },
     );
 
-    print('object ${id} ${pin} ${authData} ${response}');
+    // print('object ${id} ${pin} ${authData}');
+    print('object ${response.data['Errors'][0]['Message']}');
 
     if (response.data['Errors'] == null) {
-      return true;
+      return null;
+    } else {
+      return response.data['Errors'][0]['Message'];
     }
-
-    return false;
   }
 
   Future<void> paymentCard(Payment payment) async {

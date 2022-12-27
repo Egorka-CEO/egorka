@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
-import 'package:egorka/model/address.dart';
+import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
@@ -37,7 +37,7 @@ class _BottomSheetDraggableState
   //   DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png'),
   // ];
 
-  Address? address;
+  MarketPlaces? address;
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +156,9 @@ class _BottomSheetDraggableState
           height: 215.h,
           child: BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
             buildWhen: (previous, current) {
-              if (current is MarketPlaceSuccess) {
+              if (current is MarketPlacesState) {
                 address = current.address;
+                print('object ${address}');
               }
               return true;
             },

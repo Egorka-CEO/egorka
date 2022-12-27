@@ -110,7 +110,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         children: [
                           GestureDetector(
                             onTap: () => Navigator.pop(
-                                context, widget.routeOrder.details),
+                                context, widget.routeOrder),
                             child: Row(
                               children: [
                                 Icon(

@@ -21,7 +21,7 @@ class MarketPlace extends MarketPlaceEvent {
 class CalcOrder extends MarketPlaceEvent {
   Suggestions? suggestion;
   DateTime? time;
-  mrkt.Points? points;
+  PointMarketPlace? points;
   String? name;
   String? phone;
   int? bucket;
@@ -51,7 +51,7 @@ class CreateForm extends MarketPlaceEvent {
 }
 
 class SelectMarketPlaces extends MarketPlaceEvent {
-  mrkt.Points points;
+  PointMarketPlace points;
 
   SelectMarketPlaces(this.points);
 }

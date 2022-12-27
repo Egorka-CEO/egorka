@@ -5,9 +5,12 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/address.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart';
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point_marketplace.dart';
+import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
@@ -24,7 +27,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:egorka/model/response_coast_base.dart' as basecst;
 
 class MarketPage extends StatelessWidget {
   HistoryModel? historyModel;
@@ -57,8 +59,8 @@ class _MarketPageState extends State<MarketPages>
   bool details = false;
   TypeAdd? typeAdd;
   Suggestions? suggestion;
-  Points? points;
-  basecst.CoastResponse? coast;
+  PointMarketPlace? points;
+  CoastResponse? coast;
   DateTime? time;
 
   TextEditingController controller = TextEditingController();
@@ -115,7 +117,7 @@ class _MarketPageState extends State<MarketPages>
   }
 
   void _findMe() async {
-    if (await Location().checkPermission()) {
+    if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       GeoData data = await Geocoder2.getDataFromCoordinates(
@@ -124,6 +126,30 @@ class _MarketPageState extends State<MarketPages>
           language: 'RU',
           googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
       fromController.text = data.address;
+      suggestion = Suggestions(
+        iD: '',
+        name: data.address,
+        point: Point(
+          address: data.address,
+          latitude: data.latitude,
+          longitude: data.longitude,
+        ),
+      );
+      if (suggestion != null && points != null) {
+        BlocProvider.of<MarketPlacePageBloc>(context).add(CalcOrder(
+          suggestion,
+          points,
+          time,
+          nameController.text,
+          phoneController.text,
+          countBucketController.text.isEmpty
+              ? null
+              : int.parse(countBucketController.text),
+          countPalletController.text.isEmpty
+              ? null
+              : int.parse(countPalletController.text),
+        ));
+      }
     }
   }
 
@@ -475,9 +501,11 @@ class _MarketPageState extends State<MarketPages>
                                                   toController.text =
                                                       marketplaces
                                                           .result
-                                                          .points[0]
-                                                          .name[0]
-                                                          .name;
+                                                          .points
+                                                          .first
+                                                          .name!
+                                                          .first
+                                                          .name!;
                                                   points = marketplaces
                                                       .result.points[0];
                                                   showMarketPlaces(
@@ -512,10 +540,10 @@ class _MarketPageState extends State<MarketPages>
                                                         arguments:
                                                             marketplaces);
                                                 if (result != null) {
-                                                  final pointsRes =
-                                                      result as Points;
-                                                  toController.text =
-                                                      pointsRes.name[0].name;
+                                                  final pointsRes = result
+                                                      as PointMarketPlace;
+                                                  toController.text = pointsRes
+                                                      .name!.first.name!;
 
                                                   points = pointsRes;
 
@@ -1125,12 +1153,12 @@ class _MarketPageState extends State<MarketPages>
                     backgroundColor: Colors.grey[200],
                     onSelectedItemChanged: (value) {
                       toController.text =
-                          marketplaces.result.points[value].name[0].name;
+                          marketplaces.result.points[value].name!.first.name!;
                       points = marketplaces.result.points[value];
                     },
                     itemExtent: 32.0,
                     children: marketplaces.result.points
-                        .map((e) => Text(e.name[0].name))
+                        .map((e) => Text(e.name!.first.name!))
                         .toList(),
                   ),
                 ),

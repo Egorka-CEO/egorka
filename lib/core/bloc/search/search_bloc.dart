@@ -1,13 +1,18 @@
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/location.dart';
 import 'package:egorka/model/address.dart';
-import 'package:egorka/model/coast_advanced.dart' as cstAdvanced;
+import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/directions.dart';
-import 'package:egorka/model/response_coast_base.dart' as respCoast;
+import 'package:egorka/model/locations.dart';
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 part 'search_event.dart';
@@ -24,6 +29,13 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<DeletePolilyneEvent>(_deletePolyline);
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
     on<SearchAddressPolilyne>(_getPoliline);
+    on<DeleteGeoDateEvent>(_deleteGeoDate);
+    on<GetAddressPosition>(_getAddress);
+  }
+
+  void _deleteGeoDate(
+      DeleteGeoDateEvent event, Emitter<SearchAddressState> emit) {
+    data = null;
   }
 
   void _deletePolyline(
@@ -51,13 +63,30 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   void _changeMapPosition(
       ChangeMapPosition event, Emitter<SearchAddressState> emit) async {
     if (!isPolilyne) {
+      var position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       data = await Geocoder2.getDataFromCoordinates(
-          latitude: event.coordinates.latitude.toDouble(),
-          longitude: event.coordinates.longitude.toDouble(),
+          latitude: event.coordinates.latitude,
+          longitude: event.coordinates.longitude,
           language: 'RU',
           googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
 
       emit(ChangeAddressSuccess(data));
+    }
+  }
+
+  void _getAddress(
+      GetAddressPosition event, Emitter<SearchAddressState> emit) async {
+    if (await LocationGeo().checkPermission()) {
+      var position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      data = await Geocoder2.getDataFromCoordinates(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          language: 'RU',
+          googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
+
+      emit(GetAddressSuccess(data));
     }
   }
 
@@ -66,60 +95,124 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     emit(SearchLoading());
     isPolilyne = true;
 
-    final locationFrom = await Geocoder2.getDataFromAddress(
-        address: event.suggestionsStart.first.name, googleMapApiKey: apiKey);
+    final locationFrom = data ??
+        await Geocoder2.getDataFromAddress(
+            address: event.suggestionsStart.first!.name,
+            googleMapApiKey: apiKey);
     final locationTo = await Geocoder2.getDataFromAddress(
-        address: event.suggestionsEnd.last.name, googleMapApiKey: apiKey);
+        address: event.suggestionsEnd.last!.name, googleMapApiKey: apiKey);
 
-    final directions = await DirectionsRepository(dio: null).getDirections(
-        origin: LatLng(locationFrom.latitude, locationFrom.longitude),
-        destination: LatLng(locationTo.latitude, locationTo.longitude));
-    if (directions != null) {
-      final fromIcon = BitmapDescriptor.fromBytes(
-          await getBytesFromAsset('assets/images/from.png', 90));
-      final toIcon = BitmapDescriptor.fromBytes(
-          await getBytesFromAsset('assets/images/to.png', 90));
+    final fromIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/from.png', 90));
+    final toIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/to.png', 90));
 
-      List<String> type = ['Walk', 'Car'];
-      List<respCoast.CoastResponse> coasts = [];
-      List<cstAdvanced.Locations> locations = [];
-
-      for (var element in event.suggestionsStart) {
-        locations.add(
-          cstAdvanced.Locations(
-            type: 'Pickup',
-            point: cstAdvanced.Point(
-              code: element.iD,
+    Directions? directions;
+    try {
+      directions = await DirectionsRepository(dio: null).getDirections(
+          origin: LatLng(locationFrom.latitude, locationFrom.longitude),
+          destination: LatLng(locationTo.latitude, locationTo.longitude));
+    } catch (e) {
+      emit(
+        SearchAddressRoutePolilyne(
+          Directions(
+              bounds: LatLngBounds(
+                southwest: LatLng(2, 2),
+                northeast: LatLng(3, 3),
+              ),
+              polylinePoints: [],
+              totalDistance: '',
+              totalDuration: ''),
+          {
+            Marker(
+              icon: fromIcon,
+              markerId: const MarkerId('start'),
             ),
-          ),
-        );
-      }
+            Marker(
+              icon: toIcon,
+              markerId: const MarkerId('finish'),
+            ),
+          },
+          [],
+        ),
+      );
+    }
+    if (directions != null) {
+      List<String> type = ['Walk', 'Car'];
+      List<CoastResponse> coasts = [];
+      List<Location> locations = [];
+
+      // if (data == null) {
+        for (var element in event.suggestionsStart) {
+          locations.add(
+            Location(
+              type: 'Pickup',
+              point: Point(
+                latitude: element!.point!.latitude!,
+                longitude: element.point!.longitude!,
+              ),
+            ),
+          );
+        }
+      // } else {
+      //   locations.add(
+      //     Location(
+      //       type: 'Pickup',
+      //       point: Point(
+      //         latitude: data!.latitude,
+      //         longitude: data!.longitude,
+      //       ),
+      //     ),
+      //   );
+      // }
 
       for (var element in event.suggestionsEnd) {
         locations.add(
-          cstAdvanced.Locations(
+          Location(
             type: 'Drop',
-            point: cstAdvanced.Point(
-              code: element.iD,
+            point: Point(
+                latitude: element!.point!.latitude!,
+                longitude: element.point!.longitude!),
+          ),
+        );
+      }
+
+      try {
+        for (var element in type) {
+          final res = await Repository().getCoastAdvanced(
+            CoastAdvanced(
+              type: element,
+              locations: locations,
             ),
-          ),
-        );
-      }
-
-      for (var element in type) {
-        final res = await Repository().getCoastAdvanced(
-          cstAdvanced.CoastAdvanced(
-            type: element,
-            locations: locations,
-          ),
-        );
-        if (res != null) {
-          coasts.add(res);
+          );
+          if (res != null) {
+            coasts.add(res);
+          }
         }
-      }
 
-      emit(
-        SearchAddressRoutePolilyne(
+        emit(
+          SearchAddressRoutePolilyne(
+            directions,
+            {
+              Marker(
+                icon: fromIcon,
+                markerId: const MarkerId('start'),
+                position: LatLng(directions.polylinePoints.first.latitude,
+                    directions.polylinePoints.first.longitude),
+              ),
+              Marker(
+                icon: toIcon,
+                markerId: const MarkerId('finish'),
+                position: LatLng(directions.polylinePoints.last.latitude,
+                    directions.polylinePoints.last.longitude),
+              ),
+            },
+            coasts,
+          ),
+        );
+      } catch (e) {
+        isPolilyne = false;
+        emit(SearchAddressRoutePolilyne(
           directions,
           {
             Marker(
@@ -135,9 +228,9 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
                   directions.polylinePoints.last.longitude),
             ),
           },
-          coasts,
-        ),
-      );
+          [],
+        ));
+      }
     } else {
       isPolilyne = false;
     }

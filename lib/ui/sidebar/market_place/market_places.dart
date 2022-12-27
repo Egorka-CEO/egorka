@@ -1,6 +1,7 @@
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/marketplaces.dart';
+import 'package:egorka/model/point.dart';
 import 'package:egorka/widget/bottom_sheet_map_marketplaces.dart';
 import 'package:egorka/widget/map_marketplaces.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class MarketPlacesMap extends StatelessWidget {
   MarketPlacesMap(this.marketPlaces, {super.key});
   PanelController panelController = PanelController();
 
-  Points? points;
+  Point? points;
 
   @override
   Widget build(BuildContext context) {

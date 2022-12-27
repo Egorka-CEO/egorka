@@ -259,6 +259,7 @@ class _ErrorAnimState extends State<ErrorAnim>
                   fontSize: 20,
                   color: Colors.white,
                 ),
+                textAlign: TextAlign.center,
               ),
               Text(
                 widget.error,
@@ -266,6 +267,7 @@ class _ErrorAnimState extends State<ErrorAnim>
                   fontSize: 13,
                   color: Colors.white,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),

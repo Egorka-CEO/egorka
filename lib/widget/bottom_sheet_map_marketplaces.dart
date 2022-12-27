@@ -1,6 +1,7 @@
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/marketplaces.dart' as mrkt;
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point_marketplace.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +23,7 @@ class BottomMarketPlacesMap extends StatefulWidget {
 class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
   FocusNode focusFrom = FocusNode();
 
-  mrkt.Points? points;
+  PointMarketPlace? points;
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +84,12 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
                       ),
                       child: Column(
                         children: [
-                          Text(points!.name[0].name,
+                          Text(
+                              points!.name!.first.name!,
                               style: CustomTextStyle.black15w700),
                           Text(
-                            points!.address[0].address,
+                            points!
+                                .iD!,
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 20.h),

@@ -1,13 +1,13 @@
 import 'package:geolocator/geolocator.dart';
 
-class Location {
+class LocationGeo {
   Future<bool> checkPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return false;
+      // return false;
     }
 
     permission = await Geolocator.checkPermission();

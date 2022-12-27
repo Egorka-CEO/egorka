@@ -6,14 +6,6 @@ class AccountsDeposit {
   AccountsDeposit.fromJson(Map<String, dynamic> json) {
     result = json['Result'] != null ? Result.fromJson(json['Result']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (result != null) {
-      data['Result'] = result!.toJson();
-    }
-    return data;
-  }
 }
 
 class Result {
@@ -29,14 +21,6 @@ class Result {
       });
     }
     return Result(accounts: account);
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (accounts.isNotEmpty) {
-      data['Accounts'] = accounts.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 }
 
@@ -80,17 +64,5 @@ class Accounts {
       type: type,
       status: status,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['ID'] = iD;
-    data['Number'] = number;
-    data['Amount'] = amount;
-    data['Credit'] = credit;
-    data['Currency'] = currency;
-    data['Type'] = type;
-    data['Status'] = status;
-    return data;
   }
 }

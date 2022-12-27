@@ -1,18 +1,23 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
-import 'package:egorka/model/coast_base.dart' as base;
+import 'package:egorka/model/coast_base.dart';
+import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/locations.dart';
+import 'package:egorka/model/marketplaces.dart';
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
-import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:intl/intl.dart';
 part 'market_place_event.dart';
 part 'market_place_state.dart';
 
 class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
   late GeoData data;
-  mrkt.MarketPlaces? marketPlaces;
+  MarketPlaces? marketPlaces;
 
   MarketPlacePageBloc() : super(MarketPlaceStated()) {
     on<MarketPlace>(_searchAddress);
@@ -29,29 +34,30 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
   void _calculateOrder(CalcOrder event, Emitter<MarketPlaceState> emit) async {
     emit(CalcLoading());
     var result = await Repository().getCoastBase(
-      base.CoastBase(
+      CoastBase(
         locations: [
-          base.Locations(
+          Location(
             date: event.time != null
                 ? DateFormat('YYYY.MM.DD HH:MM:SS').format(event.time!)
                 : null,
-            point: base.Point(
-              code: event.suggestion!.iD,
+            point: Point(
+              code:
+                  '${event.suggestion!.point!.latitude},${event.suggestion!.point!.longitude}',
               entrance: event.entrance,
               floor: event.floor,
               room: event.room,
             ),
-            contact: base.Contact(
+            contact: Contact(
                 name: event.name,
                 phoneMobile: event.phone,
                 phoneOffice: event.phone,
                 phoneOfficeAdd: event.phone),
           ),
-          base.Locations(
-            point: base.Point(
-              code: event.points!.code,
+          Location(
+            point: Point(
+              code: '${event.points!.latitude},${event.points!.longitude}',
             ),
-            contact: base.Contact(
+            contact: Contact(
                 name: event.name,
                 phoneMobile: event.phone,
                 phoneOffice: event.phone,
@@ -82,7 +88,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     var result = await Repository().getMarketplaces();
     if (result != null) {
       marketPlaces = result;
-      emit(MarketPlacesSuccessState(null));
+      emit(MarketPlacesState(marketPlaces));
     }
   }
 

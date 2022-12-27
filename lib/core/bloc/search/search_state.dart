@@ -9,7 +9,7 @@ class SearchAddressStated extends SearchAddressState {}
 class SearchAddressRoutePolilyne extends SearchAddressState {
   Directions routes;
   Set<Marker> markers;
-  List<respCoast.CoastResponse> coasts;
+  List<CoastResponse> coasts;
 
   SearchAddressRoutePolilyne(this.routes, this.markers, this.coasts);
 }
@@ -28,6 +28,12 @@ class ChangeAddressSuccess extends SearchAddressState {
   GeoData? geoData;
 
   ChangeAddressSuccess(this.geoData);
+}
+
+class GetAddressSuccess extends SearchAddressState {
+  GeoData? geoData;
+
+  GetAddressSuccess(this.geoData);
 }
 
 class SearchAddressFailed extends SearchAddressState {}

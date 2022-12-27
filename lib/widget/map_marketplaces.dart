@@ -1,7 +1,7 @@
 import 'package:custom_map_markers/custom_map_markers.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/directions.dart';
-import 'package:egorka/model/marketplaces.dart';
+import 'package:egorka/model/point_marketplace.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +15,7 @@ class MapMarketPlaces extends StatefulWidget {
     target: LatLng(56.159646, 35.469827),
     zoom: 4,
   );
-  List<Points> points;
+  List<PointMarketPlace> points;
   MapMarketPlaces({Key? key, required this.points}) : super(key: key);
 
   @override
@@ -31,15 +31,15 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
 
   void initMarkers() async {
     for (var element in widget.points) {
-      String name = element.name[0].name[0];
+      String name = element.name!.first.name![0];
       marker.add(MarkerData(
         marker: Marker(
             onTap: () {
               BlocProvider.of<MarketPlacePageBloc>(context)
                   .add(SelectMarketPlaces(element));
             },
-            markerId: MarkerId(element.ID),
-            position: LatLng(element.latitude, element.longitude)),
+            markerId: MarkerId(element.iD!),
+            position: LatLng(element.latitude!, element.longitude!)),
         child: _customMarker(name, Colors.red),
       ));
     }

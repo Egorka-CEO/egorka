@@ -26,6 +26,12 @@ class MarketPlaceSuccess extends MarketPlaceState {
   MarketPlaceSuccess(this.address);
 }
 
+class MarketPlacesState extends MarketPlaceState {
+  MarketPlaces? address;
+
+  MarketPlacesState(this.address);
+}
+
 class MarketPlaceFailed extends MarketPlaceState {}
 
 class MarketPlacesSuccessState extends MarketPlaceState {
@@ -35,7 +41,7 @@ class MarketPlacesSuccessState extends MarketPlaceState {
 }
 
 class MarketPlacesSelectPointState extends MarketPlaceState {
-  mrkt.Points points;
+  PointMarketPlace points;
 
   MarketPlacesSelectPointState(this.points);
 }

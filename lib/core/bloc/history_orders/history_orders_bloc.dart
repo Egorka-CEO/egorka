@@ -3,6 +3,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/directions.dart';
+import 'package:egorka/model/locations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui' as ui;
@@ -52,12 +53,12 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
   void _getPoliline(
       HistoryOrderPolilyne event, Emitter<HistoryOrdersState> emit) async {
     final locationFrom = await Geocoder2.getDataFromCoordinates(
-        latitude: event.locations.first.point.Latitude,
-        longitude: event.locations.first.point.Longitude,
+        latitude: event.locations.first.point!.latitude!,
+        longitude: event.locations.first.point!.longitude!,
         googleMapApiKey: apiKey);
     final locationTo = await Geocoder2.getDataFromCoordinates(
-        latitude: event.locations.last.point.Latitude,
-        longitude: event.locations.last.point.Longitude,
+        latitude: event.locations.last.point!.latitude!,
+        longitude: event.locations.last.point!.longitude!,
         googleMapApiKey: apiKey);
 
     final directionsTo = await DirectionsRepository(dio: null).getDirections(

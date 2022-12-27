@@ -98,6 +98,8 @@ class _BottomSheetDraggableState
               padding: EdgeInsets.zero,
               itemCount: coast.length,
               itemBuilder: (context, index) {
+                if (coast[index].result.locations.isEmpty)
+                  return const SizedBox();
                 return _pointCard(coast[index], index, context);
               },
             );
@@ -106,8 +108,10 @@ class _BottomSheetDraggableState
   }
 
   Container _pointCard(CreateFormModel state, int index, BuildContext context) {
-    final hour =
-        DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000).hour;
+    var parsedDate = DateTime.parse(state.result.RecordDate!);
+    print('object ${parsedDate}');
+
+    final hour = parsedDate.hour;
     String period = 'вечером';
     if (hour >= 0 && hour < 6) {
       period = 'ночью';
@@ -122,8 +126,7 @@ class _BottomSheetDraggableState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DateFormat('dd.MM.yyy').format(
-                DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000)),
+            DateFormat('dd.MM.yyy').format(parsedDate),
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 20,
@@ -159,7 +162,7 @@ class _BottomSheetDraggableState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Поездка $period в, ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date * 1000))}',
+                                    'Поездка $period в, ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
                                     style: const TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w600),
@@ -174,8 +177,9 @@ class _BottomSheetDraggableState
                                       SizedBox(width: 10.h),
                                       Flexible(
                                         child: Text(
-                                          state.result.locations.first.point
-                                              .Address,
+                                          state.result.locations.first.point!
+                                              .address!,
+                                          // state.result.locations.first.point!.address!,
                                           style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500),
@@ -195,8 +199,8 @@ class _BottomSheetDraggableState
                                       SizedBox(width: 10.h),
                                       Flexible(
                                         child: Text(
-                                          state.result.locations.last.point
-                                              .Address,
+                                          state.result.locations.last.point!
+                                              .address!,
                                           style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500),
@@ -208,7 +212,7 @@ class _BottomSheetDraggableState
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    state.result.Status,
+                                    state.result.Status!,
                                     style: const TextStyle(
                                         color: Colors.red,
                                         fontSize: 14,

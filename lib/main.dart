@@ -14,7 +14,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  Location().checkPermission;
+  LocationGeo().checkPermission;
   initializeDateFormatting('ru');
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([

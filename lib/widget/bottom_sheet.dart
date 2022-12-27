@@ -4,9 +4,10 @@ import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/point.dart';
 import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/allert_dialog.dart';
@@ -85,7 +86,28 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchAddressBloc, SearchAddressState>(
-        builder: (context, snapshot) {
+        buildWhen: (previous, current) {
+      if (current is GetAddressSuccess) {
+        suggestionsStart = Suggestions(
+          iD: null,
+          name: current.geoData!.address,
+          point: Point(
+            address: current.geoData!.address,
+            code: '${current.geoData!.latitude},${current.geoData!.longitude}',
+            latitude: current.geoData!.latitude,
+            longitude: current.geoData!.longitude,
+          ),
+        );
+        fromController.text = current.geoData!.address;
+
+        if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
+          coasts.clear();
+          BlocProvider.of<SearchAddressBloc>(context)
+              .add(SearchAddressPolilyne([suggestionsStart], [suggestionsEnd]));
+        }
+      }
+      return true;
+    }, builder: (context, snapshot) {
       var bloc = BlocProvider.of<SearchAddressBloc>(context);
       return SlidingUpPanel(
         controller: panelController,
@@ -114,7 +136,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           }
         },
         maxHeight: 735.h,
-        minHeight: bloc.isPolilyne ? 370.h : 215.h,
+        minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
+            ? 370.h
+            : 215.h,
         defaultPanelState: PanelState.CLOSED,
       );
     });
@@ -238,7 +262,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   focusFrom.unfocus();
                                   focusTo.unfocus();
                                   // panelController.close();
-                                  bloc.add(SearchMeEvent());
+                                  bloc.add(GetAddressPosition());
                                 },
                                 child: const Icon(
                                   Icons.gps_fixed,
@@ -362,15 +386,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       : null,
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
-                  // if (current is ChangeAddressSuccess) {
-                    // if (fromController.text != current.geoData!.address) {
-                      // fromController.text = current.geoData!.address;
-                    // }
-                  // }
+                  if (current is ChangeAddressSuccess) {
+                    if (fromController.text != current.geoData!.address) {
+                      fromController.text = current.geoData!.address;
+                    }
+                  }
                   if (current is SearchAddressRoutePolilyne) {
-                    coasts.addAll(current.coasts);
-                    coastResponse = current.coasts.first;
-                    streamDelivery.add(0);
+                    if (current.coasts.isNotEmpty) {
+                      coasts.addAll(current.coasts);
+                      coastResponse = current.coasts.first;
+                      streamDelivery.add(0);
+                    }
                   }
                   if (current is FindMeState) return false;
 
@@ -552,12 +578,21 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   void authShowDialog(int index) async {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
+    var bloc = BlocProvider.of<SearchAddressBloc>(context).data;
 
     if (user != null) {
       Navigator.of(context).pushNamed(AppRoute.newOrder, arguments: [
         coastResponse,
         listChoice[index],
-        suggestionsStart,
+        suggestionsStart ??
+            Suggestions(
+                iD: null,
+                name: coastResponse!.result!.locations!.first.point!.address!,
+                point: Point(
+                    latitude: coastResponse!
+                        .result!.locations!.first.point!.latitude!,
+                    longitude: coastResponse!
+                        .result!.locations!.first.point!.longitude!)),
         suggestionsEnd,
       ]);
     } else {
@@ -622,6 +657,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 suggestionsStart = state.address!.result.suggestions![index];
                 fromController.text =
                     state.address!.result.suggestions![index].name;
+                // BlocProvider.of<SearchAddressBloc>(context)
+                //     .add(DeleteGeoDateEvent());
               } else if (focusTo.hasFocus) {
                 suggestionsEnd = state.address!.result.suggestions![index];
                 toController.text =
@@ -633,7 +670,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 coasts.clear();
                 BlocProvider.of<SearchAddressBloc>(context).add(
                     SearchAddressPolilyne(
-                        [suggestionsStart!], [suggestionsEnd!]));
+                        [suggestionsStart], [suggestionsEnd]));
               } else {
                 BlocProvider.of<SearchAddressBloc>(context).add(
                   JumpToPointEvent(

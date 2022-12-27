@@ -1,9 +1,9 @@
-import 'package:egorka/model/address.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';

@@ -1,11 +1,15 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/coast_advanced.dart';
+import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/response_coast_base.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
-import 'package:egorka/model/coast_advanced.dart' as cstAdvanced;
-import 'package:egorka/model/response_coast_base.dart' as respCoast;
 part 'new_order_event.dart';
 part 'new_order_state.dart';
 
@@ -50,20 +54,21 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
       CalculateCoastEvent event, Emitter<NewOrderState> emit) async {
     emit(CalcLoading());
 
-    respCoast.CoastResponse? coasts;
-    List<cstAdvanced.Locations> locations = [];
+    CoastResponse? coasts;
+    List<Location> locations = [];
 
     for (var element in event.start) {
       locations.add(
-        cstAdvanced.Locations(
+        Location(
           type: 'Pickup',
-          point: cstAdvanced.Point(
-            code: element.suggestions.iD,
+          point: Point(
+            code:
+                '${element.suggestions.point!.latitude},${element.suggestions.point!.longitude}',
             entrance: element.details?.entrance,
             floor: element.details?.floor,
             room: element.details?.room,
           ),
-          contact: cstAdvanced.Contact(
+          contact: Contact(
             name: element.details?.name,
             phoneMobile: element.details?.phone,
             phoneOffice: element.details?.phone,
@@ -75,15 +80,15 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
 
     for (var element in event.end) {
       locations.add(
-        cstAdvanced.Locations(
+        Location(
           type: 'Drop',
-          point: cstAdvanced.Point(
-            code: element.suggestions.iD,
+          point: Point(
+            code: '${element.suggestions.point!.latitude},${element.suggestions.point!.longitude}',
             entrance: element.details?.entrance,
             floor: element.details?.floor,
             room: element.details?.room,
           ),
-          contact: cstAdvanced.Contact(
+          contact: Contact(
             name: element.details?.name,
             phoneMobile: element.details?.phone,
             phoneOffice: element.details?.phone,
@@ -94,7 +99,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
     }
 
     final res = await Repository().getCoastAdvanced(
-      cstAdvanced.CoastAdvanced(
+      CoastAdvanced(
         type: event.typeCoast,
         locations: locations,
       ),

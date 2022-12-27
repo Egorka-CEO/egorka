@@ -1,6 +1,6 @@
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
-import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/directions.dart';
+import 'package:egorka/model/locations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MiniMapView extends StatefulWidget {
-  List<Locations> locations;
+  List<Location> locations;
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(56.159646, 35.469827),
     zoom: 4,

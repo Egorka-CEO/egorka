@@ -1,3 +1,5 @@
+import 'package:egorka/model/suggestions.dart';
+
 class Address {
   String time;
   int timeStamp;
@@ -67,38 +69,6 @@ class Result {
   }
 }
 
-class Suggestions {
-  String? iD;
-  String name;
-  Point? point;
-
-  Suggestions({
-    required this.iD,
-    required this.name,
-    required this.point,
-  });
-
-  factory Suggestions.fromJson(Map<String, dynamic> json) {
-    final iD = json['ID'];
-    final name = json['Name'];
-    final point = json['Point'] != null ? Point.fromJson(json['Point']) : null;
-    return Suggestions(iD: iD, name: name, point: point);
-  }
-}
-
-class Point {
-  double latitude;
-  double longitude;
-
-  Point({required this.latitude, required this.longitude});
-
-  factory Point.fromJson(Map<String, dynamic> json) {
-    final latitude = json['Latitude'];
-    final longitude = json['Longitude'];
-    return Point(latitude: latitude, longitude: longitude);
-  }
-}
-
 class Errors {
   String? type;
   int? code;
@@ -106,12 +76,13 @@ class Errors {
   String? description;
   String? messagePrepend;
 
-  Errors(
-      {required this.type,
-      required this.code,
-      required this.message,
-      required this.description,
-      required this.messagePrepend,});
+  Errors({
+    required this.type,
+    required this.code,
+    required this.message,
+    required this.description,
+    required this.messagePrepend,
+  });
 
   factory Errors.fromJson(Map<String, dynamic> json) {
     final type = json['Type'];

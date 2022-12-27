@@ -1,7 +1,7 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/location.dart';
-import 'package:egorka/model/address.dart';
 import 'package:egorka/model/directions.dart';
+import 'package:egorka/model/point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapView extends StatefulWidget {
   static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(53.159646, 24.469827),
+    target: LatLng(53.160161, 24.468712),
     zoom: 5,
   );
   const MapView({Key? key}) : super(key: key);
@@ -31,13 +31,14 @@ class _MapViewState extends State<MapView> {
 
   @override
   void initState() {
-    Location().checkPermission;
+    LocationGeo().checkPermission;
 
     super.initState();
   }
 
   void _getPosition() async {
-    if (await Location().checkPermission()) {
+    if (await LocationGeo().checkPermission()) {
+      BlocProvider.of<SearchAddressBloc>(context).add(GetAddressPosition());
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       if (mapController != null) {
@@ -55,7 +56,8 @@ class _MapViewState extends State<MapView> {
   }
 
   void _findMe() async {
-    if (await Location().checkPermission()) {
+    if (await LocationGeo().checkPermission()) {
+      BlocProvider.of<SearchAddressBloc>(context).add(GetAddressPosition());
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       if (mapController != null) {
@@ -73,12 +75,12 @@ class _MapViewState extends State<MapView> {
   }
 
   void _jumpToPoint(Point point) async {
-    if (await Location().checkPermission()) {
+    if (await LocationGeo().checkPermission()) {
       if (mapController != null) {
         mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
-              target: LatLng(point.latitude, point.longitude),
+              target: LatLng(point.latitude!, point.longitude!),
               zoom: 15,
               tilt: 0,
             ),
@@ -93,11 +95,13 @@ class _MapViewState extends State<MapView> {
     return BlocBuilder<SearchAddressBloc, SearchAddressState>(
         buildWhen: (previous, current) {
       if (current is SearchAddressRoutePolilyne) {
-        routes = current.routes;
-        marker = current.markers;
-        mapController!.animateCamera(
-          CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
-        );
+        if (current.coasts.isNotEmpty) {
+          routes = current.routes;
+          marker = current.markers;
+          mapController!.animateCamera(
+            CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
+          );
+        }
 
         return true;
       } else if (current is FindMeState) {
@@ -109,6 +113,19 @@ class _MapViewState extends State<MapView> {
         return true;
       } else if (current is JumpToPointState) {
         _jumpToPoint(current.point);
+        return true;
+      }
+      if (current is GetAddressSuccess) {
+        _jumpToPoint(Point(
+            latitude: current.geoData!.latitude,
+            longitude: current.geoData!.longitude));
+        // BlocProvider.of<SearchAddressBloc>(context).add(
+        //   JumpToPointEvent(
+        //     Point(
+        //         latitude: current.geoData!.latitude,
+        //         longitude: current.geoData!.longitude),
+        //   ),
+        // );
         return true;
       } else {
         return false;
@@ -139,14 +156,17 @@ class _MapViewState extends State<MapView> {
             pos = position;
           },
           onCameraIdle: () {
+            print('object 12');
             if (pos != null) {
               BlocProvider.of<SearchAddressBloc>(context)
                   .add(ChangeMapPosition(pos!.target));
             }
             if (state is SearchAddressRoutePolilyne) {
-              mapController!.animateCamera(
-                CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
-              );
+              if (routes != null) {
+                mapController!.animateCamera(
+                  CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
+                );
+              }
             }
           },
           initialCameraPosition: MapView._kGooglePlex,

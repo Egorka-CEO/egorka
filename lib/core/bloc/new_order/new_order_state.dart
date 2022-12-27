@@ -11,7 +11,7 @@ class NewOrderCloseBtmSheet extends NewOrderState {}
 class CalcLoading extends NewOrderState {}
 
 class CalcSuccess extends NewOrderState {
-  respCoast.CoastResponse? coasts;
+  CoastResponse? coasts;
 
   CalcSuccess(this.coasts);
 }

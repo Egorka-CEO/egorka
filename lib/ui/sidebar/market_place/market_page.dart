@@ -5,7 +5,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/history.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/point.dart';
 import 'package:egorka/model/point_marketplace.dart';
@@ -29,7 +29,7 @@ import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MarketPage extends StatelessWidget {
-  HistoryModel? historyModel;
+  CreateFormModel? historyModel;
   MarketPage({super.key, this.historyModel});
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class MarketPage extends StatelessWidget {
 }
 
 class MarketPages extends StatefulWidget {
-  HistoryModel? historyModel;
+  CreateFormModel? historyModel;
   MarketPages({super.key, this.historyModel});
 
   @override
@@ -93,18 +93,25 @@ class _MarketPageState extends State<MarketPages>
   void initState() {
     super.initState();
     if (widget.historyModel != null) {
-      fromController.text = widget.historyModel!.fromAdress!;
-      toController.text = widget.historyModel!.toAdress!;
-      item1Controller.text = widget.historyModel!.item1!;
-      item2Controller.text = widget.historyModel!.item2!;
-      item3Controller.text = widget.historyModel!.item3!;
-      startOrderController.text = widget.historyModel!.startOrder!;
-      countBucketController.text = widget.historyModel!.countBucket!.toString();
-      countPalletController.text = widget.historyModel!.countPallet!.toString();
-      nameController.text = widget.historyModel!.name!;
-      phoneController.text = widget.historyModel!.phone!;
-      bucketController.add(widget.historyModel!.countBucket!);
-      palletController.add(widget.historyModel!.countPallet!);
+      suggestion = Suggestions(
+          iD: '',
+          name: '',
+          point: widget.historyModel!.result.locations.first.point);
+      fromController.text =
+          widget.historyModel!.result.locations.first.point!.address!;
+      // toController.text = widget.historyModel!.toAdress!;
+      // item1Controller.text = widget.historyModel!.item1!;
+      // item2Controller.text = widget.historyModel!.item2!;
+      // item3Controller.text = widget.historyModel!.item3!;
+      startOrderController.text = DateFormat('dd.MM.yyy HH:mm').format(DateTime.now());
+      // countBucketController.text = widget.historyModel!.countBucket!.toString();
+      // countPalletController.text = widget.historyModel!.countPallet!.toString();
+      nameController.text =
+          widget.historyModel!.result.locations.first.contact!.name!;
+      phoneController.text =
+          widget.historyModel!.result.locations.first.contact!.phoneMobile!;
+      // bucketController.add(widget.historyModel!.countBucket!);
+      // palletController.add(widget.historyModel!.countPallet!);
     }
   }
 

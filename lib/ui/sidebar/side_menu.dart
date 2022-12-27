@@ -21,39 +21,54 @@ class NavBar extends StatelessWidget {
         child: Stack(
           children: [
             Container(color: Colors.white),
-            Padding(
-              padding: EdgeInsets.all(18.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 50.h),
-                  SvgPicture.asset(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 50.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  child: SvgPicture.asset(
                     'assets/icons/logo_egorka.svg',
                     alignment: Alignment.center,
                     width: 100.w,
                     height: 40.w,
                   ),
-                  SizedBox(height: 30.h),
-                  BlocBuilder<ProfileBloc, ProfileState>(
-                      builder: (context, snapshot) {
-                    final auth =
-                        BlocProvider.of<ProfileBloc>(context).getUser();
-                    if (auth != null) return const SizedBox();
-                    return TextButton(
+                ),
+                SizedBox(height: 30.h),
+                BlocBuilder<ProfileBloc, ProfileState>(
+                    builder: (context, snapshot) {
+                  final auth = BlocProvider.of<ProfileBloc>(context).getUser();
+                  if (auth != null) return const SizedBox();
+                  return SizedBox(
+                    width: 270.w,
+                    height: 50.h,
+                    child: TextButton(
                       onPressed: () =>
                           Navigator.of(context).pushNamed(AppRoute.auth),
                       style: ButtonStyle(
-                          padding:
-                              const MaterialStatePropertyAll(EdgeInsets.all(0)),
-                          foregroundColor:
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0),
+                            ),
+                          ),
+                          alignment: Alignment.centerLeft,
+                          padding: const MaterialStatePropertyAll(
+                              EdgeInsets.only(left: 18)),
+                          backgroundColor:
                               const MaterialStatePropertyAll(Colors.red),
+                          foregroundColor:
+                              const MaterialStatePropertyAll(Colors.white),
                           overlayColor:
-                              MaterialStatePropertyAll(Colors.grey[300])),
-                      child: const Text('Авторизоваться'),
-                    );
-                  }),
-                  // SizedBox(height: 30.h),
-                  Container(
+                              MaterialStatePropertyAll(Colors.red[700])),
+                      child: const Text('Входите, и начём'),
+                    ),
+                  );
+                }),
+                // SizedBox(height: 30.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  child: Container(
                     color: Colors.transparent,
                     height: 50.h,
                     child: Align(
@@ -82,12 +97,14 @@ class NavBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  BlocBuilder<ProfileBloc, ProfileState>(
-                      builder: (context, snapshot) {
-                    final auth =
-                        BlocProvider.of<ProfileBloc>(context).getUser();
-                    if (auth == null) return const SizedBox();
-                    return GestureDetector(
+                ),
+                BlocBuilder<ProfileBloc, ProfileState>(
+                    builder: (context, snapshot) {
+                  final auth = BlocProvider.of<ProfileBloc>(context).getUser();
+                  if (auth == null) return const SizedBox();
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: GestureDetector(
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoute.profile),
                       child: Container(
@@ -102,10 +119,13 @@ class NavBar extends StatelessWidget {
                           ),
                         ),
                       ),
-                    );
-                  }),
-                  if (blocHistory.coast.isNotEmpty)
-                    GestureDetector(
+                    ),
+                  );
+                }),
+                if (blocHistory.coast.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: GestureDetector(
                       onTap: () => Navigator.pushNamed(
                           context, AppRoute.currentOrder,
                           arguments: blocHistory.coast.first),
@@ -122,7 +142,10 @@ class NavBar extends StatelessWidget {
                         ),
                       ),
                     ),
-                  GestureDetector(
+                  ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  child: GestureDetector(
                     onTap: () {
                       BlocProvider.of<HistoryOrdersBloc>(context)
                           .add(OpenBtmSheetHistoryEvent());
@@ -140,7 +163,10 @@ class NavBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  child: GestureDetector(
                     onTap: () =>
                         Navigator.pushNamed(context, AppRoute.marketplaces),
                     child: Container(
@@ -156,7 +182,10 @@ class NavBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  child: GestureDetector(
                     onTap: () => Navigator.pushNamed(context, AppRoute.book),
                     child: Container(
                       color: Colors.transparent,
@@ -171,7 +200,10 @@ class NavBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  child: GestureDetector(
                     onTap: () => Navigator.pushNamed(context, AppRoute.about),
                     child: Container(
                       color: Colors.transparent,
@@ -187,8 +219,8 @@ class NavBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

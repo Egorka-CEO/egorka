@@ -1,6 +1,5 @@
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/create_form_model.dart';
-import 'package:egorka/model/history.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
@@ -46,7 +45,7 @@ class AppRoute {
       case marketplaces:
         var history;
         if (route.arguments != null) {
-          final list = route.arguments as List<HistoryModel>;
+          final list = route.arguments as List<CreateFormModel>;
           history = list[0];
         }
         return MaterialPageRoute(

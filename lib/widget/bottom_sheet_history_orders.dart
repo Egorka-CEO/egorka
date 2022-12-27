@@ -2,7 +2,6 @@ import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/create_form_model.dart';
-import 'package:egorka/model/history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,8 +97,9 @@ class _BottomSheetDraggableState
               padding: EdgeInsets.zero,
               itemCount: coast.length,
               itemBuilder: (context, index) {
-                if (coast[index].result.locations.isEmpty)
+                if (coast[index].result.locations.isEmpty) {
                   return const SizedBox();
+                }
                 return _pointCard(coast[index], index, context);
               },
             );
@@ -109,7 +109,6 @@ class _BottomSheetDraggableState
 
   Container _pointCard(CreateFormModel state, int index, BuildContext context) {
     var parsedDate = DateTime.parse(state.result.RecordDate!);
-    print('object ${parsedDate}');
 
     final hour = parsedDate.hour;
     String period = 'вечером';
@@ -231,21 +230,9 @@ class _BottomSheetDraggableState
                         child: Material(
                           color: Colors.grey[200],
                           child: InkWell(
-                            onTap: () => Navigator.of(context)
-                                .pushNamed(AppRoute.marketplaces, arguments: [
-                              HistoryModel(
-                                fromAdress: 'Москва Ленина 7',
-                                toAdress: 'Москва метро Белорусская',
-                                item1: '1',
-                                item2: '2',
-                                item3: '3',
-                                startOrder: '12 сентября 2022',
-                                name: 'Ахрип',
-                                phone: '+7 (999) 833-12-78',
-                                countBucket: 1,
-                                countPallet: 10,
-                              )
-                            ]),
+                            onTap: () => Navigator.of(context).pushNamed(
+                                AppRoute.marketplaces,
+                                arguments: [state]),
                             child: SizedBox(
                               width: 40.h,
                               height: 40.h,

@@ -115,8 +115,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     alignment: Alignment.centerRight,
                                     child: GestureDetector(
                                       onTap: () async {
-                                        MessageDialogs().showLoadDialog(
-                                            'Отмена заявки');
+                                        MessageDialogs()
+                                            .showLoadDialog('Отмена заявки');
                                         bool res = await Repository().cancelForm(
                                             '${formOrder!.result!.recordNumber}',
                                             '${formOrder!.result!.recordPIN}');
@@ -559,32 +559,28 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                       context)
                                                   .deposit;
 
-                                          if (invoice.isNotEmpty) {
-                                            MessageDialogs().showLoadDialog(
-                                                'Производится оплата с вашего депозита');
-                                            String? res = await Repository()
-                                                .paymentDeposit(
-                                                    formOrder!.result!.invoices!
-                                                        .first.iD!,
-                                                    formOrder!.result!.invoices!
-                                                        .first.pIN!,
-                                                    deposit!.result!.accounts
-                                                        .first.iD);
-                                            SmartDialog.dismiss();
-                                            BlocProvider.of<HistoryOrdersBloc>(
-                                                    context)
-                                                .add(GetListOrdersEvent());
-                                            res == null
-                                                ? MessageDialogs()
-                                                    .completeDialog(
-                                                        text: 'Оплачено')
-                                                : MessageDialogs().errorDialog(
-                                                    text: 'Ошибка оплаты',
-                                                    error: res);
-                                            resPaid =
-                                                res == null ? true : false;
-                                            setState(() {});
-                                          }
+                                          MessageDialogs().showLoadDialog(
+                                              'Производится оплата с вашего депозита');
+                                          String? res = await Repository()
+                                              .paymentDeposit(
+                                                  formOrder!.result!.invoices!
+                                                      .first.iD!,
+                                                  formOrder!.result!.invoices!
+                                                      .first.pIN!,
+                                                  deposit!.result!.accounts
+                                                      .first.iD);
+                                          SmartDialog.dismiss();
+                                          BlocProvider.of<HistoryOrdersBloc>(
+                                                  context)
+                                              .add(GetListOrdersEvent());
+                                          res == null
+                                              ? MessageDialogs().completeDialog(
+                                                  text: 'Оплачено')
+                                              : MessageDialogs().errorDialog(
+                                                  text: 'Ошибка оплаты',
+                                                  error: res);
+                                          resPaid = res == null ? true : false;
+                                          setState(() {});
                                         },
                                         child: const Text('Депозит'),
                                       ),

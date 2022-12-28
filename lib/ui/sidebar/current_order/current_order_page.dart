@@ -1,5 +1,4 @@
 import 'package:blur/blur.dart';
-import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
@@ -557,10 +556,6 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ),
                                       ),
                                       onPressed: () async {
-                                        final invoice =
-                                            BlocProvider.of<DepositBloc>(
-                                                    context)
-                                                .invoiceModel;
                                         final deposit =
                                             BlocProvider.of<ProfileBloc>(
                                                     context)
@@ -569,8 +564,10 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                             'Производится оплата с вашего депозита');
                                         String? res = await Repository()
                                             .paymentDeposit(
-                                                invoice[0].iD!,
-                                                invoice[0].pIN!,
+                                                formOrder!.result!.invoices!
+                                                    .first.iD!,
+                                                formOrder!.result!.invoices!
+                                                    .first.pIN!,
                                                 deposit!
                                                     .result!.accounts.first.iD);
                                         SmartDialog.dismiss();

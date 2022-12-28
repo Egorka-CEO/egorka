@@ -173,7 +173,7 @@ class _MapViewState extends State<MapView> {
           mapType: MapType.normal,
           onMapCreated: (GoogleMapController controller) {
             mapController = controller;
-            // _getPosition();
+            _getPosition();
           },
         ),
       );

@@ -1,5 +1,6 @@
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
@@ -52,6 +53,10 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
     pickDay = DateFormat.EEEE('ru').format(parseDate!);
     pickDate =
         '$pickDay, ${parseDate!.day} ${DateFormat.MMMM('ru').format(parseDate!)} с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
+    resPayed = formOrder!.result!.status == 'Rejected' ||
+            formOrder!.result!.payStatus! == 'Paid'
+        ? null
+        : '';
 
     setState(() {});
   }
@@ -97,7 +102,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                       children: [
                         SizedBox(height: 20.h),
                         Text(
-                          '${formOrder!.result?.iD} / $day ${DateFormat.MMMM('ru').format(dateTime)}',
+                          '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(dateTime)}',
                           style: CustomTextStyle.black15w500,
                         ),
                         SizedBox(height: 10.h),
@@ -524,6 +529,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 deposit!
                                                     .result!.accounts.first.iD);
                                         SmartDialog.dismiss();
+                                        BlocProvider.of<HistoryOrdersBloc>(
+                                                context)
+                                            .add(GetListOrdersEvent());
                                         resPayed == null
                                             ? MessageDialogs().completeDialog(
                                                 text: 'Оплачено')

@@ -35,18 +35,19 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
       HistoryUpdateListEvent event, Emitter<HistoryOrdersState> emit) {
     List<CreateFormModel> coastTemp = [];
     coastTemp.add(event.coast);
-    coastTemp.addAll(coast);
-    coast.clear();
-    coast.addAll(coastTemp);
-    emit(HistoryUpdateList());
+    // coastTemp.addAll(coast);
+    // coast.clear();
+    // coast.addAll(coastTemp);
+    // emit(HistoryUpdateList(coast));
   }
 
   void _getListOrders(
       GetListOrdersEvent event, Emitter<HistoryOrdersState> emit) async {
     List<CreateFormModel>? list = await Repository().getListForm();
     if (list != null) {
+      coast.clear();
       coast.addAll(list);
-      emit(HistoryUpdateList());
+      emit(HistoryUpdateList(list));
     }
   }
 

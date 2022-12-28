@@ -388,6 +388,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 buildWhen: (previous, current) {
                   if (current is ChangeAddressSuccess) {
                     if (fromController.text != current.geoData!.address) {
+                      suggestionsStart = Suggestions(
+                        iD: null,
+                        name: current.geoData!.address,
+                        point: Point(
+                          address: current.geoData!.address,
+                          code:
+                              '${current.geoData!.latitude},${current.geoData!.longitude}',
+                          latitude: current.geoData!.latitude,
+                          longitude: current.geoData!.longitude,
+                        ),
+                      );
                       fromController.text = current.geoData!.address;
                     }
                   }

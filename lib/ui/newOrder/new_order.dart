@@ -174,11 +174,13 @@ class _NewOrderPageState extends State<NewOrderPageState> {
             } else if (current is CalcSuccess) {
               widget.order = current.coasts ?? widget.order;
             } else if (current is CreateFormSuccess) {
+              BlocProvider.of<HistoryOrdersBloc>(context)
+                  .add(GetListOrdersEvent());
               MessageDialogs()
                   .completeDialog(text: 'Заявка создана')
                   .then((value) {
-                BlocProvider.of<HistoryOrdersBloc>(context)
-                    .add(HistoryUpdateListEvent(current.createFormModel));
+                // BlocProvider.of<HistoryOrdersBloc>(context)
+                //     .add(HistoryUpdateListEvent(current.createFormModel));
                 Navigator.of(context).pop();
               });
             } else if (current is CreateFormFail) {

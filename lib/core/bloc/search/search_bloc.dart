@@ -63,8 +63,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   void _changeMapPosition(
       ChangeMapPosition event, Emitter<SearchAddressState> emit) async {
     if (!isPolilyne) {
-      var position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
       data = await Geocoder2.getDataFromCoordinates(
           latitude: event.coordinates.latitude,
           longitude: event.coordinates.longitude,
@@ -95,10 +93,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     emit(SearchLoading());
     isPolilyne = true;
 
-    final locationFrom = data ??
-        await Geocoder2.getDataFromAddress(
-            address: event.suggestionsStart.first!.name,
-            googleMapApiKey: apiKey);
+    final locationFrom = await Geocoder2.getDataFromAddress(
+        address: event.suggestionsStart.first!.name, googleMapApiKey: apiKey);
     final locationTo = await Geocoder2.getDataFromAddress(
         address: event.suggestionsEnd.last!.name, googleMapApiKey: apiKey);
 
@@ -142,29 +138,17 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       List<CoastResponse> coasts = [];
       List<Location> locations = [];
 
-      // if (data == null) {
-        for (var element in event.suggestionsStart) {
-          locations.add(
-            Location(
-              type: 'Pickup',
-              point: Point(
-                latitude: element!.point!.latitude!,
-                longitude: element.point!.longitude!,
-              ),
+      for (var element in event.suggestionsStart) {
+        locations.add(
+          Location(
+            type: 'Pickup',
+            point: Point(
+              latitude: element!.point!.latitude!,
+              longitude: element.point!.longitude!,
             ),
-          );
-        }
-      // } else {
-      //   locations.add(
-      //     Location(
-      //       type: 'Pickup',
-      //       point: Point(
-      //         latitude: data!.latitude,
-      //         longitude: data!.longitude,
-      //       ),
-      //     ),
-      //   );
-      // }
+          ),
+        );
+      }
 
       for (var element in event.suggestionsEnd) {
         locations.add(

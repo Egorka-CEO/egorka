@@ -103,7 +103,8 @@ class _MarketPageState extends State<MarketPages>
       // item1Controller.text = widget.historyModel!.item1!;
       // item2Controller.text = widget.historyModel!.item2!;
       // item3Controller.text = widget.historyModel!.item3!;
-      startOrderController.text = DateFormat('dd.MM.yyy HH:mm').format(DateTime.now());
+      startOrderController.text =
+          DateFormat('dd.MM.yyy HH:mm').format(DateTime.now());
       // countBucketController.text = widget.historyModel!.countBucket!.toString();
       // countPalletController.text = widget.historyModel!.countPallet!.toString();
       nameController.text =
@@ -240,11 +241,11 @@ class _MarketPageState extends State<MarketPages>
                 } else if (current is MarketPlacesSuccessState) {
                   coast = current.coastResponse;
                 } else if (current is CreateFormSuccess) {
+                  BlocProvider.of<HistoryOrdersBloc>(context)
+                      .add(GetListOrdersEvent());
                   MessageDialogs()
                       .completeDialog(text: 'Заявка создана')
                       .then((value) {
-                    BlocProvider.of<HistoryOrdersBloc>(context)
-                        .add(HistoryUpdateListEvent(current.createFormModel));
                     Navigator.of(context).pop();
                   });
                 } else if (current is CreateFormFail) {

@@ -78,32 +78,29 @@ class _BottomSheetDraggableState
   }
 
   Widget _searchList() {
-    final bloc = BlocProvider.of<HistoryOrdersBloc>(context);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
-          bloc: bloc,
           buildWhen: (previous, current) {
-            if (current is HistoryUpdateList) {
-              coast = bloc.coast;
-              return true;
+        if (current is HistoryUpdateList) {
+          coast = current.coast;
+          return true;
+        }
+        return false;
+      }, builder: (context, snapshot) {
+        return ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: coast.length,
+          itemBuilder: (context, index) {
+            if (coast[index].result.locations.isEmpty) {
+              return const SizedBox();
             }
-            return false;
+            return _pointCard(coast[index], index, context);
           },
-          builder: (context, snapshot) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemCount: coast.length,
-              itemBuilder: (context, index) {
-                if (coast[index].result.locations.isEmpty) {
-                  return const SizedBox();
-                }
-                return _pointCard(coast[index], index, context);
-              },
-            );
-          }),
+        );
+      }),
     );
   }
 

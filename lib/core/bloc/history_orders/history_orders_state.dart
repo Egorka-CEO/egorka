@@ -8,7 +8,11 @@ class HistoryOpenBtmSheetState extends HistoryOrdersState {}
 
 class HistoryCloseBtmSheetState extends HistoryOrdersState {}
 
-class HistoryUpdateList extends HistoryOrdersState {}
+class HistoryUpdateList extends HistoryOrdersState {
+  List<CreateFormModel> coast;
+
+  HistoryUpdateList(this.coast);
+}
 
 class HistoryOrderRoutePolilyne extends HistoryOrdersState {
   Directions routes;

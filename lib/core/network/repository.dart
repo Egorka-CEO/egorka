@@ -178,7 +178,7 @@ class Repository {
         "Auth": auth(),
         "Method": "Orders",
         "Body": {
-          "Limit": 20,
+          "Limit": 50,
           "Offset": 0,
         },
         "Params": {"Language": "RU"}
@@ -262,7 +262,7 @@ class Repository {
     );
 
     // print('object ${id} ${pin} ${authData}');
-    print('object ${response.data['Errors'][0]['Message']}');
+    print('object ${response.data['Errors']}');
 
     if (response.data['Errors'] == null) {
       return null;

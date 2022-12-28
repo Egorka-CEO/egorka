@@ -49,8 +49,8 @@ class Result {
   String? message;
   List<Calculation>? calculation;
   TotalPrice? totalPrice;
-  Null? payDate;
-  Null? payDateStamp;
+  dynamic payDate;
+  dynamic payDateStamp;
   String? payStatus;
   String? status;
   List<Invoice>? invoices;

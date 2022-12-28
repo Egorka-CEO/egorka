@@ -225,8 +225,7 @@ class Repository {
     return null;
   }
 
-  Future<void> cancelForm(String number, String pin) async {
-    //?
+  Future<bool> cancelForm(String number, String pin) async {
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -240,6 +239,12 @@ class Repository {
         "Params": params()
       },
     );
+
+    if(response.data['Errors'] == null) {
+      return true;
+    }
+
+    return false;
   }
 
   Future<String?> paymentDeposit(int id, int pin, String key) async {

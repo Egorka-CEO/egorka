@@ -1,3 +1,4 @@
+import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/user.dart';
@@ -13,6 +14,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileEventInit>(_init);
     on<ProfileEventUpdate>(_updateUser);
     on<GetDepositeEvent>(_getDeposite);
+    on<ExitAccountEvent>(_exitAccount);
   }
 
   void _init(ProfileEventInit event, Emitter<ProfileState> emit) async {}
@@ -20,6 +22,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _updateUser(ProfileEventUpdate event, Emitter<ProfileState> emit) {
     _user = event._user;
     emit(ProfileStatedUpdate(_user!));
+  }
+
+  void _exitAccount(ExitAccountEvent event, Emitter<ProfileState> emit) {
+    _user = null;
+    MySecureStorage storage = MySecureStorage();
+    storage.setTypeUser(null);
+    storage.setLogin(null);
+    storage.setPassword(null);
+    storage.setCompany(null);
+    storage.setID(null);
+    storage.setTypeAuth(null);
+    storage.setSecure(null);
+    emit(ExitStated());
   }
 
   void _getDeposite(GetDepositeEvent event, Emitter<ProfileState> emit) async {

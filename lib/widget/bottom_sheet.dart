@@ -528,7 +528,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       ),
                                     ),
                                     Text(
-                                      '${coasts[index].result!.totalPrice!.total}₽',
+                                      '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
                                       style: TextStyle(
                                         color: snapshot.data! == index
                                             ? Colors.grey

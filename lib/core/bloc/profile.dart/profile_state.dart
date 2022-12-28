@@ -15,3 +15,5 @@ class UpdateDeposit extends ProfileState {
 
   UpdateDeposit(this.accounts);
 }
+
+class ExitStated extends ProfileState {}

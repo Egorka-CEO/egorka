@@ -11,3 +11,5 @@ class ProfileEventUpdate extends ProfileEvent {
 }
 
 class GetDepositeEvent extends ProfileEvent {}
+
+class ExitAccountEvent extends ProfileEvent {}

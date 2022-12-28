@@ -753,7 +753,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                         ),
                                       ),
                                       Text(
-                                        '${widget.order.result!.totalPrice!.total} ₽',
+                                        '${double.tryParse(widget.order.result!.totalPrice!.total!)!.ceil()}! ₽',
                                         style: const TextStyle(
                                           fontSize: 25,
                                           fontWeight: FontWeight.w500,

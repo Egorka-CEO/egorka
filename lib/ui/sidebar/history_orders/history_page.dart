@@ -7,6 +7,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/info_form.dart';
+import 'package:egorka/model/status_order.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
@@ -27,13 +28,14 @@ class HistoryOrdersPage extends StatefulWidget {
 }
 
 class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
-  String? resPayed = '';
+  InfoForm? formOrder;
+  StatusOrder? statusOrder = StatusOrder.rejected;
+  bool resPaid = false;
   DateTime? parseDate;
   DateTime? dateTime;
   String day = '';
   String pickDay = '';
   String pickDate = '';
-  InfoForm? formOrder;
 
   @override
   void initState() {
@@ -52,12 +54,25 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     pickDay = DateFormat.EEEE('ru').format(parseDate!);
     pickDate =
         '$pickDay, ${parseDate!.day} ${DateFormat.MMMM('ru').format(parseDate!)} с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
-    resPayed = formOrder!.result!.status == 'Rejected' ||
-            formOrder!.result!.payStatus! == 'Paid'
-        ? null
-        : '';
 
-    print('object info ${widget.coast.result.RecordNumber.toString()} ${widget.coast.result.RecordPIN.toString()}');
+    if (formOrder!.result!.status == 'Drafted') {
+      statusOrder = StatusOrder.drafted;
+    } else if (formOrder!.result!.status == 'Booked') {
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+      statusOrder = StatusOrder.booked;
+    } else if (formOrder!.result!.status == 'Completed') {
+      statusOrder = StatusOrder.completed;
+      resPaid = true;
+    } else if (formOrder!.result!.status == 'Cancelled') {
+      statusOrder = StatusOrder.cancelled;
+      resPaid = true;
+    } else if (formOrder!.result!.status == 'Rejected') {
+      statusOrder = StatusOrder.rejected;
+      resPaid = true;
+    } else if (formOrder!.result!.status == 'Error') {
+      statusOrder = StatusOrder.error;
+      resPaid = true;
+    }
 
     setState(() {});
   }
@@ -94,6 +109,33 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     child: Text(
                                       'История',
                                       style: CustomTextStyle.black15w500,
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        MessageDialogs().showLoadDialog(
+                                            'Отмена заявки');
+                                        bool res = await Repository().cancelForm(
+                                            '${formOrder!.result!.recordNumber}',
+                                            '${formOrder!.result!.recordPIN}');
+                                        SmartDialog.dismiss();
+                                        BlocProvider.of<HistoryOrdersBloc>(
+                                                context)
+                                            .add(GetListOrdersEvent());
+                                        res
+                                            ? MessageDialogs().completeDialog(
+                                                text: 'Заявка отменена')
+                                            : MessageDialogs().errorDialog(
+                                                text: 'Ошибка отмены');
+                                        resPaid = res;
+                                        setState(() {});
+                                      },
+                                      child: const Text(
+                                        'Отмена',
+                                        style: CustomTextStyle.red15,
+                                      ),
                                     ),
                                   )
                                 ],
@@ -476,7 +518,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                       ),
                     ],
                   ),
-                  if (resPayed != null)
+                  if (!resPaid)
                     Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
@@ -490,7 +532,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    'Оплатить: ${formOrder!.result!.totalPrice!.total} ${formOrder!.result!.totalPrice!.currency}',
+                                    'Оплатить: ${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
@@ -520,7 +562,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                           if (invoice.isNotEmpty) {
                                             MessageDialogs().showLoadDialog(
                                                 'Производится оплата с вашего депозита');
-                                            resPayed = await Repository()
+                                            String? res = await Repository()
                                                 .paymentDeposit(
                                                     formOrder!.result!.invoices!
                                                         .first.iD!,
@@ -532,13 +574,15 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             BlocProvider.of<HistoryOrdersBloc>(
                                                     context)
                                                 .add(GetListOrdersEvent());
-                                            resPayed == null
+                                            res == null
                                                 ? MessageDialogs()
                                                     .completeDialog(
                                                         text: 'Оплачено')
                                                 : MessageDialogs().errorDialog(
                                                     text: 'Ошибка оплаты',
-                                                    error: resPayed!);
+                                                    error: res);
+                                            resPaid =
+                                                res == null ? true : false;
                                             setState(() {});
                                           }
                                         },

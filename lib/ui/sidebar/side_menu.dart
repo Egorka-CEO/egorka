@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
+import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +9,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class NavBar extends StatelessWidget {
-  const NavBar({Key? key}) : super(key: key);
+class NavBar extends StatefulWidget {
+  NavBar({Key? key}) : super(key: key);
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  MySecureStorage storage = MySecureStorage();
+
+  final streamController = StreamController<String?>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  getUser() async {
+    final res = await storage.getTypeUser();
+    streamController.add(res);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,38 +87,46 @@ class NavBar extends StatelessWidget {
                   );
                 }),
                 // SizedBox(height: 30.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18.w),
-                  child: Container(
-                    color: Colors.transparent,
-                    height: 50.h,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.pushNamed(
-                                context, AppRoute.trafficDeposit),
-                            child: Text(
-                              'Движение по депозиту',
-                              style: CustomTextStyle.black15w500
-                                  .copyWith(color: Colors.black),
+                StreamBuilder<String?>(
+                    stream: streamController.stream,
+                    initialData: null,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null || snapshot.data == '0') {
+                        return const SizedBox();
+                      }
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18.w),
+                        child: Container(
+                          color: Colors.transparent,
+                          height: 50.h,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => Navigator.pushNamed(
+                                      context, AppRoute.trafficDeposit),
+                                  child: Text(
+                                    'Движение по депозиту',
+                                    style: CustomTextStyle.black15w500
+                                        .copyWith(color: Colors.black),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                GestureDetector(
+                                  onTap: () => Navigator.pushNamed(
+                                      context, AppRoute.addDeposit),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.red.withOpacity(0.6),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                          SizedBox(width: 10.w),
-                          GestureDetector(
-                            onTap: () => Navigator.pushNamed(
-                                context, AppRoute.addDeposit),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.red.withOpacity(0.6),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                        ),
+                      );
+                    }),
                 BlocBuilder<ProfileBloc, ProfileState>(
                     builder: (context, snapshot) {
                   final auth = BlocProvider.of<ProfileBloc>(context).getUser();

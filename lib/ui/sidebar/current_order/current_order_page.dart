@@ -8,6 +8,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/info_form.dart';
+import 'package:egorka/model/status_order.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
@@ -29,7 +30,8 @@ class CurrentOrderPage extends StatefulWidget {
 
 class _CurrentOrderPageState extends State<CurrentOrderPage> {
   InfoForm? formOrder;
-  String? resPayed = '';
+  StatusOrder? statusOrder = StatusOrder.rejected;
+  bool resPaid = false;
   DateTime? parseDate;
   DateTime? dateTime;
   String day = '';
@@ -53,10 +55,25 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
     pickDay = DateFormat.EEEE('ru').format(parseDate!);
     pickDate =
         '$pickDay, ${parseDate!.day} ${DateFormat.MMMM('ru').format(parseDate!)} с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
-    resPayed = formOrder!.result!.status == 'Rejected' ||
-            formOrder!.result!.payStatus! == 'Paid'
-        ? null
-        : '';
+
+    if (formOrder!.result!.status == 'Drafted') {
+      statusOrder = StatusOrder.drafted;
+    } else if (formOrder!.result!.status == 'Booked') {
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+      statusOrder = StatusOrder.booked;
+    } else if (formOrder!.result!.status == 'Completed') {
+      statusOrder = StatusOrder.completed;
+      resPaid = true;
+    } else if (formOrder!.result!.status == 'Cancelled') {
+      statusOrder = StatusOrder.cancelled;
+      resPaid = true;
+    } else if (formOrder!.result!.status == 'Rejected') {
+      statusOrder = StatusOrder.rejected;
+      resPaid = true;
+    } else if (formOrder!.result!.status == 'Error') {
+      statusOrder = StatusOrder.error;
+      resPaid = true;
+    }
 
     setState(() {});
   }
@@ -86,6 +103,34 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
             color: Colors.red,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () async {
+                  MessageDialogs().showLoadDialog('Отмена заявки');
+                  bool res = await Repository().cancelForm(
+                      '${formOrder!.result!.recordNumber}',
+                      '${formOrder!.result!.recordPIN}');
+                  SmartDialog.dismiss();
+                  BlocProvider.of<HistoryOrdersBloc>(context)
+                      .add(GetListOrdersEvent());
+                  res
+                      ? MessageDialogs().completeDialog(text: 'Заявка отменена')
+                      : MessageDialogs().errorDialog(text: 'Ошибка отмены');
+                  resPaid = res;
+                  setState(() {});
+                },
+                child: const Text(
+                  'Отмена',
+                  style: CustomTextStyle.red15,
+                ),
+              ),
+            ),
+          )
+        ],
         backgroundColor: Colors.white,
       ),
       body: formOrder == null
@@ -478,7 +523,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                     ),
                   ),
                 ),
-                if (resPayed != null)
+                if (!resPaid)
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
@@ -495,7 +540,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'Оплатить: ${formOrder!.result!.totalPrice!.total} ${formOrder!.result!.totalPrice!.currency}',
+                                  'Оплатить: ${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -522,7 +567,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 .deposit;
                                         MessageDialogs().showLoadDialog(
                                             'Производится оплата с вашего депозита');
-                                        resPayed = await Repository()
+                                        String? res = await Repository()
                                             .paymentDeposit(
                                                 invoice[0].iD!,
                                                 invoice[0].pIN!,
@@ -532,12 +577,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         BlocProvider.of<HistoryOrdersBloc>(
                                                 context)
                                             .add(GetListOrdersEvent());
-                                        resPayed == null
+                                        res == null
                                             ? MessageDialogs().completeDialog(
                                                 text: 'Оплачено')
                                             : MessageDialogs().errorDialog(
                                                 text: 'Ошибка оплаты',
-                                                error: resPayed!);
+                                                error: res);
+                                        resPaid = res == null ? true : false;
                                         setState(() {});
                                       },
                                       child: const Text('Депозит'),
@@ -559,48 +605,6 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                               ],
                             ),
                             const SizedBox(width: 20),
-                            // ElevatedButton(
-                            //   style: ElevatedButton.styleFrom(
-                            //     backgroundColor: Colors.red,
-                            //     shape: RoundedRectangleBorder(
-                            //       borderRadius: BorderRadius.circular(10.r),
-                            //     ),
-                            //   ),
-                            //   onPressed: () async {
-                            //     final invoice =
-                            //         BlocProvider.of<DepositBloc>(context)
-                            //             .invoiceModel;
-                            //     final deposit =
-                            //         BlocProvider.of<ProfileBloc>(context)
-                            //             .deposit;
-                            //     MessageDialogs().showLoadDialog(
-                            //         'Производится оплата с вашего депозита');
-                            //     resPayed = await Repository().paymentDeposit(
-                            //         invoice[0].iD!,
-                            //         invoice[0].pIN!,
-                            //         deposit!.result!.accounts.first.iD);
-                            //     SmartDialog.dismiss();
-                            //     resPayed == null
-                            //         ? MessageDialogs()
-                            //             .completeDialog(text: 'Оплачено')
-                            //         : MessageDialogs().errorDialog(
-                            //             text: 'Ошибка оплаты',
-                            //             error: resPayed!);
-                            //     setState(() {});
-                            //   },
-                            //   child: const Text('Депозит'),
-                            // ),
-                            // const SizedBox(width: 20),
-                            // ElevatedButton(
-                            //   onPressed: () {},
-                            //   style: ElevatedButton.styleFrom(
-                            //     backgroundColor: Colors.red,
-                            //     shape: RoundedRectangleBorder(
-                            //       borderRadius: BorderRadius.circular(10.r),
-                            //     ),
-                            //   ),
-                            //   child: const Text('Карта'),
-                            // ),
                           ],
                         ),
                       ),

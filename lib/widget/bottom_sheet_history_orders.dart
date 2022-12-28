@@ -106,6 +106,29 @@ class _BottomSheetDraggableState
 
   Container _pointCard(CreateFormModel state, int index, BuildContext context) {
     var parsedDate = DateTime.parse(state.result.RecordDate!);
+    bool date = false;
+
+    if (index == 0) {
+      print('object ${coast[index].result.RecordDate!}');
+    } else {
+      final date1 = DateTime.parse(coast[index - 1].result.RecordDate!);
+      final date2 = DateTime.parse(coast[index].result.RecordDate!);
+
+      if (date2.year == date1.year) {
+        if (date2.month == date1.month) {
+          if (date2.day == date1.day) {
+            date = true;
+          }
+        } else {
+          date = false;
+        }
+      } else {
+        date = false;
+      }
+
+      // print(
+      //     'objectQQQQ  ${da}');
+    }
 
     final hour = parsedDate.hour;
     String period = 'вечером';
@@ -116,12 +139,30 @@ class _BottomSheetDraggableState
     } else if (hour >= 12 && hour < 18) {
       period = 'днём';
     }
+
+    Color colorStatus = Colors.red;
+    bool resPaid = state.result.StatusPay! == 'Paid' ? true : false;
+
+    if (state.result.Status == 'Drafted') {
+      colorStatus = Colors.orange;
+    } else if (state.result.Status == 'Booked') {
+      colorStatus = resPaid ? Colors.green : Colors.orange;
+    } else if (state.result.Status == 'Completed') {
+      colorStatus = Colors.green;
+    } else if (state.result.Status == 'Cancelled') {
+      colorStatus = Colors.red;
+    } else if (state.result.Status == 'Rejected') {
+      colorStatus = resPaid ? Colors.green : Colors.orange;
+    } else if (state.result.Status == 'Error') {
+      colorStatus = Colors.red;
+    }
+
     return Container(
       margin: EdgeInsets.only(top: 5.h, bottom: 15.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          if(!date)Text(
             DateFormat('dd.MM.yyy').format(parsedDate),
             style: TextStyle(
               fontWeight: FontWeight.w600,
@@ -158,7 +199,7 @@ class _BottomSheetDraggableState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Поездка $period в, ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
+                                    'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
                                     style: const TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w600),
@@ -209,8 +250,8 @@ class _BottomSheetDraggableState
                                   SizedBox(height: 10.h),
                                   Text(
                                     state.result.Status!,
-                                    style: const TextStyle(
-                                        color: Colors.red,
+                                    style: TextStyle(
+                                        color: colorStatus,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600),
                                     maxLines: 1,

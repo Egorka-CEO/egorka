@@ -13,19 +13,19 @@ class MySecureStorage {
 
   Future<String?> getID() => storage.read(key: ID);
 
-  void setID(String value) => storage.write(key: ID, value: value);
+  void setID(String? value) => storage.write(key: ID, value: value);
 
   Future<String?> getSecure() => storage.read(key: SECURE);
 
-  void setSecure(String value) => storage.write(key: SECURE, value: value);
+  void setSecure(String? value) => storage.write(key: SECURE, value: value);
 
   Future<String?> getLogin() => storage.read(key: LOGIN);
 
-  void setLogin(String value) => storage.write(key: LOGIN, value: value);
+  void setLogin(String? value) => storage.write(key: LOGIN, value: value);
 
   Future<String?> getPassword() => storage.read(key: PASSWORD);
 
-  void setPassword(String value) => storage.write(key: PASSWORD, value: value);
+  void setPassword(String? value) => storage.write(key: PASSWORD, value: value);
 
   Future<String?> getCompany() => storage.read(key: COMPANY);
 

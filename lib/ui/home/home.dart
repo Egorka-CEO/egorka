@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           children: [
             Scaffold(
               resizeToAvoidBottomInset: false,
-              drawer: const NavBar(),
+              drawer: NavBar(),
               drawerScrimColor: Colors.transparent,
               body: Stack(
                 children: [

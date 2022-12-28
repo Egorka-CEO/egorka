@@ -1003,8 +1003,8 @@ class _MarketPageState extends State<MarketPages>
                                         height: 90.h,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        // crossAxisAlignment:
+                                        //     CrossAxisAlignment.start,
                                         children: [
                                           const Text(
                                             "Автомобиль",
@@ -1014,7 +1014,7 @@ class _MarketPageState extends State<MarketPages>
                                             ),
                                           ),
                                           Text(
-                                            '${coast?.result?.totalPrice?.total}! ₽',
+                                            '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}! ₽',
                                             style: const TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.w600,
@@ -1253,11 +1253,11 @@ class _MarketPageState extends State<MarketPages>
                     height: 200.h,
                     color: Colors.grey[200],
                     child: CupertinoDatePicker(
-                      mode: CupertinoDatePickerMode.dateAndTime,
+                      mode: CupertinoDatePickerMode.date,
                       use24hFormat: true,
                       onDateTimeChanged: (value) {
                         startOrderController.text =
-                            DateFormat('dd.MM.yyyy HH:mm').format(value);
+                            DateFormat('dd.MM.yyyy').format(value);
                         time = value;
                       },
                     ),

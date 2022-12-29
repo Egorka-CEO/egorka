@@ -43,6 +43,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   void initState() {
     super.initState();
     getForm();
+    BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
   }
 
   void getForm() async {
@@ -78,7 +79,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
       status = 'Отменено';
     } else if (formOrder!.result!.status == 'Rejected') {
       statusOrder = StatusOrder.rejected;
-      colorStatus = resPaid ? Colors.green : Colors.orange;
+      colorStatus = Colors.orange;
       resPaid = true;
       status = 'Отказано';
     } else if (formOrder!.result!.status == 'Error') {

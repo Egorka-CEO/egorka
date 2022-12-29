@@ -158,7 +158,7 @@ class _BottomSheetDraggableState
       colorStatus = Colors.red;
       status = 'Отменено';
     } else if (state.result.Status == 'Rejected') {
-      colorStatus = Colors.red;
+      colorStatus = Colors.orange;
       status = 'Отказано';
     } else if (state.result.Status == 'Error') {
       colorStatus = Colors.red;

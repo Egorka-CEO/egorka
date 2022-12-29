@@ -72,96 +72,98 @@ class _AuthPageState extends State<AuthPage> {
                 bottom: false,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: state ? 5.h : 80.h,
-                      ),
-                      Row(
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: SizedBox(
+                      height: 480.h,
+                      child: Column(
+                        // shrinkWrap: true,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: SvgPicture.asset(
-                              'assets/icons/logo_egorka.svg',
-                              height: 60.h,
-                            ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: state ? 5.h : 80.h,
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 10.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Егорка готов! Входите и начнём',
-                            style: TextStyle(fontSize: 23.sp),
-                          ),
-                        ],
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: state ? 5.h : 30.h,
-                      ),
-                      Text(
-                        'Логин',
-                        style: labelStyle,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              focusNode: focusNode1,
-                              textEditingController: _phoneController,
-                              // hintText: '+7 (___) ___-__-__',
-                              hintText: 'Arcadi',
-                              height: 60.h,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 20.w,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SvgPicture.asset(
+                                  'assets/icons/logo_egorka.svg',
+                                  height: 60.h,
+                                ),
                               ),
-                              // formatters: [
-                                // CustomInputFormatter(),
-                                // LengthLimitingTextInputFormatter(18)
-                              // ],
+                            ],
+                          ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Егорка готов! Входите и начнём',
+                                style: TextStyle(fontSize: 23.sp),
+                              ),
+                            ],
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: state ? 5.h : 30.h,
+                          ),
+                          Text(
+                            'Логин',
+                            style: labelStyle,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomTextField(
+                                  focusNode: focusNode1,
+                                  textEditingController: _phoneController,
+                                  hintText: 'Arcadi',
+                                  height: 60.h,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.w,
+                                    vertical: 20.w,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: state ? 5.h : 20.h,
+                          ),
+                          Text(
+                            'Пароль',
+                            style: labelStyle,
+                          ),
+                          CustomTextField(
+                            focusNode: focusNode3,
+                            textEditingController: _passwordController,
+                            hintText: '******',
+                            height: 60.h,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 20.w,
                             ),
                           ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: state ? 5.h : 20.h,
+                          ),
+                          RoundedLoadingButton(
+                            controller: _btnController,
+                            onPressed: _signIn,
+                            color: Colors.red,
+                            child: const Text(
+                              'Авторизация',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          const Spacer(flex: 4),
                         ],
                       ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: state ? 5.h : 20.h,
-                      ),
-                      Text(
-                        'Пароль',
-                        style: labelStyle,
-                      ),
-                      CustomTextField(
-                        focusNode: focusNode3,
-                        textEditingController: _passwordController,
-                        hintText: '******',
-                        height: 60.h,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 20.w,
-                        ),
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: state ? 5.h : 20.h,
-                      ),
-                      RoundedLoadingButton(
-                        controller: _btnController,
-                        onPressed: _signIn,
-                        color: Colors.red,
-                        child: const Text(
-                          'Авторизация',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const Spacer(flex: 4),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -173,10 +175,8 @@ class _AuthPageState extends State<AuthPage> {
   void _signIn() async {
     AuthUser? res;
     _btnController.start();
-    // if (_companyController.text.isNotEmpty) {
     res = await Repository()
         .loginPhoneUser(_phoneController.text, _passwordController.text);
-    // }
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();

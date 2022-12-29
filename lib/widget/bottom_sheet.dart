@@ -90,15 +90,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       if (current is GetAddressSuccess) {
         suggestionsStart = Suggestions(
           iD: null,
-          name: current.geoData!.address,
+          name: current.address,
           point: Point(
-            address: current.geoData!.address,
-            code: '${current.geoData!.latitude},${current.geoData!.longitude}',
-            latitude: current.geoData!.latitude,
-            longitude: current.geoData!.longitude,
+            address: current.address,
+            code: '${current.latitude},${current.longitude}',
+            latitude: current.latitude,
+            longitude: current.longitude,
           ),
         );
-        fromController.text = current.geoData!.address;
+        fromController.text = current.address;
+
+        // print('geodata ${current.geoData!.}');
 
         if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
           coasts.clear();
@@ -387,19 +389,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
                   if (current is ChangeAddressSuccess) {
-                    if (fromController.text != current.geoData!.address) {
+                    if (fromController.text != current.address) {
                       suggestionsStart = Suggestions(
                         iD: null,
-                        name: current.geoData!.address,
+                        name: current.address,
                         point: Point(
-                          address: current.geoData!.address,
-                          code:
-                              '${current.geoData!.latitude},${current.geoData!.longitude}',
-                          latitude: current.geoData!.latitude,
-                          longitude: current.geoData!.longitude,
+                          address: current.address,
+                          code: '${current.latitude},${current.longitude}',
+                          latitude: current.latitude,
+                          longitude: current.longitude,
                         ),
                       );
-                      fromController.text = current.geoData!.address;
+                      fromController.text = current.address;
                     }
                   }
                   if (current is SearchAddressRoutePolilyne) {
@@ -589,7 +590,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   void authShowDialog(int index) async {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
-    var bloc = BlocProvider.of<SearchAddressBloc>(context).data;
 
     if (user != null) {
       Navigator.of(context).pushNamed(AppRoute.newOrder, arguments: [

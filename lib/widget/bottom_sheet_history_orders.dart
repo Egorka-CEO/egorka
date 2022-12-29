@@ -140,21 +140,29 @@ class _BottomSheetDraggableState
       period = 'днём';
     }
 
+    String status = 'Ошибка';
+
     Color colorStatus = Colors.red;
     bool resPaid = state.result.StatusPay! == 'Paid' ? true : false;
 
     if (state.result.Status == 'Drafted') {
       colorStatus = Colors.orange;
+      status = 'Черновик';
     } else if (state.result.Status == 'Booked') {
       colorStatus = resPaid ? Colors.green : Colors.orange;
+      status = resPaid ? 'Оплачено' : 'Активно';
     } else if (state.result.Status == 'Completed') {
       colorStatus = Colors.green;
+      status = 'Выполнено';
     } else if (state.result.Status == 'Cancelled') {
       colorStatus = Colors.red;
+      status = 'Отменено';
     } else if (state.result.Status == 'Rejected') {
-      colorStatus = resPaid ? Colors.green : Colors.orange;
+      colorStatus = Colors.red;
+      status = 'Отказано';
     } else if (state.result.Status == 'Error') {
       colorStatus = Colors.red;
+      status = 'Ошибка';
     }
 
     return Container(
@@ -162,15 +170,16 @@ class _BottomSheetDraggableState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if(!date)Text(
-            DateFormat('dd.MM.yyy').format(parsedDate),
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              color: Colors.grey[400],
-              height: 1,
+          if (!date)
+            Text(
+              DateFormat('dd.MM.yyy').format(parsedDate),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: Colors.grey[400],
+                height: 1,
+              ),
             ),
-          ),
           Container(
             padding: EdgeInsets.all(20.w),
             margin: EdgeInsets.only(top: 10.h),
@@ -249,7 +258,7 @@ class _BottomSheetDraggableState
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    state.result.Status!,
+                                    status,
                                     style: TextStyle(
                                         color: colorStatus,
                                         fontSize: 14,

@@ -35,6 +35,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   String day = '';
   String pickDay = '';
   String pickDate = '';
+  Color colorStatus = Colors.red;
+  String status = 'Ошибка';
 
   @override
   void initState() {
@@ -56,21 +58,33 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
 
     if (formOrder!.result!.status == 'Drafted') {
       statusOrder = StatusOrder.drafted;
+      colorStatus = Colors.orange;
+      status = 'Черновик';
     } else if (formOrder!.result!.status == 'Booked') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
       statusOrder = StatusOrder.booked;
+      status = resPaid ? 'Оплачено' : 'Активно';
     } else if (formOrder!.result!.status == 'Completed') {
       statusOrder = StatusOrder.completed;
+      colorStatus = Colors.green;
       resPaid = true;
+      status = 'Выполнено';
     } else if (formOrder!.result!.status == 'Cancelled') {
       statusOrder = StatusOrder.cancelled;
+      colorStatus = Colors.red;
       resPaid = true;
+      status = 'Отменено';
     } else if (formOrder!.result!.status == 'Rejected') {
       statusOrder = StatusOrder.rejected;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
       resPaid = true;
+      status = 'Отказано';
     } else if (formOrder!.result!.status == 'Error') {
       statusOrder = StatusOrder.error;
+      colorStatus = Colors.red;
       resPaid = true;
+      status = 'Ошибка';
     }
 
     setState(() {});
@@ -151,6 +165,19 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5.h, horizontal: 10.h),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    color: colorStatus,
+                                  ),
+                                  child: Text(
+                                    status,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                SizedBox(height: 10.h),
                                 Text(
                                   '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(parseDate!)}',
                                   style: CustomTextStyle.black15w500,
@@ -393,7 +420,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       ),
                                 SizedBox(height: 10.h),
                                 formOrder!.result!.courier == null
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : Column(
                                         children: [
                                           Row(

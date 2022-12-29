@@ -33,5 +33,3 @@ class SearchAddressPolilyne extends SearchAddressEvent {
 }
 
 class DeletePolilyneEvent extends SearchAddressEvent {}
-
-class DeleteGeoDateEvent extends SearchAddressEvent {}

@@ -36,6 +36,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   String day = '';
   String pickDay = '';
   String pickDate = '';
+  Color colorStatus = Colors.red;
+  String status = 'Ошибка';
 
   @override
   void initState() {
@@ -57,21 +59,33 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
 
     if (formOrder!.result!.status == 'Drafted') {
       statusOrder = StatusOrder.drafted;
+      colorStatus = Colors.orange;
+      status = 'Черновик';
     } else if (formOrder!.result!.status == 'Booked') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
       statusOrder = StatusOrder.booked;
+      status = resPaid ? 'Оплачено' : 'Активно';
     } else if (formOrder!.result!.status == 'Completed') {
       statusOrder = StatusOrder.completed;
+      colorStatus = Colors.green;
       resPaid = true;
+      status = 'Выполнено';
     } else if (formOrder!.result!.status == 'Cancelled') {
       statusOrder = StatusOrder.cancelled;
+      colorStatus = Colors.red;
       resPaid = true;
+      status = 'Отменено';
     } else if (formOrder!.result!.status == 'Rejected') {
       statusOrder = StatusOrder.rejected;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
       resPaid = true;
+      status = 'Отказано';
     } else if (formOrder!.result!.status == 'Error') {
       statusOrder = StatusOrder.error;
+      colorStatus = Colors.red;
       resPaid = true;
+      status = 'Ошибка';
     }
 
     setState(() {});
@@ -144,6 +158,20 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        SizedBox(height: 10.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 5.h, horizontal: 10.h),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            color: colorStatus,
+                          ),
+                          child: Text(
+                            status,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        
                         SizedBox(height: 20.h),
                         Text(
                           '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(dateTime)}',
@@ -523,90 +551,99 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                   ),
                 ),
                 if (!resPaid)
-                  Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Blur(
-                        blur: 2.5,
-                        child: Container(height: 120.h),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(30.h),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  'Оплатить: ${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                        ),
-                                      ),
-                                      onPressed: () async {
-                                        final deposit =
-                                            BlocProvider.of<ProfileBloc>(
-                                                    context)
-                                                .deposit;
-                                        MessageDialogs().showLoadDialog(
-                                            'Производится оплата с вашего депозита');
-                                        String? res = await Repository()
-                                            .paymentDeposit(
-                                                formOrder!.result!.invoices!
-                                                    .first.iD!,
-                                                formOrder!.result!.invoices!
-                                                    .first.pIN!,
-                                                deposit!
-                                                    .result!.accounts.first.iD);
-                                        SmartDialog.dismiss();
-                                        BlocProvider.of<HistoryOrdersBloc>(
-                                                context)
-                                            .add(GetListOrdersEvent());
-                                        res == null
-                                            ? MessageDialogs().completeDialog(
-                                                text: 'Оплачено')
-                                            : MessageDialogs().errorDialog(
-                                                text: 'Ошибка оплаты',
-                                                error: res);
-                                        resPaid = res == null ? true : false;
-                                        setState(() {});
-                                      },
-                                      child: const Text('Депозит'),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                        ),
-                                      ),
-                                      child: const Text('Карта'),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(width: 20),
-                          ],
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    return Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        Blur(
+                          blur: 2.5,
+                          child: Container(height: 120.h),
                         ),
-                      ),
-                    ],
-                  )
+                        Padding(
+                          padding: EdgeInsets.all(30.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Оплатить: ${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      if (auth != null &&
+                                          auth.result!.agent != null)
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                            ),
+                                          ),
+                                          onPressed: () async {
+                                            final deposit =
+                                                BlocProvider.of<ProfileBloc>(
+                                                        context)
+                                                    .deposit;
+                                            MessageDialogs().showLoadDialog(
+                                                'Производится оплата с вашего депозита');
+                                            String? res = await Repository()
+                                                .paymentDeposit(
+                                                    formOrder!.result!.invoices!
+                                                        .first.iD!,
+                                                    formOrder!.result!.invoices!
+                                                        .first.pIN!,
+                                                    deposit!.result!.accounts
+                                                        .first.iD);
+                                            SmartDialog.dismiss();
+                                            BlocProvider.of<HistoryOrdersBloc>(
+                                                    context)
+                                                .add(GetListOrdersEvent());
+                                            res == null
+                                                ? MessageDialogs()
+                                                    .completeDialog(
+                                                        text: 'Оплачено')
+                                                : MessageDialogs().errorDialog(
+                                                    text: 'Ошибка оплаты',
+                                                    error: res);
+                                            resPaid =
+                                                res == null ? true : false;
+                                            setState(() {});
+                                          },
+                                          child: const Text('Депозит'),
+                                        )
+                                      else
+                                        ElevatedButton(
+                                          onPressed: () {},
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                            ),
+                                          ),
+                                          child: const Text('Карта'),
+                                        ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const SizedBox(width: 20),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  })
               ],
             ),
     );

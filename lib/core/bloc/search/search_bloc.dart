@@ -12,6 +12,7 @@ import 'package:egorka/model/suggestions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder2/geocoder2.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
@@ -19,7 +20,6 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
-  GeoData? data;
   bool isPolilyne = false;
   SearchAddressBloc() : super(SearchAddressStated()) {
     on<SearchAddress>(_searchAddress);
@@ -29,13 +29,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<DeletePolilyneEvent>(_deletePolyline);
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
     on<SearchAddressPolilyne>(_getPoliline);
-    on<DeleteGeoDateEvent>(_deleteGeoDate);
     on<GetAddressPosition>(_getAddress);
-  }
-
-  void _deleteGeoDate(
-      DeleteGeoDateEvent event, Emitter<SearchAddressState> emit) {
-    data = null;
   }
 
   void _deletePolyline(
@@ -63,13 +57,28 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   void _changeMapPosition(
       ChangeMapPosition event, Emitter<SearchAddressState> emit) async {
     if (!isPolilyne) {
-      data = await Geocoder2.getDataFromCoordinates(
-          latitude: event.coordinates.latitude,
-          longitude: event.coordinates.longitude,
-          language: 'RU',
-          googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
+      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
+          event.coordinates.latitude, event.coordinates.longitude,
+          localeIdentifier: 'ru');
 
-      emit(ChangeAddressSuccess(data));
+      String address = '';
+
+      if (placemarks.first.street!.isNotEmpty) {
+        address += placemarks.first.street!;
+        if (placemarks.first.locality!.isNotEmpty) {
+          address += ', г.${placemarks.first.locality!}';
+        }
+      } else {
+        address = placemarks.first.locality!;
+      }
+      print(
+          'object locale ${placemarks.first.street}, ${placemarks.first.locality}');
+
+      emit(ChangeAddressSuccess(
+        address,
+        event.coordinates.latitude,
+        event.coordinates.longitude,
+      ));
     }
   }
 
@@ -78,13 +87,27 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      data = await Geocoder2.getDataFromCoordinates(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          language: 'RU',
-          googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
 
-      emit(GetAddressSuccess(data));
+      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
+          position.latitude, position.longitude,
+          localeIdentifier: 'ru');
+
+      String address = '';
+
+      if (placemarks.first.street!.isNotEmpty) {
+        address += placemarks.first.street!;
+        if (placemarks.first.locality!.isNotEmpty) {
+          address += ', г.${placemarks.first.locality!}';
+        }
+      } else {
+        address = placemarks.first.locality!;
+      }
+
+      emit(GetAddressSuccess(
+        address,
+        position.latitude,
+        position.longitude,
+      ));
     }
   }
 
@@ -113,8 +136,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         SearchAddressRoutePolilyne(
           Directions(
               bounds: LatLngBounds(
-                southwest: LatLng(2, 2),
-                northeast: LatLng(3, 3),
+                southwest: const LatLng(2, 2),
+                northeast: const LatLng(3, 3),
               ),
               polylinePoints: [],
               totalDistance: '',

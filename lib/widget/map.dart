@@ -116,9 +116,8 @@ class _MapViewState extends State<MapView> {
         return true;
       }
       if (current is GetAddressSuccess) {
-        _jumpToPoint(Point(
-            latitude: current.geoData!.latitude,
-            longitude: current.geoData!.longitude));
+        _jumpToPoint(
+            Point(latitude: current.latitude, longitude: current.longitude));
         // BlocProvider.of<SearchAddressBloc>(context).add(
         //   JumpToPointEvent(
         //     Point(
@@ -156,7 +155,6 @@ class _MapViewState extends State<MapView> {
             pos = position;
           },
           onCameraIdle: () {
-            print('object 12');
             if (pos != null) {
               BlocProvider.of<SearchAddressBloc>(context)
                   .add(ChangeMapPosition(pos!.target));

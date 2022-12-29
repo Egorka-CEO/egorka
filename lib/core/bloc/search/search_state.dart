@@ -25,15 +25,27 @@ class SearchAddressSuccess extends SearchAddressState {
 }
 
 class ChangeAddressSuccess extends SearchAddressState {
-  GeoData? geoData;
+  String address;
+  double latitude;
+  double longitude;
 
-  ChangeAddressSuccess(this.geoData);
+  ChangeAddressSuccess(
+    this.address,
+    this.latitude,
+    this.longitude,
+  );
 }
 
 class GetAddressSuccess extends SearchAddressState {
-  GeoData? geoData;
+  String address;
+  double latitude;
+  double longitude;
 
-  GetAddressSuccess(this.geoData);
+  GetAddressSuccess(
+    this.address,
+    this.latitude,
+    this.longitude,
+  );
 }
 
 class SearchAddressFailed extends SearchAddressState {}

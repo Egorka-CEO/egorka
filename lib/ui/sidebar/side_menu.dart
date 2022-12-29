@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
@@ -19,16 +18,9 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   MySecureStorage storage = MySecureStorage();
 
-  final streamController = StreamController<String?>();
-
   @override
   void initState() {
     super.initState();
-  }
-
-  getUser() async {
-    final res = await storage.getTypeUser();
-    streamController.add(res);
   }
 
   @override
@@ -87,46 +79,45 @@ class _NavBarState extends State<NavBar> {
                   );
                 }),
                 // SizedBox(height: 30.h),
-                StreamBuilder<String?>(
-                    stream: streamController.stream,
-                    initialData: null,
+                BlocBuilder<ProfileBloc, ProfileState>(
                     builder: (context, snapshot) {
-                      if (snapshot.data == null || snapshot.data == '0') {
-                        return const SizedBox();
-                      }
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18.w),
-                        child: Container(
-                          color: Colors.transparent,
-                          height: 50.h,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
-                                      context, AppRoute.trafficDeposit),
-                                  child: Text(
-                                    'Движение по депозиту',
-                                    style: CustomTextStyle.black15w500
-                                        .copyWith(color: Colors.black),
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                                GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
-                                      context, AppRoute.addDeposit),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Colors.red.withOpacity(0.6),
-                                  ),
-                                )
-                              ],
+                  final auth = BlocProvider.of<ProfileBloc>(context).getUser();
+                  if (auth == null || auth.result!.agent == null) {
+                    return const SizedBox();
+                  }
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: Container(
+                      color: Colors.transparent,
+                      height: 50.h,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, AppRoute.trafficDeposit),
+                              child: Text(
+                                'Движение по депозиту',
+                                style: CustomTextStyle.black15w500
+                                    .copyWith(color: Colors.black),
+                              ),
                             ),
-                          ),
+                            SizedBox(width: 10.w),
+                            GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, AppRoute.addDeposit),
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.red.withOpacity(0.6),
+                              ),
+                            )
+                          ],
                         ),
-                      );
-                    }),
+                      ),
+                    ),
+                  );
+                }),
                 BlocBuilder<ProfileBloc, ProfileState>(
                     builder: (context, snapshot) {
                   final auth = BlocProvider.of<ProfileBloc>(context).getUser();

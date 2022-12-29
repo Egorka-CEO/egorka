@@ -1,3 +1,5 @@
+import 'package:egorka/model/agent.dart';
+
 class AuthUser {
   String? time;
   int? timeStamp;
@@ -93,40 +95,6 @@ class Result {
     if (user != null) {
       data['User'] = user!.toJson();
     }
-    return data;
-  }
-}
-
-class Agent {
-  String? id;
-  String? type;
-  String? title;
-  String? email;
-  String? phone;
-
-  Agent({
-    this.id,
-    this.type,
-    this.title,
-    this.email,
-    this.phone,
-  });
-
-  Agent.fromJson(Map<String, dynamic> json) {
-    id = json['ID'];
-    type = json['Type'];
-    title = json['Title'];
-    email = json['Email'];
-    phone = json['Phone'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['ID'] = id;
-    data['Type'] = type;
-    data['Title'] = title;
-    data['Email'] = email;
-    data['Phone'] = phone;
     return data;
   }
 }

@@ -439,7 +439,7 @@ class Repository {
         "Auth": authData,
         "Method": "Login",
         "Body": {
-          "Type": "Agent",
+          "Type": "Corp",
           "Company": company,
           "Username": login,
           "Password": password,

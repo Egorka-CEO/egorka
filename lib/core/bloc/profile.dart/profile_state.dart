@@ -4,11 +4,7 @@ abstract class ProfileState {}
 
 class ProfileStated extends ProfileState {}
 
-class ProfileStatedUpdate extends ProfileState {
-  AuthUser user;
-
-  ProfileStatedUpdate(this.user);
-}
+class ProfileStatedUpdate extends ProfileState {}
 
 class UpdateDeposit extends ProfileState {
   Accounts accounts;

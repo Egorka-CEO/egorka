@@ -21,7 +21,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   void _updateUser(ProfileEventUpdate event, Emitter<ProfileState> emit) {
     _user = event._user;
-    emit(ProfileStatedUpdate(_user!));
+    emit(ProfileStatedUpdate());
   }
 
   void _exitAccount(ExitAccountEvent event, Emitter<ProfileState> emit) {

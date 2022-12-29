@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -195,8 +198,9 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
       storage.setTypeUser('1');
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
-      storage.setCompany(
-          _companyController.text.isEmpty ? null : _companyController.text);
+      storage.setCompany(_companyController.text);
+      BlocProvider.of<DepositBloc>(context).add(LoadAllDepositEvent());
+      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();

@@ -1,5 +1,4 @@
 import 'package:blur/blur.dart';
-import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
@@ -519,92 +518,99 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                     ],
                   ),
                   if (!resPaid)
-                    Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Blur(blur: 2.5, child: Container(height: 120.h)),
-                        Padding(
-                          padding: EdgeInsets.all(30.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    'Оплатить: ${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
+                    BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, snapshot) {
+                      final auth =
+                          BlocProvider.of<ProfileBloc>(context).getUser();
+                      return Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Blur(blur: 2.5, child: Container(height: 120.h)),
+                          Padding(
+                            padding: EdgeInsets.all(30.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Оплатить: ${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Row(
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
-                                          ),
-                                        ),
-                                        onPressed: () async {
-                                          final invoice =
-                                              BlocProvider.of<DepositBloc>(
-                                                      context)
-                                                  .invoiceModel;
-                                          final deposit =
-                                              BlocProvider.of<ProfileBloc>(
-                                                      context)
-                                                  .deposit;
+                                    const SizedBox(width: 20),
+                                    Row(
+                                      children: [
+                                        if (auth != null &&
+                                            auth.result!.agent != null)
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              final deposit =
+                                                  BlocProvider.of<ProfileBloc>(
+                                                          context)
+                                                      .deposit;
 
-                                          MessageDialogs().showLoadDialog(
-                                              'Производится оплата с вашего депозита');
-                                          String? res = await Repository()
-                                              .paymentDeposit(
-                                                  formOrder!.result!.invoices!
-                                                      .first.iD!,
-                                                  formOrder!.result!.invoices!
-                                                      .first.pIN!,
-                                                  deposit!.result!.accounts
-                                                      .first.iD);
-                                          SmartDialog.dismiss();
-                                          BlocProvider.of<HistoryOrdersBloc>(
-                                                  context)
-                                              .add(GetListOrdersEvent());
-                                          res == null
-                                              ? MessageDialogs().completeDialog(
-                                                  text: 'Оплачено')
-                                              : MessageDialogs().errorDialog(
-                                                  text: 'Ошибка оплаты',
-                                                  error: res);
-                                          resPaid = res == null ? true : false;
-                                          setState(() {});
-                                        },
-                                        child: const Text('Депозит'),
-                                      ),
-                                      const SizedBox(width: 20),
-                                      ElevatedButton(
-                                        onPressed: () {},
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
+                                              MessageDialogs().showLoadDialog(
+                                                  'Производится оплата с вашего депозита');
+                                              String? res = await Repository()
+                                                  .paymentDeposit(
+                                                      formOrder!.result!
+                                                          .invoices!.first.iD!,
+                                                      formOrder!.result!
+                                                          .invoices!.first.pIN!,
+                                                      deposit!.result!.accounts
+                                                          .first.iD);
+                                              SmartDialog.dismiss();
+                                              BlocProvider.of<
+                                                          HistoryOrdersBloc>(
+                                                      context)
+                                                  .add(GetListOrdersEvent());
+                                              res == null
+                                                  ? MessageDialogs()
+                                                      .completeDialog(
+                                                          text: 'Оплачено')
+                                                  : MessageDialogs()
+                                                      .errorDialog(
+                                                          text: 'Ошибка оплаты',
+                                                          error: res);
+                                              resPaid =
+                                                  res == null ? true : false;
+                                              setState(() {});
+                                            },
+                                            child: const Text('Депозит'),
+                                          )
+                                        else
+                                          ElevatedButton(
+                                            onPressed: () {},
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
+                                              ),
+                                            ),
+                                            child: const Text('Карта'),
                                           ),
-                                        ),
-                                        child: const Text('Карта'),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    )
+                        ],
+                      );
+                    })
                 ],
               ),
       ),

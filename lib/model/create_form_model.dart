@@ -34,6 +34,7 @@ class CreateFormModel {
 class Result {
   Result({
     required this.ID,
+    required this.Group,
     required this.Date,
     required this.DateUpdate,
     this.Stage,
@@ -54,6 +55,7 @@ class Result {
     required this.StatusPay,
   });
   String? ID;
+  String? Group;
   int? Date;
   int? DateUpdate;
   String? Stage;
@@ -75,6 +77,7 @@ class Result {
 
   Result.fromJson(Map<String, dynamic> json) {
     ID = json['ID'];
+    Group = json['Group'];
     Date = json['Date'];
     DateUpdate = json['DateUpdate'];
     Stage = null;

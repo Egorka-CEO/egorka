@@ -55,7 +55,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
           ),
           Location(
             point: Point(
-              code: '${event.points!.latitude},${event.points!.longitude}',
+              code: '${event.points!.code}',
             ),
             contact: Contact(
                 name: event.name,

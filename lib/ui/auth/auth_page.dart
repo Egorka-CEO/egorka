@@ -58,6 +58,7 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     TextStyle labelStyle =
         const TextStyle(fontWeight: FontWeight.w300, fontSize: 16);
     return StreamBuilder<int>(
@@ -75,9 +76,8 @@ class _AuthPageState extends State<AuthPage> {
                   child: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(),
                     child: SizedBox(
-                      height: 480.h,
+                      height: 500.h,
                       child: Column(
-                        // shrinkWrap: true,
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -160,6 +160,7 @@ class _AuthPageState extends State<AuthPage> {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
+                          SizedBox(height: heightKeyBoard),
                           const Spacer(flex: 4),
                         ],
                       ),

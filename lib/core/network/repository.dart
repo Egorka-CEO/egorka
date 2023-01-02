@@ -4,7 +4,6 @@ import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
-// import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/create_form_model.dart' as crtForm;
@@ -13,7 +12,6 @@ import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/payment.dart';
-import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -203,7 +201,6 @@ class Repository {
   }
 
   Future<InfoForm?> infoForm(String recordNumber, String recordPin) async {
-    //?
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -240,7 +237,7 @@ class Repository {
       },
     );
 
-    if(response.data['Errors'] == null) {
+    if (response.data['Errors'] == null) {
       return true;
     }
 
@@ -265,9 +262,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    // print('object ${id} ${pin} ${authData}');
-    print('object ${response.data['Errors']}');
 
     if (response.data['Errors'] == null) {
       return null;
@@ -415,7 +409,6 @@ class Repository {
         "Params": params()
       },
     );
-    print('object log ${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);

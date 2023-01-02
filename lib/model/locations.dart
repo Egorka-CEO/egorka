@@ -37,7 +37,6 @@ class Location {
   String? status;
 
   Location.fromJson(Map<String, dynamic> json) {
-    print('object sdsd $json');
     id = json['ID'];
     key = json['Key'];
     num = json['Num'];

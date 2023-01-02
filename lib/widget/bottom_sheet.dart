@@ -100,8 +100,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         );
         fromController.text = current.address;
 
-        // print('geodata ${current.geoData!.}');
-
         if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
           coasts.clear();
           BlocProvider.of<SearchAddressBloc>(context)

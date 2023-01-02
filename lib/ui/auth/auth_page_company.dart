@@ -4,7 +4,6 @@ import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/user.dart';
-import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,6 +61,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
   Widget build(BuildContext context) {
     TextStyle labelStyle =
         const TextStyle(fontWeight: FontWeight.w300, fontSize: 16);
+    final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     return StreamBuilder<int>(
         stream: streamSwap.stream,
         initialData: 0,
@@ -77,7 +77,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                   child: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(),
                     child: SizedBox(
-                      height: 560.h,
+                      height: 610.h,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,6 +179,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
+                          SizedBox(height: heightKeyBoard),
                           const Spacer(flex: 4),
                         ],
                       ),

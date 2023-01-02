@@ -9,11 +9,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapView extends StatefulWidget {
+  final VoidCallback callBack;
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(53.160161, 24.468712),
     zoom: 5,
   );
-  const MapView({Key? key}) : super(key: key);
+  const MapView({Key? key, required this.callBack}) : super(key: key);
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -38,21 +39,24 @@ class _MapViewState extends State<MapView> {
 
   void _getPosition() async {
     if (await LocationGeo().checkPermission()) {
-      BlocProvider.of<SearchAddressBloc>(context).add(GetAddressPosition());
+      // BlocProvider.of<SearchAddressBloc>(context).add(GetAddressPosition());
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       if (mapController != null) {
-        mapController!.moveCamera(
+        await mapController!.moveCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
               target: LatLng(position.latitude, position.longitude),
-              zoom: 15,
+              zoom: 20,
               tilt: 0,
             ),
           ),
         );
       }
+      // print('object1');
     }
+    print('object getposition');
+    widget.callBack();
   }
 
   void _findMe() async {
@@ -61,15 +65,17 @@ class _MapViewState extends State<MapView> {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       if (mapController != null) {
-        mapController!.animateCamera(
+        await mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
               target: LatLng(position.latitude, position.longitude),
-              zoom: 15,
+              zoom: 20,
               tilt: 0,
             ),
           ),
         );
+        print('object findme');
+        widget.callBack();
       }
     }
   }
@@ -77,15 +83,17 @@ class _MapViewState extends State<MapView> {
   void _jumpToPoint(Point point) async {
     if (await LocationGeo().checkPermission()) {
       if (mapController != null) {
-        mapController!.animateCamera(
+        await mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
               target: LatLng(point.latitude!, point.longitude!),
-              zoom: 15,
+              zoom: 20,
               tilt: 0,
             ),
           ),
         );
+        print('object jumptopoint');
+        widget.callBack();
       }
     }
   }
@@ -145,7 +153,7 @@ class _MapViewState extends State<MapView> {
                         .map((e) => LatLng(e.latitude, e.longitude))
                         .toList()
                     : [],
-                color: Color.fromARGB(255, 56, 197, 61),
+                color: const Color.fromARGB(255, 56, 197, 61),
               )
           },
           padding: EdgeInsets.zero,

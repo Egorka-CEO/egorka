@@ -7,6 +7,7 @@ import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/ui/newOrder/repeat_order.dart';
 import 'package:egorka/ui/sidebar/about/about_page.dart';
 import 'package:egorka/ui/sidebar/book/book_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
@@ -27,6 +28,7 @@ class AppRoute {
   static const about = '/about';
   static const auth = '/auth';
   static const newOrder = '/newOrder';
+  static const repeatOrder = '/repeatOrder';
   static const historyOrder = '/history';
   static const profile = '/profile';
   static const trafficDeposit = '/trafficDeposit';
@@ -40,16 +42,24 @@ class AppRoute {
       case home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case currentOrder:
-        final list = route.arguments as CreateFormModel;
-        return MaterialPageRoute(builder: (_) => CurrentOrderPage(coast: list));
+        final list = route.arguments as List<int?>;
+        var number = list[0];
+        var pin = list[1];
+        return MaterialPageRoute(
+            builder: (_) => CurrentOrderPage(
+                  RecorNumber: number,
+                  RecordPIN: pin,
+                ));
       case marketplaces:
-        var history;
+        var number;
+        var pin;
         if (route.arguments != null) {
-          final list = route.arguments as List<CreateFormModel>;
-          history = list[0];
+          final list = route.arguments as List<int?>;
+          number = list[0];
+          pin = list[1];
         }
         return MaterialPageRoute(
-            builder: (_) => MarketPage(historyModel: history));
+            builder: (_) => MarketPage(RecorNumber: number, RecordPIN: pin));
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
@@ -76,6 +86,17 @@ class AppRoute {
                   deliveryChocie: delivery,
                   start: start,
                   end: end,
+                ));
+      case repeatOrder:
+        var number;
+        var pin;
+        final arg = route.arguments as List;
+        number = arg[0];
+        pin = arg[1];
+        return MaterialPageRoute(
+            builder: (_) => RepeatOrderPage(
+                  RecordNumber: number,
+                  RecordPIN: pin,
                 ));
       case historyOrder:
         final list = route.arguments as CreateFormModel;

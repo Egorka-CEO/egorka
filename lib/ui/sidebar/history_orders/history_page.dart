@@ -231,9 +231,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                   itemCount:
                                       formOrder!.result!.locations!.length,
                                   itemBuilder: ((context, index) {
-                                    if (index !=
-                                        formOrder!.result!.locations!.length -
-                                            1) {
+                                    if (formOrder!
+                                            .result!.locations![index].type ==
+                                        'Pickup') {
                                       return Padding(
                                         padding: EdgeInsets.only(bottom: 10.h),
                                         child: Container(

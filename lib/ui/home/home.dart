@@ -28,6 +28,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   PanelController panelController = PanelController();
+  final streamController = StreamController<int>();
+  bool visible = true;
 
   @override
   void initState() {
@@ -38,10 +40,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void startAnim() async {
-    Future.delayed(const Duration(milliseconds: 100), () {
-      logoMoveBackgroundScale = true;
-      setState(() {});
-    });
+    // Future.delayed(const Duration(milliseconds: 1000), () {
+    //   logoMoveBackgroundScale = true;
+    //   setState(() {});
+    // });
+
+    // Future.delayed(const Duration(milliseconds: 1500), () {
+    //   streamController.add(2);
+    // });
   }
 
   void funcInit() async {
@@ -102,7 +108,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       bottom:
                           snapshot is SearchAddressRoutePolilyne ? 100.h : 0,
                     ),
-                    child: const MapView(),
+                    child: MapView(
+                      callBack: () {
+                        Future.delayed(const Duration(milliseconds: 1500), () {
+                          visible = false;
+                          streamController.add(2);
+                        });
+                        logoMoveBackgroundScale = true;
+                        streamController.add(2);
+                        setState(() {});
+                      },
+                    ),
                   ),
                   Padding(
                     padding:
@@ -179,6 +195,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ),
             ),
+            StreamBuilder<int>(
+                stream: streamController.stream,
+                initialData: 1,
+                builder: (context, snapshot) {
+                  if (visible) {
+                    return AnimatedContainer(
+                        duration: const Duration(milliseconds: 1500),
+                        color: snapshot.data == 2
+                            ? Colors.transparent
+                            : Colors.white);
+                  }
+                  return const SizedBox();
+                }),
             Padding(
               padding: EdgeInsets.only(top: 50.h),
               child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(

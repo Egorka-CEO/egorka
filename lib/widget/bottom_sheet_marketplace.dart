@@ -158,7 +158,6 @@ class _BottomSheetDraggableState
             buildWhen: (previous, current) {
               if (current is MarketPlacesState) {
                 address = current.address;
-                print('object ${address}');
               }
               return true;
             },

@@ -5,7 +5,6 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/status_order.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -19,9 +18,9 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
 
 class CurrentOrderPage extends StatefulWidget {
-  CurrentOrderPage({super.key, required this.coast});
-
-  CreateFormModel coast;
+  int? RecordPIN;
+  int? RecorNumber;
+  CurrentOrderPage({super.key, this.RecordPIN, this.RecorNumber});
 
   @override
   State<CurrentOrderPage> createState() => _CurrentOrderPageState();
@@ -38,6 +37,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   String pickDate = '';
   Color colorStatus = Colors.red;
   String status = 'Ошибка';
+  bool loadOrder = false;
 
   @override
   void initState() {
@@ -47,61 +47,58 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   }
 
   void getForm() async {
-    formOrder = await Repository().infoForm(
-        widget.coast.result.RecordNumber.toString(),
-        widget.coast.result.RecordPIN.toString());
+    if (widget.RecorNumber != null && widget.RecordPIN != null) {
+      loadOrder = true;
+      formOrder = await Repository().infoForm(
+        widget.RecorNumber.toString(),
+        widget.RecordPIN.toString(),
+      );
+      parseDate = DateTime.parse(formOrder!.result!.recordDate!);
 
-    parseDate = DateTime.parse(formOrder!.result!.recordDate!);
+      dateTime =
+          DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000);
+      day = DateFormat('dd').format(parseDate!);
+      pickDay = DateFormat.EEEE('ru').format(parseDate!);
+      pickDate =
+          '$pickDay, ${parseDate!.day} ${DateFormat.MMMM('ru').format(parseDate!)} с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
 
-    day = DateFormat('dd').format(parseDate!);
-    pickDay = DateFormat.EEEE('ru').format(parseDate!);
-    pickDate =
-        '$pickDay, ${parseDate!.day} ${DateFormat.MMMM('ru').format(parseDate!)} с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
+      if (formOrder!.result!.status == 'Drafted') {
+        statusOrder = StatusOrder.drafted;
+        colorStatus = Colors.orange;
+        status = 'Черновик';
+      } else if (formOrder!.result!.status == 'Booked') {
+        resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+        colorStatus = resPaid ? Colors.green : Colors.orange;
+        statusOrder = StatusOrder.booked;
+        status = resPaid ? 'Оплачено' : 'Активно';
+      } else if (formOrder!.result!.status == 'Completed') {
+        statusOrder = StatusOrder.completed;
+        colorStatus = Colors.green;
+        resPaid = true;
+        status = 'Выполнено';
+      } else if (formOrder!.result!.status == 'Cancelled') {
+        statusOrder = StatusOrder.cancelled;
+        colorStatus = Colors.red;
+        resPaid = true;
+        status = 'Отменено';
+      } else if (formOrder!.result!.status == 'Rejected') {
+        statusOrder = StatusOrder.rejected;
+        colorStatus = Colors.orange;
+        resPaid = true;
+        status = 'Отказано';
+      } else if (formOrder!.result!.status == 'Error') {
+        statusOrder = StatusOrder.error;
+        colorStatus = Colors.red;
+        resPaid = true;
+        status = 'Ошибка';
+      }
 
-    if (formOrder!.result!.status == 'Drafted') {
-      statusOrder = StatusOrder.drafted;
-      colorStatus = Colors.orange;
-      status = 'Черновик';
-    } else if (formOrder!.result!.status == 'Booked') {
-      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-      colorStatus = resPaid ? Colors.green : Colors.orange;
-      statusOrder = StatusOrder.booked;
-      status = resPaid ? 'Оплачено' : 'Активно';
-    } else if (formOrder!.result!.status == 'Completed') {
-      statusOrder = StatusOrder.completed;
-      colorStatus = Colors.green;
-      resPaid = true;
-      status = 'Выполнено';
-    } else if (formOrder!.result!.status == 'Cancelled') {
-      statusOrder = StatusOrder.cancelled;
-      colorStatus = Colors.red;
-      resPaid = true;
-      status = 'Отменено';
-    } else if (formOrder!.result!.status == 'Rejected') {
-      statusOrder = StatusOrder.rejected;
-      colorStatus = Colors.orange;
-      resPaid = true;
-      status = 'Отказано';
-    } else if (formOrder!.result!.status == 'Error') {
-      statusOrder = StatusOrder.error;
-      colorStatus = Colors.red;
-      resPaid = true;
-      status = 'Ошибка';
+      setState(() {});
     }
-
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(widget.coast.result.Date! * 1000);
-
-    String day = DateFormat('dd').format(dateTime);
-    String pickDay = DateFormat.EEEE('ru').format(dateTime);
-    String pickDate =
-        '$pickDay, ${dateTime.day} ${DateFormat.MMMM('ru').format(dateTime)} с ${dateTime.hour}:${dateTime.minute} до ${dateTime.hour == 23 ? dateTime.hour : dateTime.hour + 1}:${dateTime.minute}';
-
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -172,16 +169,10 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),
-                        
                         SizedBox(height: 20.h),
                         Text(
-                          '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(dateTime)}',
+                          '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(dateTime!)}',
                           style: CustomTextStyle.black15w500,
-                        ),
-                        SizedBox(height: 10.h),
-                        const Text(
-                          'Статус: поиск Егорки',
-                          style: CustomTextStyle.grey14w400,
                         ),
                         SizedBox(height: 10.h),
                         SizedBox(
@@ -190,7 +181,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                             child: MiniMapView(
-                                locations: widget.coast.result.locations),
+                                locations: formOrder!.result!.locations!),
                           ),
                         ),
                         SizedBox(height: 10.h),

@@ -71,8 +71,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       } else {
         address = placemarks.first.locality!;
       }
-      print(
-          'object locale ${placemarks.first.street}, ${placemarks.first.locality}');
 
       emit(ChangeAddressSuccess(
         address,

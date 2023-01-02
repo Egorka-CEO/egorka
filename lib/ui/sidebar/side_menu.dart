@@ -147,8 +147,11 @@ class _NavBarState extends State<NavBar> {
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
                     child: GestureDetector(
                       onTap: () => Navigator.pushNamed(
-                          context, AppRoute.currentOrder,
-                          arguments: blocHistory.coast.first),
+                          context,
+                          AppRoute.currentOrder,
+                          arguments:[
+                              blocHistory.coast.first.result.RecordNumber,
+                          blocHistory.coast.first.result.RecordPIN]),
                       child: Container(
                         color: Colors.transparent,
                         height: 50.h,

@@ -109,7 +109,6 @@ class _BottomSheetDraggableState
     bool date = false;
 
     if (index == 0) {
-      print('object ${coast[index].result.RecordDate!}');
     } else {
       final date1 = DateTime.parse(coast[index - 1].result.RecordDate!);
       final date2 = DateTime.parse(coast[index].result.RecordDate!);
@@ -125,9 +124,6 @@ class _BottomSheetDraggableState
       } else {
         date = false;
       }
-
-      // print(
-      //     'objectQQQQ  ${da}');
     }
 
     final hour = parsedDate.hour;
@@ -277,9 +273,19 @@ class _BottomSheetDraggableState
                         child: Material(
                           color: Colors.grey[200],
                           child: InkWell(
-                            onTap: () => Navigator.of(context).pushNamed(
-                                AppRoute.marketplaces,
-                                arguments: [state]),
+                            onTap: state.result.Group! == 'Marketplace'
+                                ? () => Navigator.of(context).pushNamed(
+                                        AppRoute.marketplaces,
+                                        arguments: [
+                                          state.result.RecordNumber,
+                                          state.result.RecordPIN
+                                        ])
+                                : () => Navigator.of(context).pushNamed(
+                                        AppRoute.repeatOrder,
+                                        arguments: [
+                                          state.result.RecordNumber,
+                                          state.result.RecordPIN
+                                        ]),
                             child: SizedBox(
                               width: 40.h,
                               height: 40.h,

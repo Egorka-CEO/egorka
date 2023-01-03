@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Scaffold(
               resizeToAvoidBottomInset: false,
               drawer: NavBar(),
+              backgroundColor: Colors.transparent,
               drawerScrimColor: Colors.transparent,
               body: Stack(
                 children: [
@@ -195,19 +196,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            StreamBuilder<int>(
-                stream: streamController.stream,
-                initialData: 1,
-                builder: (context, snapshot) {
-                  if (visible) {
-                    return AnimatedContainer(
-                        duration: const Duration(milliseconds: 1500),
-                        color: snapshot.data == 2
-                            ? Colors.transparent
-                            : Colors.white);
-                  }
-                  return const SizedBox();
-                }),
             Padding(
               padding: EdgeInsets.only(top: 50.h),
               child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
@@ -246,6 +234,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 },
               ),
             ),
+            StreamBuilder<int>(
+                stream: streamController.stream,
+                initialData: 1,
+                builder: (context, snapshot) {
+                  if (visible) {
+                    return AnimatedOpacity(
+                      duration: const Duration(milliseconds: 1500),
+                      opacity: snapshot.data == 2 ? 0 : 1,
+                      child: Container(color: Colors.white),
+                    );
+                  }
+                  return const SizedBox();
+                }),
             Positioned.fill(
               child: Stack(
                 children: [

@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HistoryOrdersPage extends StatefulWidget {
   HistoryOrdersPage({super.key, required this.coast});
@@ -180,7 +181,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                 ),
                                 SizedBox(height: 10.h),
                                 Text(
-                                  '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(parseDate!)}',
+                                  '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / $day ${DateFormat.MMMM('ru').format(parseDate!)}',
                                   style: CustomTextStyle.black15w500,
                                   textAlign: TextAlign.center,
                                 ),
@@ -388,13 +389,34 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         children: [
                                           Row(
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        100.r),
-                                                child: Image.asset(
-                                                  'assets/images/deliver.jpeg',
-                                                  height: 80.h,
+                                              Container(
+                                                height: 80.w,
+                                                width: 80.w,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[200],
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.r),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.r),
+                                                  child: formOrder!
+                                                          .result!
+                                                          .courier!
+                                                          .photo!
+                                                          .isEmpty
+                                                      ? Icon(
+                                                          Icons.person,
+                                                          size: 40.h,
+                                                          color:
+                                                              Colors.grey[700],
+                                                        )
+                                                      : Image.asset(
+                                                          'assets/images/deliver.jpeg',
+                                                          height: 80.h,
+                                                        ),
                                                 ),
                                               ),
                                               SizedBox(width: 20.w),
@@ -402,14 +424,16 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  const Text(
-                                                    'Евгений',
+                                                  Text(
+                                                    formOrder!
+                                                        .result!.courier!.name!,
                                                     style: CustomTextStyle
                                                         .black15w700,
                                                   ),
                                                   SizedBox(height: 10.h),
-                                                  const Text(
-                                                    'Румянцев',
+                                                  Text(
+                                                    formOrder!.result!.courier!
+                                                        .surname!,
                                                     style: CustomTextStyle
                                                         .black15w700,
                                                   ),
@@ -451,14 +475,14 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  const Text(
-                                                    'Lada Largus / У081МО799',
+                                                  Text(
+                                                    '${formOrder!.result!.courier!.carVendor} ${formOrder!.result!.courier!.carModel} / ${formOrder!.result!.courier!.carNumber}',
                                                     style: CustomTextStyle
                                                         .black15w700,
                                                   ),
                                                   SizedBox(height: 10.h),
-                                                  const Text(
-                                                    'Цвет: белый',
+                                                  Text(
+                                                    'Цвет: ${formOrder!.result!.courier!.carColorName}',
                                                     style: CustomTextStyle
                                                         .black15w700,
                                                   ),
@@ -534,6 +558,49 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     const Text(
                                       'Депозит',
                                       style: CustomTextStyle.black15w700,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 70.h),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    if (formOrder!.result!.courier != null)
+                                      GestureDetector(
+                                        onTap: () => launchUrl(Uri(
+                                            scheme: 'tel',
+                                            path:
+                                                '+${formOrder!.result!.courier!.phones.first!.value}')),
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.call,
+                                              color: Colors.red,
+                                              size: 50.h,
+                                            ),
+                                            const Text(
+                                              'Позвонить\nводителю',
+                                              textAlign: TextAlign.center,
+                                              style:
+                                                  CustomTextStyle.black15w700,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    Column(
+                                      children: [
+                                        Icon(
+                                          Icons.send,
+                                          color: Colors.red,
+                                          size: 50.h,
+                                        ),
+                                        const Text(
+                                          'Написать в\nподдержку',
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.black15w700,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

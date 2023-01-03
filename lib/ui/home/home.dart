@@ -35,19 +35,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     funcInit();
-    startAnim();
     BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
-  }
-
-  void startAnim() async {
-    // Future.delayed(const Duration(milliseconds: 1000), () {
-    //   logoMoveBackgroundScale = true;
-    //   setState(() {});
-    // });
-
-    // Future.delayed(const Duration(milliseconds: 1500), () {
-    //   streamController.add(2);
-    // });
   }
 
   void funcInit() async {
@@ -189,7 +177,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   if (!bloc.isPolilyne)
                     Padding(
-                      padding: EdgeInsets.only(bottom: (35 / 2).h),
+                      padding: EdgeInsets.only(bottom: 100.h),
                       child: CustomWidget.iconGPS(),
                     ),
                   const BottomSheetDraggable(),
@@ -240,7 +228,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 builder: (context, snapshot) {
                   if (visible) {
                     return AnimatedOpacity(
-                      duration: const Duration(milliseconds: 1500),
+                      duration: const Duration(milliseconds: 800),
                       opacity: snapshot.data == 2 ? 0 : 1,
                       child: Container(color: Colors.white),
                     );

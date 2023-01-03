@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CurrentOrderPage extends StatefulWidget {
   int? RecordPIN;
@@ -171,7 +172,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                         ),
                         SizedBox(height: 20.h),
                         Text(
-                          '${formOrder!.result?.invoices!.first.iD}${formOrder!.result?.invoices!.first.pIN} / $day ${DateFormat.MMMM('ru').format(dateTime!)}',
+                          '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / $day ${DateFormat.MMMM('ru').format(dateTime!)}',
                           style: CustomTextStyle.black15w500,
                         ),
                         SizedBox(height: 10.h),
@@ -361,12 +362,28 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                 children: [
                                   Row(
                                     children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100.r),
-                                        child: Image.asset(
-                                          'assets/images/deliver.jpeg',
-                                          height: 80.h,
+                                      Container(
+                                        height: 80.w,
+                                        width: 80.w,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(100.r),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100.r),
+                                          child: formOrder!.result!.courier!
+                                                  .photo!.isEmpty
+                                              ? Icon(
+                                                  Icons.person,
+                                                  size: 40.h,
+                                                  color: Colors.grey[700],
+                                                )
+                                              : Image.asset(
+                                                  'assets/images/deliver.jpeg',
+                                                  height: 80.h,
+                                                ),
                                         ),
                                       ),
                                       SizedBox(width: 20.w),
@@ -374,13 +391,14 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            'Евгений',
+                                          Text(
+                                            formOrder!.result!.courier!.name!,
                                             style: CustomTextStyle.black15w700,
                                           ),
                                           SizedBox(height: 10.h),
-                                          const Text(
-                                            'Румянцев',
+                                          Text(
+                                            formOrder!
+                                                .result!.courier!.surname!,
                                             style: CustomTextStyle.black15w700,
                                           ),
                                         ],
@@ -389,6 +407,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                   )
                                 ],
                               ),
+                        SizedBox(height: 10.h),
                         formOrder!.result!.courier == null
                             ? SizedBox()
                             : Column(
@@ -419,13 +438,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            'Lada Largus / У081МО799',
+                                          Text(
+                                            '${formOrder!.result!.courier!.carVendor} ${formOrder!.result!.courier!.carModel} / ${formOrder!.result!.courier!.carNumber}',
                                             style: CustomTextStyle.black15w700,
                                           ),
                                           SizedBox(height: 10.h),
-                                          const Text(
-                                            'Цвет: белый',
+                                          Text(
+                                            'Цвет: ${formOrder!.result!.courier!.carColorName}',
                                             style: CustomTextStyle.black15w700,
                                           ),
                                         ],
@@ -507,20 +526,27 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Column(
-                              children: [
-                                Icon(
-                                  Icons.call,
-                                  color: Colors.red,
-                                  size: 50.h,
+                            if (formOrder!.result!.courier != null)
+                              GestureDetector(
+                                onTap: () => launchUrl(Uri(
+                                    scheme: 'tel',
+                                    path:
+                                        '+${formOrder!.result!.courier!.phones.first!.value}')),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.call,
+                                      color: Colors.red,
+                                      size: 50.h,
+                                    ),
+                                    const Text(
+                                      'Позвонить\nводителю',
+                                      textAlign: TextAlign.center,
+                                      style: CustomTextStyle.black15w700,
+                                    ),
+                                  ],
                                 ),
-                                const Text(
-                                  'Позвонить\nводителю',
-                                  textAlign: TextAlign.center,
-                                  style: CustomTextStyle.black15w700,
-                                ),
-                              ],
-                            ),
+                              ),
                             Column(
                               children: [
                                 Icon(

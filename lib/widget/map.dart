@@ -53,9 +53,7 @@ class _MapViewState extends State<MapView> {
           ),
         );
       }
-      // print('object1');
     }
-    print('object getposition');
     widget.callBack();
   }
 
@@ -74,7 +72,6 @@ class _MapViewState extends State<MapView> {
             ),
           ),
         );
-        print('object findme');
         widget.callBack();
       }
     }
@@ -92,7 +89,6 @@ class _MapViewState extends State<MapView> {
             ),
           ),
         );
-        print('object jumptopoint');
         widget.callBack();
       }
     }

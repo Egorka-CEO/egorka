@@ -1,4 +1,5 @@
 import 'package:egorka/model/calculation.dart';
+import 'package:egorka/model/courier.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/total_price.dart';
@@ -43,7 +44,7 @@ class Result {
   int? recordDateStamp;
   String? recordExpireDate;
   int? recordExpireDateStamp;
-  dynamic courier;
+  Courier? courier;
   List<Location>? locations;
   List<Null>? ancillaries;
   String? message;
@@ -95,7 +96,8 @@ class Result {
     recordDateStamp = json['RecordDateStamp'];
     recordExpireDate = json['RecordExpireDate'];
     recordExpireDateStamp = json['RecordExpireDateStamp'];
-    courier = json['Courier'];
+    courier =
+        json['Courier'] != null ? Courier.fromJson(json['Courier']) : null;
     if (json['Locations'] != null) {
       locations = <Location>[];
       json['Locations'].forEach((v) {

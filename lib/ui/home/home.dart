@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     child: MapView(
                       callBack: () {
-                        Future.delayed(const Duration(milliseconds: 1500), () {
+                        Future.delayed(const Duration(milliseconds: 800), () {
                           visible = false;
                           streamController.add(2);
                         });

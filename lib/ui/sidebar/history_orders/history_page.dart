@@ -2,6 +2,7 @@ import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/month.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
@@ -39,6 +40,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   Color colorStatus = Colors.red;
   String status = 'Ошибка';
 
+  int pointSentCount = 0;
+  int pointReceiveCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +51,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   }
 
   void getForm() async {
+    print(
+        'object ${widget.coast.result.RecordNumber.toString()} ${widget.coast.result.RecordPIN.toString()}');
     formOrder = await Repository().infoForm(
         widget.coast.result.RecordNumber.toString(),
         widget.coast.result.RecordPIN.toString());
@@ -56,7 +62,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     day = DateFormat('dd').format(parseDate!);
     pickDay = DateFormat.EEEE('ru').format(parseDate!);
     pickDate =
-        '$pickDay, ${parseDate!.day} ${DateFormat.MMMM('ru').format(parseDate!)} с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
+        '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)}';
+    //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
 
     if (formOrder!.result!.status == 'Drafted') {
       statusOrder = StatusOrder.drafted;
@@ -113,10 +120,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                 alignment: Alignment.centerLeft,
                                 children: [
                                   GestureDetector(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Icon(
-                                      Icons.arrow_back_outlined,
-                                      size: 30.h,
+                                    onTap: () => Navigator.of(context).pop(),
+                                    child: const Icon(
+                                      Icons.arrow_back_ios,
                                       color: Colors.red,
                                     ),
                                   ),
@@ -159,6 +165,10 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                           ],
                         ),
                       ),
+                      Container(
+                        height: 1,
+                        color: Colors.black.withOpacity(0.2),
+                      ),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Padding(
@@ -167,6 +177,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                SizedBox(height: 10.h),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 5.h, horizontal: 10.h),
@@ -181,7 +192,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                 ),
                                 SizedBox(height: 10.h),
                                 Text(
-                                  '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / $day ${DateFormat.MMMM('ru').format(parseDate!)}',
+                                  '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / $day ${DateMonth().monthDate(parseDate!)}',
                                   style: CustomTextStyle.black15w500,
                                   textAlign: TextAlign.center,
                                 ),
@@ -235,6 +246,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     if (formOrder!
                                             .result!.locations![index].type ==
                                         'Pickup') {
+                                      ++pointSentCount;
+                                      int str = pointSentCount;
                                       return Padding(
                                         padding: EdgeInsets.only(bottom: 10.h),
                                         child: Container(
@@ -283,7 +296,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                                 .historyDetailsOrder,
                                                             arguments: [
                                                           TypeAdd.sender,
-                                                          1,
+                                                          str,
                                                           formOrder!.result!
                                                               .locations![index]
                                                         ]),
@@ -300,64 +313,69 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         ),
                                       );
                                     } else {
-                                      return Container(
-                                        padding: EdgeInsets.all(10.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(20.r),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/to.png',
-                                                  height: 25.h,
-                                                ),
-                                                SizedBox(width: 15.w),
-                                                Flexible(
-                                                  child: Text(
-                                                    formOrder!
-                                                        .result!
-                                                        .locations![index]
-                                                        .point!
-                                                        .address!,
-                                                    style: CustomTextStyle
-                                                        .black15w500,
+                                      ++pointReceiveCount;
+                                      int str = pointReceiveCount;
+                                      return Padding(
+                                        padding: EdgeInsets.only(bottom: 10.h),
+                                        child: Container(
+                                          padding: EdgeInsets.all(10.w),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20.r),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/to.png',
+                                                    height: 25.h,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 15.h),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.flag,
-                                                  color: Colors.grey[400],
-                                                ),
-                                                SizedBox(width: 15.w),
-                                                GestureDetector(
-                                                  onTap: () => Navigator.of(
-                                                          context)
-                                                      .pushNamed(
-                                                          AppRoute
-                                                              .historyDetailsOrder,
-                                                          arguments: [
-                                                        TypeAdd.receiver,
-                                                        1,
-                                                        formOrder!.result!
-                                                            .locations![index]
-                                                      ]),
-                                                  child: const Text(
-                                                    'Посмотреть детали',
-                                                    style:
-                                                        CustomTextStyle.red15,
+                                                  SizedBox(width: 15.w),
+                                                  Flexible(
+                                                    child: Text(
+                                                      formOrder!
+                                                          .result!
+                                                          .locations![index]
+                                                          .point!
+                                                          .address!,
+                                                      style: CustomTextStyle
+                                                          .black15w500,
+                                                    ),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ],
+                                                ],
+                                              ),
+                                              SizedBox(height: 15.h),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.flag,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  SizedBox(width: 15.w),
+                                                  GestureDetector(
+                                                    onTap: () => Navigator.of(
+                                                            context)
+                                                        .pushNamed(
+                                                            AppRoute
+                                                                .historyDetailsOrder,
+                                                            arguments: [
+                                                          TypeAdd.receiver,
+                                                          str,
+                                                          formOrder!.result!
+                                                              .locations![index]
+                                                        ]),
+                                                    child: const Text(
+                                                      'Посмотреть детали',
+                                                      style:
+                                                          CustomTextStyle.red15,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       );
                                     }
@@ -540,8 +558,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       style: CustomTextStyle.grey15bold,
                                     ),
                                     const Spacer(),
-                                    const Text(
-                                      '562 ₽',
+                                    Text(
+                                      '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
                                       style: CustomTextStyle.black15w700,
                                     ),
                                   ],
@@ -555,10 +573,19 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       style: CustomTextStyle.grey15bold,
                                     ),
                                     const Spacer(),
-                                    const Text(
-                                      'Депозит',
-                                      style: CustomTextStyle.black15w700,
-                                    ),
+                                    BlocBuilder<ProfileBloc, ProfileState>(
+                                        builder: (context, snapshot) {
+                                      final auth =
+                                          BlocProvider.of<ProfileBloc>(context)
+                                              .getUser();
+                                      return Text(
+                                        (auth != null &&
+                                                auth.result!.agent != null)
+                                            ? 'Депозит'
+                                            : 'Карта',
+                                        style: CustomTextStyle.black15w700,
+                                      );
+                                    }),
                                   ],
                                 ),
                                 SizedBox(height: 70.h),

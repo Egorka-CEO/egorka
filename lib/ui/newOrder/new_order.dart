@@ -80,6 +80,10 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   bool btmSheet = false;
   TypeAdd? typeAdd;
 
+  bool attorney = false;
+  bool industrialZone = false;
+  bool toDoor = false;
+
   @override
   void initState() {
     super.initState();
@@ -155,21 +159,11 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               if (typeAdd != null && typeAdd == TypeAdd.sender) {
                 routeOrderSender.add(PointDetails(
                     suggestions: current.value!, details: Details()));
-                BlocProvider.of<NewOrderPageBloc>(context)
-                    .add(CalculateCoastEvent(
-                  routeOrderSender,
-                  routeOrderReceiver,
-                  widget.deliveryChocie.type,
-                ));
+                calc();
               } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {
                 routeOrderReceiver.add(PointDetails(
                     suggestions: current.value!, details: Details()));
-                BlocProvider.of<NewOrderPageBloc>(context)
-                    .add(CalculateCoastEvent(
-                  routeOrderSender,
-                  routeOrderReceiver,
-                  widget.deliveryChocie.type,
-                ));
+                calc();
               }
             } else if (current is CalcSuccess) {
               widget.order = current.coasts ?? widget.order;
@@ -232,13 +226,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                           }
                                         : (direction) {
                                             routeOrderSender.removeAt(index);
-                                            BlocProvider.of<NewOrderPageBloc>(
-                                                    context)
-                                                .add(CalculateCoastEvent(
-                                              routeOrderSender,
-                                              routeOrderReceiver,
-                                              widget.deliveryChocie.type,
-                                            ));
+                                            calc();
 
                                             return routeOrderSender.length == 1
                                                 ? Future.value(false)
@@ -354,16 +342,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
 
                                                   routeOrderSender[index] =
                                                       details!;
-                                                  // routeOrderSender[index].suggestions = details;
 
-                                                  BlocProvider.of<
-                                                              NewOrderPageBloc>(
-                                                          context)
-                                                      .add(CalculateCoastEvent(
-                                                    routeOrderSender,
-                                                    routeOrderReceiver,
-                                                    widget.deliveryChocie.type,
-                                                  ));
+                                                  calc();
                                                 },
                                                 child: Text(
                                                   'Указать детали',
@@ -441,13 +421,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                         : (direction) {
                                             routeOrderReceiver.removeAt(index);
 
-                                            BlocProvider.of<NewOrderPageBloc>(
-                                                    context)
-                                                .add(CalculateCoastEvent(
-                                              routeOrderSender,
-                                              routeOrderReceiver,
-                                              widget.deliveryChocie.type,
-                                            ));
+                                            calc();
                                             setState(() {});
                                             return Future.value(true);
                                           },
@@ -575,14 +549,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                                   routeOrderReceiver[index] =
                                                       details;
 
-                                                  BlocProvider.of<
-                                                              NewOrderPageBloc>(
-                                                          context)
-                                                      .add(CalculateCoastEvent(
-                                                    routeOrderSender,
-                                                    routeOrderReceiver,
-                                                    widget.deliveryChocie.type,
-                                                  ));
+                                                  calc();
                                                 },
                                                 child: Text(
                                                   'Указать детали',
@@ -694,9 +661,171 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              SizedBox(width: 5.w),
+                              const Text(
+                                'Дополнительные услуги',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.w),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10.h),
+                                Row(
+                                  children: const [
+                                    Text(
+                                      'Услуга помощи погрузки / разгрузки',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'Егорка поможет вам загрузить/разгрузить посылку. Если вес посылки превышает бесплатные нормы и Егорка физически не сможет загрузить/разгрузить один, то Егорка вправе попросить отправителя/получателя о помощи.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.w),
+                                Row(
+                                  children: const [
+                                    Text(
+                                      'Отвезти посылку на почту',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'Егорка отвезет посылку на почту и отправит её по указанному ниже адресу. Если вы хотите получить оригинал квитанции, то укажите дополнительную точку в заказе. Дополнительные расходы за отправку спишутся с вашей банковской карты или депозита.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  children: const [
+                                    Flexible(
+                                      child: Text(
+                                        'Отправить посылку поездом, автобусом или самолетом',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'Егорка заранее приедет на вокзал, найдет ваш поезд/автобус, рейс и отправит строго по указанному вами поручению. Дополнительные расходы (за отправку, парковку и т.д.) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  children: const [
+                                    Flexible(
+                                      child: Text(
+                                        'Встретить посылку поездом, автобусом или самолетом',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'Егорка заранее приедет на вокзал, встретит ваш поезд/автобус, рейс и заберет вашу посылку. После чего доставит на указанный вами адрес. Дополнительные расходы (к примеру, парковку) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value: attorney,
+                                      fillColor:
+                                          MaterialStateProperty.all(Colors.red),
+                                      shape: const CircleBorder(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          attorney = !attorney;
+                                        });
+                                      },
+                                    ),
+                                    const Text(
+                                      'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'После оформления заказа, Егорка пришлет вам в СМС или WhatsApp паспортные данные (ФИО, серия и номер паспорта, дата выдачи, где и когда выдан) для составления доверенности. Если нужные дополнительные данные, то укажите их ниже в поручении для Егорки.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value: industrialZone,
+                                      fillColor:
+                                          MaterialStateProperty.all(Colors.red),
+                                      shape: const CircleBorder(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          industrialZone = !industrialZone;
+                                        });
+                                      },
+                                    ),
+                                    const Text(
+                                      'Промзона',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'В том случае, если вы не сможете выдать пропуск Егорке для заезда на территорию промзоны. Егорка припаркует свой автомобиль за воротами и пешком доставит посылку получателю.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value: toDoor,
+                                      fillColor:
+                                          MaterialStateProperty.all(Colors.red),
+                                      shape: const CircleBorder(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          toDoor = !toDoor;
+                                        });
+                                      },
+                                    ),
+                                    const Text(
+                                      'Доставить до двери',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.w),
+                                const Text(
+                                  'Егорка доставит вашу посылку до входной двери квартиры/офиса. Если данная услуга не активирована, Егорка встретит получателя возле подъезда.',
+                                  style: CustomTextStyle.grey14w400,
+                                  textAlign: TextAlign.justify,
+                                ),
+                                SizedBox(height: 5.h),
+                              ],
+                            ),
+                          ),
                           keyBoardVisible
-                              ? SizedBox(height: 0.h)
-                              : SizedBox(height: 400.h)
+                              ? widget.order == null
+                                  ? SizedBox(height: 50.h)
+                                  : SizedBox(height: 220.h)
+                              : SizedBox(height: 400.h),
                         ],
                       ),
                     ),
@@ -868,5 +997,13 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         ],
       ),
     );
+  }
+
+  void calc() {
+    BlocProvider.of<NewOrderPageBloc>(context).add(CalculateCoastEvent(
+      routeOrderSender,
+      routeOrderReceiver,
+      widget.deliveryChocie.type,
+    ));
   }
 }

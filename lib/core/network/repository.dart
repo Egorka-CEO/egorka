@@ -6,6 +6,7 @@ import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
+import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/create_form_model.dart' as crtForm;
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/info_form.dart';
@@ -107,6 +108,26 @@ class Repository {
   }
 
   Future<CoastResponse?> getCoastBase(CoastBase value) async {
+    final body = value.toJson();
+    final response = await dio.post(
+      '$server/service/delivery/',
+      options: header(),
+      data: {
+        "Auth": auth(),
+        "Method": "Calculate",
+        "Body": body,
+        "Params": params()
+      },
+    );
+
+    if (response.data['Result'] != null) {
+      final coast = CoastResponse.fromJson(response.data);
+      return coast;
+    }
+    return null;
+  }
+
+  Future<CoastResponse?> getCoastMarketPlace(CoastMarketPlace value) async {
     final body = value.toJson();
     final response = await dio.post(
       '$server/service/delivery/',

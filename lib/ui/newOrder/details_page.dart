@@ -3,9 +3,9 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
-import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/cutom_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -307,8 +307,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
-                  children: const [
-                    Text('Контакты получателя',
+                  children: [
+                    Text('Контакты ${widget.typeAdd == TypeAdd.sender ? 'отправителя' : 'получателя'}',
                         style: CustomTextStyle.grey15bold),
                   ],
                 ),

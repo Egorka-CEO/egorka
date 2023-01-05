@@ -18,10 +18,11 @@ class MarketPlace extends MarketPlaceEvent {
   MarketPlace(this.value);
 }
 
-class CalcOrder extends MarketPlaceEvent {
+class CalcOrderMarketplace extends MarketPlaceEvent {
   Suggestions? suggestion;
   DateTime? time;
   PointMarketPlace? points;
+  List<Ancillaries>? ancillaries;
   String? name;
   String? phone;
   int? bucket;
@@ -31,9 +32,10 @@ class CalcOrder extends MarketPlaceEvent {
   String? floor;
   String? room;
 
-  CalcOrder(
+  CalcOrderMarketplace(
     this.suggestion,
     this.points,
+    this.ancillaries,
     this.time,
     this.name,
     this.phone,

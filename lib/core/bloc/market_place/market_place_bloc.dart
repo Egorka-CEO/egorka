@@ -1,6 +1,7 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
-import 'package:egorka/model/coast_base.dart';
+import 'package:egorka/model/ancillaries.dart';
+import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/locations.dart';
@@ -10,13 +11,11 @@ import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoder2/geocoder2.dart';
 import 'package:intl/intl.dart';
 part 'market_place_event.dart';
 part 'market_place_state.dart';
 
 class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
-  late GeoData data;
   MarketPlaces? marketPlaces;
 
   MarketPlacePageBloc() : super(MarketPlaceStated()) {
@@ -26,15 +25,18 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     on<MarketPlaceCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
     on<GetMarketPlaces>(_getMarketPlaces);
     on<SelectMarketPlaces>(_selectMarketPlaces);
-    on<CalcOrder>(_calculateOrder);
+    on<CalcOrderMarketplace>(_calculateOrderMarketplace);
     on<CreateForm>(_createForm);
     on<MarketUpdateState>(_updateState);
   }
 
-  void _calculateOrder(CalcOrder event, Emitter<MarketPlaceState> emit) async {
+  void _calculateOrderMarketplace(
+      CalcOrderMarketplace event, Emitter<MarketPlaceState> emit) async {
     emit(CalcLoading());
-    var result = await Repository().getCoastBase(
-      CoastBase(
+    var result = await Repository().getCoastMarketPlace(
+      CoastMarketPlace(
+        type: "Truck",
+        group: "Marketplace",
         locations: [
           Location(
             date: event.time != null
@@ -64,6 +66,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
                 phoneOfficeAdd: event.phone),
           )
         ],
+        ancillaries: event.ancillaries
       ),
     );
     emit(MarketPlacesSuccessState(result));

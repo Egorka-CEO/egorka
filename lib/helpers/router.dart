@@ -59,7 +59,7 @@ class AppRoute {
           pin = list[1];
         }
         return MaterialPageRoute(
-            builder: (_) => MarketPage(RecorNumber: number, RecordPIN: pin));
+            builder: (_) => MarketPage(recorNumber: number, recordPIN: pin));
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:

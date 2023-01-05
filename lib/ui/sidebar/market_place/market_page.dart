@@ -6,6 +6,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/point.dart';
@@ -16,23 +17,22 @@ import 'package:egorka/ui/newOrder/new_order.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/cutom_input_formatter.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MarketPage extends StatelessWidget {
-  int? RecordPIN;
-  int? RecorNumber;
-  MarketPage({super.key, this.RecordPIN, this.RecorNumber});
+  int? recordPIN, recorNumber;
+  MarketPage({super.key, this.recordPIN, this.recorNumber});
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -41,18 +41,14 @@ class MarketPage extends StatelessWidget {
           create: (context) => MarketPlacePageBloc(),
         ),
       ],
-      child: MarketPages(
-        RecorNumber: RecorNumber,
-        RecordPIN: RecordPIN,
-      ),
+      child: MarketPages(recorNumber: recorNumber, recordPIN: recordPIN),
     );
   }
 }
 
 class MarketPages extends StatefulWidget {
-  int? RecordPIN;
-  int? RecorNumber;
-  MarketPages({super.key, this.RecordPIN, this.RecorNumber});
+  int? recordPIN, recorNumber;
+  MarketPages({super.key, this.recordPIN, this.recorNumber});
 
   @override
   State<MarketPages> createState() => _MarketPageState();
@@ -80,12 +76,18 @@ class _MarketPageState extends State<MarketPages>
   TextEditingController startOrderController = TextEditingController();
   TextEditingController countBucketController = TextEditingController();
   TextEditingController countPalletController = TextEditingController();
+  TextEditingController countPalletControllerMore = TextEditingController();
+  TextEditingController countPalletControllerMore15kg = TextEditingController();
+  TextEditingController countPalletControllerLess15kg = TextEditingController();
 
   PanelController panelController = PanelController();
+  ScrollController scrollController = ScrollController();
 
-  final bucketController = StreamController<int>();
-  final palletController = StreamController<int>();
-  final streamController = StreamController<bool>();
+  final countBucket = StreamController<int>();
+  final countPallet = StreamController<int>();
+  final detailsController = StreamController<bool>();
+  final bucketCountLess15kg = StreamController<int>();
+  final bucketCountMore15kg = StreamController<int>();
 
   final FocusNode contactFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
@@ -94,11 +96,24 @@ class _MarketPageState extends State<MarketPages>
   final FocusNode podFocus = FocusNode();
   final FocusNode etajFocus = FocusNode();
   final FocusNode officeFocus = FocusNode();
+  final FocusNode bucketFocusLess15kg = FocusNode();
+  final FocusNode bucketFocusMore15kg = FocusNode();
+  final FocusNode palletFocusAdditional = FocusNode();
+
+  @override
+  void dispose() {
+    countBucket.close();
+    countPallet.close();
+    detailsController.close();
+    bucketCountLess15kg.close();
+    bucketCountMore15kg.close();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    if (widget.RecorNumber != null && widget.RecordPIN != null) {
+    if (widget.recorNumber != null && widget.recordPIN != null) {
       loadOrder = true;
       getForm();
     }
@@ -106,7 +121,7 @@ class _MarketPageState extends State<MarketPages>
 
   void getForm() async {
     formOrder = await Repository()
-        .infoForm(widget.RecorNumber.toString(), widget.RecordPIN.toString());
+        .infoForm(widget.recorNumber.toString(), widget.recordPIN.toString());
     suggestion = Suggestions(
         iD: '', name: '', point: formOrder!.result!.locations!.first.point);
     fromController.text = formOrder!.result!.locations!.first.point!.address!;
@@ -119,69 +134,45 @@ class _MarketPageState extends State<MarketPages>
     points =
         PointMarketPlace(code: formOrder!.result!.locations!.last.point!.code);
 
-    BlocProvider.of<MarketPlacePageBloc>(context).add(CalcOrder(
-      suggestion,
-      points,
-      DateTime.now(),
-      nameController.text,
-      phoneController.text,
-      countBucketController.text.isEmpty
-          ? null
-          : int.parse(countBucketController.text),
-      countPalletController.text.isEmpty
-          ? null
-          : int.parse(countPalletController.text),
-    ));
+    calcOrder();
 
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    bucketController.close();
-    palletController.close();
-    startOrderController.clear();
-    super.dispose();
   }
 
   void _findMe() async {
     if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      GeoData data = await Geocoder2.getDataFromCoordinates(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          language: 'RU',
-          googleMapApiKey: "AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ");
-      fromController.text = data.address;
+
+      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
+          position.latitude, position.longitude,
+          localeIdentifier: 'ru');
+
+      String address = '';
+
+      if (placemarks.first.street!.isNotEmpty) {
+        address += placemarks.first.street!;
+        if (placemarks.first.locality!.isNotEmpty) {
+          address += ', г.${placemarks.first.locality!}';
+        }
+      } else {
+        address = placemarks.first.locality!;
+      }
+
+      fromController.text = address;
       suggestion = Suggestions(
         iD: '',
-        name: data.address,
+        name: address,
         point: Point(
-          address: data.address,
-          latitude: data.latitude,
-          longitude: data.longitude,
+          address: address,
+          latitude: position.latitude,
+          longitude: position.longitude,
         ),
       );
-      if (suggestion != null && points != null) {
-        BlocProvider.of<MarketPlacePageBloc>(context).add(CalcOrder(
-          suggestion,
-          points,
-          time,
-          nameController.text,
-          phoneController.text,
-          countBucketController.text.isEmpty
-              ? null
-              : int.parse(countBucketController.text),
-          countPalletController.text.isEmpty
-              ? null
-              : int.parse(countPalletController.text),
-        ));
-      }
+
+      calcOrder();
     }
   }
-
-  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -246,22 +237,7 @@ class _MarketPageState extends State<MarketPages>
                             typeAdd == TypeAdd.receiver) {
                           toController.text = suggestion!.name;
                         }
-                        if (suggestion != null && points != null) {
-                          BlocProvider.of<MarketPlacePageBloc>(context)
-                              .add(CalcOrder(
-                            suggestion,
-                            points,
-                            time,
-                            nameController.text,
-                            phoneController.text,
-                            countBucketController.text.isEmpty
-                                ? null
-                                : int.parse(countBucketController.text),
-                            countPalletController.text.isEmpty
-                                ? null
-                                : int.parse(countPalletController.text),
-                          ));
-                        }
+                        calcOrder();
                       } else if (current is MarketPlacesSuccessState) {
                         coast = current.coastResponse;
                       } else if (current is CreateFormSuccess) {
@@ -338,7 +314,7 @@ class _MarketPageState extends State<MarketPages>
                                                       MaterialStateProperty.all(
                                                           Colors.red),
                                                   shape: const CircleBorder(),
-                                                  onChanged: ((value) {}),
+                                                  onChanged: (value) {},
                                                 ),
                                                 Expanded(
                                                   child: GestureDetector(
@@ -391,7 +367,7 @@ class _MarketPageState extends State<MarketPages>
                                       SizedBox(height: 10.h),
                                       GestureDetector(
                                         onTap: () =>
-                                            streamController.add(!details),
+                                            detailsController.add(!details),
                                         child: Row(
                                           children: [
                                             SizedBox(width: 5.w),
@@ -404,7 +380,7 @@ class _MarketPageState extends State<MarketPages>
                                       ),
                                       SizedBox(height: 5.h),
                                       StreamBuilder<bool>(
-                                          stream: streamController.stream,
+                                          stream: detailsController.stream,
                                           initialData: false,
                                           builder: (context, snapshot) {
                                             details = snapshot.data!;
@@ -540,7 +516,7 @@ class _MarketPageState extends State<MarketPages>
                                                       MaterialStateProperty.all(
                                                           Colors.blue),
                                                   shape: const CircleBorder(),
-                                                  onChanged: ((value) {}),
+                                                  onChanged: (value) {},
                                                 ),
                                                 Expanded(
                                                   child: GestureDetector(
@@ -604,35 +580,7 @@ class _MarketPageState extends State<MarketPages>
 
                                                         points = pointsRes;
 
-                                                        if (suggestion !=
-                                                                null &&
-                                                            points != null) {
-                                                          BlocProvider.of<
-                                                                      MarketPlacePageBloc>(
-                                                                  context)
-                                                              .add(CalcOrder(
-                                                            suggestion,
-                                                            points,
-                                                            time,
-                                                            nameController.text,
-                                                            phoneController
-                                                                .text,
-                                                            countBucketController
-                                                                    .text
-                                                                    .isEmpty
-                                                                ? null
-                                                                : int.parse(
-                                                                    countBucketController
-                                                                        .text),
-                                                            countPalletController
-                                                                    .text
-                                                                    .isEmpty
-                                                                ? null
-                                                                : int.parse(
-                                                                    countPalletController
-                                                                        .text),
-                                                          ));
-                                                        }
+                                                        calcOrder();
                                                       }
                                                     }
                                                   },
@@ -720,33 +668,8 @@ class _MarketPageState extends State<MarketPages>
                                         children: [
                                           Expanded(
                                             child: CustomTextField(
-                                              onFieldSubmitted: (value) {
-                                                if (suggestion != null &&
-                                                    points != null) {
-                                                  BlocProvider.of<
-                                                              MarketPlacePageBloc>(
-                                                          context)
-                                                      .add(CalcOrder(
-                                                    suggestion,
-                                                    points,
-                                                    time,
-                                                    nameController.text,
-                                                    phoneController.text,
-                                                    countBucketController
-                                                            .text.isEmpty
-                                                        ? null
-                                                        : int.parse(
-                                                            countBucketController
-                                                                .text),
-                                                    countPalletController
-                                                            .text.isEmpty
-                                                        ? null
-                                                        : int.parse(
-                                                            countPalletController
-                                                                .text),
-                                                  ));
-                                                }
-                                              },
+                                              onFieldSubmitted: (value) =>
+                                                  calcOrder(),
                                               maxLines: 1,
                                               height: 45.h,
                                               focusNode: contactFocus,
@@ -768,33 +691,8 @@ class _MarketPageState extends State<MarketPages>
                                         children: [
                                           Expanded(
                                             child: CustomTextField(
-                                              onFieldSubmitted: (value) {
-                                                if (suggestion != null &&
-                                                    points != null) {
-                                                  BlocProvider.of<
-                                                              MarketPlacePageBloc>(
-                                                          context)
-                                                      .add(CalcOrder(
-                                                    suggestion,
-                                                    points,
-                                                    time,
-                                                    nameController.text,
-                                                    phoneController.text,
-                                                    countBucketController
-                                                            .text.isEmpty
-                                                        ? null
-                                                        : int.parse(
-                                                            countBucketController
-                                                                .text),
-                                                    countPalletController
-                                                            .text.isEmpty
-                                                        ? null
-                                                        : int.parse(
-                                                            countPalletController
-                                                                .text),
-                                                  ));
-                                                }
-                                              },
+                                              onFieldSubmitted: (value) =>
+                                                  calcOrder(),
                                               focusNode: phoneFocus,
                                               height: 45.h,
                                               contentPadding:
@@ -825,49 +723,16 @@ class _MarketPageState extends State<MarketPages>
                                       ),
                                       SizedBox(height: 5.h),
                                       StreamBuilder<int>(
-                                        stream: bucketController.stream,
+                                        stream: countBucket.stream,
                                         initialData: 0,
                                         builder: (context, snapshot) {
                                           return Row(
                                             children: [
                                               Expanded(
                                                 child: CustomTextField(
-                                                  onTap: () {
-                                                    scrollController.animateTo(
-                                                      scrollController.position
-                                                          .maxScrollExtent,
-                                                      duration: const Duration(
-                                                          milliseconds: 300),
-                                                      curve: Curves.bounceIn,
-                                                    );
-                                                  },
-                                                  onFieldSubmitted: (value) {
-                                                    if (suggestion != null &&
-                                                        points != null) {
-                                                      BlocProvider.of<
-                                                                  MarketPlacePageBloc>(
-                                                              context)
-                                                          .add(CalcOrder(
-                                                        suggestion,
-                                                        points,
-                                                        time,
-                                                        nameController.text,
-                                                        phoneController.text,
-                                                        countBucketController
-                                                                .text.isEmpty
-                                                            ? null
-                                                            : int.parse(
-                                                                countBucketController
-                                                                    .text),
-                                                        countPalletController
-                                                                .text.isEmpty
-                                                            ? null
-                                                            : int.parse(
-                                                                countPalletController
-                                                                    .text),
-                                                      ));
-                                                    }
-                                                  },
+                                                  onTap: () => scrolling(),
+                                                  onFieldSubmitted: (value) =>
+                                                      calcOrder(),
                                                   focusNode: bucketFocus,
                                                   height: 45.h,
                                                   contentPadding:
@@ -897,8 +762,10 @@ class _MarketPageState extends State<MarketPages>
                                                   thumbColor: Colors.white,
                                                   value:
                                                       snapshot.data!.toDouble(),
+                                                  onChangeEnd: (value) =>
+                                                      calcOrder(),
                                                   onChanged: (value) {
-                                                    bucketController
+                                                    countBucket
                                                         .add(value.toInt());
                                                     countBucketController.text =
                                                         value
@@ -923,55 +790,268 @@ class _MarketPageState extends State<MarketPages>
                                       ),
                                       SizedBox(height: 5.h),
                                       StreamBuilder<int>(
-                                          stream: palletController.stream,
-                                          initialData: 0,
-                                          builder: (context, snapshot) {
-                                            return Row(
+                                        stream: countPallet.stream,
+                                        initialData: 0,
+                                        builder: (context, snapshot) {
+                                          return Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomTextField(
+                                                  onTap: () => scrolling(),
+                                                  onFieldSubmitted: (value) =>
+                                                      calcOrder(),
+                                                  maxLines: 1,
+                                                  focusNode: palletFocus,
+                                                  height: 45.h,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10.w),
+                                                  fillColor: Colors.white,
+                                                  hintText: '0',
+                                                  textInputType:
+                                                      TextInputType.number,
+                                                  textEditingController:
+                                                      countPalletController,
+                                                ),
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              const Icon(
+                                                Icons.help_outline_outlined,
+                                                color: Colors.red,
+                                              ),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Slider(
+                                                  min: 0,
+                                                  max: 50,
+                                                  activeColor: Colors.red,
+                                                  inactiveColor:
+                                                      Colors.grey[300],
+                                                  thumbColor: Colors.white,
+                                                  value:
+                                                      snapshot.data!.toDouble(),
+                                                  onChangeEnd: (value) =>
+                                                      calcOrder(),
+                                                  onChanged: (value) {
+                                                    countPallet
+                                                        .add(value.toInt());
+                                                    countPalletController.text =
+                                                        value
+                                                            .toInt()
+                                                            .toString();
+                                                  },
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      Row(
+                                        children: [
+                                          SizedBox(width: 5.w),
+                                          const Text(
+                                            'Дополнительные услуги',
+                                            style: CustomTextStyle.grey15bold,
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.w),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 10.h),
+                                            Row(
+                                              children: const [
+                                                Text(
+                                                  'Услуга помощи погрузки / разгрузки',
+                                                  style: CustomTextStyle
+                                                      .grey15bold,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 5.w),
+                                            const Text(
+                                              'Если вы не хотите пачкать руки и предпочитаете наблюдать за чужой работой - закажите эту услугу. Егорка заберет коробки с вашего склада и погрузит их в свой авто. Если нужно - погрузит на паллету и запаллетирует (выберите услугу ниже).',
+                                              style: CustomTextStyle.grey14w400,
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                            SizedBox(height: 5.w),
+                                            Row(
+                                              children: const [
+                                                Text('Кол-во коробок до 15 кг?')
+                                              ],
+                                            ),
+                                            SizedBox(height: 5.h),
+                                            StreamBuilder<int>(
+                                                stream:
+                                                    bucketCountLess15kg.stream,
+                                                initialData: 0,
+                                                builder: (context, snapshot) {
+                                                  return Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: CustomTextField(
+                                                          onTap: () =>
+                                                              scrolling(),
+                                                          onFieldSubmitted:
+                                                              (value) =>
+                                                                  calcOrder(),
+                                                          focusNode:
+                                                              bucketFocusLess15kg,
+                                                          height: 45.h,
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10.w),
+                                                          fillColor:
+                                                              Colors.white,
+                                                          hintText: '0',
+                                                          textInputType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textEditingController:
+                                                              countPalletControllerLess15kg,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 10.w),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Slider(
+                                                          min: 0,
+                                                          max: 50,
+                                                          activeColor:
+                                                              Colors.red,
+                                                          inactiveColor:
+                                                              Colors.grey[300],
+                                                          thumbColor:
+                                                              Colors.white,
+                                                          value: snapshot.data!
+                                                              .toDouble(),
+                                                          onChangeEnd:
+                                                              (value) =>
+                                                                  calcOrder(),
+                                                          onChanged: (value) {
+                                                            bucketCountLess15kg
+                                                                .add(value
+                                                                    .toInt());
+                                                            countPalletControllerLess15kg
+                                                                    .text =
+                                                                value
+                                                                    .toInt()
+                                                                    .toString();
+                                                          },
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                }),
+                                            SizedBox(height: 5.w),
+                                            Row(
+                                              children: const [
+                                                Text(
+                                                    'Кол-во коробок свыше 15 кг?'),
+                                              ],
+                                            ),
+                                            SizedBox(height: 5.h),
+                                            StreamBuilder<int>(
+                                                stream:
+                                                    bucketCountMore15kg.stream,
+                                                initialData: 0,
+                                                builder: (context, snapshot) {
+                                                  return Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: CustomTextField(
+                                                          onTap: () =>
+                                                              scrolling(),
+                                                          onFieldSubmitted:
+                                                              (value) =>
+                                                                  calcOrder(),
+                                                          focusNode:
+                                                              bucketFocusMore15kg,
+                                                          height: 45.h,
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10.w),
+                                                          fillColor:
+                                                              Colors.white,
+                                                          hintText: '0',
+                                                          textInputType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textEditingController:
+                                                              countPalletControllerMore15kg,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 10.w),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Slider(
+                                                          min: 0,
+                                                          max: 50,
+                                                          activeColor:
+                                                              Colors.red,
+                                                          inactiveColor:
+                                                              Colors.grey[300],
+                                                          thumbColor:
+                                                              Colors.white,
+                                                          value: snapshot.data!
+                                                              .toDouble(),
+                                                          onChangeEnd:
+                                                              (value) =>
+                                                                  calcOrder(),
+                                                          onChanged: (value) {
+                                                            bucketCountMore15kg
+                                                                .add(value
+                                                                    .toInt());
+                                                            countPalletControllerMore15kg
+                                                                    .text =
+                                                                value
+                                                                    .toInt()
+                                                                    .toString();
+                                                          },
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                }),
+                                            SizedBox(height: 10.h),
+                                            Row(
+                                              children: const [
+                                                Text(
+                                                  'Паллетирование',
+                                                  style: CustomTextStyle
+                                                      .grey15bold,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 5.w),
+                                            const Text(
+                                              'Егорка приедет к вам с паллетой и стрейч-пленкой. Самостоятельно запаллетирует ваш груз и отправится доставлять ваш товар. Если груз отправляется с нашего склада, то кладовщики разместят ваши коробки на паллету и погрузят водителю в кузов.',
+                                              style: CustomTextStyle.grey14w400,
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                            SizedBox(height: 5.w),
+                                            Row(
+                                              children: const [
+                                                Text('Количество паллет?')
+                                              ],
+                                            ),
+                                            SizedBox(height: 5.h),
+                                            Row(
                                               children: [
                                                 Expanded(
                                                   child: CustomTextField(
-                                                    onTap: () {
-                                                      scrollController
-                                                          .animateTo(
-                                                        scrollController
-                                                            .position
-                                                            .maxScrollExtent,
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    300),
-                                                        curve: Curves.bounceIn,
-                                                      );
-                                                    },
-                                                    onFieldSubmitted: (value) {
-                                                      if (suggestion != null &&
-                                                          points != null) {
-                                                        BlocProvider.of<
-                                                                    MarketPlacePageBloc>(
-                                                                context)
-                                                            .add(CalcOrder(
-                                                          suggestion,
-                                                          points,
-                                                          time,
-                                                          nameController.text,
-                                                          phoneController.text,
-                                                          countBucketController
-                                                                  .text.isEmpty
-                                                              ? null
-                                                              : int.parse(
-                                                                  countBucketController
-                                                                      .text),
-                                                          countPalletController
-                                                                  .text.isEmpty
-                                                              ? null
-                                                              : int.parse(
-                                                                  countPalletController
-                                                                      .text),
-                                                        ));
-                                                      }
-                                                    },
-                                                    maxLines: 1,
-                                                    focusNode: palletFocus,
+                                                    onTap: () => scrolling(),
+                                                    onFieldSubmitted: (value) =>
+                                                        calcOrder(),
+                                                    focusNode:
+                                                        palletFocusAdditional,
                                                     height: 45.h,
                                                     contentPadding:
                                                         EdgeInsets.symmetric(
@@ -981,42 +1061,19 @@ class _MarketPageState extends State<MarketPages>
                                                     textInputType:
                                                         TextInputType.number,
                                                     textEditingController:
-                                                        countPalletController,
+                                                        countPalletControllerMore,
                                                   ),
                                                 ),
-                                                SizedBox(width: 10.w),
-                                                const Icon(
-                                                  Icons.help_outline_outlined,
-                                                  color: Colors.red,
-                                                ),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Slider(
-                                                    min: 0,
-                                                    max: 50,
-                                                    activeColor: Colors.red,
-                                                    inactiveColor:
-                                                        Colors.grey[300],
-                                                    thumbColor: Colors.white,
-                                                    value: snapshot.data!
-                                                        .toDouble(),
-                                                    onChanged: (value) {
-                                                      palletController
-                                                          .add(value.toInt());
-                                                      countPalletController
-                                                              .text =
-                                                          value
-                                                              .toInt()
-                                                              .toString();
-                                                    },
-                                                  ),
-                                                )
                                               ],
-                                            );
-                                          }),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                       keyBoardVisible
-                                          ? SizedBox(height: 220.h)
-                                          : SizedBox(height: 400.h)
+                                          ? coast == null
+                                              ? SizedBox(height: 50.h)
+                                              : SizedBox(height: 220.h)
+                                          : SizedBox(height: 400.h),
                                     ],
                                   ),
                                 ),
@@ -1080,16 +1137,14 @@ class _MarketPageState extends State<MarketPages>
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             Image.asset(
-                                              'assets/images/ic_car.png',
+                                              'assets/images/ic_track.png',
                                               color: Colors.red,
                                               height: 90.h,
                                             ),
                                             Column(
-                                              // crossAxisAlignment:
-                                              //     CrossAxisAlignment.start,
                                               children: [
                                                 const Text(
-                                                  "Автомобиль",
+                                                  "Грузовик",
                                                   style: TextStyle(
                                                     fontSize: 24,
                                                     fontWeight: FontWeight.w300,
@@ -1124,11 +1179,6 @@ class _MarketPageState extends State<MarketPages>
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            // if (!validate()) {
-                                            //   MessageDialogs().showMessage(
-                                            //       'Погодите-ка',
-                                            //       'Укажите Ваше Имя и номер телефона');
-                                            // } else {
                                             BlocProvider.of<
                                                         MarketPlacePageBloc>(
                                                     context)
@@ -1199,6 +1249,52 @@ class _MarketPageState extends State<MarketPages>
     );
   }
 
+  void scrolling() {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.bounceIn,
+    );
+  }
+
+  void calcOrder() {
+    if (suggestion != null && points != null) {
+      List<Ancillaries> ancillaries = [];
+      ancillaries.add(
+        Ancillaries(
+          'LoadMarketplace',
+          Params(
+            count: int.tryParse(countPalletControllerLess15kg.text),
+            count15: int.tryParse(countPalletControllerMore15kg.text),
+          ),
+        ),
+      );
+      ancillaries.add(
+        Ancillaries(
+          'Pallet',
+          Params(
+            count: int.tryParse(countPalletControllerMore.text),
+          ),
+        ),
+      );
+
+      BlocProvider.of<MarketPlacePageBloc>(context).add(CalcOrderMarketplace(
+        suggestion,
+        points,
+        ancillaries,
+        time,
+        nameController.text,
+        phoneController.text,
+        countBucketController.text.isEmpty
+            ? null
+            : int.parse(countBucketController.text),
+        countPalletController.text.isEmpty
+            ? null
+            : int.parse(countPalletController.text),
+      ));
+    }
+  }
+
   void showMarketPlaces(MarketPlaces marketplaces) {
     showCupertinoModalPopup<String>(
       barrierDismissible: false,
@@ -1220,22 +1316,7 @@ class _MarketPageState extends State<MarketPages>
                     ),
                     onPressed: () {
                       Navigator.of(ctx).pop();
-                      if (suggestion != null && points != null) {
-                        BlocProvider.of<MarketPlacePageBloc>(context)
-                            .add(CalcOrder(
-                          suggestion,
-                          points,
-                          time,
-                          nameController.text,
-                          phoneController.text,
-                          countBucketController.text.isEmpty
-                              ? null
-                              : int.parse(countBucketController.text),
-                          countPalletController.text.isEmpty
-                              ? null
-                              : int.parse(countPalletController.text),
-                        ));
-                      }
+                      calcOrder();
                     },
                     child: const Text('Готово'),
                   ),
@@ -1314,22 +1395,7 @@ class _MarketPageState extends State<MarketPages>
                       ),
                       onPressed: () {
                         Navigator.of(ctx).pop();
-                        if (suggestion != null && points != null) {
-                          BlocProvider.of<MarketPlacePageBloc>(context)
-                              .add(CalcOrder(
-                            suggestion,
-                            points,
-                            time,
-                            nameController.text,
-                            phoneController.text,
-                            countBucketController.text.isEmpty
-                                ? null
-                                : int.parse(countBucketController.text),
-                            countPalletController.text.isEmpty
-                                ? null
-                                : int.parse(countPalletController.text),
-                          ));
-                        }
+                        calcOrder();
                       },
                       child: const Text('Готово'),
                     ),
@@ -1361,77 +1427,5 @@ class _MarketPageState extends State<MarketPages>
       return false;
     }
     return true;
-  }
-}
-
-class CustomInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-
-    if (newValue.text.length < oldValue.text.length) {
-      return newValue;
-    }
-
-    if (text.isNotEmpty && text[0] == '8') {
-      if (text.length == 1) {
-        return oldValue.copyWith(
-          text: '$text (',
-          selection: TextSelection.collapsed(offset: text.length + 2),
-        );
-      } else if (text.length == 6) {
-        return oldValue.copyWith(
-          text: '$text) ',
-          selection: TextSelection.collapsed(offset: text.length + 2),
-        );
-      } else if (text.length == 11) {
-        return oldValue.copyWith(
-          text: '$text-',
-          selection: TextSelection.collapsed(offset: text.length + 1),
-        );
-      } else if (text.length == 14) {
-        return oldValue.copyWith(
-          text: '$text-',
-          selection: TextSelection.collapsed(offset: text.length + 1),
-        );
-      }
-      if (text.length > 17) {
-        return oldValue;
-      }
-    } else if (text.isNotEmpty && text[0] == '7' || text[0] == '+') {
-      if (text.length == 1) {
-        return oldValue.copyWith(
-          text: '+$text (',
-          selection: TextSelection.collapsed(offset: text.length + 3),
-        );
-      } else if (text.length == 7) {
-        return oldValue.copyWith(
-          text: '$text) ',
-          selection: TextSelection.collapsed(offset: text.length + 2),
-        );
-      } else if (text.length == 12) {
-        return oldValue.copyWith(
-          text: '$text-',
-          selection: TextSelection.collapsed(offset: text.length + 1),
-        );
-      } else if (text.length == 15) {
-        return oldValue.copyWith(
-          text: '$text-',
-          selection: TextSelection.collapsed(offset: text.length + 1),
-        );
-      }
-
-      if (text.length > 18) {
-        return oldValue;
-      }
-    } else {
-      return oldValue;
-    }
-
-    return newValue.copyWith(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
-    );
   }
 }

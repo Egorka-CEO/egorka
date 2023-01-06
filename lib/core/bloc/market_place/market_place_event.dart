@@ -21,6 +21,7 @@ class MarketPlace extends MarketPlaceEvent {
 class CalcOrderMarketplace extends MarketPlaceEvent {
   Suggestions? suggestion;
   DateTime? time;
+  String group;
   PointMarketPlace? points;
   List<Ancillaries>? ancillaries;
   String? name;
@@ -37,6 +38,7 @@ class CalcOrderMarketplace extends MarketPlaceEvent {
     this.points,
     this.ancillaries,
     this.time,
+    this.group,
     this.name,
     this.phone,
     this.bucket,

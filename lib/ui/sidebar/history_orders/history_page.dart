@@ -8,7 +8,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/status_order.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
 import 'package:flutter/cupertino.dart';

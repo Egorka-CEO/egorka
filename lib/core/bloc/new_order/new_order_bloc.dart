@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/create_form_model.dart';
@@ -83,7 +86,8 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
         Location(
           type: 'Drop',
           point: Point(
-            code: '${element.suggestions.point!.latitude},${element.suggestions.point!.longitude}',
+            code:
+                '${element.suggestions.point!.latitude},${element.suggestions.point!.longitude}',
             entrance: element.details?.entrance,
             floor: element.details?.floor,
             room: element.details?.room,
@@ -102,6 +106,8 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
       CoastAdvanced(
         type: event.typeCoast,
         locations: locations,
+        ancillaries: event.ancillaries,
+        description: event.description,
       ),
     );
 

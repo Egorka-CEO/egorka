@@ -1,7 +1,7 @@
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/locations.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';

@@ -30,6 +30,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   PanelController panelController = PanelController();
   final streamController = StreamController<int>();
   bool visible = true;
+  int duration = 350;
+  double hight = 0;
+  bool initHeight = true;
+  bool logoVisibleMove = false;
+  bool logoMoveBackgroundScale = false;
 
   @override
   void initState() {
@@ -64,13 +69,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       Repository().UUIDCreate();
     }
   }
-
-  int duration = 350;
-  double hight = 0;
-
-  bool initHeight = true;
-  bool logoVisibleMove = false;
-  bool logoMoveBackgroundScale = false;
 
   @override
   Widget build(BuildContext context) {

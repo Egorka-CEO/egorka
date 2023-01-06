@@ -24,8 +24,16 @@ class CalculateCoastEvent extends NewOrderEvent {
   List<PointDetails> start;
   List<PointDetails> end;
   String typeCoast;
+  List<Ancillaries>? ancillaries;
+  String description;
 
-  CalculateCoastEvent(this.start, this.end, this.typeCoast);
+  CalculateCoastEvent(
+    this.start,
+    this.end,
+    this.typeCoast,
+    this.ancillaries,
+    this.description,
+  );
 }
 
 class CreateForm extends NewOrderEvent {

@@ -13,13 +13,14 @@ import 'package:egorka/model/point.dart';
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/cutom_input_formatter.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/load_form.dart';
+import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,6 +65,7 @@ class _MarketPageState extends State<MarketPages>
   DateTime? time;
   InfoForm? formOrder;
   bool loadOrder = false;
+  int indexTab = 0;
 
   TextEditingController controller = TextEditingController();
   TextEditingController fromController = TextEditingController();
@@ -99,6 +101,7 @@ class _MarketPageState extends State<MarketPages>
   final FocusNode bucketFocusLess15kg = FocusNode();
   final FocusNode bucketFocusMore15kg = FocusNode();
   final FocusNode palletFocusAdditional = FocusNode();
+  late TabController tabController;
 
   @override
   void dispose() {
@@ -113,6 +116,7 @@ class _MarketPageState extends State<MarketPages>
   @override
   void initState() {
     super.initState();
+    tabController = TabController(vsync: this, length: 2);
     if (widget.recorNumber != null && widget.recordPIN != null) {
       loadOrder = true;
       getForm();
@@ -284,6 +288,60 @@ class _MarketPageState extends State<MarketPages>
                                       const Text(
                                         'Как это работает?',
                                         style: CustomTextStyle.red15,
+                                      ),
+                                      SizedBox(height: 20.h),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(13.r),
+                                          color: Colors.white,
+                                        ),
+                                        child: TabBar(
+                                          unselectedLabelColor: Colors.black,
+                                          indicator: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15.r),
+                                            color: Colors.red,
+                                          ),
+                                          onTap: (value) {
+                                            indexTab = value;
+                                            setState(() {});
+                                            calcOrder();
+                                          },
+                                          splashBorderRadius:
+                                              BorderRadius.circular(20),
+                                          controller: tabController,
+                                          tabs: [
+                                            SizedBox(
+                                              height: 50,
+                                              child: Center(
+                                                child: Text(
+                                                  'FBO',
+                                                  style: CustomTextStyle
+                                                      .grey15bold
+                                                      .copyWith(
+                                                          color: indexTab == 0
+                                                              ? Colors.white
+                                                              : Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 50,
+                                              child: Center(
+                                                child: Text(
+                                                  'FBS',
+                                                  style: CustomTextStyle
+                                                      .grey15bold
+                                                      .copyWith(
+                                                          color: indexTab == 0
+                                                              ? Colors.black
+                                                              : Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       SizedBox(height: 20.h),
                                       Row(
@@ -1080,132 +1138,15 @@ class _MarketPageState extends State<MarketPages>
                               ],
                             ),
                             if (coast != null)
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                  height: 200.h,
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 5,
-                                        blurRadius: 7,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    color: Colors.white,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10.w,
-                                      vertical: 10.w,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 5.w,
-                                            left: (MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        45 /
-                                                        100)
-                                                    .w -
-                                                10.w,
-                                            right: (MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        45 /
-                                                        100)
-                                                    .w -
-                                                10.w,
-                                            bottom: 5.w,
-                                          ),
-                                          child: Container(
-                                            height: 5.h,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(25.r),
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Image.asset(
-                                              'assets/images/ic_track.png',
-                                              color: Colors.red,
-                                              height: 90.h,
-                                            ),
-                                            Column(
-                                              children: [
-                                                const Text(
-                                                  "Грузовик",
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}! ₽',
-                                                  style: const TextStyle(
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const Text(
-                                              '}',
-                                              style: TextStyle(
-                                                fontSize: 60,
-                                                fontWeight: FontWeight.w200,
-                                              ),
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: const [
-                                                Text('0 ₽ доставка'),
-                                                Text('0 ₽ доп. услуги'),
-                                                Text('0 ₽ сбор-плат. сист.'),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            BlocProvider.of<
-                                                        MarketPlacePageBloc>(
-                                                    context)
-                                                .add(CreateForm(
-                                                    coast!.result!.id!));
-                                            // }
-                                          },
-                                          child: Container(
-                                            height: 50.h,
-                                            decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius:
-                                                    BorderRadius.circular(15)),
-                                            child: Center(
-                                              child: Text(
-                                                'ОФОРМИТЬ ЗАКАЗ',
-                                                style: CustomTextStyle
-                                                    .white15w600
-                                                    .copyWith(letterSpacing: 1),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                              TotalPriceWidget(
+                                title: 'Грузовик',
+                                icon: 'assets/images/ic_track.png',
+                                totalPrice:
+                                    '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}',
+                                onTap: () {
+                                  BlocProvider.of<MarketPlacePageBloc>(context)
+                                      .add(CreateForm(coast!.result!.id!));
+                                },
                               ),
                             SlidingUpPanel(
                               controller: panelController,
@@ -1278,20 +1219,23 @@ class _MarketPageState extends State<MarketPages>
         ),
       );
 
-      BlocProvider.of<MarketPlacePageBloc>(context).add(CalcOrderMarketplace(
-        suggestion,
-        points,
-        ancillaries,
-        time,
-        nameController.text,
-        phoneController.text,
-        countBucketController.text.isEmpty
-            ? null
-            : int.parse(countBucketController.text),
-        countPalletController.text.isEmpty
-            ? null
-            : int.parse(countPalletController.text),
-      ));
+      BlocProvider.of<MarketPlacePageBloc>(context).add(
+        CalcOrderMarketplace(
+          suggestion,
+          points,
+          ancillaries,
+          time,
+          tabController.index == 0 ? 'Marketplace' : 'FBS',
+          nameController.text,
+          phoneController.text,
+          countBucketController.text.isEmpty
+              ? null
+              : int.parse(countBucketController.text),
+          countPalletController.text.isEmpty
+              ? null
+              : int.parse(countPalletController.text),
+        ),
+      );
     }
   }
 

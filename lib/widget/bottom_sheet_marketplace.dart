@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/cupertino.dart';

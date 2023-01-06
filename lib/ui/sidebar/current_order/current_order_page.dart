@@ -7,7 +7,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/status_order.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,9 +19,9 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CurrentOrderPage extends StatefulWidget {
-  int? RecordPIN;
-  int? RecorNumber;
-  CurrentOrderPage({super.key, this.RecordPIN, this.RecorNumber});
+  int? recordPIN;
+  int? recorNumber;
+  CurrentOrderPage({super.key, this.recordPIN, this.recorNumber});
 
   @override
   State<CurrentOrderPage> createState() => _CurrentOrderPageState();
@@ -51,11 +51,11 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   }
 
   void getForm() async {
-    if (widget.RecorNumber != null && widget.RecordPIN != null) {
+    if (widget.recorNumber != null && widget.recordPIN != null) {
       loadOrder = true;
       formOrder = await Repository().infoForm(
-        widget.RecorNumber.toString(),
-        widget.RecordPIN.toString(),
+        widget.recorNumber.toString(),
+        widget.recordPIN.toString(),
       );
       parseDate = DateTime.parse(formOrder!.result!.recordDate!);
 

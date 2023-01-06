@@ -4,8 +4,6 @@ import 'package:egorka/ui/auth/auth_page_company.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum TypeSignIn { User, Company }
-
 class MainAuthPage extends StatefulWidget {
   const MainAuthPage({super.key});
 

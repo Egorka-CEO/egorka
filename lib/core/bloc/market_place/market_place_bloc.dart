@@ -36,7 +36,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     var result = await Repository().getCoastMarketPlace(
       CoastMarketPlace(
         type: "Truck",
-        group: "Marketplace",
+        group: event.group,
         locations: [
           Location(
             date: event.time != null

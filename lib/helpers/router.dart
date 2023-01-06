@@ -46,10 +46,11 @@ class AppRoute {
         var number = list[0];
         var pin = list[1];
         return MaterialPageRoute(
-            builder: (_) => CurrentOrderPage(
-                  RecorNumber: number,
-                  RecordPIN: pin,
-                ));
+          builder: (_) => CurrentOrderPage(
+            recorNumber: number,
+            recordPIN: pin,
+          ),
+        );
       case marketplaces:
         var number;
         var pin;
@@ -59,7 +60,11 @@ class AppRoute {
           pin = list[1];
         }
         return MaterialPageRoute(
-            builder: (_) => MarketPage(recorNumber: number, recordPIN: pin));
+          builder: (_) => MarketPage(
+            recorNumber: number,
+            recordPIN: pin,
+          ),
+        );
       case about:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
@@ -81,12 +86,13 @@ class AppRoute {
           end = endPoint;
         }
         return MaterialPageRoute(
-            builder: (_) => NewOrderPage(
-                  order: order,
-                  deliveryChocie: delivery,
-                  start: start,
-                  end: end,
-                ));
+          builder: (_) => NewOrderPage(
+            order: order,
+            deliveryChocie: delivery,
+            start: start,
+            end: end,
+          ),
+        );
       case repeatOrder:
         var number;
         var pin;
@@ -94,10 +100,11 @@ class AppRoute {
         number = arg[0];
         pin = arg[1];
         return MaterialPageRoute(
-            builder: (_) => RepeatOrderPage(
-                  RecordNumber: number,
-                  RecordPIN: pin,
-                ));
+          builder: (_) => RepeatOrderPage(
+            recordNumber: number,
+            recordPIN: pin,
+          ),
+        );
       case historyOrder:
         final list = route.arguments as CreateFormModel;
         return MaterialPageRoute(
@@ -114,16 +121,21 @@ class AppRoute {
       case detailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(
-            builder: (_) => DetailsPage(
-                typeAdd: list[0], index: list[1], routeOrder: list[2]));
+          builder: (_) => DetailsPage(
+            typeAdd: list[0],
+            index: list[1],
+            routeOrder: list[2],
+          ),
+        );
       case historyDetailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(
-            builder: (_) => HistoryDetailsPage(
-                  typeAdd: list[0],
-                  index: list[1],
-                  locations: list[2],
-                ));
+          builder: (_) => HistoryDetailsPage(
+            typeAdd: list[0],
+            index: list[1],
+            locations: list[2],
+          ),
+        );
       case book:
         return MaterialPageRoute(builder: (_) => BookPage());
       default:

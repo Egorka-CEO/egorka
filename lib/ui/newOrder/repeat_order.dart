@@ -1,20 +1,23 @@
+import 'dart:async';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/load_form.dart';
+import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,12 +25,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class RepeatOrderPage extends StatelessWidget {
-  int RecordNumber;
-  int RecordPIN;
+  int recordNumber, recordPIN;
 
   RepeatOrderPage({
-    required this.RecordNumber,
-    required this.RecordPIN,
+    required this.recordNumber,
+    required this.recordPIN,
     super.key,
   });
 
@@ -40,16 +42,15 @@ class RepeatOrderPage extends StatelessWidget {
         ),
       ],
       child: RepeatOrderPageState(
-        RecordNumber: RecordNumber,
-        RecordPIN: RecordPIN,
+        recordNumber: recordNumber,
+        recordPIN: recordPIN,
       ),
     );
   }
 }
 
 class RepeatOrderPageState extends StatefulWidget {
-  int RecordNumber;
-  int RecordPIN;
+  int recordNumber, recordPIN;
 
   DeliveryChocie deliveryChocie = DeliveryChocie(
     title: 'Легковая',
@@ -58,8 +59,8 @@ class RepeatOrderPageState extends StatefulWidget {
   );
 
   RepeatOrderPageState({
-    required this.RecordNumber,
-    required this.RecordPIN,
+    required this.recordNumber,
+    required this.recordPIN,
     super.key,
   });
 
@@ -71,15 +72,60 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   List<PointDetails> routeOrderSender = [];
   List<PointDetails> routeOrderReceiver = [];
 
-  TextEditingController fromController = TextEditingController();
-  TextEditingController documentController = TextEditingController();
-  TextEditingController coastController = TextEditingController();
-
-  PanelController panelController = PanelController();
   bool btmSheet = false;
   TypeAdd? typeAdd;
   InfoForm? formOrder;
   CoastResponse? coasts;
+
+  bool attorney = false;
+  bool industrialZone = false;
+  bool toDoor = false;
+
+  TextEditingController fromController = TextEditingController();
+  TextEditingController documentController = TextEditingController();
+  TextEditingController coastController = TextEditingController();
+
+  TextEditingController weigthController = TextEditingController();
+  TextEditingController widthController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
+  TextEditingController depthController = TextEditingController();
+
+  TextEditingController whereDeparture1 = TextEditingController();
+  TextEditingController whoDeparture1 = TextEditingController();
+  TextEditingController numberDeparture1 = TextEditingController();
+  TextEditingController contactDeparture1 = TextEditingController();
+
+  TextEditingController whereDeparture2 = TextEditingController();
+  TextEditingController whoDeparture2 = TextEditingController();
+  TextEditingController numberDeparture2 = TextEditingController();
+  TextEditingController contactDeparture2 = TextEditingController();
+
+  TextEditingController whereToSend = TextEditingController();
+  TextEditingController whoToSend = TextEditingController();
+
+  final weightControllerSlider = StreamController<int>();
+
+  PanelController panelController = PanelController();
+  ScrollController scrollController = ScrollController();
+
+  final FocusNode whatDrive = FocusNode();
+  final FocusNode whatCoast = FocusNode();
+  final FocusNode weigthFocus = FocusNode();
+  final FocusNode widthFocus = FocusNode();
+  final FocusNode heightFocus = FocusNode();
+  final FocusNode depthFocus = FocusNode();
+  final FocusNode whereFocus = FocusNode();
+  final FocusNode whoFocus = FocusNode();
+
+  FocusNode whereDeparture1Focus = FocusNode();
+  FocusNode whoDeparture1Focus = FocusNode();
+  FocusNode numberDeparture1Focus = FocusNode();
+  FocusNode contactDeparture1Focus = FocusNode();
+
+  FocusNode whereDeparture2Focus = FocusNode();
+  FocusNode whoDeparture2Focus = FocusNode();
+  FocusNode numberDeparture2Focus = FocusNode();
+  FocusNode contactDeparture2Focus = FocusNode();
 
   @override
   void initState() {
@@ -87,9 +133,15 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
     getForm();
   }
 
+  @override
+  void dispose() {
+    weightControllerSlider.close();
+    super.dispose();
+  }
+
   void getForm() async {
     formOrder = await Repository()
-        .infoForm(widget.RecordNumber.toString(), widget.RecordPIN.toString());
+        .infoForm(widget.recordNumber.toString(), widget.recordPIN.toString());
 
     for (var element in formOrder!.result!.locations!) {
       if (element.type == 'Pickup') {
@@ -129,19 +181,10 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
       }
     }
 
-    BlocProvider.of<NewOrderPageBloc>(context).add(CalculateCoastEvent(
-      routeOrderSender,
-      routeOrderReceiver,
-      widget.deliveryChocie.type,
-    ));
+    calc();
 
     setState(() {});
   }
-
-  ScrollController scrollController = ScrollController();
-
-  final FocusNode whatDrive = FocusNode();
-  final FocusNode whatCoast = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -206,22 +249,12 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                       if (typeAdd != null && typeAdd == TypeAdd.sender) {
                         routeOrderSender.add(PointDetails(
                             suggestions: current.value!, details: Details()));
-                        BlocProvider.of<NewOrderPageBloc>(context)
-                            .add(CalculateCoastEvent(
-                          routeOrderSender,
-                          routeOrderReceiver,
-                          widget.deliveryChocie.type,
-                        ));
+                        calc();
                       } else if (typeAdd != null &&
                           typeAdd == TypeAdd.receiver) {
                         routeOrderReceiver.add(PointDetails(
                             suggestions: current.value!, details: Details()));
-                        BlocProvider.of<NewOrderPageBloc>(context)
-                            .add(CalculateCoastEvent(
-                          routeOrderSender,
-                          routeOrderReceiver,
-                          widget.deliveryChocie.type,
-                        ));
+                        calc();
                       }
                     } else if (current is CalcSuccess) {
                       coasts = current.coasts ?? coasts;
@@ -277,205 +310,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                         itemCount: routeOrderSender.length,
                                         padding: const EdgeInsets.all(0),
                                         itemBuilder: (context, index) {
-                                          return Dismissible(
-                                            key: UniqueKey(),
-                                            confirmDismiss: routeOrderSender
-                                                        .length ==
-                                                    1
-                                                ? (direction) {
-                                                    return Future.value(false);
-                                                  }
-                                                : (direction) {
-                                                    routeOrderSender
-                                                        .removeAt(index);
-                                                    BlocProvider.of<
-                                                                NewOrderPageBloc>(
-                                                            context)
-                                                        .add(
-                                                            CalculateCoastEvent(
-                                                      routeOrderSender,
-                                                      routeOrderReceiver,
-                                                      widget
-                                                          .deliveryChocie.type,
-                                                    ));
-
-                                                    return routeOrderSender
-                                                                .length ==
-                                                            1
-                                                        ? Future.value(false)
-                                                        : Future.value(true);
-                                                  },
-                                            direction:
-                                                DismissDirection.endToStart,
-                                            background: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(
-                                                      index == 0 ? 15.r : 0),
-                                                  bottomRight: Radius.circular(
-                                                    index ==
-                                                            routeOrderSender
-                                                                    .length -
-                                                                1
-                                                        ? 15.r
-                                                        : 0,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.all(10.r),
-                                                child: const Align(
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: Text(
-                                                    'Удалить',
-                                                    style: CustomTextStyle
-                                                        .white15w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Container(
-                                              padding: EdgeInsets.all(10.w),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft: routeOrderSender
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderSender
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? const Radius
-                                                              .circular(15)
-                                                          : Radius.zero,
-                                                  bottomRight: routeOrderSender
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderSender
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? const Radius
-                                                              .circular(15)
-                                                          : Radius.zero,
-                                                  topLeft: routeOrderSender
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderSender
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? Radius.zero
-                                                          : index == 0
-                                                              ? const Radius
-                                                                  .circular(15)
-                                                              : Radius.zero,
-                                                  topRight: routeOrderSender
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderSender
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? Radius.zero
-                                                          : index == 0
-                                                              ? const Radius
-                                                                  .circular(15)
-                                                              : Radius.zero,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        'assets/images/from.png',
-                                                        height: 25.h,
-                                                      ),
-                                                      SizedBox(width: 15.w),
-                                                      Flexible(
-                                                        child: Text(
-                                                          routeOrderSender[
-                                                                  index]
-                                                              .suggestions
-                                                              .name,
-                                                          style: CustomTextStyle
-                                                              .black15w500
-                                                              .copyWith(
-                                                                  fontSize: 16),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 15.h),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .arrow_downward_rounded,
-                                                        color: Colors.grey[400],
-                                                      ),
-                                                      SizedBox(width: 15.w),
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          dynamic details =
-                                                              await Navigator.of(
-                                                                      context)
-                                                                  .pushNamed(
-                                                                      AppRoute
-                                                                          .detailsOrder,
-                                                                      arguments: [
-                                                                TypeAdd.sender,
-                                                                routeOrderSender
-                                                                    .length,
-                                                                routeOrderSender[
-                                                                    index],
-                                                              ]);
-
-                                                          routeOrderSender[
-                                                              index] = details!;
-
-                                                          BlocProvider.of<
-                                                                      NewOrderPageBloc>(
-                                                                  context)
-                                                              .add(
-                                                                  CalculateCoastEvent(
-                                                            routeOrderSender,
-                                                            routeOrderReceiver,
-                                                            widget
-                                                                .deliveryChocie
-                                                                .type,
-                                                          ));
-                                                        },
-                                                        child: Text(
-                                                          'Указать детали',
-                                                          style: CustomTextStyle
-                                                              .red15
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
+                                          return dismissible(routeOrderSender,
+                                              index, TypeAdd.sender);
                                         },
                                       ),
                                       SizedBox(height: 10.h),
@@ -532,206 +368,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                         itemCount: routeOrderReceiver.length,
                                         padding: const EdgeInsets.all(0),
                                         itemBuilder: ((context, index) {
-                                          return Dismissible(
-                                            key: UniqueKey(),
-                                            confirmDismiss: routeOrderReceiver
-                                                        .length ==
-                                                    1
-                                                ? (direction) {
-                                                    return Future.value(false);
-                                                  }
-                                                : (direction) {
-                                                    routeOrderReceiver
-                                                        .removeAt(index);
-
-                                                    BlocProvider.of<
-                                                                NewOrderPageBloc>(
-                                                            context)
-                                                        .add(
-                                                            CalculateCoastEvent(
-                                                      routeOrderSender,
-                                                      routeOrderReceiver,
-                                                      widget
-                                                          .deliveryChocie.type,
-                                                    ));
-                                                    setState(() {});
-                                                    return Future.value(true);
-                                                  },
-                                            direction:
-                                                DismissDirection.endToStart,
-                                            background: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(
-                                                      index == 0 ? 15.r : 0),
-                                                  bottomRight: Radius.circular(
-                                                    index ==
-                                                            routeOrderReceiver
-                                                                    .length -
-                                                                1
-                                                        ? 15.r
-                                                        : 0,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.all(10.w),
-                                                child: const Align(
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: Text(
-                                                    'Удалить',
-                                                    style: CustomTextStyle
-                                                        .white15w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Container(
-                                              padding: EdgeInsets.all(10.w),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft: routeOrderReceiver
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderReceiver
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? const Radius
-                                                              .circular(15)
-                                                          : Radius.zero,
-                                                  bottomRight: routeOrderReceiver
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderReceiver
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? const Radius
-                                                              .circular(15)
-                                                          : Radius.zero,
-                                                  topLeft: routeOrderReceiver
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderReceiver
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? Radius.zero
-                                                          : index == 0
-                                                              ? const Radius
-                                                                  .circular(15)
-                                                              : Radius.zero,
-                                                  topRight: routeOrderReceiver
-                                                              .length ==
-                                                          1
-                                                      ? const Radius.circular(
-                                                          15)
-                                                      : routeOrderReceiver
-                                                                      .length -
-                                                                  1 ==
-                                                              index
-                                                          ? Radius.zero
-                                                          : index == 0
-                                                              ? const Radius
-                                                                  .circular(15)
-                                                              : Radius.zero,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        'assets/images/to.png',
-                                                        height: 25.h,
-                                                      ),
-                                                      SizedBox(width: 15.w),
-                                                      Flexible(
-                                                        child: Text(
-                                                          routeOrderReceiver[
-                                                                  index]
-                                                              .suggestions
-                                                              .name,
-                                                          style: CustomTextStyle
-                                                              .black15w500
-                                                              .copyWith(
-                                                                  fontSize: 16),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 15.h),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        index ==
-                                                                routeOrderReceiver
-                                                                        .length -
-                                                                    1
-                                                            ? Icons.flag
-                                                            : Icons
-                                                                .arrow_downward_rounded,
-                                                        color: Colors.grey[400],
-                                                      ),
-                                                      SizedBox(width: 15.w),
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          dynamic details =
-                                                              await Navigator.of(
-                                                                      context)
-                                                                  .pushNamed(
-                                                                      AppRoute
-                                                                          .detailsOrder,
-                                                                      arguments: [
-                                                                TypeAdd
-                                                                    .receiver,
-                                                                routeOrderReceiver
-                                                                    .length,
-                                                                routeOrderReceiver[
-                                                                    index],
-                                                              ]);
-
-                                                          routeOrderReceiver[
-                                                              index] = details;
-
-                                                          BlocProvider.of<
-                                                                      NewOrderPageBloc>(
-                                                                  context)
-                                                              .add(
-                                                                  CalculateCoastEvent(
-                                                            routeOrderSender,
-                                                            routeOrderReceiver,
-                                                            widget
-                                                                .deliveryChocie
-                                                                .type,
-                                                          ));
-                                                        },
-                                                        child: Text(
-                                                          'Указать детали',
-                                                          style: CustomTextStyle
-                                                              .red15
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
+                                          return dismissible(routeOrderReceiver,
+                                              index, TypeAdd.receiver);
                                         }),
                                       ),
                                       SizedBox(height: 10.h),
@@ -837,6 +475,571 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                       ),
                                     ],
                                   ),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 5.w),
+                                      const Text(
+                                        'Дополнительные услуги',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10.w),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 10.h),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Услуга помощи погрузки / разгрузки',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'Егорка поможет вам загрузить/разгрузить посылку. Если вес посылки превышает бесплатные нормы и Егорка физически не сможет загрузить/разгрузить один, то Егорка вправе попросить отправителя/получателя о помощи.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Какой вес? (кг)',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        StreamBuilder<int>(
+                                            stream:
+                                                weightControllerSlider.stream,
+                                            initialData: 0,
+                                            builder: (context, snapshot) {
+                                              return Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomTextField(
+                                                      focusNode: weigthFocus,
+                                                      height: 45.h,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      fillColor: Colors.white,
+                                                      hintText: '0',
+                                                      onFieldSubmitted:
+                                                          (value) => calc(),
+                                                      textInputType:
+                                                          TextInputType.number,
+                                                      textEditingController:
+                                                          weigthController,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 10.w),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Slider(
+                                                      min: 0,
+                                                      max: 200,
+                                                      activeColor: Colors.red,
+                                                      inactiveColor:
+                                                          Colors.grey[300],
+                                                      thumbColor: Colors.white,
+                                                      value: snapshot.data!
+                                                          .toDouble(),
+                                                      onChangeEnd: (value) =>
+                                                          calc(),
+                                                      onChanged: (value) {
+                                                        weightControllerSlider
+                                                            .add(value.toInt());
+                                                        weigthController.text =
+                                                            value
+                                                                .toInt()
+                                                                .toString();
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Какие размеры? (см)',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Text('Ширина'),
+                                            SizedBox(width: 4.w),
+                                            Expanded(
+                                              child: CustomTextField(
+                                                onFieldSubmitted: (value) =>
+                                                    calc(),
+                                                focusNode: widthFocus,
+                                                height: 45.h,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10.w),
+                                                fillColor: Colors.white,
+                                                hintText: '0',
+                                                textInputType:
+                                                    TextInputType.number,
+                                                textEditingController:
+                                                    widthController,
+                                              ),
+                                            ),
+                                            const Text('Высота'),
+                                            SizedBox(width: 4.w),
+                                            Expanded(
+                                              child: CustomTextField(
+                                                onFieldSubmitted: (value) =>
+                                                    calc(),
+                                                focusNode: heightFocus,
+                                                height: 45.h,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10.w),
+                                                fillColor: Colors.white,
+                                                hintText: '0',
+                                                textInputType:
+                                                    TextInputType.number,
+                                                textEditingController:
+                                                    heightController,
+                                              ),
+                                            ),
+                                            const Text('Глубина'),
+                                            SizedBox(width: 4.w),
+                                            Expanded(
+                                              child: CustomTextField(
+                                                onFieldSubmitted: (value) =>
+                                                    calc(),
+                                                focusNode: depthFocus,
+                                                height: 45.h,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10.w),
+                                                fillColor: Colors.white,
+                                                hintText: '0',
+                                                textInputType:
+                                                    TextInputType.number,
+                                                textEditingController:
+                                                    depthController,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Отвезти посылку на почту',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'Егорка отвезет посылку на почту и отправит её по указанному ниже адресу. Если вы хотите получить оригинал квитанции, то укажите дополнительную точку в заказе. Дополнительные расходы за отправку спишутся с вашей банковской карты или депозита.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'На какой адрес отправить?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: whereFocus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: аэропорт Шереметьево',
+                                          textEditingController: whereToSend,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'На кого?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: whoFocus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText: 'Иванов Иван Иванович',
+                                          textEditingController: whoToSend,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: const [
+                                            Flexible(
+                                              child: Text(
+                                                'Отправить посылку поездом, автобусом или самолетом',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'Егорка заранее приедет на вокзал, найдет ваш поезд/автобус, рейс и отправит строго по указанному вами поручению. Дополнительные расходы (за отправку, парковку и т.д.) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Откуда отправление?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: whereDeparture1Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: аэропорт Шереметьево',
+                                          textEditingController:
+                                              whereDeparture1,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Кому отдать?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: whoDeparture1Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: Стойка 16 авиакомпании',
+                                          textEditingController: whoDeparture1,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Номер рейса/поезда/автобуса?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: numberDeparture1Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: аэропот Шереметьево',
+                                          textEditingController:
+                                              numberDeparture1,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Контакты представителя?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: contactDeparture1Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText: 'В формате: +79998887766',
+                                          textEditingController:
+                                              contactDeparture1,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: const [
+                                            Flexible(
+                                              child: Text(
+                                                'Встретить посылку поездом, автобусом или самолетом',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'Егорка заранее приедет на вокзал, встретит ваш поезд/автобус, рейс и заберет вашу посылку. После чего доставит на указанный вами адрес. Дополнительные расходы (к примеру, парковку) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Куда прибывает?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: whereDeparture2Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: аэропорт Шереметьево',
+                                          textEditingController:
+                                              whereDeparture2,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'У кого забрать?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: whoDeparture2Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: Стойка 16 авиакомпании',
+                                          textEditingController: whoDeparture2,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Номер рейса/поезда/автобуса?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: numberDeparture2Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText:
+                                              'Например: аэропот Шереметьево',
+                                          textEditingController:
+                                              numberDeparture2,
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Text(
+                                              'Контакты представителя?',
+                                              style: CustomTextStyle.grey15bold,
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(
+                                          onFieldSubmitted: (value) => calc(),
+                                          focusNode: contactDeparture2Focus,
+                                          height: 45.h,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.w),
+                                          hintStyle: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hintText: 'В формате: +79998887766',
+                                          textEditingController:
+                                              contactDeparture2,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              attorney = !attorney;
+                                            });
+                                            calc();
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Checkbox(
+                                                value: attorney,
+                                                fillColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.red),
+                                                shape: const CircleBorder(),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    attorney = !attorney;
+                                                  });
+                                                },
+                                              ),
+                                              const Text(
+                                                'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'После оформления заказа, Егорка пришлет вам в СМС или WhatsApp паспортные данные (ФИО, серия и номер паспорта, дата выдачи, где и когда выдан) для составления доверенности. Если нужные дополнительные данные, то укажите их ниже в поручении для Егорки.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              industrialZone = !industrialZone;
+                                            });
+                                            calc();
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Checkbox(
+                                                value: industrialZone,
+                                                fillColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.red),
+                                                shape: const CircleBorder(),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    industrialZone =
+                                                        !industrialZone;
+                                                  });
+                                                },
+                                              ),
+                                              const Text(
+                                                'Промзона',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'В том случае, если вы не сможете выдать пропуск Егорке для заезда на территорию промзоны. Егорка припаркует свой автомобиль за воротами и пешком доставит посылку получателю.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              toDoor = !toDoor;
+                                            });
+                                            calc();
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Checkbox(
+                                                value: toDoor,
+                                                fillColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.red),
+                                                shape: const CircleBorder(),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    toDoor = !toDoor;
+                                                  });
+                                                },
+                                              ),
+                                              const Text(
+                                                'Доставить до двери',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.w),
+                                        const Text(
+                                          'Егорка доставит вашу посылку до входной двери квартиры/офиса. Если данная услуга не активирована, Егорка встретит получателя возле подъезда.',
+                                          style: CustomTextStyle.grey14w400,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        SizedBox(height: 5.h),
+                                      ],
+                                    ),
+                                  ),
                                   keyBoardVisible
                                       ? formOrder != null
                                           ? SizedBox(height: 250.h)
@@ -847,143 +1050,15 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                             ),
                           ),
                           if (coasts != null)
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                height: 200.h,
-                                padding: EdgeInsets.only(bottom: 10.h),
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(15.r),
-                                    topLeft: Radius.circular(15.r),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 5,
-                                      blurRadius: 7,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w,
-                                    vertical: 20.w,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Image.asset(
-                                              widget.deliveryChocie.icon,
-                                              color: Colors.red,
-                                              height: 80.h,
-                                            ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  widget.deliveryChocie.title,
-                                                  style: const TextStyle(
-                                                    fontSize: 19,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil()}! ₽',
-                                                  style: const TextStyle(
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const Center(
-                                              child: Text(
-                                                '}',
-                                                style: TextStyle(
-                                                  height: 1,
-                                                  fontSize: 60,
-                                                  fontWeight: FontWeight.w200,
-                                                ),
-                                              ),
-                                            ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: const [
-                                                Text(
-                                                  '0 ₽ доставка',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                SizedBox(height: 3),
-                                                Text(
-                                                  '0 ₽ доп. услуги',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                SizedBox(height: 3),
-                                                Text(
-                                                  '0 ₽ сбор-плат. сист.',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 20.h),
-                                      GestureDetector(
-                                        onTap: () {
-                                          BlocProvider.of<NewOrderPageBloc>(
-                                                  context)
-                                              .add(CreateForm(
-                                                  coasts!.result!.id!));
-                                        },
-                                        child: Container(
-                                          height: 50.h,
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'ОФОРМИТЬ ЗАКАЗ',
-                                              style: CustomTextStyle.white15w600
-                                                  .copyWith(
-                                                      letterSpacing: 1,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                            TotalPriceWidget(
+                              title: widget.deliveryChocie.title,
+                              icon: widget.deliveryChocie.icon,
+                              totalPrice:
+                                  '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil()}',
+                              onTap: () {
+                                BlocProvider.of<NewOrderPageBloc>(context)
+                                    .add(CreateForm(coasts!.result!.id!));
+                              },
                             ),
                           SlidingUpPanel(
                             controller: panelController,
@@ -1026,5 +1101,207 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
               ],
             ),
     );
+  }
+
+  Widget dismissible(List<PointDetails> points, int index, TypeAdd typeAdd) {
+    int num = index;
+    return Dismissible(
+      key: UniqueKey(),
+      confirmDismiss: points.length == 1
+          ? (direction) {
+              return Future.value(false);
+            }
+          : (direction) {
+              points.removeAt(index);
+              calc();
+
+              return points.length == 1
+                  ? Future.value(false)
+                  : Future.value(true);
+            },
+      direction: DismissDirection.endToStart,
+      background: Container(
+        decoration: BoxDecoration(
+          color: typeAdd == TypeAdd.sender ? Colors.red : Colors.blue,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(index == 0 ? 15.r : 0),
+            bottomRight: Radius.circular(
+              index == points.length - 1 ? 15.r : 0,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(10.r),
+          child: const Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'Удалить',
+              style: CustomTextStyle.white15w600,
+            ),
+          ),
+        ),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(10.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            bottomLeft: points.length == 1
+                ? const Radius.circular(15)
+                : routeOrderSender.length - 1 == index
+                    ? const Radius.circular(15)
+                    : Radius.zero,
+            bottomRight: points.length == 1
+                ? const Radius.circular(15)
+                : points.length - 1 == index
+                    ? const Radius.circular(15)
+                    : Radius.zero,
+            topLeft: points.length == 1
+                ? const Radius.circular(15)
+                : points.length - 1 == index
+                    ? Radius.zero
+                    : index == 0
+                        ? const Radius.circular(15)
+                        : Radius.zero,
+            topRight: points.length == 1
+                ? const Radius.circular(15)
+                : points.length - 1 == index
+                    ? Radius.zero
+                    : index == 0
+                        ? const Radius.circular(15)
+                        : Radius.zero,
+          ),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Image.asset(
+                  typeAdd == TypeAdd.sender
+                      ? 'assets/images/from.png'
+                      : 'assets/images/to.png',
+                  height: 25.h,
+                ),
+                SizedBox(width: 15.w),
+                Flexible(
+                  child: Text(
+                    points[index].suggestions.name,
+                    style: CustomTextStyle.black15w500.copyWith(fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.h),
+            Row(
+              children: [
+                Icon(
+                  typeAdd == TypeAdd.sender
+                      ? Icons.arrow_downward_rounded
+                      : Icons.flag,
+                  color: Colors.grey[400],
+                ),
+                SizedBox(width: 15.w),
+                GestureDetector(
+                  onTap: () async {
+                    dynamic details = await Navigator.of(context)
+                        .pushNamed(AppRoute.detailsOrder, arguments: [
+                      typeAdd,
+                      ++num,
+                      points[index],
+                    ]);
+
+                    points[index] = details!;
+
+                    calc();
+                  },
+                  child: Text(
+                    'Указать детали',
+                    style: CustomTextStyle.red15
+                        .copyWith(fontWeight: FontWeight.w400),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void calc() {
+    List<Ancillaries> ancillaries = [];
+    if (toDoor) {
+      ancillaries.add(
+        Ancillaries(
+          'DoorToDoor',
+          Params(),
+        ),
+      );
+    }
+    if (attorney) {
+      ancillaries.add(
+        Ancillaries(
+          'Proxy',
+          Params(),
+        ),
+      );
+    }
+    if (industrialZone) {
+      ancillaries.add(
+        Ancillaries(
+          'Industrial',
+          Params(),
+        ),
+      );
+    }
+    if (coastController.text.isNotEmpty) {
+      ancillaries.add(
+        Ancillaries(
+          'Insurance',
+          Params(amount: int.parse(coastController.text) * 100),
+        ),
+      );
+    }
+    if (whereDeparture1.text.isNotEmpty ||
+        whoDeparture1.text.isNotEmpty ||
+        contactDeparture1.text.isNotEmpty ||
+        contactDeparture1.text.isNotEmpty) {
+      ancillaries.add(
+        Ancillaries(
+          'TrainSend',
+          Params(
+            point: whereDeparture1.text,
+            number: whoDeparture1.text,
+            name: contactDeparture1.text,
+            phone: contactDeparture1.text,
+          ),
+        ),
+      );
+    }
+    if (whereDeparture2.text.isNotEmpty ||
+        whoDeparture2.text.isNotEmpty ||
+        contactDeparture2.text.isNotEmpty ||
+        contactDeparture2.text.isNotEmpty) {
+      ancillaries.add(
+        Ancillaries(
+          'TrainReceive',
+          Params(
+            point: whereDeparture2.text,
+            number: whoDeparture2.text,
+            name: contactDeparture2.text,
+            phone: contactDeparture2.text,
+          ),
+        ),
+      );
+    }
+
+    BlocProvider.of<NewOrderPageBloc>(context).add(CalculateCoastEvent(
+      routeOrderSender,
+      routeOrderReceiver,
+      widget.deliveryChocie.type,
+      ancillaries,
+      documentController.text,
+    ));
   }
 }

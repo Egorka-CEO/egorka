@@ -2,7 +2,7 @@ import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/poinDetails.dart';
-import 'package:egorka/ui/newOrder/new_order.dart';
+import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/cutom_input_formatter.dart';
@@ -56,6 +56,9 @@ class DetailsPageTemp extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPageTemp> {
+  bool btmSheet = false;
+  TypeAdd? typeAdd;
+
   TextEditingController controller = TextEditingController();
   TextEditingController controllerEntrance = TextEditingController();
   TextEditingController controllerFloor = TextEditingController();
@@ -64,9 +67,6 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   TextEditingController controllerPhone = TextEditingController();
   TextEditingController controllerComment = TextEditingController();
   PanelController panelController = PanelController();
-
-  bool btmSheet = false;
-  TypeAdd? typeAdd;
 
   final FocusNode podFocus = FocusNode();
   final FocusNode etajFocus = FocusNode();
@@ -212,7 +212,6 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                // controller.text = '';
                                 typeAdd = TypeAdd.sender;
                                 setState(() {});
                                 panelController.animatePanelToPosition(

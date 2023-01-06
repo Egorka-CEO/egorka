@@ -1,0 +1,1 @@
+enum TypeSignIn { User, Company }

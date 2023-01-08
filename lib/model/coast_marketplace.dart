@@ -1,4 +1,5 @@
 import 'package:egorka/model/ancillaries.dart';
+import 'package:egorka/model/cargos.dart';
 import 'package:egorka/model/locations.dart';
 
 class CoastMarketPlace {
@@ -7,6 +8,7 @@ class CoastMarketPlace {
   String? group;
   List<Location>? locations;
   List<Ancillaries>? ancillaries;
+  List<Cargos>? cargos;
   String? description;
   String? message;
 
@@ -16,6 +18,7 @@ class CoastMarketPlace {
     this.group,
     this.locations,
     this.ancillaries,
+    this.cargos,
     this.description,
     this.message,
   });
@@ -48,6 +51,7 @@ class CoastMarketPlace {
     data['Message'] = message;
     data['Locations'] = locations!.map((e) => e.toJson()).toList();
     data['Ancillaries'] = ancillaries!.map((e) => e.toJson()).toList();
+    data['Cargos'] = cargos!.map((e) => e.toJson()).toList();
     return data;
   }
 }

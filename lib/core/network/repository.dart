@@ -22,9 +22,11 @@ import 'package:permission_handler/permission_handler.dart';
 class Repository {
   var dio = Dio();
 
+  String key = '';
   String IP = '';
 
-  Map<String, dynamic> auth() {
+  Future<Map<String, dynamic>> auth() async {
+    key = await MySecureStorage().getID() ?? '';
     return {
       "Type": "Application",
       "System": "Corp",
@@ -55,11 +57,12 @@ class Repository {
   }
 
   Future<Address?> getAddress(String value) async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/dictionary/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Location",
         "Body": {
           "Query": value,
@@ -77,18 +80,18 @@ class Repository {
       } catch (e) {
         return null;
       }
-      return null;
     } else {
       return null;
     }
   }
 
   Future<MarketPlaces?> getMarketplaces() async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/dictionary/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Marketplace",
         "Body": {},
         "Params": params()
@@ -109,11 +112,12 @@ class Repository {
 
   Future<CoastResponse?> getCoastBase(CoastBase value) async {
     final body = value.toJson();
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Calculate",
         "Body": body,
         "Params": params()
@@ -129,11 +133,12 @@ class Repository {
 
   Future<CoastResponse?> getCoastMarketPlace(CoastMarketPlace value) async {
     final body = value.toJson();
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Calculate",
         "Body": body,
         "Params": params()
@@ -149,11 +154,12 @@ class Repository {
 
   Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
     final body = value.toJson();
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Calculate",
         "Body": body,
         "Params": params()
@@ -168,11 +174,12 @@ class Repository {
   }
 
   Future<crtForm.CreateFormModel?> createForm(String value) async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Create",
         "Body": {
           "ID": value,
@@ -190,11 +197,12 @@ class Repository {
   }
 
   Future<List<crtForm.CreateFormModel>?> getListForm() async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Orders",
         "Body": {
           "Limit": 50,
@@ -222,11 +230,12 @@ class Repository {
   }
 
   Future<InfoForm?> infoForm(String recordNumber, String recordPin) async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Check",
         "Body": {
           "RecordNumber": recordNumber,
@@ -244,11 +253,12 @@ class Repository {
   }
 
   Future<bool> cancelForm(String number, String pin) async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Cancel",
         "Body": {
           "RecordNumber": number,
@@ -266,7 +276,7 @@ class Repository {
   }
 
   Future<String?> paymentDeposit(int id, int pin, String key) async {
-    var authData = auth();
+    var authData = await auth();
     authData['Account'] = key;
 
     final response = await dio.post(
@@ -293,11 +303,12 @@ class Repository {
 
   Future<void> paymentCard(Payment payment) async {
     //?
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/payment/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Redirect",
         "Body": {
           "ID": payment.iD,
@@ -313,7 +324,7 @@ class Repository {
   //Авторизация Пользователь
 
   Future<bool> UUIDCreate() async {
-    var authData = auth();
+    var authData = await auth();
     await getIP();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
@@ -340,7 +351,7 @@ class Repository {
   }
 
   Future<void> UUIDRegister(String value) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -359,7 +370,7 @@ class Repository {
   }
 
   Future<AuthUser?> loginUsernameUser(String login, String password) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -386,7 +397,7 @@ class Repository {
   }
 
   Future<AuthUser?> loginEmailUser(String login, String password) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -413,7 +424,7 @@ class Repository {
   }
 
   Future<AuthUser?> loginPhoneUser(String login, String password) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -442,7 +453,7 @@ class Repository {
   //Авторизация Субагент или Корпорат
   Future<AuthUser?> loginUsernameAgent(
       String login, String password, String company) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -472,7 +483,7 @@ class Repository {
 
   Future<AuthUser?> loginEmailAgent(
       String login, String password, String company) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -502,7 +513,7 @@ class Repository {
 
   Future<AuthUser?> loginPhoneAgent(
       String login, String password, String company) async {
-    var authData = auth();
+    var authData = await auth();
     authData['UserIP'] = IP;
     authData['UserUUID'] = '';
 
@@ -532,11 +543,12 @@ class Repository {
 
   // депозит
   Future<AccountsDeposit?> getDeposit() async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/account/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Details",
         "Body": {},
         "Params": params()
@@ -552,11 +564,12 @@ class Repository {
   }
 
   Future<Invoice?> createInvoice(int value) async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/invoice/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "Create",
         "Body": {
           "Amount": value,
@@ -575,11 +588,12 @@ class Repository {
   }
 
   Future<List<Invoice>?> getAllInvoice() async {
+    var authData = await auth();
     final response = await dio.post(
       '$server/service/invoice/',
       options: header(),
       data: {
-        "Auth": auth(),
+        "Auth": authData,
         "Method": "List",
         "Body": {
           "Limit": 20,

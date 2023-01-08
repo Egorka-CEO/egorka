@@ -1,6 +1,7 @@
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/ancillaries.dart';
+import 'package:egorka/model/cargos.dart';
 import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/create_form_model.dart';
@@ -66,7 +67,8 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
                 phoneOfficeAdd: event.phone),
           )
         ],
-        ancillaries: event.ancillaries
+        ancillaries: event.ancillaries,
+        cargos: event.cargos,
       ),
     );
     emit(MarketPlacesSuccessState(result));

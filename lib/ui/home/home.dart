@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void funcInit() async {
     final storage = MySecureStorage();
     final type = await storage.getTypeUser();
+    final id = await storage.getID();
 
     if (type != null) {
       String? login = await storage.getLogin();
@@ -65,8 +66,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
         BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
       }
+    } else if(id != null) {
+      print('show uuid $id');
     } else {
-      Repository().UUIDCreate();
+      await Repository().UUIDCreate();
+      print('create uuid');
     }
   }
 

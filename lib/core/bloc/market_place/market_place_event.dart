@@ -26,8 +26,7 @@ class CalcOrderMarketplace extends MarketPlaceEvent {
   List<Ancillaries>? ancillaries;
   String? name;
   String? phone;
-  int? bucket;
-  int? pallet;
+  List<Cargos>? cargos;
 
   String? entrance;
   String? floor;
@@ -41,8 +40,7 @@ class CalcOrderMarketplace extends MarketPlaceEvent {
     this.group,
     this.name,
     this.phone,
-    this.bucket,
-    this.pallet,
+    this.cargos,
   );
 }
 

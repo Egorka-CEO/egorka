@@ -80,6 +80,11 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   bool attorney = false;
   bool industrialZone = false;
   bool toDoor = false;
+  bool additional = false;
+  bool additional1 = false;
+  bool additional2 = false;
+  bool additional3 = false;
+  bool additional4 = false;
 
   TextEditingController fromController = TextEditingController();
   TextEditingController documentController = TextEditingController();
@@ -104,6 +109,11 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   TextEditingController whoToSend = TextEditingController();
 
   final weightControllerSlider = StreamController<int>();
+  final additionalController = StreamController<bool>();
+  final additional1Controller = StreamController<bool>();
+  final additional2Controller = StreamController<bool>();
+  final additional3Controller = StreamController<bool>();
+  final additional4Controller = StreamController<bool>();
 
   PanelController panelController = PanelController();
   ScrollController scrollController = ScrollController();
@@ -136,6 +146,11 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   @override
   void dispose() {
     weightControllerSlider.close();
+    additionalController.close();
+    additional1Controller.close();
+    additional2Controller.close();
+    additional3Controller.close();
+    additional4Controller.close();
     super.dispose();
   }
 
@@ -421,6 +436,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                       CustomTextField(
                                         height: 45.h,
                                         focusNode: whatDrive,
+                                        onFieldSubmitted: (value) => calc(),
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 10.w, vertical: 10.w),
                                         hintStyle: const TextStyle(
@@ -452,6 +468,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                       ),
                                       CustomTextField(
                                         focusNode: whatCoast,
+                                        onFieldSubmitted: (value) => calc(),
                                         onTap: () {
                                           scrollController.animateTo(
                                             scrollController
@@ -472,573 +489,1010 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                         ),
                                         hintText: 'До 100000 ₽',
                                         textEditingController: coastController,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 5.w),
-                                      const Text(
-                                        'Дополнительные услуги',
-                                        style: CustomTextStyle.grey15bold,
+                                        textInputType: TextInputType.number,
                                       ),
                                     ],
                                   ),
                                   SizedBox(height: 10.h),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10.w),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 10.h),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Услуга помощи погрузки / разгрузки',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'Егорка поможет вам загрузить/разгрузить посылку. Если вес посылки превышает бесплатные нормы и Егорка физически не сможет загрузить/разгрузить один, то Егорка вправе попросить отправителя/получателя о помощи.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Какой вес? (кг)',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        StreamBuilder<int>(
-                                            stream:
-                                                weightControllerSlider.stream,
-                                            initialData: 0,
-                                            builder: (context, snapshot) {
-                                              return Row(
+                                  StreamBuilder<bool>(
+                                    stream: additionalController.stream,
+                                    initialData: false,
+                                    builder: (context, snapshot) {
+                                      additional = snapshot.data!;
+                                      double height;
+                                      if (additional) {
+                                        height = 1055.h;
+                                        if (additional1) height += 170.h;
+                                        if (additional2) height += 135.h;
+                                        if (additional3) height += 305.h;
+                                        if (additional4) height += 305.h;
+                                      } else {
+                                        height = 0.h;
+                                      }
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 5.w),
+                                              const Text(
+                                                'Дополнительные услуги',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                              const Spacer(),
+                                              GestureDetector(
+                                                onTap: () =>
+                                                    additionalController
+                                                        .add(!additional),
+                                                child: Text(
+                                                  additional
+                                                      ? 'Свернуть'
+                                                      : 'Развернуть',
+                                                  style: CustomTextStyle.red15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          AnimatedContainer(
+                                            duration: const Duration(
+                                                milliseconds: 100),
+                                            height: height,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10.w),
+                                              child: Column(
                                                 children: [
-                                                  Expanded(
-                                                    child: CustomTextField(
-                                                      focusNode: weigthFocus,
-                                                      height: 45.h,
-                                                      contentPadding:
+                                                  SizedBox(height: 10.h),
+                                                  Row(
+                                                    children: [
+                                                      const Text(
+                                                        'Услуга помощи погрузки / разгрузки',
+                                                        style: CustomTextStyle
+                                                            .grey15bold,
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          additional1 =
+                                                              !additional1;
+                                                          additional1Controller
+                                                              .add(additional1);
+                                                          additionalController
+                                                              .add(additional);
+                                                        },
+                                                        icon: additional1
+                                                            ? const Icon(Icons
+                                                                .keyboard_arrow_up)
+                                                            : const Icon(Icons
+                                                                .keyboard_arrow_down),
+                                                        splashRadius: 15,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  const Text(
+                                                    'Егорка поможет вам загрузить/разгрузить посылку. Если вес посылки превышает бесплатные нормы и Егорка физически не сможет загрузить/разгрузить один, то Егорка вправе попросить отправителя/получателя о помощи.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  StreamBuilder<bool>(
+                                                    stream:
+                                                        additional1Controller
+                                                            .stream,
+                                                    initialData: false,
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      additional1 =
+                                                          snapshot.data!;
+                                                      return AnimatedContainer(
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    100),
+                                                        height: additional1
+                                                            ? 170.h
+                                                            : 0.h,
+                                                        child: Column(
+                                                          children: [
+                                                            SizedBox(
+                                                                height: 10.h),
+                                                            Row(
+                                                              children: const [
+                                                                Text(
+                                                                  'Какой вес? (кг)',
+                                                                  style: CustomTextStyle
+                                                                      .grey15bold,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                                height: 10.h),
+                                                            StreamBuilder<int>(
+                                                              stream:
+                                                                  weightControllerSlider
+                                                                      .stream,
+                                                              initialData: 0,
+                                                              builder: (context,
+                                                                  snapshot) {
+                                                                return Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child:
+                                                                          CustomTextField(
+                                                                        focusNode:
+                                                                            weigthFocus,
+                                                                        height:
+                                                                            45.h,
+                                                                        contentPadding:
+                                                                            EdgeInsets.symmetric(horizontal: 10.w),
+                                                                        fillColor:
+                                                                            Colors.white,
+                                                                        hintText:
+                                                                            '0',
+                                                                        onFieldSubmitted:
+                                                                            (value) =>
+                                                                                calc(),
+                                                                        textInputType:
+                                                                            TextInputType.number,
+                                                                        textEditingController:
+                                                                            weigthController,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 10
+                                                                            .w),
+                                                                    Expanded(
+                                                                      flex: 2,
+                                                                      child:
+                                                                          Slider(
+                                                                        min: 0,
+                                                                        max:
+                                                                            200,
+                                                                        activeColor:
+                                                                            Colors.red,
+                                                                        inactiveColor:
+                                                                            Colors.grey[300],
+                                                                        thumbColor:
+                                                                            Colors.white,
+                                                                        value: snapshot
+                                                                            .data!
+                                                                            .toDouble(),
+                                                                        onChangeEnd:
+                                                                            (value) =>
+                                                                                calc(),
+                                                                        onChanged:
+                                                                            (value) {
+                                                                          weightControllerSlider
+                                                                              .add(value.toInt());
+                                                                          weigthController.text = value
+                                                                              .toInt()
+                                                                              .toString();
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                                height: 10.h),
+                                                            Row(
+                                                              children: const [
+                                                                Text(
+                                                                  'Какие размеры? (см)',
+                                                                  style: CustomTextStyle
+                                                                      .grey15bold,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                                height: 10.h),
+                                                            Row(
+                                                              children: [
+                                                                const Text(
+                                                                    'Ширина'),
+                                                                SizedBox(
+                                                                    width: 4.w),
+                                                                Expanded(
+                                                                  child:
+                                                                      CustomTextField(
+                                                                    onFieldSubmitted:
+                                                                        (value) =>
+                                                                            calc(),
+                                                                    focusNode:
+                                                                        widthFocus,
+                                                                    height:
+                                                                        45.h,
+                                                                    contentPadding:
+                                                                        EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                10.w),
+                                                                    fillColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    hintText:
+                                                                        '0',
+                                                                    textInputType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    textEditingController:
+                                                                        widthController,
+                                                                  ),
+                                                                ),
+                                                                const Text(
+                                                                    'Высота'),
+                                                                SizedBox(
+                                                                    width: 8.w),
+                                                                Expanded(
+                                                                  child:
+                                                                      CustomTextField(
+                                                                    onFieldSubmitted:
+                                                                        (value) =>
+                                                                            calc(),
+                                                                    focusNode:
+                                                                        heightFocus,
+                                                                    height:
+                                                                        45.h,
+                                                                    contentPadding:
+                                                                        EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                10.w),
+                                                                    fillColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    hintText:
+                                                                        '0',
+                                                                    textInputType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    textEditingController:
+                                                                        heightController,
+                                                                  ),
+                                                                ),
+                                                                const Text(
+                                                                    'Глубина'),
+                                                                SizedBox(
+                                                                    width: 8.w),
+                                                                Expanded(
+                                                                  child:
+                                                                      CustomTextField(
+                                                                    onFieldSubmitted:
+                                                                        (value) =>
+                                                                            calc(),
+                                                                    focusNode:
+                                                                        depthFocus,
+                                                                    height:
+                                                                        45.h,
+                                                                    contentPadding:
+                                                                        EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                10.w),
+                                                                    fillColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    hintText:
+                                                                        '0',
+                                                                    textInputType:
+                                                                        TextInputType
+                                                                            .number,
+                                                                    textEditingController:
+                                                                        depthController,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                  SizedBox(height: 5.w),
+                                                  Row(
+                                                    children: [
+                                                      const Text(
+                                                        'Отвезти посылку на почту',
+                                                        style: CustomTextStyle
+                                                            .grey15bold,
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          additional2 =
+                                                              !additional2;
+                                                          additional2Controller
+                                                              .add(additional2);
+                                                          additionalController
+                                                              .add(additional);
+                                                        },
+                                                        icon: additional2
+                                                            ? const Icon(Icons
+                                                                .keyboard_arrow_up)
+                                                            : const Icon(Icons
+                                                                .keyboard_arrow_down),
+                                                        splashRadius: 15,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5.w),
+                                                  const Text(
+                                                    'Егорка отвезет посылку на почту и отправит её по указанному ниже адресу. Если вы хотите получить оригинал квитанции, то укажите дополнительную точку в заказе. Дополнительные расходы за отправку спишутся с вашей банковской карты или депозита.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  SizedBox(height: 10.w),
+                                                  AnimatedContainer(
+                                                    duration: const Duration(
+                                                        milliseconds: 100),
+                                                    height: additional2
+                                                        ? 150.h
+                                                        : 0.h,
+                                                    child: Padding(
+                                                      padding:
                                                           EdgeInsets.symmetric(
                                                               horizontal: 10.w),
-                                                      fillColor: Colors.white,
-                                                      hintText: '0',
-                                                      onFieldSubmitted:
-                                                          (value) => calc(),
-                                                      textInputType:
-                                                          TextInputType.number,
-                                                      textEditingController:
-                                                          weigthController,
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'На какой адрес отправить?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                whereFocus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: аэропорт Шереметьево',
+                                                            textEditingController:
+                                                                whereToSend,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'На кого?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode: whoFocus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Иванов Иван Иванович',
+                                                            textEditingController:
+                                                                whoToSend,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                  SizedBox(width: 10.w),
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: Slider(
-                                                      min: 0,
-                                                      max: 200,
-                                                      activeColor: Colors.red,
-                                                      inactiveColor:
-                                                          Colors.grey[300],
-                                                      thumbColor: Colors.white,
-                                                      value: snapshot.data!
-                                                          .toDouble(),
-                                                      onChangeEnd: (value) =>
-                                                          calc(),
-                                                      onChanged: (value) {
-                                                        weightControllerSlider
-                                                            .add(value.toInt());
-                                                        weigthController.text =
-                                                            value
-                                                                .toInt()
-                                                                .toString();
-                                                      },
+                                                  SizedBox(height: 5.h),
+                                                  Row(
+                                                    children: [
+                                                      const Flexible(
+                                                        child: Text(
+                                                          'Отправить посылку поездом, автобусом или самолетом',
+                                                          style: CustomTextStyle
+                                                              .grey15bold,
+                                                        ),
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          additional3 =
+                                                              !additional3;
+                                                          additional3Controller
+                                                              .add(additional3);
+                                                          additionalController
+                                                              .add(additional);
+                                                        },
+                                                        icon: additional3
+                                                            ? const Icon(Icons
+                                                                .keyboard_arrow_up)
+                                                            : const Icon(Icons
+                                                                .keyboard_arrow_down),
+                                                        splashRadius: 15,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 15.w),
+                                                  const Text(
+                                                    'Егорка заранее приедет на вокзал, найдет ваш поезд/автобус, рейс и отправит строго по указанному вами поручению. Дополнительные расходы (за отправку, парковку и т.д.) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  AnimatedContainer(
+                                                    duration: const Duration(
+                                                        milliseconds: 100),
+                                                    height: additional3
+                                                        ? 315.h
+                                                        : 0.h,
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      child: Column(
+                                                        children: [
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Откуда отправление?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                whereDeparture1Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: аэропорт Шереметьево',
+                                                            textEditingController:
+                                                                whereDeparture1,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Кому отдать?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                whoDeparture1Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: Стойка 16 авиакомпании',
+                                                            textEditingController:
+                                                                whoDeparture1,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Номер рейса/поезда/автобуса?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                numberDeparture1Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: аэропот Шереметьево',
+                                                            textEditingController:
+                                                                numberDeparture1,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Контакты представителя?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                contactDeparture1Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'В формате: +79998887766',
+                                                            textEditingController:
+                                                                contactDeparture1,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
+                                                  SizedBox(height: 5.h),
+                                                  Row(
+                                                    children: [
+                                                      const Flexible(
+                                                        child: Text(
+                                                          'Встретить посылку поездом, автобусом или самолетом',
+                                                          style: CustomTextStyle
+                                                              .grey15bold,
+                                                        ),
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          additional4 =
+                                                              !additional4;
+                                                          additional4Controller
+                                                              .add(additional4);
+                                                          additionalController
+                                                              .add(additional);
+                                                        },
+                                                        icon: additional4
+                                                            ? const Icon(Icons
+                                                                .keyboard_arrow_up)
+                                                            : const Icon(Icons
+                                                                .keyboard_arrow_down),
+                                                        splashRadius: 15,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5.w),
+                                                  const Text(
+                                                    'Егорка заранее приедет на вокзал, встретит ваш поезд/автобус, рейс и заберет вашу посылку. После чего доставит на указанный вами адрес. Дополнительные расходы (к примеру, парковку) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  AnimatedContainer(
+                                                    duration: const Duration(
+                                                        milliseconds: 100),
+                                                    height: additional4
+                                                        ? 315.h
+                                                        : 0.h,
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      child: Column(
+                                                        children: [
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Куда прибывает?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                whereDeparture2Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: аэропорт Шереметьево',
+                                                            textEditingController:
+                                                                whereDeparture2,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'У кого забрать?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                whoDeparture2Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: Стойка 16 авиакомпании',
+                                                            textEditingController:
+                                                                whoDeparture2,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Номер рейса/поезда/автобуса?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                numberDeparture2Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'Например: аэропот Шереметьево',
+                                                            textEditingController:
+                                                                numberDeparture2,
+                                                          ),
+                                                          SizedBox(
+                                                              height: 10.w),
+                                                          Row(
+                                                            children: const [
+                                                              Text(
+                                                                'Контакты представителя?',
+                                                                style: CustomTextStyle
+                                                                    .grey15bold,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5.w),
+                                                          CustomTextField(
+                                                            onFieldSubmitted:
+                                                                (value) =>
+                                                                    calc(),
+                                                            focusNode:
+                                                                contactDeparture2Focus,
+                                                            height: 45.h,
+                                                            contentPadding:
+                                                                EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        10.w,
+                                                                    vertical:
+                                                                        10.w),
+                                                            hintStyle:
+                                                                const TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                            hintText:
+                                                                'В формате: +79998887766',
+                                                            textEditingController:
+                                                                contactDeparture2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        attorney = !attorney;
+                                                      });
+                                                      calc();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Checkbox(
+                                                          value: attorney,
+                                                          fillColor:
+                                                              MaterialStateProperty
+                                                                  .all(Colors
+                                                                      .red),
+                                                          shape:
+                                                              const CircleBorder(),
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              attorney =
+                                                                  !attorney;
+                                                            });
+                                                            calc();
+                                                          },
+                                                        ),
+                                                        const Text(
+                                                          'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
+                                                          style: CustomTextStyle
+                                                              .grey15bold,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5.w),
+                                                  const Text(
+                                                    'После оформления заказа, Егорка пришлет вам в СМС или WhatsApp паспортные данные (ФИО, серия и номер паспорта, дата выдачи, где и когда выдан) для составления доверенности. Если нужные дополнительные данные, то укажите их ниже в поручении для Егорки.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        industrialZone =
+                                                            !industrialZone;
+                                                      });
+                                                      calc();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Checkbox(
+                                                          value: industrialZone,
+                                                          fillColor:
+                                                              MaterialStateProperty
+                                                                  .all(Colors
+                                                                      .red),
+                                                          shape:
+                                                              const CircleBorder(),
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              industrialZone =
+                                                                  !industrialZone;
+                                                            });
+                                                            calc();
+                                                          },
+                                                        ),
+                                                        const Text(
+                                                          'Промзона',
+                                                          style: CustomTextStyle
+                                                              .grey15bold,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5.w),
+                                                  const Text(
+                                                    'В том случае, если вы не сможете выдать пропуск Егорке для заезда на территорию промзоны. Егорка припаркует свой автомобиль за воротами и пешком доставит посылку получателю.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        toDoor = !toDoor;
+                                                      });
+                                                      calc();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Checkbox(
+                                                          value: toDoor,
+                                                          fillColor:
+                                                              MaterialStateProperty
+                                                                  .all(Colors
+                                                                      .red),
+                                                          shape:
+                                                              const CircleBorder(),
+                                                          // onChanged: (value) {},
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              toDoor = !toDoor;
+                                                            });
+                                                            calc();
+                                                          },
+                                                        ),
+                                                        const Text(
+                                                          'Доставить до двери',
+                                                          style: CustomTextStyle
+                                                              .grey15bold,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5.w),
+                                                  const Text(
+                                                    'Егорка доставит вашу посылку до входной двери квартиры/офиса. Если данная услуга не активирована, Егорка встретит получателя возле подъезда.',
+                                                    style: CustomTextStyle
+                                                        .grey14w400,
+                                                    textAlign:
+                                                        TextAlign.justify,
+                                                  ),
+                                                  SizedBox(height: 5.h),
                                                 ],
-                                              );
-                                            }),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Какие размеры? (см)',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text('Ширина'),
-                                            SizedBox(width: 4.w),
-                                            Expanded(
-                                              child: CustomTextField(
-                                                onFieldSubmitted: (value) =>
-                                                    calc(),
-                                                focusNode: widthFocus,
-                                                height: 45.h,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10.w),
-                                                fillColor: Colors.white,
-                                                hintText: '0',
-                                                textInputType:
-                                                    TextInputType.number,
-                                                textEditingController:
-                                                    widthController,
                                               ),
                                             ),
-                                            const Text('Высота'),
-                                            SizedBox(width: 4.w),
-                                            Expanded(
-                                              child: CustomTextField(
-                                                onFieldSubmitted: (value) =>
-                                                    calc(),
-                                                focusNode: heightFocus,
-                                                height: 45.h,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10.w),
-                                                fillColor: Colors.white,
-                                                hintText: '0',
-                                                textInputType:
-                                                    TextInputType.number,
-                                                textEditingController:
-                                                    heightController,
-                                              ),
-                                            ),
-                                            const Text('Глубина'),
-                                            SizedBox(width: 4.w),
-                                            Expanded(
-                                              child: CustomTextField(
-                                                onFieldSubmitted: (value) =>
-                                                    calc(),
-                                                focusNode: depthFocus,
-                                                height: 45.h,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10.w),
-                                                fillColor: Colors.white,
-                                                hintText: '0',
-                                                textInputType:
-                                                    TextInputType.number,
-                                                textEditingController:
-                                                    depthController,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Отвезти посылку на почту',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'Егорка отвезет посылку на почту и отправит её по указанному ниже адресу. Если вы хотите получить оригинал квитанции, то укажите дополнительную точку в заказе. Дополнительные расходы за отправку спишутся с вашей банковской карты или депозита.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'На какой адрес отправить?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: whereFocus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
                                           ),
-                                          hintText:
-                                              'Например: аэропорт Шереметьево',
-                                          textEditingController: whereToSend,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'На кого?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: whoFocus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText: 'Иванов Иван Иванович',
-                                          textEditingController: whoToSend,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        Row(
-                                          children: const [
-                                            Flexible(
-                                              child: Text(
-                                                'Отправить посылку поездом, автобусом или самолетом',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'Егорка заранее приедет на вокзал, найдет ваш поезд/автобус, рейс и отправит строго по указанному вами поручению. Дополнительные расходы (за отправку, парковку и т.д.) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Откуда отправление?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: whereDeparture1Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText:
-                                              'Например: аэропорт Шереметьево',
-                                          textEditingController:
-                                              whereDeparture1,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Кому отдать?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: whoDeparture1Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText:
-                                              'Например: Стойка 16 авиакомпании',
-                                          textEditingController: whoDeparture1,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Номер рейса/поезда/автобуса?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: numberDeparture1Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText:
-                                              'Например: аэропот Шереметьево',
-                                          textEditingController:
-                                              numberDeparture1,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Контакты представителя?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: contactDeparture1Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText: 'В формате: +79998887766',
-                                          textEditingController:
-                                              contactDeparture1,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        Row(
-                                          children: const [
-                                            Flexible(
-                                              child: Text(
-                                                'Встретить посылку поездом, автобусом или самолетом',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'Егорка заранее приедет на вокзал, встретит ваш поезд/автобус, рейс и заберет вашу посылку. После чего доставит на указанный вами адрес. Дополнительные расходы (к примеру, парковку) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Куда прибывает?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: whereDeparture2Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText:
-                                              'Например: аэропорт Шереметьево',
-                                          textEditingController:
-                                              whereDeparture2,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'У кого забрать?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: whoDeparture2Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText:
-                                              'Например: Стойка 16 авиакомпании',
-                                          textEditingController: whoDeparture2,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Номер рейса/поезда/автобуса?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: numberDeparture2Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText:
-                                              'Например: аэропот Шереметьево',
-                                          textEditingController:
-                                              numberDeparture2,
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Контакты представителя?',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        CustomTextField(
-                                          onFieldSubmitted: (value) => calc(),
-                                          focusNode: contactDeparture2Focus,
-                                          height: 45.h,
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 10.w),
-                                          hintStyle: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          hintText: 'В формате: +79998887766',
-                                          textEditingController:
-                                              contactDeparture2,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              attorney = !attorney;
-                                            });
-                                            calc();
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Checkbox(
-                                                value: attorney,
-                                                fillColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.red),
-                                                shape: const CircleBorder(),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    attorney = !attorney;
-                                                  });
-                                                },
-                                              ),
-                                              const Text(
-                                                'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'После оформления заказа, Егорка пришлет вам в СМС или WhatsApp паспортные данные (ФИО, серия и номер паспорта, дата выдачи, где и когда выдан) для составления доверенности. Если нужные дополнительные данные, то укажите их ниже в поручении для Егорки.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              industrialZone = !industrialZone;
-                                            });
-                                            calc();
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Checkbox(
-                                                value: industrialZone,
-                                                fillColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.red),
-                                                shape: const CircleBorder(),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    industrialZone =
-                                                        !industrialZone;
-                                                  });
-                                                },
-                                              ),
-                                              const Text(
-                                                'Промзона',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'В том случае, если вы не сможете выдать пропуск Егорке для заезда на территорию промзоны. Егорка припаркует свой автомобиль за воротами и пешком доставит посылку получателю.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              toDoor = !toDoor;
-                                            });
-                                            calc();
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Checkbox(
-                                                value: toDoor,
-                                                fillColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.red),
-                                                shape: const CircleBorder(),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    toDoor = !toDoor;
-                                                  });
-                                                },
-                                              ),
-                                              const Text(
-                                                'Доставить до двери',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        const Text(
-                                          'Егорка доставит вашу посылку до входной двери квартиры/офиса. Если данная услуга не активирована, Егорка встретит получателя возле подъезда.',
-                                          style: CustomTextStyle.grey14w400,
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                        SizedBox(height: 5.h),
-                                      ],
-                                    ),
+                                        ],
+                                      );
+                                    },
                                   ),
                                   keyBoardVisible
                                       ? formOrder != null
@@ -1054,7 +1508,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                               title: widget.deliveryChocie.title,
                               icon: widget.deliveryChocie.icon,
                               totalPrice:
-                                  '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil()}',
+                                  '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil() + ((double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil() * 2.69) / 100).ceil()}',
                               onTap: () {
                                 BlocProvider.of<NewOrderPageBloc>(context)
                                     .add(CreateForm(coasts!.result!.id!));
@@ -1231,6 +1685,33 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
 
   void calc() {
     List<Ancillaries> ancillaries = [];
+    if (weigthController.text.isNotEmpty ||
+        widthController.text.isNotEmpty ||
+        heightController.text.isNotEmpty ||
+        depthController.text.isNotEmpty) {
+      ancillaries.add(
+        Ancillaries(
+          'Load',
+          Params(
+            weight: weigthController.text,
+            width: widthController.text,
+            height: heightController.text,
+            depth: depthController.text,
+          ),
+        ),
+      );
+    }
+    if (whereToSend.text.isNotEmpty || whoToSend.text.isNotEmpty) {
+      ancillaries.add(
+        Ancillaries(
+          'Post',
+          Params(
+            name: whereToSend.text,
+            address: whoToSend.text,
+          ),
+        ),
+      );
+    }
     if (toDoor) {
       ancillaries.add(
         Ancillaries(
@@ -1265,15 +1746,15 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
     }
     if (whereDeparture1.text.isNotEmpty ||
         whoDeparture1.text.isNotEmpty ||
-        contactDeparture1.text.isNotEmpty ||
+        numberDeparture1.text.isNotEmpty ||
         contactDeparture1.text.isNotEmpty) {
       ancillaries.add(
         Ancillaries(
           'TrainSend',
           Params(
             point: whereDeparture1.text,
-            number: whoDeparture1.text,
-            name: contactDeparture1.text,
+            number: numberDeparture1.text,
+            name: whoDeparture1.text,
             phone: contactDeparture1.text,
           ),
         ),
@@ -1281,27 +1762,29 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
     }
     if (whereDeparture2.text.isNotEmpty ||
         whoDeparture2.text.isNotEmpty ||
-        contactDeparture2.text.isNotEmpty ||
+        numberDeparture2.text.isNotEmpty ||
         contactDeparture2.text.isNotEmpty) {
       ancillaries.add(
         Ancillaries(
           'TrainReceive',
           Params(
             point: whereDeparture2.text,
-            number: whoDeparture2.text,
-            name: contactDeparture2.text,
+            number: numberDeparture2.text,
+            name: whoDeparture2.text,
             phone: contactDeparture2.text,
           ),
         ),
       );
     }
 
-    BlocProvider.of<NewOrderPageBloc>(context).add(CalculateCoastEvent(
-      routeOrderSender,
-      routeOrderReceiver,
-      widget.deliveryChocie.type,
-      ancillaries,
-      documentController.text,
-    ));
+    BlocProvider.of<NewOrderPageBloc>(context).add(
+      CalculateCoastEvent(
+        routeOrderSender,
+        routeOrderReceiver,
+        widget.deliveryChocie.type,
+        ancillaries,
+        documentController.text,
+      ),
+    );
   }
 }

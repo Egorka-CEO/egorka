@@ -25,7 +25,7 @@ class Location {
   String? externalData;
   String? key;
   int? num;
-  String? date;
+  dynamic date;
   String? dateTo;
   String? type;
   int? route;

@@ -1,13 +1,11 @@
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui' as ui;
-import 'package:geocoder2/geocoder2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 part 'history_orders_event.dart';
@@ -53,18 +51,20 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
 
   void _getPoliline(
       HistoryOrderPolilyne event, Emitter<HistoryOrdersState> emit) async {
-    final locationFrom = await Geocoder2.getDataFromCoordinates(
-        latitude: event.locations.first.point!.latitude!,
-        longitude: event.locations.first.point!.longitude!,
-        googleMapApiKey: apiKey);
-    final locationTo = await Geocoder2.getDataFromCoordinates(
-        latitude: event.locations.last.point!.latitude!,
-        longitude: event.locations.last.point!.longitude!,
-        googleMapApiKey: apiKey);
+    // final locationFrom = await Geocoder2.getDataFromCoordinates(
+    //     latitude: event.locations.first.point!.latitude!,
+    //     longitude: event.locations.first.point!.longitude!,
+    //     googleMapApiKey: apiKey);
+    // final locationTo = await Geocoder2.getDataFromCoordinates(
+    //     latitude: event.locations.last.point!.latitude!,
+    //     longitude: event.locations.last.point!.longitude!,
+    //     googleMapApiKey: apiKey);
 
     final directionsTo = await DirectionsRepository(dio: null).getDirections(
-        origin: LatLng(locationFrom.latitude, locationFrom.longitude),
-        destination: LatLng(locationTo.latitude, locationTo.longitude));
+        origin: LatLng(event.locations.first.point!.latitude!,
+            event.locations.first.point!.longitude!),
+        destination: LatLng(event.locations.last.point!.latitude!,
+            event.locations.last.point!.longitude!));
 
     if (directionsTo != null) {
       final fromIcon = BitmapDescriptor.fromBytes(

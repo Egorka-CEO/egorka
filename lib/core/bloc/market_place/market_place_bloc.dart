@@ -50,21 +50,11 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
               floor: event.floor,
               room: event.room,
             ),
-            contact: Contact(
-                name: event.name,
-                phoneMobile: event.phone,
-                phoneOffice: event.phone,
-                phoneOfficeAdd: event.phone),
+            contact: Contact(name: event.name, phoneMobile: event.phone),
           ),
           Location(
-            point: Point(
-              code: '${event.points!.code}',
-            ),
-            contact: Contact(
-                name: event.name,
-                phoneMobile: event.phone,
-                phoneOffice: event.phone,
-                phoneOfficeAdd: event.phone),
+            point: Point(code: '${event.points!.code}'),
+            contact: Contact(name: event.name, phoneMobile: event.phone),
           )
         ],
         ancillaries: event.ancillaries,

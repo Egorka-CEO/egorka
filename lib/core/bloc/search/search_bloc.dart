@@ -1,6 +1,5 @@
 import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
@@ -11,7 +10,6 @@ import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoder2/geocoder2.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -114,10 +112,10 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     emit(SearchLoading());
     isPolilyne = true;
 
-    final locationFrom = await Geocoder2.getDataFromAddress(
-        address: event.suggestionsStart.first!.name, googleMapApiKey: apiKey);
-    final locationTo = await Geocoder2.getDataFromAddress(
-        address: event.suggestionsEnd.last!.name, googleMapApiKey: apiKey);
+    // final locationFrom = await Geocoder2.getDataFromAddress(
+    //     address: event.suggestionsStart.first!.name, googleMapApiKey: apiKey);
+    // final locationTo = await Geocoder2.getDataFromAddress(
+    //     address: event.suggestionsEnd.last!.name, googleMapApiKey: apiKey);
 
     final fromIcon = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/images/from.png', 90));
@@ -127,8 +125,10 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     Directions? directions;
     try {
       directions = await DirectionsRepository(dio: null).getDirections(
-          origin: LatLng(locationFrom.latitude, locationFrom.longitude),
-          destination: LatLng(locationTo.latitude, locationTo.longitude));
+          origin: LatLng(event.suggestionsStart.last!.point!.latitude,
+              event.suggestionsStart.last!.point!.longitude),
+          destination: LatLng(event.suggestionsEnd.last!.point!.latitude,
+              event.suggestionsEnd.last!.point!.longitude));
     } catch (e) {
       emit(
         SearchAddressRoutePolilyne(

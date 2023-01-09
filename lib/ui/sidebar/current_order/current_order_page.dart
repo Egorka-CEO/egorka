@@ -39,6 +39,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   Color colorStatus = Colors.red;
   String status = 'Ошибка';
   bool loadOrder = false;
+  String? declaredCost;
 
   int pointSentCount = 0;
   int pointReceiveCount = 0;
@@ -57,6 +58,11 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
         widget.recorNumber.toString(),
         widget.recordPIN.toString(),
       );
+      for (var element in formOrder!.result!.ancillaries!) {
+        if (element.type == 'Insurance') {
+          declaredCost = (element.params?.first.value / 100).ceil().toString();
+        }
+      }
       parseDate = DateTime.parse(formOrder!.result!.recordDate!);
 
       dateTime =
@@ -520,36 +526,40 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20.h),
-                                Row(
-                                  children: [
-                                    SizedBox(width: 10.w),
-                                    const Text(
-                                      'Объявленная ценность',
-                                      style: CustomTextStyle.grey15bold,
-                                    ),
-                                    const Spacer(),
-                                    const Text(
-                                      '1000 ₽',
-                                      style: CustomTextStyle.black15w700,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20.h),
-                                Row(
-                                  children: [
-                                    SizedBox(width: 10.w),
-                                    const Text(
-                                      'Что везем',
-                                      style: CustomTextStyle.grey15bold,
-                                    ),
-                                    const Spacer(),
-                                    const Text(
-                                      'Зарядка',
-                                      style: CustomTextStyle.black15w700,
-                                    ),
-                                  ],
-                                ),
+                                if (declaredCost != null)
+                                  SizedBox(height: 20.h),
+                                if (declaredCost != null)
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Объявленная ценность',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        '$declaredCost ₽',
+                                        style: CustomTextStyle.black15w700,
+                                      ),
+                                    ],
+                                  ),
+                                if (formOrder!.result!.description!.isNotEmpty)
+                                  SizedBox(height: 20.h),
+                                if (formOrder!.result!.description!.isNotEmpty)
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Что везем',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        formOrder!.result!.description!,
+                                        style: CustomTextStyle.black15w700,
+                                      ),
+                                    ],
+                                  ),
                                 SizedBox(height: 20.h),
                                 Row(
                                   children: [

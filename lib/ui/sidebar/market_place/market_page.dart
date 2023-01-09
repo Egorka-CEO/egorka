@@ -70,6 +70,7 @@ class _MarketPageState extends State<MarketPages>
   InfoForm? formOrder;
   bool loadOrder = false;
   int indexTab = 0;
+  String? errorAddress;
 
   TextEditingController controller = TextEditingController();
   TextEditingController fromController = TextEditingController();
@@ -182,6 +183,11 @@ class _MarketPageState extends State<MarketPages>
         ),
       );
 
+      if (placemarks.first.subThoroughfare!.isEmpty) {
+        errorAddress = 'Ошибка: Укажите номер дома';
+      }
+      setState(() {});
+
       calcOrder();
     }
   }
@@ -243,6 +249,7 @@ class _MarketPageState extends State<MarketPages>
                       buildWhen: (previous, current) {
                         if (current is MarketPlaceStateCloseBtmSheet) {
                           suggestion = current.address;
+                          errorAddress = null;
                           if (typeAdd != null && typeAdd == TypeAdd.sender) {
                             fromController.text = suggestion!.name;
                           } else if (typeAdd != null &&
@@ -364,6 +371,18 @@ class _MarketPageState extends State<MarketPages>
                                           ],
                                         ),
                                         SizedBox(height: 5.h),
+                                        if (errorAddress != null)
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 5.w),
+                                              Text(
+                                                errorAddress!,
+                                                style: const TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         Column(
                                           children: [
                                             Container(

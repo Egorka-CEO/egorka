@@ -1,3 +1,4 @@
+import 'package:egorka/model/ancillary.dart';
 import 'package:egorka/model/calculation.dart';
 import 'package:egorka/model/courier.dart';
 import 'package:egorka/model/invoice.dart';
@@ -46,7 +47,7 @@ class Result {
   int? recordExpireDateStamp;
   Courier? courier;
   List<Location>? locations;
-  List<Null>? ancillaries;
+  List<Ancillary>? ancillaries;
   String? message;
   List<Calculation>? calculation;
   TotalPrice? totalPrice;
@@ -54,6 +55,7 @@ class Result {
   dynamic payDateStamp;
   String? payStatus;
   String? status;
+  String? description;
   List<Invoice>? invoices;
 
   Result(
@@ -80,7 +82,8 @@ class Result {
       this.payDateStamp,
       this.payStatus,
       this.status,
-      this.invoices});
+      this.invoices,
+      this.description});
 
   Result.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
@@ -96,12 +99,19 @@ class Result {
     recordDateStamp = json['RecordDateStamp'];
     recordExpireDate = json['RecordExpireDate'];
     recordExpireDateStamp = json['RecordExpireDateStamp'];
+    description = json['Description'];
     courier =
         json['Courier'] != null ? Courier.fromJson(json['Courier']) : null;
     if (json['Locations'] != null) {
       locations = <Location>[];
       json['Locations'].forEach((v) {
         locations!.add(Location.fromJson(v));
+      });
+    }
+    if (json['Ancillaries'] != null) {
+      ancillaries = <Ancillary>[];
+      json['Ancillaries'].forEach((v) {
+        ancillaries!.add(Ancillary.fromJson(v));
       });
     }
     message = json['Message'];

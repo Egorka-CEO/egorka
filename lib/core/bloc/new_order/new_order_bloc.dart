@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/ancillaries.dart';
@@ -12,12 +10,10 @@ import 'package:egorka/model/point.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoder2/geocoder2.dart';
 part 'new_order_event.dart';
 part 'new_order_state.dart';
 
 class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
-  late GeoData data;
   NewOrderPageBloc() : super(NewOrderStated()) {
     on<NewOrder>(_searchAddress);
     on<NewOrderOpenBtmSheet>(_openBtmSheet);
@@ -74,8 +70,6 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
           contact: Contact(
             name: element.details?.name,
             phoneMobile: element.details?.phone,
-            phoneOffice: element.details?.phone,
-            phoneOfficeAdd: element.details?.phone,
           ),
         ),
       );
@@ -95,8 +89,6 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
           contact: Contact(
             name: element.details?.name,
             phoneMobile: element.details?.phone,
-            phoneOffice: element.details?.phone,
-            phoneOfficeAdd: element.details?.phone,
           ),
         ),
       );

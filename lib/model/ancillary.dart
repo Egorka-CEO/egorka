@@ -38,5 +38,11 @@ class Ancillary {
     courierCurrency = json['CourierCurrency'];
     status = json['Status'];
     statusPay = json['StatusPay'];
+    if (json['Params'] != null) {
+      params = [];
+      json['Params'].forEach((v) {
+        params!.add(Calculation.fromJson(v));
+      });
+    }
   }
 }

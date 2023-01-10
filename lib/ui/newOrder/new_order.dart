@@ -38,17 +38,20 @@ class NewOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<NewOrderPageBloc>(
-          create: (context) => NewOrderPageBloc(),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<NewOrderPageBloc>(
+            create: (context) => NewOrderPageBloc(),
+          ),
+        ],
+        child: NewOrderPageState(
+          order: order,
+          deliveryChocie: deliveryChocie,
+          start: start,
+          end: end,
         ),
-      ],
-      child: NewOrderPageState(
-        order: order,
-        deliveryChocie: deliveryChocie,
-        start: start,
-        end: end,
       ),
     );
   }
@@ -432,11 +435,11 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               additional = snapshot.data!;
                               double height;
                               if (additional) {
-                                height = 1055.h;
+                                height = 1020.h;
                                 if (additional1) height += 170.h;
-                                if (additional2) height += 135.h;
-                                if (additional3) height += 305.h;
-                                if (additional4) height += 305.h;
+                                if (additional2) height += 150.h;
+                                if (additional3) height += 315.h;
+                                if (additional4) height += 315.h;
                               } else {
                                 height = 0.h;
                               }
@@ -451,8 +454,19 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                       ),
                                       const Spacer(),
                                       GestureDetector(
-                                        onTap: () => additionalController
-                                            .add(!additional),
+                                        onTap: () {
+                                          additionalController.add(!additional);
+                                          if (!additional) {
+                                            Future.delayed(
+                                                const Duration(
+                                                    milliseconds: 100), () {
+                                              scrollController.animateTo(350.h,
+                                                  duration: const Duration(
+                                                      milliseconds: 200),
+                                                  curve: Curves.linear);
+                                            });
+                                          }
+                                        },
                                         child: Text(
                                           additional
                                               ? 'Свернуть'
@@ -473,10 +487,12 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                           SizedBox(height: 10.h),
                                           Row(
                                             children: [
-                                              const Text(
-                                                'Услуга помощи погрузки / разгрузки',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
+                                              const Flexible(
+                                                child: Text(
+                                                  'Услуга помощи погрузки / разгрузки',
+                                                  style: CustomTextStyle
+                                                      .grey15bold,
+                                                ),
                                               ),
                                               IconButton(
                                                 onPressed: () {
@@ -1288,8 +1304,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           ),
                           keyBoardVisible
                               ? widget.order == null
-                                  ? SizedBox(height: 50.h)
-                                  : SizedBox(height: 220.h)
+                                  ? SizedBox(height: 0.h)
+                                  : SizedBox(height: 260.h)
                               : SizedBox(height: 400.h),
                         ],
                       ),
@@ -1308,17 +1324,24 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                     return TotalPriceWidget(
                       title: widget.deliveryChocie.title,
                       icon: widget.deliveryChocie.icon,
-                      additionalCost: additionalCost,
-                      comissionPaymentSystem:
-                          (auth != null && auth.result!.agent != null)
-                              ? null
-                              : ((double.tryParse(widget.order.result!
-                                                  .totalPrice!.total!)!
-                                              .ceil() *
-                                          2.69) /
-                                      100)
-                                  .ceil()
-                                  .toString(),
+                      deliveryCost:
+                          (((widget.order.result!.totalPrice!.base!).ceil()) /
+                                  100)
+                              .ceil()
+                              .toString(),
+                      additionalCost:
+                          (((widget.order.result!.totalPrice!.ancillary!)
+                                      .ceil()) /
+                                  100)
+                              .ceil()
+                              .toString(),
+                      comissionPaymentSystem: ((double.tryParse(widget
+                                          .order.result!.totalPrice!.total!)!
+                                      .ceil() *
+                                  2.69) /
+                              100)
+                          .ceil()
+                          .toString(),
                       totalPrice:
                           '${double.tryParse(widget.order.result!.totalPrice!.total!)!.ceil()}',
                       onTap: () => BlocProvider.of<NewOrderPageBloc>(context)

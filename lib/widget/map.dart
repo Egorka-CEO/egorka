@@ -96,89 +96,92 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchAddressBloc, SearchAddressState>(
-        buildWhen: (previous, current) {
-      if (current is SearchAddressRoutePolilyne) {
-        if (current.coasts.isNotEmpty) {
-          routes = current.routes;
-          marker = current.markers;
-          mapController!.animateCamera(
-            CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
-          );
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
+          buildWhen: (previous, current) {
+        if (current is SearchAddressRoutePolilyne) {
+          if (current.coasts.isNotEmpty) {
+            routes = current.routes;
+            marker = current.markers;
+            mapController!.animateCamera(
+              CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
+            );
+          }
+    
+          return true;
+        } else if (current is FindMeState) {
+          _findMe();
+          return true;
+        } else if (current is DeletePolilyneState) {
+          marker = {};
+          routes = null;
+          return true;
+        } else if (current is JumpToPointState) {
+          _jumpToPoint(current.point);
+          return true;
         }
-
-        return true;
-      } else if (current is FindMeState) {
-        _findMe();
-        return true;
-      } else if (current is DeletePolilyneState) {
-        marker = {};
-        routes = null;
-        return true;
-      } else if (current is JumpToPointState) {
-        _jumpToPoint(current.point);
-        return true;
-      }
-      if (current is GetAddressSuccess) {
-        _jumpToPoint(
-            Point(latitude: current.latitude, longitude: current.longitude));
-        // BlocProvider.of<SearchAddressBloc>(context).add(
-        //   JumpToPointEvent(
-        //     Point(
-        //         latitude: current.geoData!.latitude,
-        //         longitude: current.geoData!.longitude),
-        //   ),
-        // );
-        return true;
-      } else {
-        return false;
-      }
-    }, builder: (context, state) {
-      return Padding(
-        padding: EdgeInsets.only(bottom: 170.h),
-        child: GoogleMap(
-          markers: marker,
-          polylines: {
-            if (routes != null)
-              Polyline(
-                polylineId: const PolylineId('route'),
-                visible: true,
-                width: 5,
-                points: routes != null
-                    ? routes!.polylinePoints
-                        .map((e) => LatLng(e.latitude, e.longitude))
-                        .toList()
-                    : [],
-                color: const Color.fromARGB(255, 56, 197, 61),
-              )
-          },
-          padding: EdgeInsets.zero,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          onCameraMove: (position) {
-            pos = position;
-          },
-          onCameraIdle: () {
-            if (pos != null) {
-              BlocProvider.of<SearchAddressBloc>(context)
-                  .add(ChangeMapPosition(pos!.target));
-            }
-            if (state is SearchAddressRoutePolilyne) {
-              if (routes != null) {
-                mapController!.animateCamera(
-                  CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
-                );
+        if (current is GetAddressSuccess) {
+          _jumpToPoint(
+              Point(latitude: current.latitude, longitude: current.longitude));
+          // BlocProvider.of<SearchAddressBloc>(context).add(
+          //   JumpToPointEvent(
+          //     Point(
+          //         latitude: current.geoData!.latitude,
+          //         longitude: current.geoData!.longitude),
+          //   ),
+          // );
+          return true;
+        } else {
+          return false;
+        }
+      }, builder: (context, state) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: 170.h),
+          child: GoogleMap(
+            markers: marker,
+            polylines: {
+              if (routes != null)
+                Polyline(
+                  polylineId: const PolylineId('route'),
+                  visible: true,
+                  width: 5,
+                  points: routes != null
+                      ? routes!.polylinePoints
+                          .map((e) => LatLng(e.latitude, e.longitude))
+                          .toList()
+                      : [],
+                  color: const Color.fromARGB(255, 56, 197, 61),
+                )
+            },
+            padding: EdgeInsets.zero,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            onCameraMove: (position) {
+              pos = position;
+            },
+            onCameraIdle: () {
+              if (pos != null) {
+                BlocProvider.of<SearchAddressBloc>(context)
+                    .add(ChangeMapPosition(pos!.target));
               }
-            }
-          },
-          initialCameraPosition: MapView._kGooglePlex,
-          mapType: MapType.normal,
-          onMapCreated: (GoogleMapController controller) {
-            mapController = controller;
-            _getPosition();
-          },
-        ),
-      );
-    });
+              if (state is SearchAddressRoutePolilyne) {
+                if (routes != null) {
+                  mapController!.animateCamera(
+                    CameraUpdate.newLatLngBounds(routes!.bounds, 130.w),
+                  );
+                }
+              }
+            },
+            initialCameraPosition: MapView._kGooglePlex,
+            mapType: MapType.normal,
+            onMapCreated: (GoogleMapController controller) {
+              mapController = controller;
+              _getPosition();
+            },
+          ),
+        );
+      }),
+    );
   }
 }

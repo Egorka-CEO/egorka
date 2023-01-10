@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
         BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
       }
-    } else if(id != null) {
+    } else if (id != null) {
       print('show uuid $id');
     } else {
       await Repository().UUIDCreate();
@@ -80,210 +80,213 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       initHeight = false;
       hight = MediaQuery.of(context).size.height;
     }
-    return BlocBuilder<SearchAddressBloc, SearchAddressState>(
-      builder: (context, snapshot) {
-        var bloc = BlocProvider.of<SearchAddressBloc>(context);
-        return Stack(
-          children: [
-            Scaffold(
-              resizeToAvoidBottomInset: false,
-              drawer: NavBar(),
-              backgroundColor: Colors.transparent,
-              drawerScrimColor: Colors.transparent,
-              body: Stack(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInOutQuint,
-                    margin: EdgeInsets.only(
-                      bottom:
-                          snapshot is SearchAddressRoutePolilyne ? 100.h : 0,
-                    ),
-                    child: MapView(
-                      callBack: () {
-                        Future.delayed(const Duration(milliseconds: 800), () {
-                          visible = false;
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
+        builder: (context, snapshot) {
+          var bloc = BlocProvider.of<SearchAddressBloc>(context);
+          return Stack(
+            children: [
+              Scaffold(
+                resizeToAvoidBottomInset: false,
+                drawer: NavBar(),
+                backgroundColor: Colors.transparent,
+                drawerScrimColor: Colors.transparent,
+                body: Stack(
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.easeInOutQuint,
+                      margin: EdgeInsets.only(
+                        bottom:
+                            snapshot is SearchAddressRoutePolilyne ? 100.h : 0,
+                      ),
+                      child: MapView(
+                        callBack: () {
+                          Future.delayed(const Duration(milliseconds: 800), () {
+                            visible = false;
+                            streamController.add(2);
+                          });
+                          logoMoveBackgroundScale = true;
                           streamController.add(2);
-                        });
-                        logoMoveBackgroundScale = true;
-                        streamController.add(2);
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(top: 60.w, left: 20.w, right: 20.w),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 5.w),
+                            child: SizedBox(
+                              height: 35.h,
+                              child: Builder(
+                                builder: (context) {
+                                  return GestureDetector(
+                                    onTap: () =>
+                                        Scaffold.of(context).openDrawer(),
+                                    child: Image.asset(
+                                      'assets/images/logo.png',
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: AnimatedOpacity(
+                              duration: const Duration(seconds: 0),
+                              opacity: logoVisibleMove ? 1 : 0,
+                              child: SizedBox(
+                                height: 50.h,
+                                child: SvgPicture.asset(
+                                  'assets/icons/logo_egorka.svg',
+                                  width: 100.w,
+                                  height: 30.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () => markerPlace(context),
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10.h),
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromRGBO(255, 0, 96, 1),
+                                    Color.fromRGBO(216, 0, 255, 1)
+                                  ],
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w, vertical: 5.h),
+                                child: const Text(
+                                  'Маркетплейсы',
+                                  style: CustomTextStyle.white15w600,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    if (!bloc.isPolilyne)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 100.h),
+                        child: CustomWidget.iconGPS(),
+                      ),
+                    const BottomSheetDraggable(),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 50.h),
+                child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
+                  buildWhen: (previous, current) {
+                    if (current is HistoryOpenBtmSheetState) {
+                      panelController.animatePanelToPosition(
+                        1,
+                        curve: Curves.easeInOutQuint,
+                        duration: const Duration(milliseconds: 1000),
+                      );
+                    }
+                    if (current is HistoryCloseBtmSheetState) {
+                      panelController.animatePanelToPosition(
+                        0,
+                        curve: Curves.easeInOutQuint,
+                        duration: const Duration(milliseconds: 1000),
+                      );
+                    }
+                    return false;
+                  },
+                  builder: (context, snapshot) {
+                    return SlidingUpPanel(
+                      controller: panelController,
+                      renderPanelSheet: false,
+                      isDraggable: true,
+                      collapsed: Container(),
+                      panel: HistoryOrdersBottomSheetDraggable(
+                          panelController: panelController),
+                      onPanelClosed: () {},
+                      onPanelOpened: () {},
+                      onPanelSlide: (size) {},
+                      maxHeight: 700.h,
+                      minHeight: 0,
+                      defaultPanelState: PanelState.CLOSED,
+                    );
+                  },
+                ),
+              ),
+              StreamBuilder<int>(
+                  stream: streamController.stream,
+                  initialData: 1,
+                  builder: (context, snapshot) {
+                    if (visible) {
+                      return AnimatedOpacity(
+                        duration: const Duration(milliseconds: 800),
+                        opacity: snapshot.data == 2 ? 0 : 1,
+                        child: Container(color: Colors.white),
+                      );
+                    }
+                    return const SizedBox();
+                  }),
+              Positioned.fill(
+                child: Stack(
+                  children: [
+                    AnimatedPadding(
+                      onEnd: () {
+                        logoVisibleMove = true;
                         setState(() {});
                       },
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(top: 60.w, left: 20.w, right: 20.w),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 5.w),
-                          child: SizedBox(
-                            height: 35.h,
-                            child: Builder(
-                              builder: (context) {
-                                return GestureDetector(
-                                  onTap: () =>
-                                      Scaffold.of(context).openDrawer(),
-                                  child: Image.asset(
-                                    'assets/images/logo.png',
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: AnimatedOpacity(
-                            duration: const Duration(seconds: 0),
-                            opacity: logoVisibleMove ? 1 : 0,
-                            child: SizedBox(
-                              height: 50.h,
-                              child: SvgPicture.asset(
-                                'assets/icons/logo_egorka.svg',
-                                width: 100.w,
-                                height: 30.w,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () => markerPlace(context),
-                          child: Container(
-                            margin: EdgeInsets.only(top: 10.h),
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color.fromRGBO(255, 0, 96, 1),
-                                  Color.fromRGBO(216, 0, 255, 1)
-                                ],
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w, vertical: 5.h),
-                              child: const Text(
-                                'Маркетплейсы',
-                                style: CustomTextStyle.white15w600,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  if (!bloc.isPolilyne)
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 100.h),
-                      child: CustomWidget.iconGPS(),
-                    ),
-                  const BottomSheetDraggable(),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 50.h),
-              child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
-                buildWhen: (previous, current) {
-                  if (current is HistoryOpenBtmSheetState) {
-                    panelController.animatePanelToPosition(
-                      1,
-                      curve: Curves.easeInOutQuint,
-                      duration: const Duration(milliseconds: 1000),
-                    );
-                  }
-                  if (current is HistoryCloseBtmSheetState) {
-                    panelController.animatePanelToPosition(
-                      0,
-                      curve: Curves.easeInOutQuint,
-                      duration: const Duration(milliseconds: 1000),
-                    );
-                  }
-                  return false;
-                },
-                builder: (context, snapshot) {
-                  return SlidingUpPanel(
-                    controller: panelController,
-                    renderPanelSheet: false,
-                    isDraggable: true,
-                    collapsed: Container(),
-                    panel: HistoryOrdersBottomSheetDraggable(
-                        panelController: panelController),
-                    onPanelClosed: () {},
-                    onPanelOpened: () {},
-                    onPanelSlide: (size) {},
-                    maxHeight: 700.h,
-                    minHeight: 0,
-                    defaultPanelState: PanelState.CLOSED,
-                  );
-                },
-              ),
-            ),
-            StreamBuilder<int>(
-                stream: streamController.stream,
-                initialData: 1,
-                builder: (context, snapshot) {
-                  if (visible) {
-                    return AnimatedOpacity(
-                      duration: const Duration(milliseconds: 800),
-                      opacity: snapshot.data == 2 ? 0 : 1,
-                      child: Container(color: Colors.white),
-                    );
-                  }
-                  return const SizedBox();
-                }),
-            Positioned.fill(
-              child: Stack(
-                children: [
-                  AnimatedPadding(
-                    onEnd: () {
-                      logoVisibleMove = true;
-                      setState(() {});
-                    },
-                    curve: Curves.linear,
-                    duration: Duration(milliseconds: duration),
-                    padding: EdgeInsets.only(
-                      top: logoMoveBackgroundScale ? 65.w : 0,
-                      left: logoMoveBackgroundScale ? 65.w : 0,
-                    ),
-                    child: AnimatedAlign(
                       curve: Curves.linear,
-                      alignment: logoMoveBackgroundScale
-                          ? Alignment.topLeft
-                          : Alignment.center,
                       duration: Duration(milliseconds: duration),
-                      child: AnimatedOpacity(
-                        duration: const Duration(seconds: 0),
-                        opacity: logoVisibleMove ? 0 : 1,
-                        child: AnimatedScale(
-                          scale: logoMoveBackgroundScale ? 1 : 3.6,
-                          duration: Duration(milliseconds: duration),
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 5.w, bottom: 5.w),
-                            child: SizedBox(
-                              height: 50.h,
-                              child: SvgPicture.asset(
-                                'assets/icons/logo_egorka.svg',
-                                width: 100.w,
-                                height: 30.w,
+                      padding: EdgeInsets.only(
+                        top: logoMoveBackgroundScale ? 65.w : 0,
+                        left: logoMoveBackgroundScale ? 65.w : 0,
+                      ),
+                      child: AnimatedAlign(
+                        curve: Curves.linear,
+                        alignment: logoMoveBackgroundScale
+                            ? Alignment.topLeft
+                            : Alignment.center,
+                        duration: Duration(milliseconds: duration),
+                        child: AnimatedOpacity(
+                          duration: const Duration(seconds: 0),
+                          opacity: logoVisibleMove ? 0 : 1,
+                          child: AnimatedScale(
+                            scale: logoMoveBackgroundScale ? 1 : 3.6,
+                            duration: Duration(milliseconds: duration),
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 5.w, bottom: 5.w),
+                              child: SizedBox(
+                                height: 50.h,
+                                child: SvgPicture.asset(
+                                  'assets/icons/logo_egorka.svg',
+                                  width: 100.w,
+                                  height: 30.w,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 

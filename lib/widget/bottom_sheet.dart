@@ -88,64 +88,67 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchAddressBloc, SearchAddressState>(
-        buildWhen: (previous, current) {
-      if (current is GetAddressSuccess) {
-        errorAddress = current.errorAddress;
-        suggestionsStart = Suggestions(
-          iD: null,
-          name: current.address,
-          point: Point(
-            address: current.address,
-            code: '${current.latitude},${current.longitude}',
-            latitude: current.latitude,
-            longitude: current.longitude,
-          ),
-        );
-        fromController.text = current.address;
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
+          buildWhen: (previous, current) {
+        if (current is GetAddressSuccess) {
+          errorAddress = current.errorAddress;
+          suggestionsStart = Suggestions(
+            iD: null,
+            name: current.address,
+            point: Point(
+              address: current.address,
+              code: '${current.latitude},${current.longitude}',
+              latitude: current.latitude,
+              longitude: current.longitude,
+            ),
+          );
+          fromController.text = current.address;
 
-        if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
-          coasts.clear();
-          BlocProvider.of<SearchAddressBloc>(context)
-              .add(SearchAddressPolilyne([suggestionsStart], [suggestionsEnd]));
-        }
-      }
-      return true;
-    }, builder: (context, snapshot) {
-      var bloc = BlocProvider.of<SearchAddressBloc>(context);
-      return SlidingUpPanel(
-        controller: panelController,
-        renderPanelSheet: false,
-        panel: _floatingPanel(context),
-        onPanelClosed: () {
-          focusFrom.unfocus();
-          focusTo.unfocus();
-          _visible = false;
-        },
-        onPanelOpened: () {
-          _visible = true;
-          if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-            panelController.close();
+          if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
+            coasts.clear();
+            BlocProvider.of<SearchAddressBloc>(context).add(
+                SearchAddressPolilyne([suggestionsStart], [suggestionsEnd]));
           }
-        },
-        onPanelSlide: (size) {
-          if (size.toStringAsFixed(1) == (0.5).toString()) {
+        }
+        return true;
+      }, builder: (context, snapshot) {
+        var bloc = BlocProvider.of<SearchAddressBloc>(context);
+        return SlidingUpPanel(
+          controller: panelController,
+          renderPanelSheet: false,
+          panel: _floatingPanel(context),
+          onPanelClosed: () {
             focusFrom.unfocus();
             focusTo.unfocus();
-            // if (_flipController!.state!.isFront) {
-            if (focusFrom.hasFocus || focusTo.hasFocus) {
-              _flipController!.toggleCard();
+            _visible = false;
+          },
+          onPanelOpened: () {
+            _visible = true;
+            if (!focusFrom.hasFocus && !focusTo.hasFocus) {
+              panelController.close();
             }
-            // }
-          }
-        },
-        maxHeight: 735.h,
-        minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
-            ? 370.h
-            : 215.h,
-        defaultPanelState: PanelState.CLOSED,
-      );
-    });
+          },
+          onPanelSlide: (size) {
+            if (size.toStringAsFixed(1) == (0.5).toString()) {
+              focusFrom.unfocus();
+              focusTo.unfocus();
+              // if (_flipController!.state!.isFront) {
+              if (focusFrom.hasFocus || focusTo.hasFocus) {
+                _flipController!.toggleCard();
+              }
+              // }
+            }
+          },
+          maxHeight: 735.h,
+          minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
+              ? 370.h
+              : 215.h,
+          defaultPanelState: PanelState.CLOSED,
+        );
+      }),
+    );
   }
 
   Widget _floatingPanel(BuildContext context) {

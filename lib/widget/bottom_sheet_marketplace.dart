@@ -41,17 +41,20 @@ class _BottomSheetDraggableState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
-        buildWhen: (previous, current) {
-      if (current is MarketPlaceStatedOpenBtmSheet) {
-        Future.delayed(const Duration(milliseconds: 600), () {
-          focusFrom.requestFocus();
-        });
-      }
-      return true;
-    }, builder: (context, snapshot) {
-      return _floatingPanel(context);
-    });
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
+          buildWhen: (previous, current) {
+        if (current is MarketPlaceStatedOpenBtmSheet) {
+          Future.delayed(const Duration(milliseconds: 600), () {
+            focusFrom.requestFocus();
+          });
+        }
+        return true;
+      }, builder: (context, snapshot) {
+        return _floatingPanel(context);
+      }),
+    );
   }
 
   Widget _floatingPanel(BuildContext context) {

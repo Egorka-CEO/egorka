@@ -1,3 +1,5 @@
+import 'package:egorka/model/options.dart';
+
 class InvoiceModel {
   String? time;
   int? timeStamp;
@@ -52,7 +54,7 @@ class Invoice {
   dynamic externalID;
   dynamic externalNumber;
   List<dynamic> items = [];
-  List<dynamic> options = [];
+  List<Options> options = [];
   List<dynamic> payments = [];
   String? amount;
   String? currency;
@@ -101,5 +103,8 @@ class Invoice {
     amount = '${arrayAmount.first}.$ends';
     currency = json['Currency'];
     status = json['Status'];
+    json['Options'].forEach((v) {
+      options.add(Options.fromJson(v));
+    });
   }
 }

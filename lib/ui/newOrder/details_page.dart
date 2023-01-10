@@ -25,17 +25,20 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<NewOrderPageBloc>(
-            create: (context) => NewOrderPageBloc(),
-          ),
-        ],
-        child: DetailsPageTemp(
-          index: index,
-          typeAdd: typeAdd,
-          routeOrder: routeOrder,
-        ));
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: MultiBlocProvider(
+          providers: [
+            BlocProvider<NewOrderPageBloc>(
+              create: (context) => NewOrderPageBloc(),
+            ),
+          ],
+          child: DetailsPageTemp(
+            index: index,
+            typeAdd: typeAdd,
+            routeOrder: routeOrder,
+          )),
+    );
   }
 }
 
@@ -109,8 +112,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         alignment: Alignment.centerRight,
                         children: [
                           GestureDetector(
-                            onTap: () => Navigator.pop(
-                                context, widget.routeOrder),
+                            onTap: () =>
+                                Navigator.pop(context, widget.routeOrder),
                             child: Row(
                               children: [
                                 Icon(
@@ -217,8 +220,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                                 panelController.animatePanelToPosition(
                                   1,
                                   curve: Curves.easeInOutQuint,
-                                  duration:
-                                      const Duration(milliseconds: 1000),
+                                  duration: const Duration(milliseconds: 1000),
                                 );
                               },
                               child: CustomTextField(
@@ -292,8 +294,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Офис/кв.',
                         focusNode: officeFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.room =
-                              controllerRoom.text;
+                          widget.routeOrder.details?.room = controllerRoom.text;
                         },
                         textInputType: TextInputType.number,
                         textEditingController: controllerRoom,
@@ -307,7 +308,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
                   children: [
-                    Text('Контакты ${widget.typeAdd == TypeAdd.sender ? 'отправителя' : 'получателя'}',
+                    Text(
+                        'Контакты ${widget.typeAdd == TypeAdd.sender ? 'отправителя' : 'получателя'}',
                         style: CustomTextStyle.grey15bold),
                   ],
                 ),

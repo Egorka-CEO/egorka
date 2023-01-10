@@ -22,41 +22,44 @@ class StandartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaleButton(
-      duration: const Duration(milliseconds: 150),
-      bound: 0.05,
-      onTap: onTap,
-      child: Container(
-        height: 50.h,
-        width: width,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10.r),
-        ),
-        child: Stack(
-          children: [
-            if (icon != null)
-              Positioned(
-                left: 15.w,
-                top: 0,
-                bottom: 0,
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 18.h,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: ScaleButton(
+        duration: const Duration(milliseconds: 150),
+        bound: 0.05,
+        onTap: onTap,
+        child: Container(
+          height: 50.h,
+          width: width,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Stack(
+            children: [
+              if (icon != null)
+                Positioned(
+                  left: 15.w,
+                  top: 0,
+                  bottom: 0,
+                  child: Icon(
+                    icon,
+                    color: Colors.white,
+                    size: 18.h,
+                  ),
+                ),
+              Center(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            Center(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

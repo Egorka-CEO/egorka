@@ -75,26 +75,29 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomGoogleMapMarkerBuilder(
-        customMarkers: marker,
-        builder: (context, markers) {
-          if (markers == null) {
-            return const Center(child: CupertinoActivityIndicator());
-          }
-          return GoogleMap(
-            markers: markers,
-            padding: EdgeInsets.zero,
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            onCameraMove: (position) {
-              pos = position;
-            },
-            initialCameraPosition: MapMarketPlaces._kGooglePlex,
-            mapType: MapType.normal,
-            onMapCreated: (GoogleMapController controller) {
-              mapController = controller;
-            },
-          );
-        });
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: CustomGoogleMapMarkerBuilder(
+          customMarkers: marker,
+          builder: (context, markers) {
+            if (markers == null) {
+              return const Center(child: CupertinoActivityIndicator());
+            }
+            return GoogleMap(
+              markers: markers,
+              padding: EdgeInsets.zero,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              onCameraMove: (position) {
+                pos = position;
+              },
+              initialCameraPosition: MapMarketPlaces._kGooglePlex,
+              mapType: MapType.normal,
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+              },
+            );
+          }),
+    );
   }
 }

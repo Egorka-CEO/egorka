@@ -12,28 +12,31 @@ class MessageDialogs {
       displayTime: const Duration(seconds: 3),
       builder: (context) => Padding(
         padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(
-                offset: Offset(0, 4),
-                blurRadius: 10,
-                spreadRadius: 3,
-                color: Color.fromRGBO(26, 42, 97, 0.06),
+        child: MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  offset: Offset(0, 4),
+                  blurRadius: 10,
+                  spreadRadius: 3,
+                  color: Color.fromRGBO(26, 42, 97, 0.06),
+                ),
+              ],
+            ),
+            child: Card(
+              elevation: 0,
+              child: ListTile(
+                minLeadingWidth: 10,
+                leading: const Icon(
+                  Icons.warning,
+                  color: Colors.red,
+                ),
+                title: Text(from!),
+                subtitle: Text(message),
               ),
-            ],
-          ),
-          child: Card(
-            elevation: 0,
-            child: ListTile(
-              minLeadingWidth: 10,
-              leading: const Icon(
-                Icons.warning,
-                color: Colors.red,
-              ),
-              title: Text(from!),
-              subtitle: Text(message),
             ),
           ),
         ),
@@ -48,29 +51,32 @@ class MessageDialogs {
         displayTime: const Duration(seconds: 3),
         builder: (context) => Padding(
               padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    const BoxShadow(
-                      offset: Offset(0, 4),
-                      blurRadius: 10,
-                      spreadRadius: 3,
-                      color: Color.fromRGBO(26, 42, 97, 0.06),
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(0, 4),
+                        blurRadius: 10,
+                        spreadRadius: 3,
+                        color: Color.fromRGBO(26, 42, 97, 0.06),
+                      ),
+                    ],
+                  ),
+                  child: Card(
+                    elevation: 0,
+                    child: ListTile(
+                      minLeadingWidth: 10,
+                      leading: const Icon(
+                        MaterialCommunityIcons.information,
+                        color: Colors.black,
+                        size: 30,
+                      ),
+                      title: Text(from!),
+                      subtitle: Text(message),
                     ),
-                  ],
-                ),
-                child: Card(
-                  elevation: 0,
-                  child: ListTile(
-                    minLeadingWidth: 10,
-                    leading: const Icon(
-                      MaterialCommunityIcons.information,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                    title: Text(from!),
-                    subtitle: Text(message),
                   ),
                 ),
               ),
@@ -85,15 +91,18 @@ class MessageDialogs {
         clickMaskDismiss: false,
         backDismiss: false,
         builder: (context) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.grey[300],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [const CupertinoActivityIndicator(), Text(text)],
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.grey[300],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [const CupertinoActivityIndicator(), Text(text)],
+              ),
             ),
           );
         });
@@ -155,35 +164,38 @@ class _DoneAnimState extends State<DoneAnim>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: 300.h,
-        width: 300.h,
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(10.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Lottie.asset("assets/anim/done.json",
-                    controller: lottieController,
-                    repeat: false, onLoaded: (composition) {
-                  lottieController.duration = composition.duration;
-                  lottieController.forward();
-                }),
-              ),
-              Text(
-                widget.text,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Center(
+        child: Container(
+          height: 300.h,
+          width: 300.h,
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(10.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Lottie.asset("assets/anim/done.json",
+                      controller: lottieController,
+                      repeat: false, onLoaded: (composition) {
+                    lottieController.duration = composition.duration;
+                    lottieController.forward();
+                  }),
                 ),
-              ),
-            ],
+                Text(
+                  widget.text,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -229,47 +241,50 @@ class _ErrorAnimState extends State<ErrorAnim>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: 250.h,
-        width: 200.h,
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(10.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Lottie.asset(
-                  "assets/anim/fail.json",
-                  controller: lottieController,
-                  repeat: false,
-                  onLoaded: (composition) {
-                    lottieController.duration = composition.duration;
-                    lottieController.forward();
-                  },
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Center(
+        child: Container(
+          height: 250.h,
+          width: 200.h,
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(10.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Lottie.asset(
+                    "assets/anim/fail.json",
+                    controller: lottieController,
+                    repeat: false,
+                    onLoaded: (composition) {
+                      lottieController.duration = composition.duration;
+                      lottieController.forward();
+                    },
+                  ),
                 ),
-              ),
-              Text(
-                widget.text,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
+                Text(
+                  widget.text,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                widget.error,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.white,
+                Text(
+                  widget.error,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

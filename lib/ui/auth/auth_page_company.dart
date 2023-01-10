@@ -62,134 +62,137 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
     TextStyle labelStyle =
         const TextStyle(fontWeight: FontWeight.w300, fontSize: 16);
     final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
-    return StreamBuilder<int>(
-        stream: streamSwap.stream,
-        initialData: 0,
-        builder: (context, snapshot) {
-          return AnimatedPadding(
-            duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.symmetric(vertical: 0.h),
-            child: Material(
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: SizedBox(
-                      height: 610.h,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 5.h : 80.h,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SvgPicture.asset(
-                                  'assets/icons/logo_egorka.svg',
-                                  height: 60.h,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Егорка готов! Входите и начнём',
-                                style: TextStyle(fontSize: 23.sp),
-                              ),
-                            ],
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 5.h : 30.h,
-                          ),
-                          Text(
-                            'Логин компании',
-                            style: labelStyle,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  focusNode: focusNode1,
-                                  textEditingController: _companyController,
-                                  hintText: 'Gazprom',
-                                  height: 60.h,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20.w,
-                                    vertical: 20.w,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: StreamBuilder<int>(
+          stream: streamSwap.stream,
+          initialData: 0,
+          builder: (context, snapshot) {
+            return AnimatedPadding(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsets.symmetric(vertical: 0.h),
+              child: Material(
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: SizedBox(
+                        height: 610.h,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 80.h,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SvgPicture.asset(
+                                    'assets/icons/logo_egorka.svg',
+                                    height: 60.h,
                                   ),
                                 ),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Егорка готов! Входите и начнём',
+                                  style: TextStyle(fontSize: 23.sp),
+                                ),
+                              ],
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 30.h,
+                            ),
+                            Text(
+                              'Логин компании',
+                              style: labelStyle,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextField(
+                                    focusNode: focusNode1,
+                                    textEditingController: _companyController,
+                                    hintText: 'Gazprom',
+                                    height: 60.h,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 20.w,
+                                      vertical: 20.w,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 20.h,
+                            ),
+                            Text(
+                              'Логин пользователя',
+                              style: labelStyle,
+                            ),
+                            CustomTextField(
+                              focusNode: focusNode2,
+                              textEditingController: _loginController,
+                              hintText: 'Admin',
+                              height: 60.h,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20.w,
+                                vertical: 20.w,
                               ),
-                            ],
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 5.h : 20.h,
-                          ),
-                          Text(
-                            'Логин пользователя',
-                            style: labelStyle,
-                          ),
-                          CustomTextField(
-                            focusNode: focusNode2,
-                            textEditingController: _loginController,
-                            hintText: 'Admin',
-                            height: 60.h,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 20.w,
                             ),
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 5.h : 20.h,
-                          ),
-                          Text(
-                            'Пароль',
-                            style: labelStyle,
-                          ),
-                          CustomTextField(
-                            focusNode: focusNode3,
-                            textEditingController: _passwordController,
-                            hintText: '******',
-                            height: 60.h,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 20.w,
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 20.h,
                             ),
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: state ? 5.h : 20.h,
-                          ),
-                          RoundedLoadingButton(
-                            controller: _btnController,
-                            onPressed: _signIn,
-                            color: Colors.red,
-                            child: const Text(
-                              'Авторизация',
-                              style: TextStyle(color: Colors.white),
+                            Text(
+                              'Пароль',
+                              style: labelStyle,
                             ),
-                          ),
-                          SizedBox(height: heightKeyBoard),
-                          const Spacer(flex: 4),
-                        ],
+                            CustomTextField(
+                              focusNode: focusNode3,
+                              textEditingController: _passwordController,
+                              hintText: '******',
+                              height: 60.h,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20.w,
+                                vertical: 20.w,
+                              ),
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 20.h,
+                            ),
+                            RoundedLoadingButton(
+                              controller: _btnController,
+                              onPressed: _signIn,
+                              color: Colors.red,
+                              child: const Text(
+                                'Авторизация',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            SizedBox(height: heightKeyBoard),
+                            const Spacer(flex: 4),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-        });
+            );
+          }),
+    );
   }
 
   void _signIn() async {

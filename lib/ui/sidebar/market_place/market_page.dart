@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
-import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
@@ -39,13 +37,16 @@ class MarketPage extends StatelessWidget {
   MarketPage({super.key, this.recordPIN, this.recorNumber});
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<MarketPlacePageBloc>(
-          create: (context) => MarketPlacePageBloc(),
-        ),
-      ],
-      child: MarketPages(recorNumber: recorNumber, recordPIN: recordPIN),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<MarketPlacePageBloc>(
+            create: (context) => MarketPlacePageBloc(),
+          ),
+        ],
+        child: MarketPages(recorNumber: recorNumber, recordPIN: recordPIN),
+      ),
     );
   }
 }
@@ -953,6 +954,15 @@ class _MarketPageState extends State<MarketPages>
                                           initialData: false,
                                           builder: (context, snapshot) {
                                             additional = snapshot.data!;
+
+                                            double height;
+                                            if (additional) {
+                                              height = 330.h;
+                                              if (additional1) height += 165.h;
+                                              if (additional2) height += 90.h;
+                                            } else {
+                                              height = 0.h;
+                                            }
                                             return Column(
                                               children: [
                                                 Row(
@@ -965,9 +975,25 @@ class _MarketPageState extends State<MarketPages>
                                                     ),
                                                     const Spacer(),
                                                     GestureDetector(
-                                                      onTap: () =>
-                                                          additionalController
-                                                              .add(!additional),
+                                                      onTap: () {
+                                                        additionalController
+                                                            .add(!additional);
+                                                        if (!additional) {
+                                                          Future.delayed(
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      100), () {
+                                                            scrollController.animateTo(
+                                                                350.h,
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            200),
+                                                                curve: Curves
+                                                                    .linear);
+                                                          });
+                                                        }
+                                                      },
                                                       child: Text(
                                                         additional
                                                             ? 'Свернуть'
@@ -981,16 +1007,7 @@ class _MarketPageState extends State<MarketPages>
                                                 AnimatedContainer(
                                                   duration: const Duration(
                                                       milliseconds: 100),
-                                                  height: additional
-                                                      ? additional1 &&
-                                                              additional2
-                                                          ? 585.h
-                                                          : additional1
-                                                              ? 500.h
-                                                              : additional2
-                                                                  ? 425.h
-                                                                  : 350.h
-                                                      : 0.h,
+                                                  height: height,
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(
@@ -1022,10 +1039,12 @@ class _MarketPageState extends State<MarketPages>
                                                                     children: [
                                                                       Row(
                                                                         children: [
-                                                                          const Text(
-                                                                            'Услуга помощи погрузки / разгрузки',
-                                                                            style:
-                                                                                CustomTextStyle.grey15bold,
+                                                                          const Flexible(
+                                                                            child:
+                                                                                Text(
+                                                                              'Услуга помощи погрузки / разгрузки',
+                                                                              style: CustomTextStyle.grey15bold,
+                                                                            ),
                                                                           ),
                                                                           IconButton(
                                                                             onPressed:
@@ -1053,13 +1072,14 @@ class _MarketPageState extends State<MarketPages>
                                                                         duration:
                                                                             const Duration(milliseconds: 100),
                                                                         height: snapshot.data!
-                                                                            ? 160.h
+                                                                            ? 170.h
                                                                             : 0.h,
                                                                         child:
                                                                             Stack(
                                                                           children: [
                                                                             Column(
                                                                               children: [
+                                                                                SizedBox(height: 10.h),
                                                                                 Row(
                                                                                   children: const [
                                                                                     Text('Кол-во коробок до 15 кг?')
@@ -1161,7 +1181,7 @@ class _MarketPageState extends State<MarketPages>
                                                                 },
                                                               ),
                                                               SizedBox(
-                                                                  height: 20.h),
+                                                                  height: 10.h),
                                                               StreamBuilder<
                                                                   bool>(
                                                                 stream:
@@ -1268,49 +1288,42 @@ class _MarketPageState extends State<MarketPages>
                                 ],
                               ),
                               if (coast != null)
-                                BlocBuilder<ProfileBloc, ProfileState>(
-                                    builder: (context, snapshot) {
-                                  final auth =
-                                      BlocProvider.of<ProfileBloc>(context)
-                                          .getUser();
-                                  String? additionalCost;
-                                  int temp = 0;
-                                  for (var element
-                                      in coast!.result!.ancillaries!) {
-                                    temp += (element.price! / 100).ceil();
-                                  }
-                                  additionalCost = temp.toString();
-                                  return TotalPriceWidget(
-                                    title: 'Грузовик',
-                                    icon: 'assets/images/ic_track.png',
-                                    additionalCost: additionalCost,
-                                    comissionPaymentSystem: (auth != null &&
-                                            auth.result!.agent != null)
-                                        ? null
-                                        : ((double.tryParse(coast!
-                                                            .result!
-                                                            .totalPrice!
-                                                            .total!)!
-                                                        .ceil() *
-                                                    2.69) /
-                                                100)
-                                            .ceil()
-                                            .toString(),
-                                    totalPrice:
-                                        '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}',
-                                    onTap: () {
-                                      if (errorAddress != null) {
-                                        MessageDialogs().showAlert(
-                                            'Ошибка', 'Укажите номер дома');
-                                      } else {
-                                        BlocProvider.of<MarketPlacePageBloc>(
-                                                context)
-                                            .add(
-                                                CreateForm(coast!.result!.id!));
-                                      }
-                                    },
-                                  );
-                                }),
+                                TotalPriceWidget(
+                                  title: 'Грузовик',
+                                  icon: 'assets/images/ic_track.png',
+                                  deliveryCost:
+                                      (((coast!.result!.totalPrice!.base!)
+                                                  .ceil()) /
+                                              100)
+                                          .ceil()
+                                          .toString(),
+                                  additionalCost:
+                                      (((coast!.result!.totalPrice!.ancillary!)
+                                                  .ceil()) /
+                                              100)
+                                          .ceil()
+                                          .toString(),
+                                  comissionPaymentSystem: ((double.tryParse(
+                                                      coast!.result!.totalPrice!
+                                                          .total!)!
+                                                  .ceil() *
+                                              2.69) /
+                                          100)
+                                      .ceil()
+                                      .toString(),
+                                  totalPrice:
+                                      '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}',
+                                  onTap: () {
+                                    if (errorAddress != null) {
+                                      MessageDialogs().showAlert(
+                                          'Ошибка', 'Укажите номер дома');
+                                    } else {
+                                      BlocProvider.of<MarketPlacePageBloc>(
+                                              context)
+                                          .add(CreateForm(coast!.result!.id!));
+                                    }
+                                  },
+                                ),
                               SlidingUpPanel(
                                 controller: panelController,
                                 renderPanelSheet: false,

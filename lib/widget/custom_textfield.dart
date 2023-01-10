@@ -79,98 +79,101 @@ class CustomTextField extends StatelessWidget {
         EdgeInsets.symmetric(vertical: 20.w, horizontal: 20.w);
 
     var widthOfScreen = width ?? MediaQuery.of(context).size.width;
-    return SizedBox(
-      height: height,
-      width: widthOfScreen,
-      child: KeyboardActions(
-        disableScroll: true,
-        config: KeyboardActionsConfig(
-          defaultDoneWidget: GestureDetector(
-            onTap: () {
-              focusNode?.unfocus();
-              if (onFieldSubmitted != null) {
-                onFieldSubmitted!(textEditingController.text);
-              }
-            },
-            child: const Text('Готово'),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: SizedBox(
+        height: height,
+        width: widthOfScreen,
+        child: KeyboardActions(
+          disableScroll: true,
+          config: KeyboardActionsConfig(
+            defaultDoneWidget: GestureDetector(
+              onTap: () {
+                focusNode?.unfocus();
+                if (onFieldSubmitted != null) {
+                  onFieldSubmitted!(textEditingController.text);
+                }
+              },
+              child: const Text('Готово'),
+            ),
+            actions: [
+              KeyboardActionsItem(
+                focusNode: focusNode ?? FocusNode(),
+                onTapAction: () => focusNode,
+              ),
+            ],
           ),
-          actions: [
-            KeyboardActionsItem(
-              focusNode: focusNode ?? FocusNode(),
-              onTapAction: () => focusNode,
-            ),
-          ],
-        ),
-        child: TextFormField(
-          onFieldSubmitted: onFieldSubmitted,
-          enabled: enabled,
-          focusNode: focusNode,
-          onTap: onTap as void Function()?,
-          validator: validateFunction,
-          readOnly: readOnly ?? false,
-          textInputAction: inputAction,
-          controller: textEditingController,
-          onChanged: onChanged,
-          obscureText: obscureText ?? false,
-          maxLines: 1,
-          minLines: 1,
-          inputFormatters: formatters,
-          keyboardType: textInputType,
-          style: const TextStyle(
-              color: Colors.black, overflow: TextOverflow.ellipsis),
-          decoration: InputDecoration(
-            fillColor: fillColor,
-            icon: icon,
-            prefixIcon: prefixicon,
-            suffixText: suffixText,
-            suffix: suffix,
-            prefixText: prefixText,
-            prefixStyle: const TextStyle(
-                fontSize: 14.5,
-                color: Colors.black,
-                overflow: TextOverflow.ellipsis),
-            suffixIcon: suffixIcon,
-            suffixStyle: TextStyle(
-              overflow: TextOverflow.ellipsis,
-              fontSize: 14,
-              color: hintTextColor,
-              fontWeight: FontWeight.w400,
-            ),
-            errorStyle: const TextStyle(fontSize: 10.0),
-            contentPadding: contentPadding,
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: const BorderSide(
+          child: TextFormField(
+            onFieldSubmitted: onFieldSubmitted,
+            enabled: enabled,
+            focusNode: focusNode,
+            onTap: onTap as void Function()?,
+            validator: validateFunction,
+            readOnly: readOnly ?? false,
+            textInputAction: inputAction,
+            controller: textEditingController,
+            onChanged: onChanged,
+            obscureText: obscureText ?? false,
+            maxLines: 1,
+            minLines: 1,
+            inputFormatters: formatters,
+            keyboardType: textInputType,
+            style: const TextStyle(
+                color: Colors.black, overflow: TextOverflow.ellipsis),
+            decoration: InputDecoration(
+              fillColor: fillColor,
+              icon: icon,
+              prefixIcon: prefixicon,
+              suffixText: suffixText,
+              suffix: suffix,
+              prefixText: prefixText,
+              prefixStyle: const TextStyle(
+                  fontSize: 14.5,
+                  color: Colors.black,
+                  overflow: TextOverflow.ellipsis),
+              suffixIcon: suffixIcon,
+              suffixStyle: TextStyle(
+                overflow: TextOverflow.ellipsis,
+                fontSize: 14,
+                color: hintTextColor,
+                fontWeight: FontWeight.w400,
+              ),
+              errorStyle: const TextStyle(fontSize: 10.0),
+              contentPadding: contentPadding,
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: const BorderSide(
+                  color: Colors.transparent,
+                  width: 0.0,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: const BorderSide(
+                  color: Colors.transparent,
+                  width: 0.0,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: const BorderSide(
+                  color: Colors.transparent,
+                  width: 0.0,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
                 color: Colors.transparent,
                 width: 0.0,
                 style: BorderStyle.solid,
-              ),
+              )),
+              hintStyle: hintStyle,
+              hintText: hintText,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: const BorderSide(
-                color: Colors.transparent,
-                width: 0.0,
-                style: BorderStyle.solid,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: const BorderSide(
-                color: Colors.transparent,
-                width: 0.0,
-                style: BorderStyle.solid,
-              ),
-            ),
-            disabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-              color: Colors.transparent,
-              width: 0.0,
-              style: BorderStyle.solid,
-            )),
-            hintStyle: hintStyle,
-            hintText: hintText,
           ),
         ),
       ),

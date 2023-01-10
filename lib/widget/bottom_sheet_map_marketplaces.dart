@@ -27,7 +27,10 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
 
   @override
   Widget build(BuildContext context) {
-    return _floatingPanel(context);
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: _floatingPanel(context),
+    );
   }
 
   Widget _floatingPanel(BuildContext context) {
@@ -84,12 +87,10 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                              points!.name!.first.name!,
+                          Text(points!.name!.first.name!,
                               style: CustomTextStyle.black15w700),
                           Text(
-                            points!
-                                .iD!,
+                            points!.iD!,
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 20.h),

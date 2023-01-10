@@ -26,9 +26,12 @@ class _BottomSheetDraggableState
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: _floatingPanel(context),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Material(
+        color: Colors.transparent,
+        child: _floatingPanel(context),
+      ),
     );
   }
 

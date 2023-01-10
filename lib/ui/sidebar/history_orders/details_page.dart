@@ -20,10 +20,13 @@ class HistoryDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DetailsPageTemp(
-      index: index,
-      typeAdd: typeAdd,
-      locations: locations,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: DetailsPageTemp(
+        index: index,
+        typeAdd: typeAdd,
+        locations: locations,
+      ),
     );
   }
 }

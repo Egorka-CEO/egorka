@@ -14,62 +14,65 @@ class StandartAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Center(
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.fromLTRB(20.w, 10.w, 20.w, 20.w),
-              width: MediaQuery.of(context).size.width * 0.85,
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 125.h,
-                    alignment: Alignment.center,
-                    child: Text(
-                      message,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 19,
-                        color: Theme.of(context).textTheme.bodyText1?.color,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Stack(
+        children: [
+          Center(
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.w, 20.w, 20.w),
+                width: MediaQuery.of(context).size.width * 0.85,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 125.h,
+                      alignment: Alignment.center,
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 19,
+                          color: Theme.of(context).textTheme.bodyText1?.color,
+                        ),
                       ),
                     ),
-                  ),
-                  if (buttons.length != 2)
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return buttons[index];
-                      },
-                      separatorBuilder: (context, index) {
-                        if ((index + 1) == buttons.length) {
-                          return const SizedBox.shrink();
-                        }
-                        return SizedBox(height: 15.h);
-                      },
-                      itemCount: buttons.length,
-                    ),
-                  if (buttons.length == 2)
-                    Row(
-                      children: [
-                        Expanded(child: buttons[0]),
-                        SizedBox(width: 15.w),
-                        Expanded(child: buttons[1]),
-                      ],
-                    ),
-                ],
+                    if (buttons.length != 2)
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return buttons[index];
+                        },
+                        separatorBuilder: (context, index) {
+                          if ((index + 1) == buttons.length) {
+                            return const SizedBox.shrink();
+                          }
+                          return SizedBox(height: 15.h);
+                        },
+                        itemCount: buttons.length,
+                      ),
+                    if (buttons.length == 2)
+                      Row(
+                        children: [
+                          Expanded(child: buttons[0]),
+                          SizedBox(width: 15.w),
+                          Expanded(child: buttons[1]),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

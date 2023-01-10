@@ -38,46 +38,49 @@ class _MiniMapViewState extends State<MiniMapView> {
   Widget build(BuildContext context) {
     BlocProvider.of<HistoryOrdersBloc>(context)
         .add(HistoryOrderPolilyne(widget.locations));
-    return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
-        buildWhen: (previous, current) {
-      if (current is HistoryOrderRoutePolilyne) {
-        routes = current.routes;
-        marker = current.markers;
-        mapController!.animateCamera(
-          CameraUpdate.newLatLngBounds(routes!.bounds, 20.w),
-        );
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
+          buildWhen: (previous, current) {
+        if (current is HistoryOrderRoutePolilyne) {
+          routes = current.routes;
+          marker = current.markers;
+          mapController!.animateCamera(
+            CameraUpdate.newLatLngBounds(routes!.bounds, 20.w),
+          );
+          return true;
+        }
         return true;
-      }
-      return true;
-    }, builder: (context, snapshot) {
-      return GoogleMap(
-        markers: marker,
-        polylines: {
-          if (routes != null)
-            Polyline(
-              polylineId: const PolylineId('route'),
-              visible: true,
-              width: 5,
-              points: routes != null
-                  ? routes!.polylinePoints
-                      .map((e) => LatLng(e.latitude, e.longitude))
-                      .toList()
-                  : [],
-              color: Colors.red,
-            )
-        },
-        padding: EdgeInsets.zero,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        onCameraMove: (position) {
-          pos = position;
-        },
-        initialCameraPosition: MiniMapView._kGooglePlex,
-        mapType: MapType.normal,
-        onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
-        },
-      );
-    });
+      }, builder: (context, snapshot) {
+        return GoogleMap(
+          markers: marker,
+          polylines: {
+            if (routes != null)
+              Polyline(
+                polylineId: const PolylineId('route'),
+                visible: true,
+                width: 5,
+                points: routes != null
+                    ? routes!.polylinePoints
+                        .map((e) => LatLng(e.latitude, e.longitude))
+                        .toList()
+                    : [],
+                color: Colors.red,
+              )
+          },
+          padding: EdgeInsets.zero,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          onCameraMove: (position) {
+            pos = position;
+          },
+          initialCameraPosition: MiniMapView._kGooglePlex,
+          mapType: MapType.normal,
+          onMapCreated: (GoogleMapController controller) {
+            mapController = controller;
+          },
+        );
+      }),
+    );
   }
 }

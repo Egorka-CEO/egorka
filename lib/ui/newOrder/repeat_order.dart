@@ -36,15 +36,18 @@ class RepeatOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<NewOrderPageBloc>(
-          create: (context) => NewOrderPageBloc(),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<NewOrderPageBloc>(
+            create: (context) => NewOrderPageBloc(),
+          ),
+        ],
+        child: RepeatOrderPageState(
+          recordNumber: recordNumber,
+          recordPIN: recordPIN,
         ),
-      ],
-      child: RepeatOrderPageState(
-        recordNumber: recordNumber,
-        recordPIN: recordPIN,
       ),
     );
   }
@@ -502,11 +505,11 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                       additional = snapshot.data!;
                                       double height;
                                       if (additional) {
-                                        height = 1055.h;
+                                        height = 1020.h;
                                         if (additional1) height += 170.h;
-                                        if (additional2) height += 135.h;
-                                        if (additional3) height += 305.h;
-                                        if (additional4) height += 305.h;
+                                        if (additional2) height += 150.h;
+                                        if (additional3) height += 315.h;
+                                        if (additional4) height += 315.h;
                                       } else {
                                         height = 0.h;
                                       }
@@ -522,9 +525,24 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                               ),
                                               const Spacer(),
                                               GestureDetector(
-                                                onTap: () =>
-                                                    additionalController
-                                                        .add(!additional),
+                                                onTap: () {
+                                                  additionalController
+                                                      .add(!additional);
+                                                  if (!additional) {
+                                                    Future.delayed(
+                                                        const Duration(
+                                                            milliseconds: 100),
+                                                        () {
+                                                      scrollController.animateTo(
+                                                          350.h,
+                                                          duration:
+                                                              const Duration(
+                                                                  milliseconds:
+                                                                      200),
+                                                          curve: Curves.linear);
+                                                    });
+                                                  }
+                                                },
                                                 child: Text(
                                                   additional
                                                       ? 'Свернуть'
@@ -546,10 +564,12 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                                   SizedBox(height: 10.h),
                                                   Row(
                                                     children: [
-                                                      const Text(
-                                                        'Услуга помощи погрузки / разгрузки',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
+                                                      const Flexible(
+                                                        child: Text(
+                                                          'Услуга помощи погрузки / разгрузки',
+                                                          style: CustomTextStyle
+                                                              .grey15bold,
+                                                        ),
                                                       ),
                                                       IconButton(
                                                         onPressed: () {
@@ -1496,9 +1516,9 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                     },
                                   ),
                                   keyBoardVisible
-                                      ? formOrder != null
-                                          ? SizedBox(height: 250.h)
-                                          : SizedBox(height: 0.h)
+                                      ? formOrder == null
+                                          ? SizedBox(height: 0.h)
+                                          : SizedBox(height: 260.h)
                                       : SizedBox(height: 400.h)
                                 ],
                               ),
@@ -1519,19 +1539,26 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                               return TotalPriceWidget(
                                 title: widget.deliveryChocie.title,
                                 icon: widget.deliveryChocie.icon,
-                                additionalCost: additionalCost,
-                                comissionPaymentSystem:
-                                    (auth != null && auth.result!.agent != null)
-                                        ? null
-                                        : ((double.tryParse(coasts!
-                                                            .result!
-                                                            .totalPrice!
-                                                            .total!)!
-                                                        .ceil() *
-                                                    2.69) /
-                                                100)
-                                            .ceil()
-                                            .toString(),
+                                deliveryCost:
+                                    (((coasts!.result!.totalPrice!.base!)
+                                                .ceil()) /
+                                            100)
+                                        .ceil()
+                                        .toString(),
+                                additionalCost:
+                                    (((coasts!.result!.totalPrice!.ancillary!)
+                                                .ceil()) /
+                                            100)
+                                        .ceil()
+                                        .toString(),
+                                comissionPaymentSystem: ((double.tryParse(
+                                                    coasts!.result!.totalPrice!
+                                                        .total!)!
+                                                .ceil() *
+                                            2.69) /
+                                        100)
+                                    .ceil()
+                                    .toString(),
                                 totalPrice:
                                     '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil()}',
                                 onTap: () =>

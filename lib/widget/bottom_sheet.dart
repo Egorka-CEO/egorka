@@ -14,6 +14,7 @@ import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,6 +46,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   final streamDelivery = StreamController<int>();
 
   bool _visible = false;
+
+  String? errorAddress;
 
   TypeAdd? typeAdd;
 
@@ -88,6 +91,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     return BlocBuilder<SearchAddressBloc, SearchAddressState>(
         buildWhen: (previous, current) {
       if (current is GetAddressSuccess) {
+        errorAddress = current.errorAddress;
         suggestionsStart = Suggestions(
           iD: null,
           name: current.address,
@@ -387,6 +391,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
                   if (current is ChangeAddressSuccess) {
+                    errorAddress = current.errorAddress;
                     if (fromController.text != current.address) {
                       suggestionsStart = Suggestions(
                         iD: null,
@@ -527,7 +532,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       ),
                                     ),
                                     Text(
-                                      '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil() + ((double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil() * 2.69) / 100).ceil()} ₽',
+                                      '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
                                       style: TextStyle(
                                         color: snapshot.data! == index
                                             ? Colors.grey
@@ -560,7 +565,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: GestureDetector(
                       onTap: coasts.isNotEmpty
-                          ? () => authShowDialog(snapshot.data!)
+                          ? () {
+                              if (errorAddress != null) {
+                                MessageDialogs()
+                                    .showAlert('Ошибка', 'Укажите номер дома');
+                              } else {
+                                authShowDialog(snapshot.data!);
+                              }
+                            }
                           : null,
                       child: Container(
                         width: MediaQuery.of(context).size.width,
@@ -663,6 +675,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 _flipController!.toggleCard();
               }
               if (focusFrom.hasFocus) {
+                errorAddress = null;
                 suggestionsStart = state.address!.result.suggestions![index];
                 fromController.text =
                     state.address!.result.suggestions![index].name;

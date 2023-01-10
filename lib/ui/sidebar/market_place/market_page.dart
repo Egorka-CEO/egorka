@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
@@ -1266,16 +1268,49 @@ class _MarketPageState extends State<MarketPages>
                                 ],
                               ),
                               if (coast != null)
-                                TotalPriceWidget(
-                                  title: 'Грузовик',
-                                  icon: 'assets/images/ic_track.png',
-                                  totalPrice:
-                                      '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil() + ((double.tryParse(coast!.result!.totalPrice!.total!)!.ceil() * 2.69) / 100).ceil()}',
-                                  onTap: () =>
-                                      BlocProvider.of<MarketPlacePageBloc>(
-                                              context)
-                                          .add(CreateForm(coast!.result!.id!)),
-                                ),
+                                BlocBuilder<ProfileBloc, ProfileState>(
+                                    builder: (context, snapshot) {
+                                  final auth =
+                                      BlocProvider.of<ProfileBloc>(context)
+                                          .getUser();
+                                  String? additionalCost;
+                                  int temp = 0;
+                                  for (var element
+                                      in coast!.result!.ancillaries!) {
+                                    temp += (element.price! / 100).ceil();
+                                  }
+                                  additionalCost = temp.toString();
+                                  return TotalPriceWidget(
+                                    title: 'Грузовик',
+                                    icon: 'assets/images/ic_track.png',
+                                    additionalCost: additionalCost,
+                                    comissionPaymentSystem: (auth != null &&
+                                            auth.result!.agent != null)
+                                        ? null
+                                        : ((double.tryParse(coast!
+                                                            .result!
+                                                            .totalPrice!
+                                                            .total!)!
+                                                        .ceil() *
+                                                    2.69) /
+                                                100)
+                                            .ceil()
+                                            .toString(),
+                                    totalPrice:
+                                        '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}',
+                                    onTap: () {
+                                      if (errorAddress != null) {
+                                        MessageDialogs().showAlert(
+                                            'Ошибка', 'Укажите номер дома');
+                                      } else {
+                                        BlocProvider.of<MarketPlacePageBloc>(
+                                                context)
+                                            .add(
+                                                CreateForm(coast!.result!.id!));
+                                      }
+                                    },
+                                  );
+                                }),
                               SlidingUpPanel(
                                 controller: panelController,
                                 renderPanelSheet: false,

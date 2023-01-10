@@ -6,12 +6,16 @@ class TotalPriceWidget extends StatelessWidget {
   String title;
   String icon;
   String totalPrice;
+  String? comissionPaymentSystem;
+  String? additionalCost;
   VoidCallback onTap;
 
   TotalPriceWidget({
     required this.title,
     required this.icon,
     required this.totalPrice,
+    this.comissionPaymentSystem,
+    this.additionalCost,
     required this.onTap,
   });
 
@@ -87,22 +91,22 @@ class TotalPriceWidget extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           '0 ₽ доставка',
                           style: TextStyle(
                               fontSize: 12, fontWeight: FontWeight.w500),
                         ),
-                        SizedBox(height: 3),
+                        const SizedBox(height: 3),
                         Text(
-                          '0 ₽ доп. услуги',
-                          style: TextStyle(
+                          '${additionalCost ?? 0} ₽ доп. услуги',
+                          style: const TextStyle(
                               fontSize: 12, fontWeight: FontWeight.w500),
                         ),
-                        SizedBox(height: 3),
+                        const SizedBox(height: 3),
                         Text(
-                          '0 ₽ сбор-плат. сист.',
-                          style: TextStyle(
+                          '${comissionPaymentSystem ?? 0} ₽ сбор-плат. сист.',
+                          style: const TextStyle(
                               fontSize: 12, fontWeight: FontWeight.w500),
                         ),
                       ],

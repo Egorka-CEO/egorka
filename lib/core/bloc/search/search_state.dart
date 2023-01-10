@@ -28,11 +28,13 @@ class ChangeAddressSuccess extends SearchAddressState {
   String address;
   double latitude;
   double longitude;
+  String? errorAddress;
 
   ChangeAddressSuccess(
     this.address,
     this.latitude,
     this.longitude,
+    this.errorAddress,
   );
 }
 
@@ -40,11 +42,13 @@ class GetAddressSuccess extends SearchAddressState {
   String address;
   double latitude;
   double longitude;
+  String? errorAddress;
 
   GetAddressSuccess(
     this.address,
     this.latitude,
     this.longitude,
+    this.errorAddress,
   );
 }
 

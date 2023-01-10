@@ -70,10 +70,17 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         address = placemarks.first.locality!;
       }
 
+      String? errorAddress;
+
+      if (placemarks.first.subThoroughfare!.isEmpty) {
+        errorAddress = 'Ошибка: Укажите номер дома';
+      }
+
       emit(ChangeAddressSuccess(
         address,
         event.coordinates.latitude,
         event.coordinates.longitude,
+        errorAddress,
       ));
     }
   }
@@ -99,10 +106,17 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         address = placemarks.first.locality!;
       }
 
+      String? errorAddress;
+
+      if (placemarks.first.subThoroughfare!.isEmpty) {
+        errorAddress = 'Ошибка: Укажите номер дома';
+      }
+
       emit(GetAddressSuccess(
         address,
         position.latitude,
         position.longitude,
+        errorAddress,
       ));
     }
   }

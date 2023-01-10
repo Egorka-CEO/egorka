@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
@@ -1504,16 +1505,40 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                             ),
                           ),
                           if (coasts != null)
-                            TotalPriceWidget(
-                              title: widget.deliveryChocie.title,
-                              icon: widget.deliveryChocie.icon,
-                              totalPrice:
-                                  '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil() + ((double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil() * 2.69) / 100).ceil()}',
-                              onTap: () {
-                                BlocProvider.of<NewOrderPageBloc>(context)
-                                    .add(CreateForm(coasts!.result!.id!));
-                              },
-                            ),
+                            BlocBuilder<ProfileBloc, ProfileState>(
+                                builder: (context, snapshot) {
+                              final auth = BlocProvider.of<ProfileBloc>(context)
+                                  .getUser();
+                              String? additionalCost;
+                              int temp = 0;
+                              for (var element
+                                  in coasts!.result!.ancillaries!) {
+                                temp += (element.price! / 100).ceil();
+                              }
+                              additionalCost = temp.toString();
+                              return TotalPriceWidget(
+                                title: widget.deliveryChocie.title,
+                                icon: widget.deliveryChocie.icon,
+                                additionalCost: additionalCost,
+                                comissionPaymentSystem:
+                                    (auth != null && auth.result!.agent != null)
+                                        ? null
+                                        : ((double.tryParse(coasts!
+                                                            .result!
+                                                            .totalPrice!
+                                                            .total!)!
+                                                        .ceil() *
+                                                    2.69) /
+                                                100)
+                                            .ceil()
+                                            .toString(),
+                                totalPrice:
+                                    '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil()}',
+                                onTap: () =>
+                                    BlocProvider.of<NewOrderPageBloc>(context)
+                                        .add(CreateForm(coasts!.result!.id!)),
+                              );
+                            }),
                           SlidingUpPanel(
                             controller: panelController,
                             renderPanelSheet: false,

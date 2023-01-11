@@ -855,7 +855,7 @@ class _MarketPageState extends State<MarketPages>
                                                   flex: 2,
                                                   child: Slider(
                                                     min: 0,
-                                                    max: 50,
+                                                    max: 25,
                                                     activeColor: Colors.red,
                                                     inactiveColor:
                                                         Colors.grey[300],
@@ -924,7 +924,7 @@ class _MarketPageState extends State<MarketPages>
                                                   flex: 2,
                                                   child: Slider(
                                                     min: 0,
-                                                    max: 50,
+                                                    max: 25,
                                                     activeColor: Colors.red,
                                                     inactiveColor:
                                                         Colors.grey[300],
@@ -1110,7 +1110,7 @@ class _MarketPageState extends State<MarketPages>
                                                                                             flex: 2,
                                                                                             child: Slider(
                                                                                               min: 0,
-                                                                                              max: 50,
+                                                                                              max: 25,
                                                                                               activeColor: Colors.red,
                                                                                               inactiveColor: Colors.grey[300],
                                                                                               thumbColor: Colors.white,
@@ -1156,7 +1156,7 @@ class _MarketPageState extends State<MarketPages>
                                                                                             flex: 2,
                                                                                             child: Slider(
                                                                                               min: 0,
-                                                                                              max: 50,
+                                                                                              max: 25,
                                                                                               activeColor: Colors.red,
                                                                                               inactiveColor: Colors.grey[300],
                                                                                               thumbColor: Colors.white,

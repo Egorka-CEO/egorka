@@ -52,7 +52,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
                   child: const Text('Дата с...'),
                 ),
                 CustomTextField(
-                  hintText: '2023-15-01',
+                  hintText: '2023-01-10',
                   focusNode: date1Focus,
                   textEditingController: controllerFrom,
                   textInputType: TextInputType.number,
@@ -75,7 +75,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
                   child: const Text('Дата по...'),
                 ),
                 CustomTextField(
-                  hintText: '2023-31-01',
+                  hintText: '2023-01-31',
                   focusNode: date2Focus,
                   textEditingController: controllerTo,
                   textInputType: TextInputType.number,

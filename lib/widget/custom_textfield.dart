@@ -94,7 +94,13 @@ class CustomTextField extends StatelessWidget {
                   onFieldSubmitted!(textEditingController.text);
                 }
               },
-              child: Text('Готово', style: TextStyle(fontSize: 11.sp),),
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: Text(
+                  'Готово',
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+              ),
             ),
             actions: [
               KeyboardActionsItem(

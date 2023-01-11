@@ -571,7 +571,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       ),
                                       const Spacer(),
                                       Text(
-                                        '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ${formOrder!.result!.totalPrice!.currency}',
+                                        '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ₽',
                                         style: CustomTextStyle.black15w700,
                                       ),
                                     ],

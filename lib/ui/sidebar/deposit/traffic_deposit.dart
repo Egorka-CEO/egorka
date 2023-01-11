@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/ui/sidebar/deposit/item_traffic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +72,8 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color: snapshot.data! == 0 ? Colors.red : null,
+                                  color:
+                                      snapshot.data! == 0 ? Colors.red : null,
                                   borderRadius: BorderRadius.circular(10.r)),
                               child: Center(
                                 child: Text(
@@ -95,7 +97,8 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color: snapshot.data! == 1 ? Colors.red : null,
+                                  color:
+                                      snapshot.data! == 1 ? Colors.red : null,
                                   borderRadius: BorderRadius.circular(10)),
                               child: Center(
                                 child: Text(
@@ -119,7 +122,8 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color: snapshot.data! == 2 ? Colors.red : null,
+                                  color:
+                                      snapshot.data! == 2 ? Colors.red : null,
                                   borderRadius: BorderRadius.circular(10)),
                               child: Center(
                                 child: Text(
@@ -147,9 +151,9 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                     physics: const NeverScrollableScrollPhysics(),
                     controller: pageController,
                     children: [
-                      ItemTraffic(),
-                      ItemTraffic(),
-                      ItemTraffic(),
+                      ItemTraffic(Filter(type: 'Invoice')),
+                      ItemTraffic(Filter(direction: 'Debet')),
+                      ItemTraffic(Filter(direction: 'Credit')),
                     ],
                   ),
                 ),

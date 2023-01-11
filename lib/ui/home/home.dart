@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
@@ -59,7 +58,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       } else if (type == '1') {
         res =
             await Repository().loginUsernameAgent(login!, password!, company!);
-        BlocProvider.of<DepositBloc>(context).add(LoadAllDepositEvent());
       }
 
       if (res != null) {
@@ -67,10 +65,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
       }
     } else if (id != null) {
-      print('show uuid $id');
     } else {
       await Repository().UUIDCreate();
-      print('create uuid');
     }
   }
 

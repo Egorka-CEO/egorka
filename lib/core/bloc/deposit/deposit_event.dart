@@ -8,4 +8,8 @@ class CreateDeposotEvent extends DepositEvent {
   CreateDeposotEvent(this.invoice);
 }
 
-class LoadAllDepositEvent extends DepositEvent {}
+class LoadReplenishmentDepositEvent extends DepositEvent {
+  Filter filter;
+
+  LoadReplenishmentDepositEvent(this.filter);
+}

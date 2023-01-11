@@ -209,7 +209,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
       storage.setCompany(_companyController.text);
-      BlocProvider.of<DepositBloc>(context).add(LoadAllDepositEvent());
+      // BlocProvider.of<DepositBloc>(context).add(LoadReplenishmentDepositEvent());
       BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
       Navigator.of(context).pop(res);
     } else {

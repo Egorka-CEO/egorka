@@ -9,6 +9,7 @@ import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/create_form_model.dart' as crtForm;
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart';
@@ -74,9 +75,7 @@ class Repository {
     if (response.statusCode == 200) {
       try {
         final address = Address.fromJson(response.data);
-        // if (address == null) {
         return address;
-        // }
       } catch (e) {
         return null;
       }
@@ -133,7 +132,6 @@ class Repository {
 
   Future<CoastResponse?> getCoastMarketPlace(CoastMarketPlace value) async {
     final body = value.toJson();
-    print('object ${body}');
     var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
@@ -155,7 +153,6 @@ class Repository {
 
   Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
     final body = value.toJson();
-    print('object ${body}');
     var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
@@ -589,7 +586,8 @@ class Repository {
     }
   }
 
-  Future<List<Invoice>?> getAllInvoice() async {
+  Future<List<Invoice>?> getInvoiceFilter(Filter filter) async {
+    final fltr = filter.toJson();
     var authData = await auth();
     final response = await dio.post(
       '$server/service/invoice/',
@@ -598,7 +596,8 @@ class Repository {
         "Auth": authData,
         "Method": "List",
         "Body": {
-          "Limit": 20,
+          "Filter": fltr,
+          "Limit": 50,
           "Offset": 0,
         },
         "Params": {"Language": "RU"}

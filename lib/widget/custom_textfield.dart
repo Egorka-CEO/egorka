@@ -94,7 +94,7 @@ class CustomTextField extends StatelessWidget {
                   onFieldSubmitted!(textEditingController.text);
                 }
               },
-              child: const Text('Готово'),
+              child: Text('Готово', style: TextStyle(fontSize: 11.sp),),
             ),
             actions: [
               KeyboardActionsItem(

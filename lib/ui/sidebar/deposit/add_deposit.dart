@@ -1,10 +1,11 @@
-import 'dart:async';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,16 +15,29 @@ import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 // import 'package:tinkoff_sdk/tinkoff_sdk.dart';
 
-class AddDeposit extends StatelessWidget {
+class AddDeposit extends StatefulWidget {
+  @override
+  State<AddDeposit> createState() => _AddDepositState();
+}
+
+class _AddDepositState extends State<AddDeposit> {
   List<Invoice> depositHistory = [];
 
   TextEditingController controllerAmount = TextEditingController();
-  final streamController = StreamController<List<Invoice>>();
+
+  final focusCoast = FocusNode();
+
+  void loadDeposit() => BlocProvider.of<DepositBloc>(context)
+      .add(LoadReplenishmentDepositEvent(Filter(type: 'Bill')));
+
+  @override
+  void initState() {
+    super.initState();
+    loadDeposit();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final blocInvoice = BlocProvider.of<DepositBloc>(context).invoiceModel;
-    depositHistory.addAll(blocInvoice);
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Scaffold(
@@ -60,7 +74,7 @@ class AddDeposit extends StatelessWidget {
                     width: 150.w,
                     fillColor: Colors.white,
                     height: 45.h,
-                    focusNode: FocusNode(),
+                    focusNode: focusCoast,
                     contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
                     formatters: [DepositFormatter()],
                   ),
@@ -72,9 +86,9 @@ class AddDeposit extends StatelessWidget {
                   //     const _TERMINAL_KEY = 'TERMINAL_KEY';
                   //     const _PASSWORD = 'PASSWORD';
                   //     const _PUBLIC_KEY = 'PUBLIC_KEY';
-    
+
                   //     final TinkoffSdk acquiring = TinkoffSdk();
-    
+
                   //     await acquiring.activate(
                   //         terminalKey: _TERMINAL_KEY,
                   //         password: _PASSWORD,
@@ -131,12 +145,10 @@ class AddDeposit extends StatelessWidget {
                         MessageDialogs()
                             .showLoadDialog('Формирование депозита...');
                         final res = await Repository().createInvoice(
-                            (double.parse(controllerAmount.text) * 100).round());
+                            (double.parse(controllerAmount.text) * 100)
+                                .round());
                         if (res != null) {
-                          BlocProvider.of<DepositBloc>(context)
-                              .add(CreateDeposotEvent(res));
-                          depositHistory.add(res);
-                          streamController.add([res]);
+                          loadDeposit();
                         }
                         SmartDialog.dismiss();
                       }
@@ -144,7 +156,8 @@ class AddDeposit extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'CФОРМИРОВАТЬ',
-                        style: CustomTextStyle.white15w600.copyWith(fontSize: 12),
+                        style:
+                            CustomTextStyle.white15w600.copyWith(fontSize: 12),
                       ),
                     ),
                   ),
@@ -160,108 +173,128 @@ class AddDeposit extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Expanded(
-                child: StreamBuilder<List<Invoice>>(
-                    stream: streamController.stream,
-                    initialData: [],
-                    builder: (context, snapshot) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: depositHistory.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Container(
-                              height: 50.h,
-                              color: index % 2 == 0
-                                  ? Colors.white
-                                  : Colors.grey[200],
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 10.w),
-                                  const Expanded(flex: 2, child: Text('№')),
-                                  SizedBox(width: 10.w),
-                                  const Expanded(
-                                      flex: 4, child: Text('Дата выставления')),
-                                  const Expanded(flex: 3, child: Text('Сумма')),
-                                  SizedBox(width: 10.w),
-                                ],
-                              ),
-                            );
-                          }
-                          return Container(
-                            color:
-                                index % 2 == 0 ? Colors.white : Colors.grey[200],
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: 15.h),
-                                Row(
+                child: BlocBuilder<DepositBloc, DepositState>(
+                  builder: (context, snapshot) {
+                    if (snapshot is DepositLoad) {
+                      depositHistory.clear();
+                      depositHistory.addAll(snapshot.list!);
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          loadDeposit();
+                        },
+                        child: ListView.builder(
+                          physics: const ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: depositHistory.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Container(
+                                height: 50.h,
+                                color: index % 2 == 0
+                                    ? Colors.white
+                                    : Colors.grey[200],
+                                child: Row(
                                   children: [
                                     SizedBox(width: 10.w),
-                                    Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                            '${depositHistory[index - 1].date}')),
-                                    Expanded(
+                                    const Expanded(flex: 2, child: Text('№')),
+                                    SizedBox(width: 10.w),
+                                    const Expanded(
                                         flex: 4,
-                                        child: Text(DateFormat.yMMMMd('ru')
-                                            .format(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    depositHistory[index - 1]
-                                                            .date! *
-                                                        1000)))),
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                            '${depositHistory[index - 1].amount} руб.')),
+                                        child: Text('Дата выставления')),
+                                    const Expanded(
+                                        flex: 3, child: Text('Сумма')),
                                     SizedBox(width: 10.w),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(width: 10.w),
-                                    TextButton(
-                                      onPressed: () async {
-                                        MessageDialogs().showLoadDialog(
-                                            'Скачивание и открытие...');
-                                        String pdf = await Repository().getPDF(
-                                            depositHistory[index - 1].iD!,
-                                            depositHistory[index - 1].pIN!);
-                                        await OpenFile.open(pdf);
-                                        SmartDialog.dismiss();
-                                      },
-                                      child: const Text(
-                                        'Скачать PDF',
-                                        style: TextStyle(color: Colors.red),
+                              );
+                            }
+                            return Container(
+                              color: index % 2 == 0
+                                  ? Colors.white
+                                  : Colors.grey[200],
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(height: 15.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                              '${depositHistory[index - 1].date}')),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          DateFormat.yMMMMd('ru').format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                              depositHistory[index - 1].date! *
+                                                  1000,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                    TextButton(
-                                      onPressed: () async {
-                                        MessageDialogs().showLoadDialog(
-                                            'Скачивание и открытие...');
-                                        String excel = await Repository()
-                                            .getEXCEL(
-                                                depositHistory[index - 1].iD!,
-                                                depositHistory[index - 1].pIN!);
-                                        await OpenFile.open(excel);
-                                        SmartDialog.dismiss();
-                                      },
-                                      child: const Text(
-                                        'Скачать EXCEL',
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromARGB(255, 71, 170, 74)),
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text(
+                                              '${depositHistory[index - 1].amount} руб.')),
+                                      SizedBox(width: 10.w),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      TextButton(
+                                        onPressed: () async {
+                                          MessageDialogs().showLoadDialog(
+                                              'Скачивание и открытие...');
+                                          String pdf = await Repository()
+                                              .getPDF(
+                                                  depositHistory[index - 1].iD!,
+                                                  depositHistory[index - 1]
+                                                      .pIN!);
+                                          await OpenFile.open(pdf);
+                                          SmartDialog.dismiss();
+                                        },
+                                        child: const Text(
+                                          'Скачать PDF',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                  ],
-                                )
-                              ],
-                            ),
-                          );
-                        },
+                                      SizedBox(width: 10.w),
+                                      TextButton(
+                                        onPressed: () async {
+                                          MessageDialogs().showLoadDialog(
+                                              'Скачивание и открытие...');
+                                          String excel = await Repository()
+                                              .getEXCEL(
+                                                  depositHistory[index - 1].iD!,
+                                                  depositHistory[index - 1]
+                                                      .pIN!);
+                                          await OpenFile.open(excel);
+                                          SmartDialog.dismiss();
+                                        },
+                                        child: const Text(
+                                          'Скачать EXCEL',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 71, 170, 74)),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.w),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       );
-                    }),
+                    } else {
+                      return const Center(child: CupertinoActivityIndicator());
+                    }
+                  },
+                ),
               ),
             ],
           ),

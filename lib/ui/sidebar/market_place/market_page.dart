@@ -1429,45 +1429,48 @@ class _MarketPageState extends State<MarketPages>
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       context: context,
-      builder: (BuildContext ctx) {
-        return Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey),
+      builder: (ctx) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.grey),
+                      ),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        calcOrder();
+                      },
+                      child: const Text('Готово'),
                     ),
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      calcOrder();
-                    },
-                    child: const Text('Готово'),
                   ),
-                ),
-                SizedBox(
-                  height: 200.h,
-                  child: CupertinoPicker(
-                    backgroundColor: Colors.grey[200],
-                    onSelectedItemChanged: (value) {
-                      toController.text =
-                          marketplaces.result.points[value].name!.first.name!;
-                      points = marketplaces.result.points[value];
-                    },
-                    itemExtent: 32.0,
-                    children: marketplaces.result.points
-                        .map((e) => Text(e.name!.first.name!))
-                        .toList(),
+                  SizedBox(
+                    height: 200.h,
+                    child: CupertinoPicker(
+                      backgroundColor: Colors.grey[200],
+                      onSelectedItemChanged: (value) {
+                        toController.text =
+                            marketplaces.result.points[value].name!.first.name!;
+                        points = marketplaces.result.points[value];
+                      },
+                      itemExtent: 32.0,
+                      children: marketplaces.result.points
+                          .map((e) => Text(e.name!.first.name!))
+                          .toList(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -1509,42 +1512,46 @@ class _MarketPageState extends State<MarketPages>
         barrierColor: Colors.transparent,
         context: context,
         builder: (ctx) {
-          return Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.grey),
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey),
+                        ),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                          calcOrder();
+                        },
+                        child: const Text('Готово'),
                       ),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                        calcOrder();
-                      },
-                      child: const Text('Готово'),
                     ),
-                  ),
-                  Container(
-                    height: 200.h,
-                    color: Colors.grey[200],
-                    child: CupertinoDatePicker(
-                      mode: CupertinoDatePickerMode.date,
-                      use24hFormat: true,
-                      onDateTimeChanged: (value) {
-                        startOrderController.text =
-                            DateFormat('dd.MM.yyyy').format(value);
-                        time = value;
-                      },
+                    Container(
+                      height: 200.h,
+                      color: Colors.grey[200],
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        use24hFormat: true,
+                        onDateTimeChanged: (value) {
+                          startOrderController.text =
+                              DateFormat('dd.MM.yyyy').format(value);
+                          time = value;
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           );
         },
       );

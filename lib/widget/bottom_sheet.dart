@@ -587,8 +587,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: const Center(
-                          child: Text('Перейти к оформлению',
-                              style: CustomTextStyle.white15w600),
+                          child: Text(
+                            'Перейти к оформлению',
+                            style: CustomTextStyle.white15w600,
+                          ),
                         ),
                       ),
                     ),

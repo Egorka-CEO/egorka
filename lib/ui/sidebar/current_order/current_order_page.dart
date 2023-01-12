@@ -44,11 +44,45 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   int pointSentCount = 0;
   int pointReceiveCount = 0;
 
+  List<Widget> additionalInfo = [];
+
   @override
   void initState() {
     super.initState();
     getForm();
     BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
+  }
+
+  Widget additional(String title) {
+    return Padding(
+      padding: EdgeInsets.only(top: 20.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(width: 10.w),
+          SizedBox(
+            width: 300.w,
+            child: Text(
+              title,
+              style: CustomTextStyle.grey15bold,
+              maxLines: 2,
+            ),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: 24.h,
+            height: 24.h,
+            child: Checkbox(
+              value: true,
+              splashRadius: 0,
+              fillColor: MaterialStateProperty.all(Colors.red),
+              shape: const CircleBorder(),
+              onChanged: (value) {},
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void getForm() async {
@@ -102,6 +136,41 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
         colorStatus = Colors.red;
         resPaid = true;
         status = 'Ошибка';
+      }
+
+      for (var element in formOrder!.result!.ancillaries!) {
+        if (element.type == 'LoadMarketplace') {
+          additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
+        }
+        if (element.type == 'Pallet') {
+          additionalInfo.add(additional('Паллетирование'));
+        }
+        if (element.type == 'Load') {
+          additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
+        }
+        if (element.type == 'Post') {
+          additionalInfo.add(additional('Отправка почтой'));
+        }
+        if (element.type == 'DoorToDoor') {
+          additionalInfo.add(additional('Доставка до двери'));
+        }
+        if (element.type == 'Proxy') {
+          additionalInfo.add(additional('Оформление доверенности'));
+        }
+        if (element.type == 'Industrial') {
+          additionalInfo.add(additional('Промзона'));
+        }
+        if (element.type == 'TrainSend') {
+          additionalInfo.add(
+              additional('Отправить посылку поездом, автобусом или самолетом'));
+        }
+        if (element.type == 'TrainReceive') {
+          additionalInfo.add(
+              additional('Встретить посылку поездом, автобусом или самолетом'));
+        }
+        if (element.type == 'Insurance') {
+          additionalInfo.add(additional('Страховка'));
+        }
       }
 
       setState(() {});
@@ -199,7 +268,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                     ),
                                     child: Text(
                                       status,
-                                      style: const TextStyle(color: Colors.white),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                     ),
                                   ),
                                   SizedBox(height: 20.h),
@@ -248,7 +318,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                   ),
                                   SizedBox(height: 10.h),
                                   ListView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount:
                                         formOrder!.result!.locations!.length,
@@ -259,7 +330,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ++pointSentCount;
                                         int count = pointSentCount;
                                         return Padding(
-                                          padding: EdgeInsets.only(bottom: 10.h),
+                                          padding:
+                                              EdgeInsets.only(bottom: 10.h),
                                           child: Container(
                                             padding: EdgeInsets.all(10.w),
                                             decoration: BoxDecoration(
@@ -308,12 +380,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                             TypeAdd.sender,
                                                             count,
                                                             formOrder!.result!
-                                                                .locations![index]
+                                                                    .locations![
+                                                                index]
                                                           ]),
                                                       child: const Text(
                                                         'Посмотреть детали',
-                                                        style:
-                                                            CustomTextStyle.red15,
+                                                        style: CustomTextStyle
+                                                            .red15,
                                                       ),
                                                     )
                                                   ],
@@ -326,7 +399,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ++pointReceiveCount;
                                         int count = pointReceiveCount;
                                         return Padding(
-                                          padding: EdgeInsets.only(bottom: 10.h),
+                                          padding:
+                                              EdgeInsets.only(bottom: 10.h),
                                           child: Container(
                                             padding: EdgeInsets.all(10.w),
                                             decoration: BoxDecoration(
@@ -374,12 +448,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                             TypeAdd.receiver,
                                                             count,
                                                             formOrder!.result!
-                                                                .locations![index]
+                                                                    .locations![
+                                                                index]
                                                           ]),
                                                       child: const Text(
                                                         'Посмотреть детали',
-                                                        style:
-                                                            CustomTextStyle.red15,
+                                                        style: CustomTextStyle
+                                                            .red15,
                                                       ),
                                                     )
                                                   ],
@@ -438,8 +513,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                         ? Icon(
                                                             Icons.person,
                                                             size: 40.h,
-                                                            color:
-                                                                Colors.grey[700],
+                                                            color: Colors
+                                                                .grey[700],
                                                           )
                                                         : Image.asset(
                                                             'assets/images/deliver.jpeg',
@@ -453,15 +528,15 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      formOrder!
-                                                          .result!.courier!.name!,
+                                                      formOrder!.result!
+                                                          .courier!.name!,
                                                       style: CustomTextStyle
                                                           .black15w700,
                                                     ),
                                                     SizedBox(height: 10.h),
                                                     Text(
-                                                      formOrder!.result!.courier!
-                                                          .surname!,
+                                                      formOrder!.result!
+                                                          .courier!.surname!,
                                                       style: CustomTextStyle
                                                           .black15w700,
                                                     ),
@@ -529,6 +604,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                       ),
                                     ],
                                   ),
+                                  Column(children: additionalInfo),
                                   if (declaredCost != null)
                                     SizedBox(height: 20.h),
                                   if (declaredCost != null)
@@ -546,9 +622,11 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ),
                                       ],
                                     ),
-                                  if (formOrder!.result!.description!.isNotEmpty)
+                                  if (formOrder!
+                                      .result!.description!.isNotEmpty)
                                     SizedBox(height: 20.h),
-                                  if (formOrder!.result!.description!.isNotEmpty)
+                                  if (formOrder!
+                                      .result!.description!.isNotEmpty)
                                     Row(
                                       children: [
                                         SizedBox(width: 10.w),
@@ -590,7 +668,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                       BlocBuilder<ProfileBloc, ProfileState>(
                                           builder: (context, snapshot) {
                                         final auth =
-                                            BlocProvider.of<ProfileBloc>(context)
+                                            BlocProvider.of<ProfileBloc>(
+                                                    context)
                                                 .getUser();
                                         return Text(
                                           (auth != null &&
@@ -658,9 +737,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                           builder: (context, snapshot) {
                         final auth =
                             BlocProvider.of<ProfileBloc>(context).getUser();
-    
+
                         String coast = '0';
-    
+
                         if (auth != null && auth.result!.agent != null) {
                           for (var element
                               in formOrder!.result!.invoices!.first.options) {
@@ -678,7 +757,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                             }
                           }
                         }
-    
+
                         return Stack(
                           alignment: Alignment.bottomCenter,
                           children: [
@@ -710,24 +789,30 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 backgroundColor: Colors.red,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(10.r),
+                                                      BorderRadius.circular(
+                                                          10.r),
                                                 ),
                                               ),
                                               onPressed: () async {
-                                                final deposit =
-                                                    BlocProvider.of<ProfileBloc>(
-                                                            context)
-                                                        .deposit;
+                                                final deposit = BlocProvider.of<
+                                                        ProfileBloc>(context)
+                                                    .deposit;
                                                 MessageDialogs().showLoadDialog(
                                                     'Производится оплата с вашего депозита');
                                                 String? res = await Repository()
                                                     .paymentDeposit(
-                                                        formOrder!.result!
-                                                            .invoices!.first.iD!,
-                                                        formOrder!.result!
-                                                            .invoices!.first.pIN!,
-                                                        deposit!.result!.accounts
-                                                            .first.iD);
+                                                        formOrder!
+                                                            .result!
+                                                            .invoices!
+                                                            .first
+                                                            .iD!,
+                                                        formOrder!
+                                                            .result!
+                                                            .invoices!
+                                                            .first
+                                                            .pIN!,
+                                                        deposit!.result!
+                                                            .accounts.first.iD);
                                                 SmartDialog.dismiss();
                                                 BlocProvider.of<
                                                             HistoryOrdersBloc>(
@@ -739,7 +824,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                             text: 'Оплачено')
                                                     : MessageDialogs()
                                                         .errorDialog(
-                                                            text: 'Ошибка оплаты',
+                                                            text:
+                                                                'Ошибка оплаты',
                                                             error: res);
                                                 resPaid =
                                                     res == null ? true : false;
@@ -754,7 +840,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 backgroundColor: Colors.red,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(10.r),
+                                                      BorderRadius.circular(
+                                                          10.r),
                                                 ),
                                               ),
                                               child: const Text('Карта'),

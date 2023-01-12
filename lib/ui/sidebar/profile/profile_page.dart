@@ -82,10 +82,15 @@ class ProfilePage extends StatelessWidget {
                     if (user.result!.agent != null)
                       BlocBuilder<ProfileBloc, ProfileState>(
                           builder: (context, snapshot) {
+                        final auth =
+                            BlocProvider.of<ProfileBloc>(context).getUser();
                         String cash = '0 ₽';
                         if (snapshot is UpdateDeposit) {
-                          cash =
-                              '${(snapshot.accounts.amount / 100).ceil()} ₽';
+                          cash = '${(snapshot.accounts.amount / 100).ceil()}';
+                          cash = cash.replaceAllMapped(
+                              RegExp(r"(\d)(?=(\d{3})+(?!\d))"),
+                              (match) => "${match.group(0)} ");
+                          cash += ' ₽';
                         }
                         return Padding(
                           padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -102,6 +107,18 @@ class ProfilePage extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    if ((auth != null &&
+                                        auth.result!.agent != null))
+                                      Column(
+                                        children: [
+                                          Text(
+                                            auth.result!.agent!.Title!,
+                                            style: CustomTextStyle.black15w700
+                                                .copyWith(fontSize: 17),
+                                          ),
+                                          SizedBox(height: 10.h),
+                                        ],
+                                      ),
                                     Text(
                                       'Депозит:',
                                       style: CustomTextStyle.black15w700
@@ -176,13 +193,14 @@ class ProfilePage extends StatelessWidget {
                                     children: [
                                       TextSpan(
                                         text: 'Логин: ',
-                                        style:
-                                            CustomTextStyle.black15w700.copyWith(
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(
                                           color: Colors.grey[700],
                                         ),
                                       ),
                                       TextSpan(
-                                        text: user.result!.user!.username ?? '-',
+                                        text:
+                                            user.result!.user!.username ?? '-',
                                         style: CustomTextStyle.black15w700,
                                       )
                                     ],
@@ -194,14 +212,14 @@ class ProfilePage extends StatelessWidget {
                                     children: [
                                       TextSpan(
                                         text: 'Моб. номер: ',
-                                        style:
-                                            CustomTextStyle.black15w700.copyWith(
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(
                                           color: Colors.grey[700],
                                         ),
                                       ),
                                       TextSpan(
-                                        text:
-                                            user.result!.user!.phoneMobile ?? '-',
+                                        text: user.result!.user!.phoneMobile ??
+                                            '-',
                                         style: CustomTextStyle.black15w700,
                                       )
                                     ],
@@ -213,14 +231,14 @@ class ProfilePage extends StatelessWidget {
                                     children: [
                                       TextSpan(
                                         text: 'Раб. номер: ',
-                                        style:
-                                            CustomTextStyle.black15w700.copyWith(
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(
                                           color: Colors.grey[700],
                                         ),
                                       ),
                                       TextSpan(
-                                        text:
-                                            user.result!.user!.phoneOffice ?? '-',
+                                        text: user.result!.user!.phoneOffice ??
+                                            '-',
                                         style: CustomTextStyle.black15w700,
                                       )
                                     ],
@@ -232,8 +250,8 @@ class ProfilePage extends StatelessWidget {
                                     children: [
                                       TextSpan(
                                         text: 'Email: ',
-                                        style:
-                                            CustomTextStyle.black15w700.copyWith(
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(
                                           color: Colors.grey[700],
                                         ),
                                       ),
@@ -250,8 +268,8 @@ class ProfilePage extends StatelessWidget {
                                     children: [
                                       TextSpan(
                                         text: 'Временная зона: ',
-                                        style:
-                                            CustomTextStyle.black15w700.copyWith(
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(
                                           color: Colors.grey[700],
                                         ),
                                       ),
@@ -373,8 +391,8 @@ class ProfilePage extends StatelessWidget {
                           style: ButtonStyle(
                             backgroundColor:
                                 const MaterialStatePropertyAll(Colors.red),
-                            shape:
-                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),

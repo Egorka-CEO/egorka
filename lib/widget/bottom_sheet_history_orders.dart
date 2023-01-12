@@ -143,6 +143,17 @@ class _BottomSheetDraggableState
 
     Color colorStatus = Colors.red;
     bool resPaid = state.result.StatusPay! == 'Paid' ? true : false;
+    String typeOrder = 'FBO';
+
+    if (state.result.Group == 'FBS') {
+      typeOrder = 'FBS';
+    } else if (state.result.Group == 'FBO') {
+      typeOrder = 'FBO';
+    } else if (state.result.Group == 'Express') {
+      typeOrder = 'Г';
+    } else if (state.result.Group == 'Marketplace') {
+      typeOrder = 'FBO';
+    }
 
     if (state.result.Status == 'Drafted') {
       colorStatus = Colors.orange;
@@ -179,129 +190,163 @@ class _BottomSheetDraggableState
                 height: 1,
               ),
             ),
-          Container(
-            padding: EdgeInsets.all(20.w),
-            margin: EdgeInsets.only(top: 10.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.r),
-              color: Colors.white,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 10,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                widget.panelController.close();
-                                Navigator.of(context).pushNamed(
-                                    AppRoute.historyOrder,
-                                    arguments: coast[index]);
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
-                                    style: const TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  SizedBox(height: 10.h),
-                                  Row(
+          Stack(
+            children: [
+              Container(
+                padding: EdgeInsets.all(20.w),
+                margin: EdgeInsets.only(top: 10.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.r),
+                  color: Colors.white,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    widget.panelController.close();
+                                    Navigator.of(context).pushNamed(
+                                        AppRoute.historyOrder,
+                                        arguments: coast[index]);
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Image.asset(
-                                        'assets/images/from.png',
-                                        height: 25.h,
+                                      Text(
+                                        'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
+                                        style: const TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                      SizedBox(width: 10.h),
-                                      Flexible(
-                                        child: Text(
-                                          state.result.locations.first.point!
-                                              .address!,
-                                          // state.result.locations.first.point!.address!,
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                      SizedBox(height: 10.h),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/from.png',
+                                            height: 25.h,
+                                          ),
+                                          SizedBox(width: 10.h),
+                                          Flexible(
+                                            child: Text(
+                                              state.result.locations.first
+                                                  .point!.address!,
+                                              // state.result.locations.first.point!.address!,
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 5.h),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/to.png',
+                                            height: 25.h,
+                                          ),
+                                          SizedBox(width: 10.h),
+                                          Flexible(
+                                            child: Text(
+                                              state.result.locations.last.point!
+                                                  .address!,
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      Text(
+                                        status,
+                                        style: TextStyle(
+                                            color: colorStatus,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 5.h),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/to.png',
-                                        height: 25.h,
-                                      ),
-                                      SizedBox(width: 10.h),
-                                      Flexible(
-                                        child: Text(
-                                          state.result.locations.last.point!
-                                              .address!,
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.h),
-                                  Text(
-                                    status,
-                                    style: TextStyle(
-                                        color: colorStatus,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 5.h),
-                      ClipOval(
-                        child: Material(
-                          color: Colors.grey[200],
-                          child: InkWell(
-                            onTap: state.result.Group! == 'Marketplace'
-                                ? () => Navigator.of(context).pushNamed(
-                                        AppRoute.marketplaces,
-                                        arguments: [
-                                          state.result.RecordNumber,
-                                          state.result.RecordPIN
-                                        ])
-                                : () => Navigator.of(context).pushNamed(
-                                        AppRoute.repeatOrder,
-                                        arguments: [
-                                          state.result.RecordNumber,
-                                          state.result.RecordPIN
-                                        ]),
-                            child: SizedBox(
-                              width: 40.h,
-                              height: 40.h,
-                              child: const Icon(Icons.refresh),
+                                ),
+                              ],
                             ),
                           ),
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: ClipOval(
+                                    child: Material(
+                                      color: Colors.grey[200],
+                                      child: InkWell(
+                                        onTap: state.result.Group! ==
+                                                'Marketplace'
+                                            ? () => Navigator.of(context)
+                                                    .pushNamed(
+                                                        AppRoute.marketplaces,
+                                                        arguments: [
+                                                      state.result.RecordNumber,
+                                                      state.result.RecordPIN
+                                                    ])
+                                            : () => Navigator.of(context)
+                                                    .pushNamed(
+                                                        AppRoute.repeatOrder,
+                                                        arguments: [
+                                                      state.result.RecordNumber,
+                                                      state.result.RecordPIN
+                                                    ]),
+                                        child: SizedBox(
+                                          width: 43.h,
+                                          height: 43.h,
+                                          child: const Icon(Icons.refresh),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: SizedBox(
+                    width: 55.w,
+                    child: Center(
+                      child: Text(
+                        typeOrder,
+                        style: TextStyle(
+                          color: Colors.grey[200],
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.w800,
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

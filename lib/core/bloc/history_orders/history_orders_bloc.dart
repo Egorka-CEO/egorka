@@ -33,10 +33,10 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
       HistoryUpdateListEvent event, Emitter<HistoryOrdersState> emit) {
     List<CreateFormModel> coastTemp = [];
     coastTemp.add(event.coast);
-    // coastTemp.addAll(coast);
-    // coast.clear();
-    // coast.addAll(coastTemp);
-    // emit(HistoryUpdateList(coast));
+    coastTemp.addAll(coast);
+    coast.clear();
+    coast.addAll(coastTemp);
+    emit(HistoryUpdateList(coast));
   }
 
   void _getListOrders(

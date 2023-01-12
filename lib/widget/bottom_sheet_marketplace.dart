@@ -30,13 +30,6 @@ class _BottomSheetDraggableState
     extends State<MarketPlaceBottomSheetDraggable> {
   FocusNode focusFrom = FocusNode();
 
-  // List<DeliveryChocie> listChoice = [
-  //   DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png'),
-  //   DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png'),
-  //   DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
-  //   DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png'),
-  // ];
-
   MarketPlaces? address;
 
   @override

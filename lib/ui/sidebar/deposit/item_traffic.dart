@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/invoice.dart';
@@ -51,16 +52,20 @@ class _ItemTrafficState extends State<ItemTraffic> {
                   width: 70.w,
                   child: const Text('Дата с...'),
                 ),
-                CustomTextField(
-                  hintText: '2023-01-10',
-                  focusNode: date1Focus,
-                  textEditingController: controllerFrom,
-                  textInputType: TextInputType.number,
-                  width: 150.w,
-                  formatters: [DateCustomInputFormatter()],
-                  fillColor: Colors.white,
-                  height: 45.h,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
+                GestureDetector(
+                  onTap: () => showDateTime(true),
+                  child: CustomTextField(
+                    hintText: '2023-01-10',
+                    focusNode: date1Focus,
+                    textEditingController: controllerFrom,
+                    textInputType: TextInputType.number,
+                    width: 150.w,
+                    enabled: false,
+                    formatters: [DateCustomInputFormatter()],
+                    fillColor: Colors.white,
+                    height: 45.h,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
+                  ),
                 ),
               ],
             ),
@@ -74,16 +79,20 @@ class _ItemTrafficState extends State<ItemTraffic> {
                   width: 70.w,
                   child: const Text('Дата по...'),
                 ),
-                CustomTextField(
-                  hintText: '2023-01-31',
-                  focusNode: date2Focus,
-                  textEditingController: controllerTo,
-                  textInputType: TextInputType.number,
-                  width: 150.w,
-                  formatters: [DateCustomInputFormatter()],
-                  fillColor: Colors.white,
-                  height: 45.h,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
+                GestureDetector(
+                  onTap: () => showDateTime(false),
+                  child: CustomTextField(
+                    hintText: '2023-01-31',
+                    focusNode: date2Focus,
+                    textEditingController: controllerTo,
+                    textInputType: TextInputType.number,
+                    width: 150.w,
+                    enabled: false,
+                    formatters: [DateCustomInputFormatter()],
+                    fillColor: Colors.white,
+                    height: 45.h,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
+                  ),
                 ),
                 SizedBox(width: 20.w),
                 GestureDetector(
@@ -218,5 +227,93 @@ class _ItemTrafficState extends State<ItemTraffic> {
         ],
       ),
     );
+  }
+
+  void showDateTime(bool flag) async {
+    if (Platform.isAndroid) {
+      final value = await showDialog(
+          context: context,
+          builder: (context) {
+            return DatePickerDialog(
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2010),
+              lastDate: DateTime(2030),
+            );
+          });
+      if (value != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(
+            hour: TimeOfDay.now().hour,
+            minute: TimeOfDay.now().minute,
+          ),
+        );
+        final DateTime temp = DateTime(
+          value.year,
+          value.month,
+          value.day,
+          timePicked != null ? timePicked.hour : 0,
+          timePicked != null ? timePicked.minute : 0,
+        );
+        if (flag) {
+          controllerFrom.text = DateFormat('yyyy-MM-dd').format(temp);
+        } else {
+          controllerTo.text = DateFormat('yyyy-MM-dd').format(temp);
+        }
+      }
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        useSafeArea: false,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (ctx) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey),
+                        ),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: const Text('Готово'),
+                      ),
+                    ),
+                    Container(
+                      height: 200.h,
+                      color: Colors.grey[200],
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        use24hFormat: true,
+                        onDateTimeChanged: (value) {
+                          if (flag) {
+                            controllerFrom.text =
+                                DateFormat('yyyy-MM-dd').format(value);
+                          } else {
+                            controllerTo.text =
+                                DateFormat('yyyy-MM-dd').format(value);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 }

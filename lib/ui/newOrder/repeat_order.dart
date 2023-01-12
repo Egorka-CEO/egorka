@@ -7,7 +7,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/ancillaries.dart';
-import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/delivery_type.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/response_coast_base.dart';
@@ -55,12 +55,6 @@ class RepeatOrderPage extends StatelessWidget {
 
 class RepeatOrderPageState extends StatefulWidget {
   int recordNumber, recordPIN;
-
-  DeliveryChocie deliveryChocie = DeliveryChocie(
-    title: 'Легковая',
-    icon: 'assets/images/ic_car.png',
-    type: 'Car',
-  );
 
   RepeatOrderPageState({
     required this.recordNumber,
@@ -1537,8 +1531,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                               }
                               additionalCost = temp.toString();
                               return TotalPriceWidget(
-                                title: widget.deliveryChocie.title,
-                                icon: widget.deliveryChocie.icon,
+                                title: listChoice.first.title,
+                                icon: listChoice.first.icon,
                                 deliveryCost:
                                     (((coasts!.result!.totalPrice!.base!)
                                                 .ceil()) /
@@ -1833,7 +1827,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
       CalculateCoastEvent(
         routeOrderSender,
         routeOrderReceiver,
-        widget.deliveryChocie.type,
+        listChoice.first.type,
         ancillaries,
         documentController.text,
       ),

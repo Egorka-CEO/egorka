@@ -5,7 +5,9 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/month.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/delivery_type.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/status_order.dart';
 import 'package:egorka/model/type_add.dart';
@@ -45,6 +47,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   int pointReceiveCount = 0;
 
   List<Widget> additionalInfo = [];
+
+  DeliveryChocie? deliveryChocie;
 
   @override
   void initState() {
@@ -104,8 +108,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
 
     if (formOrder!.result!.status == 'Drafted') {
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       statusOrder = StatusOrder.drafted;
-      colorStatus = Colors.orange;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
       status = 'Черновик';
     } else if (formOrder!.result!.status == 'Booked') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
@@ -135,10 +140,10 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     }
 
     for (var element in formOrder!.result!.ancillaries!) {
-      if (element.type == 'LoadMarketplace') {
+      if (element.type == 'LoadMarketplace' && element.price! != 0) {
         additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
       }
-      if (element.type == 'Pallet') {
+      if (element.type == 'Pallet' && element.price! != 0) {
         additionalInfo.add(additional('Паллетирование'));
       }
       if (element.type == 'Load') {
@@ -167,6 +172,14 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       if (element.type == 'Insurance') {
         additionalInfo.add(additional('Страховка'));
       }
+    }
+
+    if (formOrder!.result!.type! == 'Car') {
+      deliveryChocie = listChoice[0];
+    } else if (formOrder!.result!.type! == 'Walk') {
+      deliveryChocie = listChoice[1];
+    } else if (formOrder!.result!.type! == 'Truck') {
+      deliveryChocie = listChoice[2];
     }
 
     setState(() {});
@@ -297,6 +310,10 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                   SizedBox(height: 15.h),
                                   Row(
                                     children: [
+                                      const Icon(
+                                        Icons.calendar_month,
+                                        color: Colors.red,
+                                      ),
                                       SizedBox(width: 10.h),
                                       Text(
                                         pickDate,
@@ -562,11 +579,13 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   child: Stack(
                                                     alignment: Alignment.center,
                                                     children: [
-                                                      Image.asset(
-                                                        'assets/images/ic_leg.png',
-                                                        color: Colors.red,
-                                                        height: 50.h,
-                                                      ),
+                                                      if (deliveryChocie !=
+                                                          null)
+                                                        Image.asset(
+                                                          deliveryChocie!.icon,
+                                                          color: Colors.red,
+                                                          height: 50.h,
+                                                        ),
                                                     ],
                                                   ),
                                                 ),
@@ -643,6 +662,36 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     children: [
                                       SizedBox(width: 10.w),
                                       const Text(
+                                        'Стоимость доставки',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        '${(formOrder!.result!.totalPrice!.base! / 100).ceil()} ₽',
+                                        style: CustomTextStyle.black15w700,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Дополнительные услуги',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        '${(formOrder!.result!.totalPrice!.ancillary! / 100).ceil()} ₽',
+                                        style: CustomTextStyle.black15w700,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
                                         'Стоимость заказа',
                                         style: CustomTextStyle.grey15bold,
                                       ),
@@ -676,6 +725,36 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                           style: CustomTextStyle.black15w700,
                                         );
                                       }),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Номер заказа',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        '№ ${formOrder!.result?.recordNumber}-${formOrder!.result?.recordPIN}',
+                                        style: CustomTextStyle.black15w700,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Статус заказа',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        status,
+                                        style: CustomTextStyle.black15w700,
+                                      ),
                                     ],
                                   ),
                                   SizedBox(height: 70.h),
@@ -832,6 +911,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   resPaid = res == null
                                                       ? true
                                                       : false;
+                                                  getForm();
                                                   setState(() {});
                                                 },
                                                 child: const Text('Депозит'),

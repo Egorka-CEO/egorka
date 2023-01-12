@@ -30,13 +30,6 @@ class AddAdressBottomSheetDraggable extends StatefulWidget {
 class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   FocusNode focusFrom = FocusNode();
 
-  // List<DeliveryChocie> listChoice = [
-  //   DeliveryChocie(title: 'Байк', icon: 'assets/images/ic_bike.png', type: ''),
-  //   DeliveryChocie(title: 'Легковая', icon: 'assets/images/ic_car.png', type: ''),
-  //   DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png', type: ''),
-  //   DeliveryChocie(title: 'Ножками ;)', icon: 'assets/images/ic_leg.png', type: ''),
-  // ];
-
   Address? address;
 
   @override

@@ -33,6 +33,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   InfoForm? formOrder;
   StatusOrder? statusOrder = StatusOrder.rejected;
   bool resPaid = false;
+  bool paidBtmSheet = false;
   DateTime? parseDate;
   DateTime? dateTime;
   String day = '';
@@ -108,85 +109,92 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
       day = DateFormat('dd').format(parseDate!);
       pickDay = DateFormat.EEEE('ru').format(parseDate!);
       pickDate =
-          '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)}';
+          '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
       //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
 
-      if (formOrder!.result!.status == 'Drafted') {
-        resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-        statusOrder = StatusOrder.drafted;
-        colorStatus = resPaid ? Colors.green : Colors.orange;
-        status = 'Черновик';
-      } else if (formOrder!.result!.status == 'Booked') {
-        resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-        colorStatus = resPaid ? Colors.green : Colors.orange;
-        statusOrder = StatusOrder.booked;
-        status = resPaid ? 'Оплачено' : 'Активно';
-      } else if (formOrder!.result!.status == 'Completed') {
-        statusOrder = StatusOrder.completed;
-        colorStatus = Colors.green;
-        resPaid = true;
-        status = 'Выполнено';
-      } else if (formOrder!.result!.status == 'Cancelled') {
-        statusOrder = StatusOrder.cancelled;
-        colorStatus = Colors.red;
-        resPaid = true;
-        status = 'Отменено';
-      } else if (formOrder!.result!.status == 'Rejected') {
-        statusOrder = StatusOrder.rejected;
-        colorStatus = Colors.orange;
-        resPaid = true;
-        status = 'Отказано';
-      } else if (formOrder!.result!.status == 'Error') {
-        statusOrder = StatusOrder.error;
-        colorStatus = Colors.red;
-        resPaid = true;
-        status = 'Ошибка';
-      }
-
-      for (var element in formOrder!.result!.ancillaries!) {
-        if (element.type == 'LoadMarketplace' && element.price! != 0) {
-          additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
-        }
-        if (element.type == 'Pallet' && element.price! != 0) {
-          additionalInfo.add(additional('Паллетирование'));
-        }
-        if (element.type == 'Load') {
-          additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
-        }
-        if (element.type == 'Post') {
-          additionalInfo.add(additional('Отправка почтой'));
-        }
-        if (element.type == 'DoorToDoor') {
-          additionalInfo.add(additional('Доставка до двери'));
-        }
-        if (element.type == 'Proxy') {
-          additionalInfo.add(additional('Оформление доверенности'));
-        }
-        if (element.type == 'Industrial') {
-          additionalInfo.add(additional('Промзона'));
-        }
-        if (element.type == 'TrainSend') {
-          additionalInfo.add(
-              additional('Отправить посылку поездом, автобусом или самолетом'));
-        }
-        if (element.type == 'TrainReceive') {
-          additionalInfo.add(
-              additional('Встретить посылку поездом, автобусом или самолетом'));
-        }
-        if (element.type == 'Insurance') {
-          additionalInfo.add(additional('Страховка'));
-        }
-      }
-
-      if (formOrder!.result!.type! == 'Car') {
-        deliveryChocie = listChoice[0];
-      } else if (formOrder!.result!.type! == 'Walk') {
-        deliveryChocie = listChoice[1];
-      } else if (formOrder!.result!.type! == 'Truck') {
-        deliveryChocie = listChoice[2];
-      }
-      setState(() {});
+      checkOrder();
     }
+  }
+
+  void checkOrder() {
+    if (formOrder!.result!.status == 'Drafted') {
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
+      status = 'Черновик';
+      paidBtmSheet = resPaid;
+    } else if (formOrder!.result!.status == 'Booked') {
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
+      colorStatus = resPaid ? Colors.green : Colors.orange;
+      status = resPaid ? 'Оплачено' : 'Активно';
+      paidBtmSheet = !resPaid;
+    } else if (formOrder!.result!.status == 'Completed') {
+      paidBtmSheet = false;
+      resPaid = true;
+      colorStatus = Colors.green;
+      status = 'Выполнено';
+    } else if (formOrder!.result!.status == 'Cancelled') {
+      paidBtmSheet = false;
+      resPaid = false;
+      colorStatus = Colors.red;
+      status = 'Отменено';
+    } else if (formOrder!.result!.status == 'Rejected') {
+      paidBtmSheet = false;
+      resPaid = false;
+      colorStatus = Colors.orange;
+      status = 'Отказано';
+    } else if (formOrder!.result!.status == 'Error') {
+      paidBtmSheet = false;
+      resPaid = false;
+      colorStatus = Colors.red;
+      status = 'Ошибка';
+    }
+
+    additionalInfo.clear();
+
+    for (var element in formOrder!.result!.ancillaries!) {
+      if (element.type == 'LoadMarketplace' && element.price! != 0) {
+        additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
+      }
+      if (element.type == 'Pallet' && element.price! != 0) {
+        additionalInfo.add(additional('Паллетирование'));
+      }
+      if (element.type == 'Load') {
+        additionalInfo.add(additional('Услуга помощи погрузки / разгрузки'));
+      }
+      if (element.type == 'Post') {
+        additionalInfo.add(additional('Отправка почтой'));
+      }
+      if (element.type == 'DoorToDoor') {
+        additionalInfo.add(additional('Доставка до двери'));
+      }
+      if (element.type == 'Proxy') {
+        additionalInfo.add(additional('Оформление доверенности'));
+      }
+      if (element.type == 'Industrial') {
+        additionalInfo.add(additional('Промзона'));
+      }
+      if (element.type == 'TrainSend') {
+        additionalInfo.add(
+            additional('Отправить посылку поездом, автобусом или самолетом'));
+      }
+      if (element.type == 'TrainReceive') {
+        additionalInfo.add(
+            additional('Встретить посылку поездом, автобусом или самолетом'));
+      }
+      if (element.type == 'Insurance') {
+        additionalInfo.add(additional('Страховка'));
+      }
+    }
+
+    if (formOrder!.result!.type! == 'Car') {
+      deliveryChocie = listChoice[0];
+    } else if (formOrder!.result!.type! == 'Walk') {
+      deliveryChocie = listChoice[1];
+    } else if (formOrder!.result!.type! == 'Truck') {
+      deliveryChocie = listChoice[2];
+    }
+
+    setState(() {});
   }
 
   @override
@@ -312,9 +320,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                   SizedBox(height: 15.h),
                                   Row(
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.calendar_month,
-                                        color: Colors.red,
+                                        color: Colors.grey[500],
                                       ),
                                       SizedBox(width: 10.w),
                                       Text(
@@ -636,7 +644,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         const Spacer(),
                                         Text(
                                           '$declaredCost ₽',
-                                          style: CustomTextStyle.black15w700,
+                                          style: CustomTextStyle.black15w700
+                                              .copyWith(
+                                                  color: Colors.grey[500]),
                                         ),
                                       ],
                                     ),
@@ -655,7 +665,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         const Spacer(),
                                         Text(
                                           formOrder!.result!.description!,
-                                          style: CustomTextStyle.black15w700,
+                                          style: CustomTextStyle.black15w700
+                                              .copyWith(
+                                                  color: Colors.grey[500]),
                                         ),
                                       ],
                                     ),
@@ -664,13 +676,30 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                     children: [
                                       SizedBox(width: 10.w),
                                       const Text(
-                                        'Стоимость заказа',
+                                        'Стоимость доставки',
                                         style: CustomTextStyle.grey15bold,
                                       ),
                                       const Spacer(),
                                       Text(
-                                        '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ₽',
-                                        style: CustomTextStyle.black15w700,
+                                        '${(formOrder!.result!.totalPrice!.base! / 100).ceil()} ₽',
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(color: Colors.grey[500]),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Дополнительные услуги',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        '${(formOrder!.result!.totalPrice!.ancillary! / 100).ceil()} ₽',
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(color: Colors.grey[500]),
                                       ),
                                     ],
                                   ),
@@ -694,7 +723,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                   auth.result!.agent != null)
                                               ? 'Депозит'
                                               : 'Карта',
-                                          style: CustomTextStyle.black15w700,
+                                          style: CustomTextStyle.black15w700
+                                              .copyWith(
+                                                  color: Colors.grey[500]),
                                         );
                                       }),
                                     ],
@@ -710,7 +741,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                       const Spacer(),
                                       Text(
                                         '№ ${formOrder!.result?.recordNumber}-${formOrder!.result?.recordPIN}',
-                                        style: CustomTextStyle.black15w700,
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(color: Colors.grey[500]),
                                       ),
                                     ],
                                   ),
@@ -719,12 +751,38 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                     children: [
                                       SizedBox(width: 10.w),
                                       const Text(
-                                        'Статус заказа',
+                                        'Статус оплаты',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5.h, horizontal: 10.h),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12.r),
+                                          color: resPaid
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                        child: Text(
+                                          resPaid ? "Оплачено" : "Не оплачено",
+                                          style: CustomTextStyle.white15w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Итого',
                                         style: CustomTextStyle.grey15bold,
                                       ),
                                       const Spacer(),
                                       Text(
-                                        status,
+                                        '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ₽',
                                         style: CustomTextStyle.black15w700,
                                       ),
                                     ],
@@ -780,7 +838,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                         ),
                       ],
                     ),
-                    if (!resPaid)
+                    if (paidBtmSheet)
                       BlocBuilder<ProfileBloc, ProfileState>(
                           builder: (context, snapshot) {
                         final auth =

@@ -34,6 +34,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   InfoForm? formOrder;
   StatusOrder? statusOrder = StatusOrder.rejected;
   bool resPaid = false;
+  bool paidBtmSheet = false;
   DateTime? parseDate;
   DateTime? dateTime;
   String day = '';
@@ -104,40 +105,45 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     day = DateFormat('dd').format(parseDate!);
     pickDay = DateFormat.EEEE('ru').format(parseDate!);
     pickDate =
-        '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)}';
+        '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
     //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
+    checkOrder();
+  }
 
+  void checkOrder() {
     if (formOrder!.result!.status == 'Drafted') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-      statusOrder = StatusOrder.drafted;
       colorStatus = resPaid ? Colors.green : Colors.orange;
       status = 'Черновик';
+      paidBtmSheet = resPaid;
     } else if (formOrder!.result!.status == 'Booked') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = resPaid ? Colors.green : Colors.orange;
-      statusOrder = StatusOrder.booked;
       status = resPaid ? 'Оплачено' : 'Активно';
+      paidBtmSheet = !resPaid;
     } else if (formOrder!.result!.status == 'Completed') {
-      statusOrder = StatusOrder.completed;
-      colorStatus = Colors.green;
+      paidBtmSheet = false;
       resPaid = true;
+      colorStatus = Colors.green;
       status = 'Выполнено';
     } else if (formOrder!.result!.status == 'Cancelled') {
-      statusOrder = StatusOrder.cancelled;
+      paidBtmSheet = false;
+      resPaid = false;
       colorStatus = Colors.red;
-      resPaid = true;
       status = 'Отменено';
     } else if (formOrder!.result!.status == 'Rejected') {
-      statusOrder = StatusOrder.rejected;
+      paidBtmSheet = false;
+      resPaid = false;
       colorStatus = Colors.orange;
-      resPaid = true;
       status = 'Отказано';
     } else if (formOrder!.result!.status == 'Error') {
-      statusOrder = StatusOrder.error;
+      paidBtmSheet = false;
+      resPaid = false;
       colorStatus = Colors.red;
-      resPaid = true;
       status = 'Ошибка';
     }
+
+    additionalInfo.clear();
 
     for (var element in formOrder!.result!.ancillaries!) {
       if (element.type == 'LoadMarketplace' && element.price! != 0) {
@@ -310,9 +316,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                   SizedBox(height: 15.h),
                                   Row(
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.calendar_month,
-                                        color: Colors.red,
+                                        color: Colors.grey[500],
                                       ),
                                       SizedBox(width: 10.h),
                                       Text(
@@ -634,7 +640,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         const Spacer(),
                                         Text(
                                           '$declaredCost ₽',
-                                          style: CustomTextStyle.black15w700,
+                                          style: CustomTextStyle.black15w700
+                                              .copyWith(
+                                                  color: Colors.grey[500]),
                                         ),
                                       ],
                                     ),
@@ -653,7 +661,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         const Spacer(),
                                         Text(
                                           formOrder!.result!.description!,
-                                          style: CustomTextStyle.black15w700,
+                                          style: CustomTextStyle.black15w700
+                                              .copyWith(
+                                                  color: Colors.grey[500]),
                                         ),
                                       ],
                                     ),
@@ -668,7 +678,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       const Spacer(),
                                       Text(
                                         '${(formOrder!.result!.totalPrice!.base! / 100).ceil()} ₽',
-                                        style: CustomTextStyle.black15w700,
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(color: Colors.grey[500]),
                                       ),
                                     ],
                                   ),
@@ -683,22 +694,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       const Spacer(),
                                       Text(
                                         '${(formOrder!.result!.totalPrice!.ancillary! / 100).ceil()} ₽',
-                                        style: CustomTextStyle.black15w700,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 20.h),
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 10.w),
-                                      const Text(
-                                        'Стоимость заказа',
-                                        style: CustomTextStyle.grey15bold,
-                                      ),
-                                      const Spacer(),
-                                      Text(
-                                        '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ₽',
-                                        style: CustomTextStyle.black15w700,
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(color: Colors.grey[500]),
                                       ),
                                     ],
                                   ),
@@ -722,7 +719,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   auth.result!.agent != null)
                                               ? 'Депозит'
                                               : 'Карта',
-                                          style: CustomTextStyle.black15w700,
+                                          style: CustomTextStyle.black15w700
+                                              .copyWith(
+                                                  color: Colors.grey[500]),
                                         );
                                       }),
                                     ],
@@ -738,7 +737,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       const Spacer(),
                                       Text(
                                         '№ ${formOrder!.result?.recordNumber}-${formOrder!.result?.recordPIN}',
-                                        style: CustomTextStyle.black15w700,
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(color: Colors.grey[500]),
                                       ),
                                     ],
                                   ),
@@ -747,12 +747,38 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     children: [
                                       SizedBox(width: 10.w),
                                       const Text(
-                                        'Статус заказа',
+                                        'Статус оплаты',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      const Spacer(),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5.h, horizontal: 10.h),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12.r),
+                                          color: resPaid
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                        child: Text(
+                                          resPaid ? "Оплачено" : "Не оплачено",
+                                          style: CustomTextStyle.white15w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.w),
+                                      const Text(
+                                        'Итого',
                                         style: CustomTextStyle.grey15bold,
                                       ),
                                       const Spacer(),
                                       Text(
-                                        status,
+                                        '${double.tryParse(formOrder!.result!.totalPrice!.total!)!.ceil()} ₽',
                                         style: CustomTextStyle.black15w700,
                                       ),
                                     ],
@@ -808,7 +834,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                         ),
                       ],
                     ),
-                    if (!resPaid)
+                    if (paidBtmSheet)
                       BlocBuilder<ProfileBloc, ProfileState>(
                         builder: (context, snapshot) {
                           final auth =

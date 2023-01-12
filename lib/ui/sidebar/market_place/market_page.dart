@@ -228,10 +228,35 @@ class _MarketPageState extends State<MarketPages>
                                   style: CustomTextStyle.red15,
                                 ),
                               ),
-                              const Align(
-                                child: Text(
-                                  'Оформление заказа',
-                                  style: CustomTextStyle.black15w500,
+                              Align(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'Доставка до маркетплейса',
+                                      style: CustomTextStyle.black15w500,
+                                    ),
+                                    PopupMenuButton<String>(
+                                      tooltip: 'Способ доставки',
+                                      itemBuilder: (context) {
+                                        return [
+                                          const PopupMenuItem(
+                                            value: 'test',
+                                            child: Text(
+                                              'Экспресс',
+                                              style:
+                                                  CustomTextStyle.black15w500,
+                                            ),
+                                          )
+                                        ];
+                                      },
+                                      child:
+                                          const Icon(Icons.keyboard_arrow_down),
+                                      onSelected: (v) {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
                                 ),
                               )
                             ],
@@ -300,11 +325,6 @@ class _MarketPageState extends State<MarketPages>
                                           CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(height: 15.h),
-                                        const Text(
-                                          'Доставка до маркетплейса',
-                                          style: CustomTextStyle.black15w700,
-                                        ),
-                                        SizedBox(height: 5.h),
                                         const Text(
                                           'Как это работает?',
                                           style: CustomTextStyle.red15,

@@ -23,6 +23,15 @@ void main() async {
   await Firebase.initializeApp();
   await FirebaseMessaging.instance.requestPermission();
 
+  FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    print("message recieved");
+    print(event.notification!.body);
+  });
+
+  String? token = await FirebaseMessaging.instance.getToken();
+
+  print('object ${token}');
+
   runApp(const MyApp());
 }
 

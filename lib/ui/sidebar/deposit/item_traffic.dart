@@ -35,8 +35,33 @@ class _ItemTrafficState extends State<ItemTraffic> {
 
   final FocusNode date2Focus = FocusNode();
 
+  DateTime? dateFrom;
+  DateTime? dateTo;
+
   TextEditingController controllerFrom = TextEditingController();
   TextEditingController controllerTo = TextEditingController();
+
+  Widget statusOrder(String str) {
+    if (str == 'Active') {
+      return const Text(
+        'Активно',
+        style: TextStyle(color: Colors.orange),
+        textAlign: TextAlign.center,
+      );
+    } else if (str == 'Paid') {
+      return const Text(
+        'Оплачено',
+        style: TextStyle(color: Colors.green),
+        textAlign: TextAlign.center,
+      );
+    } else {
+      return Text(
+        str,
+        style: const TextStyle(color: Colors.orange),
+        textAlign: TextAlign.center,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +80,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
                 GestureDetector(
                   onTap: () => showDateTime(true),
                   child: CustomTextField(
-                    hintText: '2023-01-10',
+                    hintText: '10.01.2023',
                     focusNode: date1Focus,
                     textEditingController: controllerFrom,
                     textInputType: TextInputType.number,
@@ -82,7 +107,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
                 GestureDetector(
                   onTap: () => showDateTime(false),
                   child: CustomTextField(
-                    hintText: '2023-01-31',
+                    hintText: '31.01.2023',
                     focusNode: date2Focus,
                     textEditingController: controllerTo,
                     textInputType: TextInputType.number,
@@ -98,8 +123,12 @@ class _ItemTrafficState extends State<ItemTraffic> {
                 GestureDetector(
                   onTap: () {
                     FilterDate filterDate = FilterDate(
-                      from: controllerFrom.text,
-                      to: controllerTo.text,
+                      from: dateFrom != null
+                          ? DateFormat('yyyy-MM-dd').format(dateFrom!)
+                          : '',
+                      to: dateTo != null
+                          ? DateFormat('yyyy-MM-dd').format(dateTo!)
+                          : '',
                     );
                     widget.filter.filterDate = filterDate;
                     loadDeposit();
@@ -205,11 +234,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
                                 ),
                               ),
                               Expanded(
-                                child: Text(
-                                  list[index - 1].status!,
-                                  style: const TextStyle(color: Colors.orange),
-                                  textAlign: TextAlign.center,
-                                ),
+                                child: statusOrder(list[index - 1].status!),
                               ),
                               SizedBox(width: 10.w),
                             ],
@@ -240,26 +265,12 @@ class _ItemTrafficState extends State<ItemTraffic> {
               lastDate: DateTime(2030),
             );
           });
-      if (value != null) {
-        final TimeOfDay? timePicked = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay(
-            hour: TimeOfDay.now().hour,
-            minute: TimeOfDay.now().minute,
-          ),
-        );
-        final DateTime temp = DateTime(
-          value.year,
-          value.month,
-          value.day,
-          timePicked != null ? timePicked.hour : 0,
-          timePicked != null ? timePicked.minute : 0,
-        );
-        if (flag) {
-          controllerFrom.text = DateFormat('yyyy-MM-dd').format(temp);
-        } else {
-          controllerTo.text = DateFormat('yyyy-MM-dd').format(temp);
-        }
+      if (flag) {
+        controllerFrom.text = DateFormat('dd.MM.yyyy').format(value);
+        dateFrom = value;
+      } else {
+        controllerTo.text = DateFormat('dd.MM.yyyy').format(value);
+        dateTo = value;
       }
     } else {
       showDialog(
@@ -299,10 +310,12 @@ class _ItemTrafficState extends State<ItemTraffic> {
                         onDateTimeChanged: (value) {
                           if (flag) {
                             controllerFrom.text =
-                                DateFormat('yyyy-MM-dd').format(value);
+                                DateFormat('dd.MM.yyyy').format(value);
+                            dateFrom = value;
                           } else {
                             controllerTo.text =
-                                DateFormat('yyyy-MM-dd').format(value);
+                                DateFormat('dd.MM.yyyy').format(value);
+                            dateTo = value;
                           }
                         },
                       ),

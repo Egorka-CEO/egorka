@@ -18,7 +18,6 @@ import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/cutom_input_formatter.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/total_price.dart';
@@ -30,6 +29,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
 import 'package:geocoding/geocoding.dart' as geo;
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MarketPage extends StatelessWidget {
@@ -232,10 +232,6 @@ class _MarketPageState extends State<MarketPages>
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Text(
-                                      'Доставка до маркетплейса',
-                                      style: CustomTextStyle.black15w500,
-                                    ),
                                     PopupMenuButton<String>(
                                       tooltip: 'Способ доставки',
                                       itemBuilder: (context) {
@@ -244,14 +240,20 @@ class _MarketPageState extends State<MarketPages>
                                             value: 'test',
                                             child: Text(
                                               'Экспресс',
-                                              style:
-                                                  CustomTextStyle.black15w500,
+                                              style: CustomTextStyle.black15w500,
                                             ),
                                           )
                                         ];
                                       },
-                                      child:
+                                      child: Row(
+                                        children: const [
+                                          Text(
+                                            'Доставка до маркетплейса',
+                                            style: CustomTextStyle.black15w500,
+                                          ),
                                           const Icon(Icons.keyboard_arrow_down),
+                                        ],
+                                      ),
                                       onSelected: (v) {
                                         Navigator.of(context).pop();
                                       },
@@ -824,9 +826,14 @@ class _MarketPageState extends State<MarketPages>
                                                     TextInputType.number,
                                                 textEditingController:
                                                     phoneController,
-                                                formatters: [
-                                                  CustomInputFormatter()
-                                                ],
+                                                // formatters: [
+                                                //   MaskTextInputFormatter(
+                                                //     mask: '+# (###) ###-##-##',
+                                                //     filter: {
+                                                //       "#": RegExp(r'[0-9]')
+                                                //     },
+                                                //   )
+                                                // ],
                                               ),
                                             ),
                                           ],

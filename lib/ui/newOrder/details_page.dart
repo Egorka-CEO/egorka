@@ -5,10 +5,10 @@ import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/cutom_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -346,9 +346,12 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       widget.routeOrder.details?.phone = controllerPhone.text;
                     },
                     textEditingController: controllerPhone,
-                    formatters: [
-                      CustomInputFormatter(),
-                    ],
+                    // formatters: [
+                    //   MaskTextInputFormatter(
+                    //     mask: '+# (###) ###-##-##',
+                    //     filter: {"#": RegExp(r'[0-9]')},
+                    //   )
+                    // ],
                   ),
                 ),
               ),

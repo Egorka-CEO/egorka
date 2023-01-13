@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   
+  mask_text_input_formatter: ^2.4.0
   flutter_svg: ^1.0.3
   google_maps_flutter: ^2.2.0
   cupertino_icons: ^1.0.2

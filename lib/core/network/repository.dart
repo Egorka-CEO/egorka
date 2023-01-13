@@ -13,7 +13,7 @@ import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/model/payment.dart';
+import 'package:egorka/model/payment_card.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -300,8 +300,7 @@ class Repository {
     }
   }
 
-  Future<void> paymentCard(Payment payment) async {
-    //?
+  Future<PaymentCard?> paymentCard(int id, int pin) async {
     var authData = await auth();
     final response = await dio.post(
       '$server/service/payment/',
@@ -310,14 +309,20 @@ class Repository {
         "Auth": authData,
         "Method": "Redirect",
         "Body": {
-          "ID": payment.iD,
-          "PIN": payment.pIN,
-          "Gate": payment.gate,
-          "Return": payment.answer,
+          "ID": id,
+          "PIN": pin,
+          "Gate": "Tinkoff",
+          "Logic": "Card",
         },
         "Params": params()
       },
     );
+
+    if (response.data['Result'] != null) {
+      PaymentCard? res = PaymentCard.fromJson(response.data['Result']);
+      return res;
+    }
+    return null;
   }
 
   //Авторизация Пользователь

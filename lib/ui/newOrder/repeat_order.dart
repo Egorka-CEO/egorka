@@ -1830,6 +1830,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
         listChoice.first.type,
         ancillaries,
         documentController.text,
+        coasts != null ? coasts!.result!.id : null,
       ),
     );
   }

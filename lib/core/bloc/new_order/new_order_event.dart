@@ -26,6 +26,7 @@ class CalculateCoastEvent extends NewOrderEvent {
   String typeCoast;
   List<Ancillaries>? ancillaries;
   String description;
+  String? id;
 
   CalculateCoastEvent(
     this.start,
@@ -33,6 +34,7 @@ class CalculateCoastEvent extends NewOrderEvent {
     this.typeCoast,
     this.ancillaries,
     this.description,
+    this.id,
   );
 }
 

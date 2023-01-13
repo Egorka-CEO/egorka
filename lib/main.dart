@@ -24,13 +24,12 @@ void main() async {
   await FirebaseMessaging.instance.requestPermission();
 
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-    print("message recieved");
-    print(event.notification!.body);
+    print("message from push ${event.notification!.body}");
   });
 
   String? token = await FirebaseMessaging.instance.getToken();
 
-  print('object ${token}');
+  print('fcm token ${token}');
 
   runApp(const MyApp());
 }

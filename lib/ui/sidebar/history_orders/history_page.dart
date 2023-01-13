@@ -9,10 +9,12 @@ import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/delivery_type.dart';
 import 'package:egorka/model/info_form.dart';
+import 'package:egorka/model/payment_card.dart';
 import 'package:egorka/model/status_order.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
+import 'package:egorka/widget/payment_webview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -944,7 +946,53 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                               )
                                             else
                                               ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () async {
+                                                  PaymentCard? res =
+                                                      await Repository()
+                                                          .paymentCard(
+                                                    formOrder!.result!.invoices!
+                                                        .first.iD!,
+                                                    formOrder!.result!.invoices!
+                                                        .first.pIN!,
+                                                  );
+                                                  if (res != null) {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return PaymentWebView(
+                                                            res.url!,
+                                                            formOrder!
+                                                                .result!
+                                                                .invoices!
+                                                                .first
+                                                                .iD!,
+                                                            formOrder!
+                                                                .result!
+                                                                .invoices!
+                                                                .first
+                                                                .pIN!,
+                                                          );
+                                                        },
+                                                      ),
+                                                    ).then((value) {
+                                                      if (value != null) {
+                                                        if (value) {
+                                                          MessageDialogs()
+                                                              .completeDialog(
+                                                                  text:
+                                                                      'Олачено');
+                                                          getForm();
+                                                        } else {
+                                                          MessageDialogs()
+                                                              .errorDialog(
+                                                                  text:
+                                                                      'Ошибка оплаты');
+                                                        }
+                                                      }
+                                                    });
+                                                  }
+                                                },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.red,
                                                   shape: RoundedRectangleBorder(

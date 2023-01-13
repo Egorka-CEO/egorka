@@ -1,44 +1,30 @@
 class PaymentCard {
-  String iD;
-  String pIN;
-  String gate;
-  Return? answer;
+  int? iD;
+  int? pIN;
+  String? logic;
+  String? url;
+  String? status;
 
   PaymentCard({
     required this.iD,
     required this.pIN,
-    required this.gate,
-    required this.answer,
+    required this.logic,
+    required this.url,
+    required this.status,
   });
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['ID'] = iD;
-    data['PIN'] = pIN;
-    data['Gate'] = gate;
-    if (answer != null) {
-      data['Return'] = answer?.toJson();
-    }
-    return data;
-  }
-}
-
-class Return {
-  String success;
-  String failure;
-  String pending;
-
-  Return({
-    required this.success,
-    required this.failure,
-    required this.pending,
-  });
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['Success'] = success;
-    data['Failure'] = failure;
-    data['Pending'] = pending;
-    return data;
+  factory PaymentCard.fromJson(Map<String, dynamic> json) {
+    final iD = json['ID'];
+    final pIN = json['PIN'];
+    final logic = json['Logic'];
+    final url = json['URL'];
+    final status = json['Status'];
+    return PaymentCard(
+      iD: iD,
+      pIN: pIN,
+      logic: logic,
+      url: url,
+      status: status,
+    );
   }
 }

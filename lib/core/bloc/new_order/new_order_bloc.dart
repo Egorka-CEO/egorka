@@ -96,6 +96,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
 
     final res = await Repository().getCoastAdvanced(
       CoastAdvanced(
+        iD: event.id,
         type: event.typeCoast,
         locations: locations,
         ancillaries: event.ancillaries,

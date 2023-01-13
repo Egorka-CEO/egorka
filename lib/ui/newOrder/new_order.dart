@@ -1611,8 +1611,14 @@ class _NewOrderPageState extends State<NewOrderPageState> {
     }
 
     BlocProvider.of<NewOrderPageBloc>(context).add(
-      CalculateCoastEvent(routeOrderSender, routeOrderReceiver,
-          widget.deliveryChocie.type, ancillaries, documentController.text),
+      CalculateCoastEvent(
+        routeOrderSender,
+        routeOrderReceiver,
+        widget.deliveryChocie.type,
+        ancillaries,
+        documentController.text,
+        widget.order.result!.id,
+      ),
     );
   }
 

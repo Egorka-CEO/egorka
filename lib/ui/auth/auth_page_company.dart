@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/model/auth_error.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -198,22 +199,22 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
   void _signIn() async {
     AuthUser? res;
     _btnController.start();
-    if (_companyController.text.isNotEmpty) {
-      res = await Repository().loginUsernameAgent(_loginController.text,
-          _passwordController.text, _companyController.text);
-    }
-    if (res != null) {
+    res = await Repository().loginUsernameAgent(_loginController.text,
+        _passwordController.text, _companyController.text);
+
+    if (res?.errors == null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
       storage.setTypeUser('1');
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
       storage.setCompany(_companyController.text);
-      // BlocProvider.of<DepositBloc>(context).add(LoadReplenishmentDepositEvent());
-      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
+      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res!));
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();
+      MessageDialogs()
+          .showAlert('Ошибка', authError(res!.errors!.first.description));
     }
     Future.delayed(const Duration(seconds: 1), (() {
       _btnController.reset();

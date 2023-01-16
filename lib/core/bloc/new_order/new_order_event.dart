@@ -21,6 +21,7 @@ class NewOrder extends NewOrderEvent {
 }
 
 class CalculateCoastEvent extends NewOrderEvent {
+  DateTime? time;
   List<PointDetails> start;
   List<PointDetails> end;
   String typeCoast;
@@ -29,6 +30,7 @@ class CalculateCoastEvent extends NewOrderEvent {
   String? id;
 
   CalculateCoastEvent(
+    this.time,
     this.start,
     this.end,
     this.typeCoast,

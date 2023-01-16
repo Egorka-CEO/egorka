@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -18,9 +19,11 @@ import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/total_price.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class NewOrderPage extends StatelessWidget {
@@ -88,6 +91,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   bool additional3 = false;
   bool additional4 = false;
 
+  DateTime? time;
+
   double minSlider = 0;
   double maxSlider = 200;
 
@@ -115,6 +120,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
 
   TextEditingController whereToSend = TextEditingController();
   TextEditingController whoToSend = TextEditingController();
+
+  TextEditingController startOrderController = TextEditingController();
 
   final weightControllerSlider = StreamController<int>();
   final additionalController = StreamController<bool>();
@@ -368,6 +375,49 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              SizedBox(width: 5.w),
+                              const Text(
+                                'Когда забрать?',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5.h),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: showDateTime,
+                                    child: CustomTextField(
+                                      height: 45.h,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
+                                      fillColor: Colors.grey[200],
+                                      hintText: '',
+                                      enabled: false,
+                                      textEditingController:
+                                          startOrderController,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                const Icon(
+                                  Icons.help_outline_outlined,
+                                  color: Colors.red,
+                                ),
+                                SizedBox(width: 10.w),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -1656,6 +1706,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
 
     BlocProvider.of<NewOrderPageBloc>(context).add(
       CalculateCoastEvent(
+        time,
         routeOrderSender,
         routeOrderReceiver,
         widget.deliveryChocie.type,
@@ -1664,6 +1715,88 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         widget.order.result!.id,
       ),
     );
+  }
+
+  void showDateTime() async {
+    if (Platform.isAndroid) {
+      final value = await showDialog(
+          context: context,
+          builder: (context) {
+            return DatePickerDialog(
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2010),
+              lastDate: DateTime(2030),
+            );
+          });
+      if (value != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(
+            hour: TimeOfDay.now().hour,
+            minute: TimeOfDay.now().minute,
+          ),
+        );
+        final DateTime temp = DateTime(
+          value.year,
+          value.month,
+          value.day,
+          timePicked != null ? timePicked.hour : 0,
+          timePicked != null ? timePicked.minute : 0,
+        );
+        startOrderController.text = DateFormat('dd.MM.yyyy').format(temp);
+        time = temp;
+      }
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        useSafeArea: false,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (ctx) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey),
+                        ),
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                          calc();
+                        },
+                        child: const Text('Готово'),
+                      ),
+                    ),
+                    Container(
+                      height: 200.h,
+                      color: Colors.grey[200],
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        use24hFormat: true,
+                        onDateTimeChanged: (value) {
+                          startOrderController.text =
+                              DateFormat('dd.MM.yyyy').format(value);
+                          time = value;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 
   void scrolling() {

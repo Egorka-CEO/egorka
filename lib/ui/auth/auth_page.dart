@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/model/auth_error.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -181,62 +182,22 @@ class _AuthPageState extends State<AuthPage> {
     _btnController.start();
     res = await Repository()
         .loginPhoneUser(_phoneController.text, _passwordController.text);
-    if (res != null) {
+
+    if (res?.errors == null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
       storage.setTypeUser('0');
       storage.setLogin(_phoneController.text);
       storage.setPassword(_passwordController.text);
-      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
+      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res!));
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();
+      MessageDialogs()
+          .showAlert('Ошибка', authError(res!.errors!.first.description));
     }
     Future.delayed(const Duration(seconds: 1), (() {
       _btnController.reset();
     }));
-  }
-}
-
-class CustomInputFormatter extends TextInputFormatter {
-  // +7 (___) ___-__-__
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-
-    if (newValue.text.length > oldValue.text.length) {
-      if (newValue.text[0] == '7') {
-        return newValue.copyWith(
-            text: '+7 (', selection: const TextSelection.collapsed(offset: 4));
-      }
-      if (newValue.selection.baseOffset == 2) {
-        return newValue.copyWith(
-            text: '${newValue.text} (',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 2));
-      }
-      if (newValue.selection.baseOffset == 7) {
-        return newValue.copyWith(
-            text: '${newValue.text}) ',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 2));
-      }
-      if (newValue.selection.baseOffset == 12) {
-        return newValue.copyWith(
-            text: '${newValue.text}-',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 1));
-      }
-      if (newValue.selection.baseOffset == 15) {
-        return newValue.copyWith(
-            text: '${newValue.text}-',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 1));
-      }
-    }
-
-    return newValue.copyWith(
-        text: text, selection: TextSelection.collapsed(offset: text.length));
   }
 }

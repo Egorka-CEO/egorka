@@ -106,11 +106,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           );
           fromController.text = current.address;
 
-          if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
-            coasts.clear();
-            BlocProvider.of<SearchAddressBloc>(context).add(
-                SearchAddressPolilyne([suggestionsStart], [suggestionsEnd]));
-          }
+          calc();
         }
         return true;
       }, builder: (context, snapshot) {
@@ -334,7 +330,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            focusTo.hasFocus
+                            toController.text.isNotEmpty
                                 ? GestureDetector(
                                     onTap: () {
                                       bloc.add(DeletePolilyneEvent());
@@ -360,7 +356,45 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       ),
                                     ),
                                   )
-                                : const SizedBox(),
+                                : TextButton(
+                                    onPressed: () async {
+                                      focusFrom.unfocus();
+                                      final res = await Navigator.of(context)
+                                          .pushNamed(AppRoute.selectPoint);
+                                      if (res != null && res is Suggestions) {
+                                        suggestionsEnd = res;
+                                        toController.text =
+                                            suggestionsEnd!.name;
+                                        calc();
+                                      }
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10.r),
+                                            topRight: Radius.circular(10.r),
+                                          ),
+                                        ),
+                                      ),
+                                      backgroundColor:
+                                          const MaterialStatePropertyAll(
+                                              Colors.transparent),
+                                      foregroundColor:
+                                          const MaterialStatePropertyAll(
+                                              Colors.white),
+                                      overlayColor: MaterialStatePropertyAll(
+                                        Colors.grey[400],
+                                      ),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'Карта',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
                             SizedBox(width: 15.w),
                           ],
                         ),
@@ -471,14 +505,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             textAlign: TextAlign.center,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              if (toController.text.isNotEmpty &&
-                                  toController.text.isNotEmpty) {
-                                BlocProvider.of<SearchAddressBloc>(context).add(
-                                    SearchAddressPolilyne([suggestionsStart!],
-                                        [suggestionsEnd!]));
-                              }
-                            },
+                            onTap: () => calc(),
                             child: const Text(
                               'Повторите еще раз',
                               textAlign: TextAlign.center,
@@ -694,10 +721,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
               if (fromController.text.isNotEmpty &&
                   toController.text.isNotEmpty) {
-                coasts.clear();
-                BlocProvider.of<SearchAddressBloc>(context).add(
-                    SearchAddressPolilyne(
-                        [suggestionsStart], [suggestionsEnd]));
+                calc();
               } else {
                 BlocProvider.of<SearchAddressBloc>(context).add(
                   JumpToPointEvent(
@@ -745,5 +769,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         ),
       ],
     );
+  }
+
+  void calc() {
+    if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
+      coasts.clear();
+      BlocProvider.of<SearchAddressBloc>(context)
+          .add(SearchAddressPolilyne([suggestionsStart!], [suggestionsEnd!]));
+    }
   }
 }

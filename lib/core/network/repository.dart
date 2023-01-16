@@ -132,7 +132,6 @@ class Repository {
 
   Future<CoastResponse?> getCoastMarketPlace(CoastMarketPlace value) async {
     final body = value.toJson();
-    print('object ${body}');
     var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',
@@ -326,8 +325,6 @@ class Repository {
     return null;
   }
 
-  //Авторизация Пользователь
-
   Future<bool> UUIDCreate() async {
     var authData = await auth();
     await getIP();
@@ -447,12 +444,8 @@ class Repository {
       },
     );
 
-    if (response.data['Errors'] == null) {
-      final user = AuthUser.fromJson(response.data);
-      return user;
-    } else {
-      return null;
-    }
+    final user = AuthUser.fromJson(response.data);
+    return user;
   }
 
   //Авторизация Субагент или Корпорат
@@ -478,12 +471,8 @@ class Repository {
       },
     );
 
-    if (response.data['Errors'] == null) {
-      final user = AuthUser.fromJson(response.data);
-      return user;
-    } else {
-      return null;
-    }
+    final user = AuthUser.fromJson(response.data);
+    return user;
   }
 
   Future<AuthUser?> loginEmailAgent(
@@ -546,7 +535,6 @@ class Repository {
     }
   }
 
-  // депозит
   Future<AccountsDeposit?> getDeposit() async {
     var authData = await auth();
     final response = await dio.post(

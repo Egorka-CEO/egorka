@@ -62,6 +62,7 @@ class MarketPages extends StatefulWidget {
 
 class _MarketPageState extends State<MarketPages>
     with TickerProviderStateMixin {
+  GlobalKey iconBtn = GlobalKey();
   bool details = false;
   bool additional = false;
   bool additional1 = false;
@@ -78,7 +79,6 @@ class _MarketPageState extends State<MarketPages>
   double minSlider = 0;
   double maxSlider = 25;
 
-  // TextEditingController controller = TextEditingController();
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
   TextEditingController item1Controller = TextEditingController();
@@ -204,6 +204,71 @@ class _MarketPageState extends State<MarketPages>
     calcOrder();
   }
 
+  Offset getWidgetPosition(GlobalKey key) {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
+
+    return renderBox.localToGlobal(Offset.zero);
+  }
+
+  showIconModal() async {
+    iconSelectModal(
+      context,
+      getWidgetPosition(iconBtn),
+      (index) {
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  void iconSelectModal(
+    BuildContext context,
+    Offset offset,
+    Function(int index) onTap,
+  ) =>
+      showDialog(
+        useSafeArea: false,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: AlertDialog(
+              insetPadding: EdgeInsets.only(
+                  top: offset.dy + 20.h, left: offset.dx - 30.w),
+              alignment: Alignment.topLeft,
+              contentPadding: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              content: Stack(
+                children: [
+                  Container(
+                    height: 45.h,
+                    width: 120.w,
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(20.r)),
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context)
+                        ..pop()
+                        ..pop(),
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                      ),
+                      child: Text(
+                        'Экспресс',
+                        style: CustomTextStyle.black15w500
+                            .copyWith(fontSize: 14.sp),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -241,32 +306,18 @@ class _MarketPageState extends State<MarketPages>
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    PopupMenuButton<String>(
-                                      tooltip: 'Способ доставки',
-                                      itemBuilder: (context) {
-                                        return [
-                                          const PopupMenuItem(
-                                            value: 'test',
-                                            child: Text(
-                                              'Экспресс',
-                                              style:
-                                                  CustomTextStyle.black15w500,
-                                            ),
-                                          )
-                                        ];
-                                      },
+                                    GestureDetector(
+                                      onTap: () => showIconModal(),
                                       child: Row(
-                                        children: const [
-                                          Text(
+                                        children: [
+                                          Icon(Icons.keyboard_arrow_down,
+                                              key: iconBtn),
+                                          const Text(
                                             'Доставка до маркетплейса',
                                             style: CustomTextStyle.black15w500,
                                           ),
-                                          Icon(Icons.keyboard_arrow_down),
                                         ],
                                       ),
-                                      onSelected: (v) {
-                                        Navigator.of(context).pop();
-                                      },
                                     ),
                                   ],
                                 ),
@@ -1605,7 +1656,7 @@ class _MarketPageState extends State<MarketPages>
           timePicked != null ? timePicked.hour : 0,
           timePicked != null ? timePicked.minute : 0,
         );
-        startOrderController.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
+        startOrderController.text = DateFormat('dd.MM.yyyy').format(temp);
         time = temp;
       }
     } else {

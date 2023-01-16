@@ -39,7 +39,7 @@ class AboutPage extends StatelessWidget {
                 SizedBox(height: 10.h),
                 Image.asset(
                   'assets/images/ic_broseph.png',
-                  height: 20.h,
+                  height: 150.h,
                 ),
                 const Spacer(flex: 2),
               ],

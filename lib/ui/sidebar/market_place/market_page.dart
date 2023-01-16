@@ -19,6 +19,7 @@ import 'package:egorka/widget/bottom_sheet_marketplace.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,8 +75,10 @@ class _MarketPageState extends State<MarketPages>
   bool loadOrder = false;
   int indexTab = 0;
   String? errorAddress;
+  double minSlider = 0;
+  double maxSlider = 25;
 
-  TextEditingController controller = TextEditingController();
+  // TextEditingController controller = TextEditingController();
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
   TextEditingController item1Controller = TextEditingController();
@@ -89,6 +92,7 @@ class _MarketPageState extends State<MarketPages>
   TextEditingController countPalletControllerMore = TextEditingController();
   TextEditingController countPalletControllerMore15kg = TextEditingController();
   TextEditingController countPalletControllerLess15kg = TextEditingController();
+  TextEditingController controllerBtmSheet = TextEditingController();
 
   PanelController panelController = PanelController();
   ScrollController scrollController = ScrollController();
@@ -160,39 +164,44 @@ class _MarketPageState extends State<MarketPages>
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-          position.latitude, position.longitude,
-          localeIdentifier: 'ru');
-
-      String address = '';
-
-      if (placemarks.first.street!.isNotEmpty) {
-        address += placemarks.first.street!;
-        if (placemarks.first.locality!.isNotEmpty) {
-          address += ', г.${placemarks.first.locality!}';
-        }
-      } else {
-        address = placemarks.first.locality!;
-      }
-
-      fromController.text = address;
-      suggestion = Suggestions(
-        iD: '',
-        name: address,
-        point: Point(
-          address: address,
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ),
-      );
-
-      if (placemarks.first.subThoroughfare!.isEmpty) {
-        errorAddress = 'Ошибка: Укажите номер дома';
-      }
-      setState(() {});
-
-      calcOrder();
+      checkPosition(position.latitude, position.longitude);
     }
+  }
+
+  void checkPosition(double latitude, double longitude) async {
+    List<geo.Placemark> placemarks = await geo
+        .placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'ru');
+
+    String address = '';
+
+    if (placemarks.first.street!.isNotEmpty) {
+      address += placemarks.first.street!;
+      if (placemarks.first.locality!.isNotEmpty) {
+        address += ', г.${placemarks.first.locality!}';
+      }
+    } else {
+      address = placemarks.first.locality!;
+    }
+
+    fromController.text = address;
+    suggestion = Suggestions(
+      iD: '',
+      name: address,
+      point: Point(
+        address: address,
+        latitude: latitude,
+        longitude: longitude,
+      ),
+    );
+
+    if (placemarks.first.subThoroughfare!.isEmpty) {
+      errorAddress = 'Ошибка: Укажите номер дома';
+    } else {
+      errorAddress = null;
+    }
+    setState(() {});
+
+    calcOrder();
   }
 
   @override
@@ -240,7 +249,8 @@ class _MarketPageState extends State<MarketPages>
                                             value: 'test',
                                             child: Text(
                                               'Экспресс',
-                                              style: CustomTextStyle.black15w500,
+                                              style:
+                                                  CustomTextStyle.black15w500,
                                             ),
                                           )
                                         ];
@@ -251,7 +261,7 @@ class _MarketPageState extends State<MarketPages>
                                             'Доставка до маркетплейса',
                                             style: CustomTextStyle.black15w500,
                                           ),
-                                          const Icon(Icons.keyboard_arrow_down),
+                                          Icon(Icons.keyboard_arrow_down),
                                         ],
                                       ),
                                       onSelected: (v) {
@@ -431,7 +441,9 @@ class _MarketPageState extends State<MarketPages>
                                                   Expanded(
                                                     child: GestureDetector(
                                                       onTap: () {
-                                                        controller.text = '';
+                                                        controllerBtmSheet
+                                                                .text =
+                                                            fromController.text;
                                                         typeAdd =
                                                             TypeAdd.sender;
                                                         BlocProvider.of<
@@ -826,14 +838,14 @@ class _MarketPageState extends State<MarketPages>
                                                     TextInputType.number,
                                                 textEditingController:
                                                     phoneController,
-                                                // formatters: [
-                                                //   MaskTextInputFormatter(
-                                                //     mask: '+# (###) ###-##-##',
-                                                //     filter: {
-                                                //       "#": RegExp(r'[0-9]')
-                                                //     },
-                                                //   )
-                                                // ],
+                                                formatters: [
+                                                  MaskTextInputFormatter(
+                                                    mask: '+7 (###) ###-##-##',
+                                                    filter: {
+                                                      "#": RegExp(r'[0-9]')
+                                                    },
+                                                  )
+                                                ],
                                               ),
                                             ),
                                           ],
@@ -860,6 +872,15 @@ class _MarketPageState extends State<MarketPages>
                                                     onTap: () => scrolling(),
                                                     onFieldSubmitted: (value) =>
                                                         calcOrder(),
+                                                    onChanged: (value) {
+                                                      int? res =
+                                                          int.tryParse(value);
+                                                      if (res != null) {
+                                                        countBucket.add(res);
+                                                      } else {
+                                                        countBucket.add(0);
+                                                      }
+                                                    },
                                                     focusNode: bucketFocus,
                                                     height: 45.h,
                                                     contentPadding:
@@ -869,6 +890,10 @@ class _MarketPageState extends State<MarketPages>
                                                     hintText: '0',
                                                     textInputType:
                                                         TextInputType.number,
+                                                    formatters: [
+                                                      CustomInputFormatterSlider(
+                                                          maxSlider)
+                                                    ],
                                                     textEditingController:
                                                         countBucketController,
                                                   ),
@@ -881,8 +906,8 @@ class _MarketPageState extends State<MarketPages>
                                                 Expanded(
                                                   flex: 2,
                                                   child: Slider(
-                                                    min: 0,
-                                                    max: 25,
+                                                    min: minSlider,
+                                                    max: maxSlider,
                                                     activeColor: Colors.red,
                                                     inactiveColor:
                                                         Colors.grey[300],
@@ -928,6 +953,15 @@ class _MarketPageState extends State<MarketPages>
                                                     onTap: () => scrolling(),
                                                     onFieldSubmitted: (value) =>
                                                         calcOrder(),
+                                                    onChanged: (value) {
+                                                      int? res =
+                                                          int.tryParse(value);
+                                                      if (res != null) {
+                                                        countPallet.add(res);
+                                                      } else {
+                                                        countPallet.add(0);
+                                                      }
+                                                    },
                                                     maxLines: 1,
                                                     focusNode: palletFocus,
                                                     height: 45.h,
@@ -938,6 +972,10 @@ class _MarketPageState extends State<MarketPages>
                                                     hintText: '0',
                                                     textInputType:
                                                         TextInputType.number,
+                                                    formatters: [
+                                                      CustomInputFormatterSlider(
+                                                          maxSlider)
+                                                    ],
                                                     textEditingController:
                                                         countPalletController,
                                                   ),
@@ -950,8 +988,8 @@ class _MarketPageState extends State<MarketPages>
                                                 Expanded(
                                                   flex: 2,
                                                   child: Slider(
-                                                    min: 0,
-                                                    max: 25,
+                                                    min: minSlider,
+                                                    max: maxSlider,
                                                     activeColor: Colors.red,
                                                     inactiveColor:
                                                         Colors.grey[300],
@@ -984,8 +1022,8 @@ class _MarketPageState extends State<MarketPages>
 
                                             double height;
                                             if (additional) {
-                                              height = 330.h;
-                                              if (additional1) height += 165.h;
+                                              height = 335.h;
+                                              if (additional1) height += 170.h;
                                               if (additional2) height += 90.h;
                                             } else {
                                               height = 0.h;
@@ -1123,12 +1161,23 @@ class _MarketPageState extends State<MarketPages>
                                                                                             child: CustomTextField(
                                                                                               onTap: () => scrolling(),
                                                                                               onFieldSubmitted: (value) => calcOrder(),
+                                                                                              onChanged: (value) {
+                                                                                                int? res = int.tryParse(value);
+                                                                                                if (res != null) {
+                                                                                                  bucketCountLess15kg.add(res);
+                                                                                                } else {
+                                                                                                  bucketCountLess15kg.add(0);
+                                                                                                }
+                                                                                              },
                                                                                               focusNode: bucketFocusLess15kg,
                                                                                               height: 45.h,
                                                                                               contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
                                                                                               fillColor: Colors.white,
                                                                                               hintText: '0',
                                                                                               textInputType: TextInputType.number,
+                                                                                              formatters: [
+                                                                                                CustomInputFormatterSlider(maxSlider)
+                                                                                              ],
                                                                                               textEditingController: countPalletControllerLess15kg,
                                                                                             ),
                                                                                           ),
@@ -1136,8 +1185,8 @@ class _MarketPageState extends State<MarketPages>
                                                                                           Expanded(
                                                                                             flex: 2,
                                                                                             child: Slider(
-                                                                                              min: 0,
-                                                                                              max: 25,
+                                                                                              min: minSlider,
+                                                                                              max: maxSlider,
                                                                                               activeColor: Colors.red,
                                                                                               inactiveColor: Colors.grey[300],
                                                                                               thumbColor: Colors.white,
@@ -1169,12 +1218,23 @@ class _MarketPageState extends State<MarketPages>
                                                                                             child: CustomTextField(
                                                                                               onTap: () => scrolling(),
                                                                                               onFieldSubmitted: (value) => calcOrder(),
+                                                                                              onChanged: (value) {
+                                                                                                int? res = int.tryParse(value);
+                                                                                                if (res != null) {
+                                                                                                  bucketCountMore15kg.add(res);
+                                                                                                } else {
+                                                                                                  bucketCountMore15kg.add(0);
+                                                                                                }
+                                                                                              },
                                                                                               focusNode: bucketFocusMore15kg,
                                                                                               height: 45.h,
                                                                                               contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
                                                                                               fillColor: Colors.white,
                                                                                               hintText: '0',
                                                                                               textInputType: TextInputType.number,
+                                                                                              formatters: [
+                                                                                                CustomInputFormatterSlider(maxSlider)
+                                                                                              ],
                                                                                               textEditingController: countPalletControllerMore15kg,
                                                                                             ),
                                                                                           ),
@@ -1182,8 +1242,8 @@ class _MarketPageState extends State<MarketPages>
                                                                                           Expanded(
                                                                                             flex: 2,
                                                                                             child: Slider(
-                                                                                              min: 0,
-                                                                                              max: 25,
+                                                                                              min: minSlider,
+                                                                                              max: maxSlider,
                                                                                               activeColor: Colors.red,
                                                                                               inactiveColor: Colors.grey[300],
                                                                                               thumbColor: Colors.white,
@@ -1358,8 +1418,23 @@ class _MarketPageState extends State<MarketPages>
                                 collapsed: Container(),
                                 panel: MarketPlaceBottomSheetDraggable(
                                   typeAdd: typeAdd,
-                                  fromController: controller,
+                                  fromController: controllerBtmSheet,
                                   panelController: panelController,
+                                  onSearch: (sug) {
+                                    panelController.animatePanelToPosition(
+                                      0,
+                                      curve: Curves.easeInOutQuint,
+                                      duration: const Duration(
+                                        milliseconds: 1000,
+                                      ),
+                                    );
+
+                                    suggestion = sug;
+                                    fromController.text =
+                                        suggestion!.point!.address!;
+                                    checkPosition(suggestion!.point!.latitude,
+                                        suggestion!.point!.longitude);
+                                  },
                                 ),
                                 onPanelClosed: () {},
                                 onPanelOpened: () {},

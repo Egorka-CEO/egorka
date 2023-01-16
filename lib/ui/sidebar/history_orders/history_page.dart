@@ -38,7 +38,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   bool resPaid = false;
   bool paidBtmSheet = false;
   DateTime? parseDate;
-  DateTime? dateTime;
+  // DateTime? dateTime;
   String day = '';
   String pickDay = '';
   String pickDate = '';
@@ -102,13 +102,17 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       }
     }
 
-    parseDate = DateTime.parse(formOrder!.result!.recordDate!);
+    if (formOrder!.result!.locations!.first.date != null) {
+      parseDate = DateTime.fromMillisecondsSinceEpoch(
+          formOrder!.result!.locations!.first.date! * 1000);
 
-    day = DateFormat('dd').format(parseDate!);
-    pickDay = DateFormat.EEEE('ru').format(parseDate!);
-    pickDate =
-        '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
+      pickDay = DateFormat.EEEE('ru').format(parseDate!);
+      pickDate =
+          '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
+    }
     //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
+    day = DateFormat('dd').format(
+        DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000));
     checkOrder();
   }
 
@@ -125,22 +129,22 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       paidBtmSheet = !resPaid;
     } else if (formOrder!.result!.status == 'Completed') {
       paidBtmSheet = false;
-      resPaid = true;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.green;
       status = 'Выполнено';
     } else if (formOrder!.result!.status == 'Cancelled') {
       paidBtmSheet = false;
-      resPaid = false;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.red;
       status = 'Отменено';
     } else if (formOrder!.result!.status == 'Rejected') {
       paidBtmSheet = false;
-      resPaid = false;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.orange;
       status = 'Отказано';
     } else if (formOrder!.result!.status == 'Error') {
       paidBtmSheet = false;
-      resPaid = false;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.red;
       status = 'Ошибка';
     }
@@ -290,9 +294,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / $day ${DateMonth().monthDate(parseDate!)}',
+                                    '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
                                     style: CustomTextStyle.black15w500,
-                                    textAlign: TextAlign.center,
                                   ),
                                   SizedBox(height: 10.h),
                                   SizedBox(
@@ -323,10 +326,17 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         color: Colors.grey[500],
                                       ),
                                       SizedBox(width: 10.h),
-                                      Text(
-                                        pickDate,
-                                        style: CustomTextStyle.black15w500,
-                                      ),
+                                      parseDate != null
+                                          ? Text(
+                                              pickDate,
+                                              style:
+                                                  CustomTextStyle.black15w500,
+                                            )
+                                          : Text(
+                                              '-',
+                                              style:
+                                                  CustomTextStyle.black15w500,
+                                            ),
                                     ],
                                   ),
                                   SizedBox(height: 15.h),
@@ -955,7 +965,10 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                     formOrder!.result!.invoices!
                                                         .first.pIN!,
                                                   );
-                                                  if (res != null) {
+
+                                                  print(
+                                                      'object123123 ${formOrder!.result!.invoices!.first.iD!} ${formOrder!.result!.invoices!.first.pIN!}');
+                                                  if (res != null && res.url != null) {
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(

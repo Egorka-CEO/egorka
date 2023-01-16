@@ -15,6 +15,7 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,9 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   bool additional2 = false;
   bool additional3 = false;
   bool additional4 = false;
+
+  double minSlider = 0;
+  double maxSlider = 200;
 
   List<PointDetails> routeOrderSender = [];
   List<PointDetails> routeOrderReceiver = [];
@@ -435,8 +439,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               additional = snapshot.data!;
                               double height;
                               if (additional) {
-                                height = 1020.h;
-                                if (additional1) height += 170.h;
+                                height = 1080.h;
+                                if (additional1) height += 175.h;
                                 if (additional2) height += 150.h;
                                 if (additional3) height += 315.h;
                                 if (additional4) height += 315.h;
@@ -526,7 +530,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                                 duration: const Duration(
                                                     milliseconds: 100),
                                                 height:
-                                                    additional1 ? 170.h : 0.h,
+                                                    additional1 ? 175.h : 0.h,
                                                 child: Column(
                                                   children: [
                                                     SizedBox(height: 10.h),
@@ -566,6 +570,25 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                                                 onFieldSubmitted:
                                                                     (value) =>
                                                                         calc(),
+                                                                onChanged:
+                                                                    (value) {
+                                                                  int? res = int
+                                                                      .tryParse(
+                                                                          value);
+                                                                  if (res !=
+                                                                      null) {
+                                                                    weightControllerSlider
+                                                                        .add(
+                                                                            res);
+                                                                  } else {
+                                                                    weightControllerSlider
+                                                                        .add(0);
+                                                                  }
+                                                                },
+                                                                formatters: [
+                                                                  CustomInputFormatterSlider(
+                                                                      maxSlider)
+                                                                ],
                                                                 textInputType:
                                                                     TextInputType
                                                                         .number,
@@ -578,8 +601,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                                             Expanded(
                                                               flex: 2,
                                                               child: Slider(
-                                                                min: 0,
-                                                                max: 200,
+                                                                min: minSlider,
+                                                                max: maxSlider,
                                                                 activeColor:
                                                                     Colors.red,
                                                                 inactiveColor:
@@ -1357,6 +1380,27 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                       typeAdd: typeAdd,
                       fromController: fromController,
                       panelController: panelController,
+                      onSearch: (sug) {
+                        panelController.animatePanelToPosition(
+                          0,
+                          curve: Curves.easeInOutQuint,
+                          duration: const Duration(
+                            milliseconds: 1000,
+                          ),
+                        );
+
+                        btmSheet = false;
+                        if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                          routeOrderSender.add(PointDetails(
+                              suggestions: sug, details: Details()));
+                          calc();
+                        } else if (typeAdd != null &&
+                            typeAdd == TypeAdd.receiver) {
+                          routeOrderReceiver.add(PointDetails(
+                              suggestions: sug, details: Details()));
+                          calc();
+                        }
+                      },
                     ),
                     onPanelClosed: () {
                       fromController.text = '';

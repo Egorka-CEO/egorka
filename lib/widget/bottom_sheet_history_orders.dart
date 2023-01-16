@@ -2,6 +2,7 @@ import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/delivery_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -144,16 +145,54 @@ class _BottomSheetDraggableState
 
     Color colorStatus = Colors.red;
     bool resPaid = state.result.StatusPay! == 'Paid' ? true : false;
-    String typeOrder = 'FBO';
+    Widget typeOrder = Text(
+      'FBO',
+      style: TextStyle(
+        color: Colors.grey[200],
+        fontSize: 24.sp,
+        fontWeight: FontWeight.w800,
+      ),
+    );
 
     if (state.result.Group == 'FBS') {
-      typeOrder = 'FBS';
+      typeOrder = Text(
+        'FBS',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     } else if (state.result.Group == 'FBO') {
-      typeOrder = 'FBO';
+      typeOrder = Text(
+        'FBO',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     } else if (state.result.Group == 'Express') {
-      typeOrder = 'Г';
+      if (state.result.Type! == 'Car') {
+        typeOrder = Image.asset(
+          listChoice[0].icon,
+          color: Colors.grey[200],
+        );
+      } else {
+        typeOrder = Image.asset(
+          listChoice[1].icon,
+          color: Colors.grey[200],
+        );
+      }
     } else if (state.result.Group == 'Marketplace') {
-      typeOrder = 'FBO';
+      typeOrder = Text(
+        'FBO',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     }
 
     if (state.result.Status == 'Drafted') {
@@ -297,7 +336,7 @@ class _BottomSheetDraggableState
                                         child: Material(
                                           color: Colors.grey[200],
                                           child: InkWell(
-                                            onTap: state.result.Group! ==
+                                            onTap: state.result.Group ==
                                                     'Marketplace'
                                                 ? () =>
                                                     Navigator.of(context)
@@ -346,14 +385,7 @@ class _BottomSheetDraggableState
                     child: SizedBox(
                       width: 55.w,
                       child: Center(
-                        child: Text(
-                          typeOrder,
-                          style: TextStyle(
-                            color: Colors.grey[200],
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
+                        child: typeOrder,
                       ),
                     ),
                   ),

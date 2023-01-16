@@ -53,15 +53,16 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: ScreenUtilInit(
-          designSize: const Size(428, 926),
-          builder: (context, child) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              initialRoute: AppRoute.home,
-              onGenerateRoute: AppRoute.onGenerateRoute,
-              builder: FlutterSmartDialog.init(),
-            );
-          }),
+        designSize: const Size(428, 926),
+        builder: (context, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            initialRoute: AppRoute.home,
+            onGenerateRoute: AppRoute.onGenerateRoute,
+            builder: FlutterSmartDialog.init(),
+          );
+        },
+      ),
     );
   }
 }

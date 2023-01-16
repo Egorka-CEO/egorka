@@ -118,7 +118,7 @@ class _NavBarState extends State<NavBar> {
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
-                              SizedBox(width: 10.w),
+                              const Spacer(),
                               GestureDetector(
                                 onTap: () => Navigator.pushNamed(
                                     context, AppRoute.addDeposit),

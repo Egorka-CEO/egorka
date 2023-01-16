@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/marketplaces.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
@@ -14,11 +16,13 @@ class MarketPlaceBottomSheetDraggable extends StatefulWidget {
   TextEditingController fromController;
   PanelController panelController;
   TypeAdd? typeAdd;
+  void Function(Suggestions) onSearch;
   MarketPlaceBottomSheetDraggable({
     Key? key,
     required this.typeAdd,
     required this.fromController,
     required this.panelController,
+    required this.onSearch,
   });
 
   @override
@@ -130,6 +134,40 @@ class _BottomSheetDraggableState
                             ),
                           ),
                           SizedBox(width: 15.w),
+                          TextButton(
+                            onPressed: () async {
+                              focusFrom.unfocus();
+                              final res = await Navigator.of(context)
+                                  .pushNamed(AppRoute.selectPoint);
+                              if (res != null && res is Suggestions) {
+                                widget.onSearch(res);
+                              }
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(10.r),
+                                    topRight: Radius.circular(10.r),
+                                  ),
+                                ),
+                              ),
+                              backgroundColor: const MaterialStatePropertyAll(
+                                  Colors.transparent),
+                              foregroundColor:
+                                  const MaterialStatePropertyAll(Colors.white),
+                              overlayColor: MaterialStatePropertyAll(
+                                Colors.grey[400],
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'Карта',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),

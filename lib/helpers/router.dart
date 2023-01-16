@@ -18,6 +18,7 @@ import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_places.dart';
 import 'package:egorka/ui/sidebar/profile/profile_page.dart';
+import 'package:egorka/widget/select_adres_map.dart';
 import 'package:flutter/material.dart';
 
 class AppRoute {
@@ -36,6 +37,7 @@ class AppRoute {
   static const detailsOrder = '/detailsOrder';
   static const historyDetailsOrder = '/historyDetailsOrder';
   static const book = '/book';
+  static const selectPoint = '/selectPoint';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
@@ -138,6 +140,8 @@ class AppRoute {
         );
       case book:
         return MaterialPageRoute(builder: (_) => BookPage());
+      case selectPoint:
+        return MaterialPageRoute(builder: (_) => SelectAdresMap());
       default:
         return null;
     }

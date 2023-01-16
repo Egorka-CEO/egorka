@@ -361,7 +361,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                     ),
                                   )
                                 : const SizedBox(),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 15.w),
                           ],
                         ),
                       ),

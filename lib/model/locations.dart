@@ -17,8 +17,8 @@ class Location {
     this.contact,
     this.message,
     this.params,
-    this.status,}
-  );
+    this.status,
+  });
 
   String? id;
   String? externalId;

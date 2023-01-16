@@ -132,6 +132,7 @@ class Repository {
 
   Future<CoastResponse?> getCoastMarketPlace(CoastMarketPlace value) async {
     final body = value.toJson();
+    print('object ${body}');
     var authData = await auth();
     final response = await dio.post(
       '$server/service/delivery/',

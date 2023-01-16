@@ -104,14 +104,17 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
           declaredCost = (element.params?.first.value / 100).ceil().toString();
         }
       }
-      parseDate = DateTime.parse(formOrder!.result!.recordDate!);
+      if (formOrder!.result!.locations!.first.date != null &&
+          formOrder!.result!.date != null) {
+        parseDate = DateTime.fromMillisecondsSinceEpoch(
+            formOrder!.result!.locations!.first.date! * 1000);
 
-      dateTime =
-          DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000);
-      day = DateFormat('dd').format(parseDate!);
-      pickDay = DateFormat.EEEE('ru').format(parseDate!);
-      pickDate =
-          '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
+        day = DateFormat('dd').format(DateTime.fromMillisecondsSinceEpoch(
+            formOrder!.result!.date! * 1000));
+        pickDay = DateFormat.EEEE('ru').format(parseDate!);
+        pickDate =
+            '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
+      }
       //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
 
       checkOrder();
@@ -131,22 +134,22 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
       paidBtmSheet = !resPaid;
     } else if (formOrder!.result!.status == 'Completed') {
       paidBtmSheet = false;
-      resPaid = true;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.green;
       status = 'Выполнено';
     } else if (formOrder!.result!.status == 'Cancelled') {
       paidBtmSheet = false;
-      resPaid = false;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.red;
       status = 'Отменено';
     } else if (formOrder!.result!.status == 'Rejected') {
       paidBtmSheet = false;
-      resPaid = false;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.orange;
       status = 'Отказано';
     } else if (formOrder!.result!.status == 'Error') {
       paidBtmSheet = false;
-      resPaid = false;
+      resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
       colorStatus = Colors.red;
       status = 'Ошибка';
     }
@@ -296,7 +299,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                   ),
                                   SizedBox(height: 20.h),
                                   Text(
-                                    '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / $day ${DateMonth().monthDate(dateTime!)}',
+                                    '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
                                     style: CustomTextStyle.black15w500,
                                   ),
                                   SizedBox(height: 10.h),
@@ -327,10 +330,17 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         color: Colors.grey[500],
                                       ),
                                       SizedBox(width: 10.w),
-                                      Text(
-                                        pickDate,
-                                        style: CustomTextStyle.black15w500,
-                                      ),
+                                      parseDate != null
+                                          ? Text(
+                                              pickDate,
+                                              style:
+                                                  CustomTextStyle.black15w500,
+                                            )
+                                          : Text(
+                                              '-',
+                                              style:
+                                                  CustomTextStyle.black15w500,
+                                            ),
                                     ],
                                   ),
                                   SizedBox(height: 15.h),

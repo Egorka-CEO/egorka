@@ -69,6 +69,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerPhone = TextEditingController();
   TextEditingController controllerComment = TextEditingController();
+  TextEditingController controllerBtmSheet = TextEditingController();
   PanelController panelController = PanelController();
 
   final FocusNode podFocus = FocusNode();
@@ -216,6 +217,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             child: GestureDetector(
                               onTap: () {
                                 typeAdd = TypeAdd.sender;
+                                controllerBtmSheet.text = controller.text;
                                 setState(() {});
                                 panelController.animatePanelToPosition(
                                   1,
@@ -346,12 +348,12 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       widget.routeOrder.details?.phone = controllerPhone.text;
                     },
                     textEditingController: controllerPhone,
-                    // formatters: [
-                    //   MaskTextInputFormatter(
-                    //     mask: '+# (###) ###-##-##',
-                    //     filter: {"#": RegExp(r'[0-9]')},
-                    //   )
-                    // ],
+                    formatters: [
+                      MaskTextInputFormatter(
+                        mask: '+7 (###) ###-##-##',
+                        filter: {"#": RegExp(r'[0-9]')},
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -408,6 +410,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
               } else if (current is NewOrderStateCloseBtmSheet) {
                 btmSheet = false;
                 widget.routeOrder.suggestions = current.value!;
+                controller.text = widget.routeOrder.suggestions.name;
                 if (typeAdd != null && typeAdd == TypeAdd.sender) {
                 } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {}
               }
@@ -422,8 +425,21 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 collapsed: Container(),
                 panel: AddAdressBottomSheetDraggable(
                   typeAdd: widget.typeAdd,
-                  fromController: controller,
+                  fromController: controllerBtmSheet,
                   panelController: panelController,
+                  onSearch: (sug) {
+                    panelController.animatePanelToPosition(
+                      0,
+                      curve: Curves.easeInOutQuint,
+                      duration: const Duration(
+                        milliseconds: 1000,
+                      ),
+                    );
+
+                    widget.routeOrder.suggestions = sug;
+                    controller.text =
+                        widget.routeOrder.suggestions.name;
+                  },
                 ),
                 onPanelClosed: () {},
                 onPanelOpened: () {},

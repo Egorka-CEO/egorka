@@ -17,6 +17,7 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,6 +70,9 @@ class RepeatOrderPageState extends StatefulWidget {
 class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   List<PointDetails> routeOrderSender = [];
   List<PointDetails> routeOrderReceiver = [];
+
+  double minSlider = 0;
+  double maxSlider = 200;
 
   bool btmSheet = false;
   TypeAdd? typeAdd;
@@ -499,8 +503,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                       additional = snapshot.data!;
                                       double height;
                                       if (additional) {
-                                        height = 1020.h;
-                                        if (additional1) height += 170.h;
+                                        height = 1080.h;
+                                        if (additional1) height += 175.h;
                                         if (additional2) height += 150.h;
                                         if (additional3) height += 315.h;
                                         if (additional4) height += 315.h;
@@ -605,7 +609,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                                                 milliseconds:
                                                                     100),
                                                         height: additional1
-                                                            ? 170.h
+                                                            ? 175.h
                                                             : 0.h,
                                                         child: Column(
                                                           children: [
@@ -649,6 +653,22 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                                                                 calc(),
                                                                         textInputType:
                                                                             TextInputType.number,
+                                                                        onChanged:
+                                                                            (value) {
+                                                                          int?
+                                                                              res =
+                                                                              int.tryParse(value);
+                                                                          if (res !=
+                                                                              null) {
+                                                                            weightControllerSlider.add(res);
+                                                                          } else {
+                                                                            weightControllerSlider.add(0);
+                                                                          }
+                                                                        },
+                                                                        formatters: [
+                                                                          CustomInputFormatterSlider(
+                                                                              maxSlider)
+                                                                        ],
                                                                         textEditingController:
                                                                             weigthController,
                                                                       ),
@@ -660,9 +680,10 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                                                       flex: 2,
                                                                       child:
                                                                           Slider(
-                                                                        min: 0,
+                                                                        min:
+                                                                            minSlider,
                                                                         max:
-                                                                            200,
+                                                                            maxSlider,
                                                                         activeColor:
                                                                             Colors.red,
                                                                         inactiveColor:
@@ -1569,6 +1590,28 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                               typeAdd: typeAdd,
                               fromController: fromController,
                               panelController: panelController,
+                              onSearch: (sug) {
+                                panelController.animatePanelToPosition(
+                                  0,
+                                  curve: Curves.easeInOutQuint,
+                                  duration: const Duration(
+                                    milliseconds: 1000,
+                                  ),
+                                );
+
+                                btmSheet = false;
+                                if (typeAdd != null &&
+                                    typeAdd == TypeAdd.sender) {
+                                  routeOrderSender.add(PointDetails(
+                                      suggestions: sug, details: Details()));
+                                  calc();
+                                } else if (typeAdd != null &&
+                                    typeAdd == TypeAdd.receiver) {
+                                  routeOrderReceiver.add(PointDetails(
+                                      suggestions: sug, details: Details()));
+                                  calc();
+                                }
+                              },
                             ),
                             onPanelClosed: () {
                               fromController.text = '';

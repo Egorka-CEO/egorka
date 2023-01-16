@@ -963,7 +963,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                   formOrder!.result!.invoices!
                                                       .first.pIN!,
                                                 );
-                                                if (res != null) {
+                                                if (res != null &&
+                                                    res.url != null) {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(

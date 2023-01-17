@@ -304,10 +304,11 @@ class _MarketPageState extends State<MarketPages>
                               ),
                               Align(
                                 child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  // mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    SizedBox(width: 15.w),
                                     GestureDetector(
-                                      onTap: () => showIconModal(),
+                                      onTap: showIconModal,
                                       child: Row(
                                         children: [
                                           Icon(Icons.keyboard_arrow_down,

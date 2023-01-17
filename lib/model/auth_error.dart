@@ -1,5 +1,5 @@
 String authError(String str) {
-  return 'Указаны неверный данные';
+  return 'Указаны неверные данные';
   // switch (str) {
   //   case 'Wrong request':
   //     return 'Неверный запрос';

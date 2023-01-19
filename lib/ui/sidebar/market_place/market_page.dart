@@ -235,34 +235,47 @@ class _MarketPageState extends State<MarketPages>
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
             child: AlertDialog(
               insetPadding: EdgeInsets.only(
-                  top: offset.dy + 20.h, left: offset.dx - 30.w),
-              alignment: Alignment.topLeft,
+                  top: offset.dy + 50.h, left: offset.dx - 30.w),
+              alignment: Alignment.topCenter,
               contentPadding: EdgeInsets.zero,
               backgroundColor: Colors.transparent,
               elevation: 0,
-              content: Stack(
-                children: [
-                  Container(
-                    height: 45.h,
-                    width: 120.w,
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20.r)),
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.of(context)
-                        ..pop()
-                        ..pop(),
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Colors.white),
-                      ),
-                      child: Text(
-                        'Экспресс',
-                        style: CustomTextStyle.black15w500
-                            .copyWith(fontSize: 14.sp),
+              content: Container(
+                width: MediaQuery.of(context).size.width - 30.w,
+                height: 50.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.1),
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    )
+                  ],
+                  borderRadius: BorderRadius.circular(15.r),
+                ),
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        onTap: () => Navigator.of(context)
+                          ..pop()
+                          ..pop(),
+                        child: Container(
+                          padding: EdgeInsets.all(10.h),
+                          height: 40.h,
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Экспресс',
+                            style: CustomTextStyle.black15w700
+                                .copyWith(fontSize: 15.sp),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -311,8 +324,11 @@ class _MarketPageState extends State<MarketPages>
                                       onTap: showIconModal,
                                       child: Row(
                                         children: [
-                                          Icon(Icons.keyboard_arrow_down,
-                                              key: iconBtn),
+                                          Icon(
+                                            Icons.keyboard_arrow_down,
+                                            key: iconBtn,
+                                          ),
+                                          SizedBox(width: 15.w),
                                           const Text(
                                             'Доставка до маркетплейса',
                                             style: CustomTextStyle.black15w500,
@@ -1456,6 +1472,9 @@ class _MarketPageState extends State<MarketPages>
                                     if (errorAddress != null) {
                                       MessageDialogs().showAlert(
                                           'Ошибка', 'Укажите номер дома');
+                                    } else if (time == null) {
+                                      MessageDialogs().showAlert(
+                                          'Ошибка', 'Укажите дату когда нужно забрать');
                                     } else {
                                       BlocProvider.of<MarketPlacePageBloc>(
                                               context)

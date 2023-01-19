@@ -7,7 +7,7 @@ List<DeliveryChocie> listChoice = [
     type: 'Car',
   ),
   DeliveryChocie(
-    title: 'Ножками ;)',
+    title: 'Пешком',
     icon: 'assets/images/ic_leg.png',
     type: 'Walk',
   ),

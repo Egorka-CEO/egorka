@@ -439,7 +439,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                   SizedBox(height: 5.h),
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Colors.grey[200],
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
                                     child: Row(
@@ -1602,8 +1602,12 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                               }
                               additionalCost = temp.toString();
                               return TotalPriceWidget(
-                                title: listChoice.first.title,
-                                icon: listChoice.first.icon,
+                                title: formOrder!.result!.type == 'Car'
+                                    ? listChoice[0].title
+                                    : listChoice[1].title,
+                                icon: formOrder!.result!.type == 'Car'
+                                    ? listChoice[0].icon
+                                    : listChoice[1].icon,
                                 deliveryCost:
                                     (((coasts!.result!.totalPrice!.base!)
                                                 .ceil()) /
@@ -1626,9 +1630,15 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                     .toString(),
                                 totalPrice:
                                     '${double.tryParse(coasts!.result!.totalPrice!.total!)!.ceil()}',
-                                onTap: () =>
+                                onTap: () {
+                                  if (time == null) {
+                                    MessageDialogs().showAlert('Ошибка',
+                                        'Укажите дату когда нужно забрать');
+                                  } else {
                                     BlocProvider.of<NewOrderPageBloc>(context)
-                                        .add(CreateForm(coasts!.result!.id!)),
+                                        .add(CreateForm(coasts!.result!.id!));
+                                  }
+                                },
                               );
                             }),
                           SlidingUpPanel(

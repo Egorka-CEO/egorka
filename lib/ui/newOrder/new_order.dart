@@ -1395,31 +1395,37 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                     }
                     additionalCost = temp.toString();
                     return TotalPriceWidget(
-                      title: widget.deliveryChocie.title,
-                      icon: widget.deliveryChocie.icon,
-                      deliveryCost:
-                          (((widget.order.result!.totalPrice!.base!).ceil()) /
-                                  100)
-                              .ceil()
-                              .toString(),
-                      additionalCost:
-                          (((widget.order.result!.totalPrice!.ancillary!)
-                                      .ceil()) /
-                                  100)
-                              .ceil()
-                              .toString(),
-                      comissionPaymentSystem: ((double.tryParse(widget
-                                          .order.result!.totalPrice!.total!)!
-                                      .ceil() *
-                                  2.69) /
-                              100)
-                          .ceil()
-                          .toString(),
-                      totalPrice:
-                          '${double.tryParse(widget.order.result!.totalPrice!.total!)!.ceil()}',
-                      onTap: () => BlocProvider.of<NewOrderPageBloc>(context)
-                          .add(CreateForm(widget.order.result!.id!)),
-                    );
+                        title: widget.deliveryChocie.title,
+                        icon: widget.deliveryChocie.icon,
+                        deliveryCost:
+                            (((widget.order.result!.totalPrice!.base!).ceil()) /
+                                    100)
+                                .ceil()
+                                .toString(),
+                        additionalCost:
+                            (((widget.order.result!.totalPrice!.ancillary!)
+                                        .ceil()) /
+                                    100)
+                                .ceil()
+                                .toString(),
+                        comissionPaymentSystem: ((double.tryParse(widget
+                                            .order.result!.totalPrice!.total!)!
+                                        .ceil() *
+                                    2.69) /
+                                100)
+                            .ceil()
+                            .toString(),
+                        totalPrice:
+                            '${double.tryParse(widget.order.result!.totalPrice!.total!)!.ceil()}',
+                        onTap: () {
+                          if (time == null) {
+                            MessageDialogs().showAlert(
+                                'Ошибка', 'Укажите дату когда нужно забрать');
+                          } else {
+                            BlocProvider.of<NewOrderPageBloc>(context)
+                                .add(CreateForm(widget.order.result!.id!));
+                          }
+                        });
                   }),
                   SlidingUpPanel(
                     controller: panelController,

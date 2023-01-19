@@ -195,21 +195,21 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
-                  width: iconState ? 25.w : 20.w,
+                  width: iconState ? 25.w : 16.w,
                   child: Image.asset(
                     'assets/images/city.png',
                   ),
                 ),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
-                  width: iconState ? 10.w : 10.w,
+                  width: iconState ? 10.w : 6.w,
                 ),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
                   child: Text(
                     'ОБЫЧНАЯ ДОСТАВКА',
                     style: TextStyle(
-                      fontSize: iconState ? 14.sp : 12.sp,
+                      fontSize: iconState ? 14.sp : 10.sp,
                       fontWeight: FontWeight.w900,
                       color: Colors.grey[500],
                     ),

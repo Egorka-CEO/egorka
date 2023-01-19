@@ -240,41 +240,41 @@ class _MarketPageState extends State<MarketPages>
               contentPadding: EdgeInsets.zero,
               backgroundColor: Colors.transparent,
               elevation: 0,
-              content: Container(
-                width: MediaQuery.of(context).size.width - 30.w,
-                height: 50.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.1),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    )
-                  ],
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        onTap: () => Navigator.of(context)
-                          ..pop()
-                          ..pop(),
+              content: GestureDetector(
+                onTap: () => Navigator.of(context)
+                  ..pop()
+                  ..pop(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 30.w,
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.1),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      )
+                    ],
+                    borderRadius: BorderRadius.circular(15.r),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
                         child: Container(
                           padding: EdgeInsets.all(10.h),
                           height: 40.h,
                           alignment: Alignment.center,
                           child: Text(
-                            'Экспресс',
+                            'Обычная доставка',
                             style: CustomTextStyle.black15w700
                                 .copyWith(fontSize: 15.sp),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -1473,8 +1473,8 @@ class _MarketPageState extends State<MarketPages>
                                       MessageDialogs().showAlert(
                                           'Ошибка', 'Укажите номер дома');
                                     } else if (time == null) {
-                                      MessageDialogs().showAlert(
-                                          'Ошибка', 'Укажите дату когда нужно забрать');
+                                      MessageDialogs().showAlert('Ошибка',
+                                          'Укажите дату когда нужно забрать');
                                     } else {
                                       BlocProvider.of<MarketPlacePageBloc>(
                                               context)
@@ -1651,6 +1651,7 @@ class _MarketPageState extends State<MarketPages>
   }
 
   void showDateTime() async {
+    time = null;
     if (Platform.isAndroid) {
       final value = await showDialog(
           context: context,
@@ -1703,6 +1704,11 @@ class _MarketPageState extends State<MarketPages>
                               MaterialStateProperty.all(Colors.grey),
                         ),
                         onPressed: () {
+                          if (time == null) {
+                            time = DateTime.now();
+                            startOrderController.text =
+                                DateFormat('dd.MM.yyyy').format(time!);
+                          }
                           Navigator.of(ctx).pop();
                           calcOrder();
                         },

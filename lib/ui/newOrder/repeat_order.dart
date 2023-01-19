@@ -1940,6 +1940,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   }
 
   void showDateTime() async {
+    time = null;
     if (Platform.isAndroid) {
       final value = await showDialog(
           context: context,
@@ -1992,6 +1993,11 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                               MaterialStateProperty.all(Colors.grey),
                         ),
                         onPressed: () {
+                          if (time == null) {
+                            time = DateTime.now();
+                            startOrderController.text =
+                                DateFormat('dd.MM.yyyy').format(time!);
+                          }
                           Navigator.of(ctx).pop();
                           calc();
                         },

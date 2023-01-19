@@ -57,6 +57,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   CoastResponse? coastResponse;
   List<CoastResponse> coasts = [];
 
+  bool iconState = true;
+
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(
       title: 'Пешком',
@@ -107,6 +109,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           fromController.text = current.address;
 
           calc();
+          iconState = false;
         }
         return true;
       }, builder: (context, snapshot) {
@@ -139,8 +142,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           },
           maxHeight: 735.h,
           minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
-              ? 370.h
-              : 215.h,
+              ? 400.h
+              : 250.h,
           defaultPanelState: PanelState.CLOSED,
         );
       }),
@@ -184,6 +187,39 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 color: Colors.grey[400],
               ),
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  width: iconState ? 25.w : 20.w,
+                  child: Image.asset(
+                    'assets/images/city.png',
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  width: iconState ? 10.w : 10.w,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  child: Text(
+                    'ОБЫЧНАЯ ДОСТАВКА',
+                    style: TextStyle(
+                      fontSize: iconState ? 14.sp : 12.sp,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           StreamBuilder<dynamic>(
             stream: stream.stream,
@@ -245,6 +281,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                   bloc.add(DeletePolilyneEvent());
                                   fromController.text = '';
                                   stream.add('event');
+                                  setState(() {
+                                    iconState = true;
+                                  });
                                 },
                                 child: Container(
                                   height: 20.h,
@@ -339,6 +378,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       if (focusFrom.hasFocus) {
                                         _flipController?.toggleCard();
                                       }
+                                      setState(() {
+                                        iconState = true;
+                                      });
                                     },
                                     child: Container(
                                       height: 20.h,
@@ -443,12 +485,20 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       fromController.text = current.address;
                     }
                   }
+                  if (current is SearchLoading) {
+                    setState(() {
+                      iconState = false;
+                    });
+                  }
                   if (current is SearchAddressRoutePolilyne) {
                     if (current.coasts.isNotEmpty) {
                       coasts.addAll(current.coasts);
                       coastResponse = current.coasts.first;
                       streamDelivery.add(0);
                     }
+                    setState(() {
+                      iconState = false;
+                    });
                   }
                   if (current is FindMeState) return false;
 

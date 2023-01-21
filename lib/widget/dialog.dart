@@ -150,8 +150,10 @@ class _DoneAnimState extends State<DoneAnim>
 
     lottieController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        SmartDialog.dismiss();
-        lottieController.reset();
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          SmartDialog.dismiss();
+          lottieController.reset();
+        });
       }
     });
   }
@@ -227,8 +229,10 @@ class _ErrorAnimState extends State<ErrorAnim>
 
     lottieController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        SmartDialog.dismiss();
-        lottieController.reset();
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          SmartDialog.dismiss();
+          lottieController.reset();
+        });
       }
     });
   }

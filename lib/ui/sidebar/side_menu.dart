@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NavBar extends StatefulWidget {
   NavBar({Key? key}) : super(key: key);
@@ -237,6 +238,25 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Записная книжка',
+                            style: CustomTextStyle.black15w500
+                                .copyWith(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: GestureDetector(
+                      onTap: () =>
+                          launch('https://marketplace.egorka.delivery'),
+                      child: Container(
+                        color: Colors.transparent,
+                        height: 50.h,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Тарифы',
                             style: CustomTextStyle.black15w500
                                 .copyWith(color: Colors.black),
                           ),

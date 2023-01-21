@@ -67,7 +67,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   TextEditingController controllerFloor = TextEditingController();
   TextEditingController controllerRoom = TextEditingController();
   TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerPhone = TextEditingController();
+  TextEditingController controllerPhone = TextEditingController(text: '+7 (');
   TextEditingController controllerComment = TextEditingController();
   TextEditingController controllerBtmSheet = TextEditingController();
   PanelController panelController = PanelController();
@@ -350,6 +350,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     textEditingController: controllerPhone,
                     formatters: [
                       MaskTextInputFormatter(
+                        initialText: '+7 (',
                         mask: '+7 (###) ###-##-##',
                         filter: {"#": RegExp(r'[0-9]')},
                       )
@@ -437,8 +438,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     );
 
                     widget.routeOrder.suggestions = sug;
-                    controller.text =
-                        widget.routeOrder.suggestions.name;
+                    controller.text = widget.routeOrder.suggestions.name;
                   },
                 ),
                 onPanelClosed: () {},

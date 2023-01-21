@@ -189,7 +189,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 35.w),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -336,7 +336,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               value: false,
                               fillColor: MaterialStateProperty.all(Colors.blue),
                               shape: const CircleBorder(),
-                              onChanged: ((value) {}),
+                              onChanged: (value) {},
                             ),
                             Expanded(
                               child: CustomTextField(
@@ -369,75 +369,96 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
+                            SizedBox(width: 10.w),
                             toController.text.isNotEmpty
-                                ? GestureDetector(
-                                    onTap: () {
-                                      bloc.add(DeletePolilyneEvent());
-                                      toController.text = '';
-                                      stream.add('event');
-                                      if (focusFrom.hasFocus) {
-                                        _flipController?.toggleCard();
-                                      }
-                                      setState(() {
-                                        iconState = true;
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 20.h,
-                                      width: 20.h,
-                                      margin: const EdgeInsets.only(
-                                          right: 5, left: 10),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.grey[500],
-                                      ),
-                                      child: const Icon(
-                                        Icons.clear,
-                                        color: Colors.white,
-                                        size: 15,
+                                ? Padding(
+                                    padding: EdgeInsets.only(right: 15.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        bloc.add(DeletePolilyneEvent());
+                                        toController.text = '';
+                                        stream.add('event');
+                                        if (focusFrom.hasFocus) {
+                                          _flipController?.toggleCard();
+                                        }
+                                        setState(() {
+                                          iconState = true;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 20.h,
+                                        width: 20.h,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[500],
+                                        ),
+                                        child: const Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
                                       ),
                                     ),
                                   )
-                                : TextButton(
-                                    onPressed: () async {
-                                      focusFrom.unfocus();
-                                      final res = await Navigator.of(context)
-                                          .pushNamed(AppRoute.selectPoint);
-                                      if (res != null && res is Suggestions) {
-                                        suggestionsEnd = res;
-                                        toController.text =
-                                            suggestionsEnd!.name;
-                                        calc();
-                                      }
-                                    },
-                                    style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                            bottomRight: Radius.circular(10.r),
-                                            topRight: Radius.circular(10.r),
+                                : Padding(
+                                    padding: EdgeInsets.only(right: 5.w),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.h),
+                                          child: const VerticalDivider(),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            focusFrom.unfocus();
+                                            final res =
+                                                await Navigator.of(context)
+                                                    .pushNamed(
+                                                        AppRoute.selectPoint);
+                                            if (res != null &&
+                                                res is Suggestions) {
+                                              suggestionsEnd = res;
+                                              toController.text =
+                                                  suggestionsEnd!.name;
+                                              calc();
+                                            }
+                                          },
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(10.r),
+                                                  topRight:
+                                                      Radius.circular(10.r),
+                                                ),
+                                              ),
+                                            ),
+                                            backgroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.transparent),
+                                            foregroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.white),
+                                            overlayColor:
+                                                MaterialStatePropertyAll(
+                                              Colors.grey[400],
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Карта',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.sp),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      backgroundColor:
-                                          const MaterialStatePropertyAll(
-                                              Colors.transparent),
-                                      foregroundColor:
-                                          const MaterialStatePropertyAll(
-                                              Colors.white),
-                                      overlayColor: MaterialStatePropertyAll(
-                                        Colors.grey[400],
-                                      ),
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        'Карта',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
+                                      ],
                                     ),
                                   ),
-                            SizedBox(width: 15.w),
                           ],
                         ),
                       ),

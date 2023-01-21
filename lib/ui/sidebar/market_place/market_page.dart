@@ -21,6 +21,7 @@ import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
+import 'package:egorka/widget/tip_dialog.dart';
 import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,11 @@ class MarketPages extends StatefulWidget {
 class _MarketPageState extends State<MarketPages>
     with TickerProviderStateMixin {
   GlobalKey iconBtn = GlobalKey();
+  GlobalKey howItWorkKey = GlobalKey();
+  GlobalKey whenTakeKey = GlobalKey();
+  GlobalKey countBucketKey = GlobalKey();
+  GlobalKey countPalletKey = GlobalKey();
+
   bool details = false;
   bool additional = false;
   bool additional1 = false;
@@ -85,7 +91,7 @@ class _MarketPageState extends State<MarketPages>
   TextEditingController item2Controller = TextEditingController();
   TextEditingController item3Controller = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController phoneController = TextEditingController(text: '+7 (');
   TextEditingController startOrderController = TextEditingController();
   TextEditingController countBucketController = TextEditingController();
   TextEditingController countPalletController = TextEditingController();
@@ -204,84 +210,6 @@ class _MarketPageState extends State<MarketPages>
     calcOrder();
   }
 
-  Offset getWidgetPosition(GlobalKey key) {
-    final RenderBox renderBox =
-        key.currentContext?.findRenderObject() as RenderBox;
-
-    return renderBox.localToGlobal(Offset.zero);
-  }
-
-  showIconModal() async {
-    iconSelectModal(
-      context,
-      getWidgetPosition(iconBtn),
-      (index) {
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  void iconSelectModal(
-    BuildContext context,
-    Offset offset,
-    Function(int index) onTap,
-  ) =>
-      showDialog(
-        useSafeArea: false,
-        barrierColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            child: AlertDialog(
-              insetPadding: EdgeInsets.only(
-                  top: offset.dy + 50.h, left: offset.dx - 30.w),
-              alignment: Alignment.topCenter,
-              contentPadding: EdgeInsets.zero,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              content: GestureDetector(
-                onTap: () => Navigator.of(context)
-                  ..pop()
-                  ..pop(),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 30.w,
-                  height: 50.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.1),
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(15.r),
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          padding: EdgeInsets.all(10.h),
-                          height: 40.h,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Обычная доставка',
-                            style: CustomTextStyle.black15w700
-                                .copyWith(fontSize: 15.sp),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      );
-
   @override
   Widget build(BuildContext context) {
     bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -321,7 +249,13 @@ class _MarketPageState extends State<MarketPages>
                                   children: [
                                     SizedBox(width: 15.w),
                                     GestureDetector(
-                                      onTap: showIconModal,
+                                      onTap: () => iconSelectModal(
+                                        context,
+                                        getWidgetPosition(iconBtn),
+                                        (index) {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
                                       child: Row(
                                         children: [
                                           Icon(
@@ -378,8 +312,14 @@ class _MarketPageState extends State<MarketPages>
                         } else if (current is CreateFormFail) {
                           String errors = '';
                           for (var element in coast!.errors!) {
-                            errors +=
-                                '${element.messagePrepend!}${element.message!}\n';
+                            if (element.message ==
+                                'Заказать курьера можно не менее чем через 1 час') {
+                              errors +=
+                                  'Заказать курьера на завтра можно не позже 15:00 текущего дня.\n';
+                            } else {
+                              errors +=
+                                  '${element.messagePrepend!}${element.message!}\n';
+                            }
                           }
                           MessageDialogs()
                               .errorDialog(text: 'Отклонено', error: errors);
@@ -405,9 +345,19 @@ class _MarketPageState extends State<MarketPages>
                                           CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(height: 15.h),
-                                        const Text(
-                                          'Как это работает?',
-                                          style: CustomTextStyle.red15,
+                                        GestureDetector(
+                                          onTap: () => showTipWork(
+                                            context,
+                                            getWidgetPosition(howItWorkKey),
+                                            (index) {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          child: Text(
+                                            'Как это работает?',
+                                            key: howItWorkKey,
+                                            style: CustomTextStyle.red15,
+                                          ),
                                         ),
                                         SizedBox(height: 20.h),
                                         Container(
@@ -579,7 +529,7 @@ class _MarketPageState extends State<MarketPages>
                                               details = snapshot.data!;
                                               return AnimatedContainer(
                                                 duration: const Duration(
-                                                    milliseconds: 400),
+                                                    milliseconds: 200),
                                                 height:
                                                     snapshot.data! ? 85.h : 0.h,
                                                 child: Padding(
@@ -833,9 +783,20 @@ class _MarketPageState extends State<MarketPages>
                                                 ),
                                               ),
                                               SizedBox(width: 10.w),
-                                              const Icon(
-                                                Icons.help_outline_outlined,
-                                                color: Colors.red,
+                                              GestureDetector(
+                                                onTap: () => showTipWhenTake(
+                                                  context,
+                                                  getWidgetPosition(
+                                                      whenTakeKey),
+                                                  (index) {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                child: Icon(
+                                                  Icons.help_outline_outlined,
+                                                  key: whenTakeKey,
+                                                  color: Colors.red,
+                                                ),
                                               ),
                                               SizedBox(width: 10.w),
                                             ],
@@ -908,6 +869,9 @@ class _MarketPageState extends State<MarketPages>
                                                     phoneController,
                                                 formatters: [
                                                   MaskTextInputFormatter(
+                                                    type: MaskAutoCompletionType
+                                                        .eager,
+                                                    initialText: '+7 (',
                                                     mask: '+7 (###) ###-##-##',
                                                     filter: {
                                                       "#": RegExp(r'[0-9]')
@@ -967,9 +931,23 @@ class _MarketPageState extends State<MarketPages>
                                                   ),
                                                 ),
                                                 SizedBox(width: 10.w),
-                                                const Icon(
-                                                  Icons.help_outline_outlined,
-                                                  color: Colors.red,
+                                                GestureDetector(
+                                                  onTap: () => showTipBucket(
+                                                    tabController.index == 0
+                                                        ? 'Если у вас больше 10 коробок — заказывайте доставку на паллете.  Из расчета учитывается 1 коробка = 60х40х40. Если у вас несколько поставок россыпью в разные города, как это часто бывает у МП OZON – оформляйте коробочную доставку указав кол-во мест/коробок. Подробная информация и цены представлены на сайте.'
+                                                        : 'Если у вас больше 10 коробок — заказывайте доставку на паллете.  Из расчета учитывается 1 коробка = 60х40х40. В этот размер вы можете уместить, например, 15 маленьких коробок с каждым товаром. Подробная информация и цены представлены на сайте.',
+                                                    context,
+                                                    getWidgetPosition(
+                                                        countBucketKey),
+                                                    (index) {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.help_outline_outlined,
+                                                    key: countBucketKey,
+                                                    color: Colors.red,
+                                                  ),
                                                 ),
                                                 Expanded(
                                                   flex: 2,
@@ -1049,9 +1027,20 @@ class _MarketPageState extends State<MarketPages>
                                                   ),
                                                 ),
                                                 SizedBox(width: 10.w),
-                                                const Icon(
-                                                  Icons.help_outline_outlined,
-                                                  color: Colors.red,
+                                                GestureDetector(
+                                                  onTap: () => showTipPallet(
+                                                    context,
+                                                    getWidgetPosition(
+                                                        countPalletKey),
+                                                    (index) {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.help_outline_outlined,
+                                                    key: countPalletKey,
+                                                    color: Colors.red,
+                                                  ),
                                                 ),
                                                 Expanded(
                                                   flex: 2,
@@ -1096,340 +1085,7 @@ class _MarketPageState extends State<MarketPages>
                                             } else {
                                               height = 0.h;
                                             }
-                                            return Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SizedBox(width: 5.w),
-                                                    const Text(
-                                                      'Дополнительные услуги',
-                                                      style: CustomTextStyle
-                                                          .grey15bold,
-                                                    ),
-                                                    const Spacer(),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        additionalController
-                                                            .add(!additional);
-                                                        if (!additional) {
-                                                          Future.delayed(
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      100), () {
-                                                            scrollController.animateTo(
-                                                                350.h,
-                                                                duration:
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            200),
-                                                                curve: Curves
-                                                                    .linear);
-                                                          });
-                                                        }
-                                                      },
-                                                      child: Text(
-                                                        additional
-                                                            ? 'Свернуть'
-                                                            : 'Развернуть',
-                                                        style: CustomTextStyle
-                                                            .red15,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                AnimatedContainer(
-                                                  duration: const Duration(
-                                                      milliseconds: 100),
-                                                  height: height,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Stack(
-                                                      children: [
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      10.w),
-                                                          child: Column(
-                                                            children: [
-                                                              SizedBox(
-                                                                  height: 10.h),
-                                                              StreamBuilder<
-                                                                  bool>(
-                                                                stream:
-                                                                    additional1Controller
-                                                                        .stream,
-                                                                initialData:
-                                                                    false,
-                                                                builder: (context,
-                                                                    snapshot) {
-                                                                  additional1 =
-                                                                      snapshot
-                                                                          .data!;
-                                                                  return Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          const Flexible(
-                                                                            child:
-                                                                                Text(
-                                                                              'Услуга помощи погрузки / разгрузки',
-                                                                              style: CustomTextStyle.grey15bold,
-                                                                            ),
-                                                                          ),
-                                                                          IconButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              additional1 = !additional1;
-                                                                              additional1Controller.add(additional1);
-                                                                              additionalController.add(additional);
-                                                                            },
-                                                                            icon: additional1
-                                                                                ? const Icon(Icons.keyboard_arrow_up)
-                                                                                : const Icon(Icons.keyboard_arrow_down),
-                                                                            splashRadius:
-                                                                                15,
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      const Text(
-                                                                        'Если вы не хотите пачкать руки и предпочитаете наблюдать за чужой работой - закажите эту услугу. Егорка заберет коробки с вашего склада и погрузит их в свой авто. Если нужно - погрузит на паллету и запаллетирует (выберите услугу ниже).',
-                                                                        style: CustomTextStyle
-                                                                            .grey14w400,
-                                                                        textAlign:
-                                                                            TextAlign.justify,
-                                                                      ),
-                                                                      AnimatedContainer(
-                                                                        duration:
-                                                                            const Duration(milliseconds: 100),
-                                                                        height: snapshot.data!
-                                                                            ? 170.h
-                                                                            : 0.h,
-                                                                        child:
-                                                                            Stack(
-                                                                          children: [
-                                                                            Column(
-                                                                              children: [
-                                                                                SizedBox(height: 10.h),
-                                                                                Row(
-                                                                                  children: const [
-                                                                                    Text('Кол-во коробок до 15 кг?')
-                                                                                  ],
-                                                                                ),
-                                                                                SizedBox(height: 5.h),
-                                                                                StreamBuilder<int>(
-                                                                                    stream: bucketCountLess15kg.stream,
-                                                                                    initialData: 0,
-                                                                                    builder: (context, snapshot) {
-                                                                                      return Row(
-                                                                                        children: [
-                                                                                          Expanded(
-                                                                                            child: CustomTextField(
-                                                                                              onTap: () => scrolling(),
-                                                                                              onFieldSubmitted: (value) => calcOrder(),
-                                                                                              onChanged: (value) {
-                                                                                                int? res = int.tryParse(value);
-                                                                                                if (res != null) {
-                                                                                                  bucketCountLess15kg.add(res);
-                                                                                                } else {
-                                                                                                  bucketCountLess15kg.add(0);
-                                                                                                }
-                                                                                              },
-                                                                                              focusNode: bucketFocusLess15kg,
-                                                                                              height: 45.h,
-                                                                                              contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
-                                                                                              fillColor: Colors.white,
-                                                                                              hintText: '0',
-                                                                                              textInputType: TextInputType.number,
-                                                                                              formatters: [
-                                                                                                CustomInputFormatterSlider(maxSlider)
-                                                                                              ],
-                                                                                              textEditingController: countPalletControllerLess15kg,
-                                                                                            ),
-                                                                                          ),
-                                                                                          SizedBox(width: 10.w),
-                                                                                          Expanded(
-                                                                                            flex: 2,
-                                                                                            child: Slider(
-                                                                                              min: minSlider,
-                                                                                              max: maxSlider,
-                                                                                              activeColor: Colors.red,
-                                                                                              inactiveColor: Colors.grey[300],
-                                                                                              thumbColor: Colors.white,
-                                                                                              value: snapshot.data!.toDouble(),
-                                                                                              onChangeEnd: (value) => calcOrder(),
-                                                                                              onChanged: (value) {
-                                                                                                bucketCountLess15kg.add(value.toInt());
-                                                                                                countPalletControllerLess15kg.text = value.toInt().toString();
-                                                                                              },
-                                                                                            ),
-                                                                                          )
-                                                                                        ],
-                                                                                      );
-                                                                                    }),
-                                                                                SizedBox(height: 15.w),
-                                                                                Row(
-                                                                                  children: const [
-                                                                                    Text('Кол-во коробок свыше 15 кг?'),
-                                                                                  ],
-                                                                                ),
-                                                                                SizedBox(height: 5.h),
-                                                                                StreamBuilder<int>(
-                                                                                    stream: bucketCountMore15kg.stream,
-                                                                                    initialData: 0,
-                                                                                    builder: (context, snapshot) {
-                                                                                      return Row(
-                                                                                        children: [
-                                                                                          Expanded(
-                                                                                            child: CustomTextField(
-                                                                                              onTap: () => scrolling(),
-                                                                                              onFieldSubmitted: (value) => calcOrder(),
-                                                                                              onChanged: (value) {
-                                                                                                int? res = int.tryParse(value);
-                                                                                                if (res != null) {
-                                                                                                  bucketCountMore15kg.add(res);
-                                                                                                } else {
-                                                                                                  bucketCountMore15kg.add(0);
-                                                                                                }
-                                                                                              },
-                                                                                              focusNode: bucketFocusMore15kg,
-                                                                                              height: 45.h,
-                                                                                              contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
-                                                                                              fillColor: Colors.white,
-                                                                                              hintText: '0',
-                                                                                              textInputType: TextInputType.number,
-                                                                                              formatters: [
-                                                                                                CustomInputFormatterSlider(maxSlider)
-                                                                                              ],
-                                                                                              textEditingController: countPalletControllerMore15kg,
-                                                                                            ),
-                                                                                          ),
-                                                                                          SizedBox(width: 10.w),
-                                                                                          Expanded(
-                                                                                            flex: 2,
-                                                                                            child: Slider(
-                                                                                              min: minSlider,
-                                                                                              max: maxSlider,
-                                                                                              activeColor: Colors.red,
-                                                                                              inactiveColor: Colors.grey[300],
-                                                                                              thumbColor: Colors.white,
-                                                                                              value: snapshot.data!.toDouble(),
-                                                                                              onChangeEnd: (value) => calcOrder(),
-                                                                                              onChanged: (value) {
-                                                                                                bucketCountMore15kg.add(value.toInt());
-                                                                                                countPalletControllerMore15kg.text = value.toInt().toString();
-                                                                                              },
-                                                                                            ),
-                                                                                          )
-                                                                                        ],
-                                                                                      );
-                                                                                    }),
-                                                                              ],
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 10.h),
-                                                              StreamBuilder<
-                                                                  bool>(
-                                                                stream:
-                                                                    additional2Controller
-                                                                        .stream,
-                                                                initialData:
-                                                                    false,
-                                                                builder: (context,
-                                                                    snapshot) {
-                                                                  additional2 =
-                                                                      snapshot
-                                                                          .data!;
-                                                                  return Stack(
-                                                                    children: [
-                                                                      Column(
-                                                                        children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              const Text(
-                                                                                'Паллетирование',
-                                                                                style: CustomTextStyle.grey15bold,
-                                                                              ),
-                                                                              IconButton(
-                                                                                onPressed: () {
-                                                                                  additional2 = !additional2;
-                                                                                  additional2Controller.add(additional2);
-                                                                                  additionalController.add(additional);
-                                                                                },
-                                                                                icon: additional2 ? const Icon(Icons.keyboard_arrow_up) : const Icon(Icons.keyboard_arrow_down),
-                                                                                splashRadius: 15,
-                                                                              )
-                                                                            ],
-                                                                          ),
-                                                                          const Text(
-                                                                            'Егорка приедет к вам с паллетой и стрейч-пленкой. Самостоятельно запаллетирует ваш груз и отправится доставлять ваш товар. Если груз отправляется с нашего склада, то кладовщики разместят ваши коробки на паллету и погрузят водителю в кузов.',
-                                                                            style:
-                                                                                CustomTextStyle.grey14w400,
-                                                                            textAlign:
-                                                                                TextAlign.justify,
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 5.w),
-                                                                          AnimatedContainer(
-                                                                            duration:
-                                                                                const Duration(milliseconds: 100),
-                                                                            height: snapshot.data!
-                                                                                ? 90.h
-                                                                                : 0.h,
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                SizedBox(height: 15.w),
-                                                                                Row(
-                                                                                  children: const [
-                                                                                    Text('Количество паллет?')
-                                                                                  ],
-                                                                                ),
-                                                                                SizedBox(height: 5.h),
-                                                                                Row(
-                                                                                  children: [
-                                                                                    Expanded(
-                                                                                      child: CustomTextField(
-                                                                                        onTap: () => scrolling(),
-                                                                                        onFieldSubmitted: (value) => calcOrder(),
-                                                                                        focusNode: palletFocusAdditional,
-                                                                                        height: 45.h,
-                                                                                        contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
-                                                                                        fillColor: Colors.white,
-                                                                                        hintText: '0',
-                                                                                        textInputType: TextInputType.number,
-                                                                                        textEditingController: countPalletControllerMore,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            );
+                                            return additionalTab(height);
                                           },
                                         ),
                                         keyBoardVisible
@@ -1537,6 +1193,341 @@ class _MarketPageState extends State<MarketPages>
                 ),
         );
       },
+    );
+  }
+
+  Widget additionalTab(double height) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            SizedBox(width: 5.w),
+            const Text(
+              'Дополнительные услуги',
+              style: CustomTextStyle.grey15bold,
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () {
+                additionalController.add(!additional);
+                if (!additional) {
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    scrollController.animateTo(350.h,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.linear);
+                  });
+                }
+              },
+              child: Text(
+                additional ? 'Свернуть' : 'Развернуть',
+                style: CustomTextStyle.red15,
+              ),
+            ),
+          ],
+        ),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          height: height,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10.h),
+                      StreamBuilder<bool>(
+                        stream: additional1Controller.stream,
+                        initialData: false,
+                        builder: (context, snapshot) {
+                          additional1 = snapshot.data!;
+                          return Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const Flexible(
+                                    child: Text(
+                                      'Услуга помощи погрузки / разгрузки',
+                                      style: CustomTextStyle.grey15bold,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      additional1 = !additional1;
+                                      additional1Controller.add(additional1);
+                                      additionalController.add(additional);
+                                    },
+                                    icon: additional1
+                                        ? const Icon(Icons.keyboard_arrow_up)
+                                        : const Icon(Icons.keyboard_arrow_down),
+                                    splashRadius: 15,
+                                  )
+                                ],
+                              ),
+                              const Text(
+                                'Если вы не хотите пачкать руки и предпочитаете наблюдать за чужой работой - закажите эту услугу. Егорка заберет коробки с вашего склада и погрузит их в свой авто. Если нужно - погрузит на паллету и запаллетирует (выберите услугу ниже).',
+                                style: CustomTextStyle.grey14w400,
+                                textAlign: TextAlign.justify,
+                              ),
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 100),
+                                height: snapshot.data! ? 170.h : 0.h,
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 10.h),
+                                        Row(
+                                          children: const [
+                                            Text('Кол-во коробок до 15 кг?')
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        StreamBuilder<int>(
+                                            stream: bucketCountLess15kg.stream,
+                                            initialData: 0,
+                                            builder: (context, snapshot) {
+                                              return Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomTextField(
+                                                      onTap: () => scrolling(),
+                                                      onFieldSubmitted:
+                                                          (value) =>
+                                                              calcOrder(),
+                                                      onChanged: (value) {
+                                                        int? res =
+                                                            int.tryParse(value);
+                                                        if (res != null) {
+                                                          bucketCountLess15kg
+                                                              .add(res);
+                                                        } else {
+                                                          bucketCountLess15kg
+                                                              .add(0);
+                                                        }
+                                                      },
+                                                      focusNode:
+                                                          bucketFocusLess15kg,
+                                                      height: 45.h,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      fillColor: Colors.white,
+                                                      hintText: '0',
+                                                      textInputType:
+                                                          TextInputType.number,
+                                                      formatters: [
+                                                        CustomInputFormatterSlider(
+                                                            maxSlider)
+                                                      ],
+                                                      textEditingController:
+                                                          countPalletControllerLess15kg,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 10.w),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Slider(
+                                                      min: minSlider,
+                                                      max: maxSlider,
+                                                      activeColor: Colors.red,
+                                                      inactiveColor:
+                                                          Colors.grey[300],
+                                                      thumbColor: Colors.white,
+                                                      value: snapshot.data!
+                                                          .toDouble(),
+                                                      onChangeEnd: (value) =>
+                                                          calcOrder(),
+                                                      onChanged: (value) {
+                                                        bucketCountLess15kg
+                                                            .add(value.toInt());
+                                                        countPalletControllerLess15kg
+                                                                .text =
+                                                            value
+                                                                .toInt()
+                                                                .toString();
+                                                      },
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            }),
+                                        SizedBox(height: 15.w),
+                                        Row(
+                                          children: const [
+                                            Text('Кол-во коробок свыше 15 кг?'),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        StreamBuilder<int>(
+                                            stream: bucketCountMore15kg.stream,
+                                            initialData: 0,
+                                            builder: (context, snapshot) {
+                                              return Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomTextField(
+                                                      onTap: () => scrolling(),
+                                                      onFieldSubmitted:
+                                                          (value) =>
+                                                              calcOrder(),
+                                                      onChanged: (value) {
+                                                        int? res =
+                                                            int.tryParse(value);
+                                                        if (res != null) {
+                                                          bucketCountMore15kg
+                                                              .add(res);
+                                                        } else {
+                                                          bucketCountMore15kg
+                                                              .add(0);
+                                                        }
+                                                      },
+                                                      focusNode:
+                                                          bucketFocusMore15kg,
+                                                      height: 45.h,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10.w),
+                                                      fillColor: Colors.white,
+                                                      hintText: '0',
+                                                      textInputType:
+                                                          TextInputType.number,
+                                                      formatters: [
+                                                        CustomInputFormatterSlider(
+                                                            maxSlider)
+                                                      ],
+                                                      textEditingController:
+                                                          countPalletControllerMore15kg,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 10.w),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Slider(
+                                                      min: minSlider,
+                                                      max: maxSlider,
+                                                      activeColor: Colors.red,
+                                                      inactiveColor:
+                                                          Colors.grey[300],
+                                                      thumbColor: Colors.white,
+                                                      value: snapshot.data!
+                                                          .toDouble(),
+                                                      onChangeEnd: (value) =>
+                                                          calcOrder(),
+                                                      onChanged: (value) {
+                                                        bucketCountMore15kg
+                                                            .add(value.toInt());
+                                                        countPalletControllerMore15kg
+                                                                .text =
+                                                            value
+                                                                .toInt()
+                                                                .toString();
+                                                      },
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            }),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      SizedBox(height: 10.h),
+                      StreamBuilder<bool>(
+                        stream: additional2Controller.stream,
+                        initialData: false,
+                        builder: (context, snapshot) {
+                          additional2 = snapshot.data!;
+                          return Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Паллетирование',
+                                        style: CustomTextStyle.grey15bold,
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          additional2 = !additional2;
+                                          additional2Controller
+                                              .add(additional2);
+                                          additionalController.add(additional);
+                                        },
+                                        icon: additional2
+                                            ? const Icon(
+                                                Icons.keyboard_arrow_up)
+                                            : const Icon(
+                                                Icons.keyboard_arrow_down),
+                                        splashRadius: 15,
+                                      )
+                                    ],
+                                  ),
+                                  const Text(
+                                    'Егорка приедет к вам с паллетой и стрейч-пленкой. Самостоятельно запаллетирует ваш груз и отправится доставлять ваш товар. Если груз отправляется с нашего склада, то кладовщики разместят ваши коробки на паллету и погрузят водителю в кузов.',
+                                    style: CustomTextStyle.grey14w400,
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                  SizedBox(height: 5.w),
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 100),
+                                    height: snapshot.data! ? 90.h : 0.h,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 15.w),
+                                        Row(
+                                          children: const [
+                                            Text('Количество паллет?')
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: CustomTextField(
+                                                onTap: () => scrolling(),
+                                                onFieldSubmitted: (value) =>
+                                                    calcOrder(),
+                                                focusNode:
+                                                    palletFocusAdditional,
+                                                height: 45.h,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10.w),
+                                                fillColor: Colors.white,
+                                                hintText: '0',
+                                                textInputType:
+                                                    TextInputType.number,
+                                                textEditingController:
+                                                    countPalletControllerMore,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1652,6 +1643,15 @@ class _MarketPageState extends State<MarketPages>
 
   void showDateTime() async {
     time = null;
+    DateTime initialData;
+
+    if (DateTime.now().hour >= 15) {
+      initialData = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day + 2);
+    } else {
+      initialData = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+    }
     if (Platform.isAndroid) {
       final value = await showDialog(
           context: context,
@@ -1705,7 +1705,7 @@ class _MarketPageState extends State<MarketPages>
                         ),
                         onPressed: () {
                           if (time == null) {
-                            time = DateTime.now();
+                            time = initialData;
                             startOrderController.text =
                                 DateFormat('dd.MM.yyyy').format(time!);
                           }
@@ -1726,6 +1726,9 @@ class _MarketPageState extends State<MarketPages>
                               DateFormat('dd.MM.yyyy').format(value);
                           time = value;
                         },
+                        minimumYear: DateTime.now().year,
+                        initialDateTime: initialData,
+                        minimumDate: initialData,
                       ),
                     ),
                   ],
@@ -1736,12 +1739,5 @@ class _MarketPageState extends State<MarketPages>
         },
       );
     }
-  }
-
-  bool validate() {
-    if (nameController.text.isEmpty || phoneController.text.isEmpty) {
-      return false;
-    }
-    return true;
   }
 }

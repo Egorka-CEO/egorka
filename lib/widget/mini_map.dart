@@ -1,18 +1,12 @@
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
-import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MiniMapView extends StatefulWidget {
   List<Location> locations;
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(56.159646, 35.469827),
-    zoom: 4,
-  );
   MiniMapView({Key? key, required this.locations}) : super(key: key);
 
   @override
@@ -21,13 +15,10 @@ class MiniMapView extends StatefulWidget {
 
 class _MiniMapViewState extends State<MiniMapView> {
   late CameraPosition pos;
-  Marker? firstMarker;
-  Marker? secondMarker;
   Position? position;
-  GoogleMapController? mapController;
-
-  Directions? routes;
-  Set<Marker> marker = {};
+  YandexMapController? mapController;
+  final List<MapObject> mapObjects = [];
+  final MapObjectId mapObjectId = const MapObjectId('polyline');
 
   @override
   void initState() {
@@ -43,40 +34,58 @@ class _MiniMapViewState extends State<MiniMapView> {
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
           buildWhen: (previous, current) {
         if (current is HistoryOrderRoutePolilyne) {
-          routes = current.routes;
-          marker = current.markers;
-          mapController!.animateCamera(
-            CameraUpdate.newLatLngBounds(routes!.bounds, 20.w),
+          mapObjects.clear();
+          final mapObject = PolylineMapObject(
+            mapId: mapObjectId,
+            polyline: Polyline(
+                points: current.routes.polylinePoints
+                    .map((e) =>
+                        Point(latitude: e.latitude, longitude: e.longitude))
+                    .toList()),
+            strokeColor: Colors.red,
+            strokeWidth: 5,
+            outlineColor: Colors.white,
+            outlineWidth: 1,
+            turnRadius: 10.0,
+            arcApproximationStep: 1.0,
+            gradientLength: 1.0,
+            isInnerOutlineEnabled: true,
           );
-          return true;
+          mapObjects.add(mapObject);
+
+          final placemarks = current.markers;
+          mapObjects.addAll(placemarks);
+
+          mapController!.moveCamera(
+            CameraUpdate.newBounds(
+              BoundingBox(
+                northEast: Point(
+                  latitude: current.routes.bounds.northeast.latitude,
+                  longitude: current.routes.bounds.northeast.longitude,
+                ),
+                southWest: Point(
+                  latitude: current.routes.bounds.southwest.latitude + 0.01,
+                  longitude: current.routes.bounds.southwest.longitude + 0.01,
+                ),
+              ),
+              focusRect: const ScreenRect(
+                topLeft: ScreenPoint(
+                  x: 90,
+                  y: 90,
+                ),
+                bottomRight: ScreenPoint(
+                  x: 1100,
+                  y: 500,
+                ),
+              ),
+            ),
+          );
         }
         return true;
       }, builder: (context, snapshot) {
-        return GoogleMap(
-          markers: marker,
-          polylines: {
-            if (routes != null)
-              Polyline(
-                polylineId: const PolylineId('route'),
-                visible: true,
-                width: 5,
-                points: routes != null
-                    ? routes!.polylinePoints
-                        .map((e) => LatLng(e.latitude, e.longitude))
-                        .toList()
-                    : [],
-                color: Colors.red,
-              )
-          },
-          padding: EdgeInsets.zero,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          onCameraMove: (position) {
-            pos = position;
-          },
-          initialCameraPosition: MiniMapView._kGooglePlex,
-          mapType: MapType.normal,
-          onMapCreated: (GoogleMapController controller) {
+        return YandexMap(
+          mapObjects: mapObjects,
+          onMapCreated: (controller) {
             mapController = controller;
           },
         );

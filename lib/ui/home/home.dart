@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     if (!bloc.isPolilyne)
                       Padding(
-                        padding: EdgeInsets.only(bottom: 100.h),
+                        padding: EdgeInsets.only(bottom: 200.h),
                         child: CustomWidget.iconGPS(),
                       ),
                     const BottomSheetDraggable(),

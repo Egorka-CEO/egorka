@@ -7,11 +7,11 @@ class SearchLoading extends SearchAddressState {}
 class SearchAddressStated extends SearchAddressState {}
 
 class SearchAddressRoutePolilyne extends SearchAddressState {
-  Directions routes;
-  Set<Marker> markers;
+  Directions directions;
+  List<PlacemarkMapObject> markers;
   List<CoastResponse> coasts;
 
-  SearchAddressRoutePolilyne(this.routes, this.markers, this.coasts);
+  SearchAddressRoutePolilyne(this.directions, this.markers, this.coasts);
 }
 
 class DeletePolilyneState extends SearchAddressState {}
@@ -57,7 +57,7 @@ class SearchAddressFailed extends SearchAddressState {}
 class FindMeState extends SearchAddressState {}
 
 class JumpToPointState extends SearchAddressState {
-  final Point point;
+  final pointModel.Point point;
 
   JumpToPointState(this.point);
 }

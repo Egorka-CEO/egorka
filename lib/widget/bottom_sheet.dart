@@ -5,7 +5,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
-import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point.dart' as pointModel;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
@@ -99,7 +99,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           suggestionsStart = Suggestions(
             iD: null,
             name: current.address,
-            point: Point(
+            point: pointModel.Point(
               address: current.address,
               code: '${current.latitude},${current.longitude}',
               latitude: current.latitude,
@@ -496,7 +496,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       suggestionsStart = Suggestions(
                         iD: null,
                         name: current.address,
-                        point: Point(
+                        point: pointModel.Point(
                           address: current.address,
                           code: '${current.latitude},${current.longitude}',
                           latitude: current.latitude,
@@ -712,7 +712,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             Suggestions(
                 iD: null,
                 name: coastResponse!.result!.locations!.first.point!.address!,
-                point: Point(
+                point: pointModel.Point(
                     latitude: coastResponse!
                         .result!.locations!.first.point!.latitude!,
                     longitude: coastResponse!

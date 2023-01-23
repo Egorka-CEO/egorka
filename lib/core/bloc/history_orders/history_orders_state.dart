@@ -16,7 +16,7 @@ class HistoryUpdateList extends HistoryOrdersState {
 
 class HistoryOrderRoutePolilyne extends HistoryOrdersState {
   Directions routes;
-  Set<Marker> markers;
+  List<PlacemarkMapObject> markers;
 
   HistoryOrderRoutePolilyne(this.routes, this.markers);
 }

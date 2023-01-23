@@ -9,9 +9,10 @@ class SearchAddress extends SearchAddressEvent {
 }
 
 class ChangeMapPosition extends SearchAddressEvent {
-  LatLng coordinates;
+  double lat;
+  double lon;
 
-  ChangeMapPosition(this.coordinates);
+  ChangeMapPosition(this.lat, this.lon);
 }
 
 class GetAddressPosition extends SearchAddressEvent {}
@@ -21,7 +22,8 @@ class SearchAddressClear extends SearchAddressEvent {}
 class SearchMeEvent extends SearchAddressEvent {}
 
 class JumpToPointEvent extends SearchAddressEvent {
-  final Point point;
+  final pointModel.Point point;
+
   JumpToPointEvent(this.point);
 }
 

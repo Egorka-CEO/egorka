@@ -1,20 +1,16 @@
-import 'package:custom_map_markers/custom_map_markers.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/point_marketplace.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
+import 'dart:ui' as ui;
 
 class MapMarketPlaces extends StatefulWidget {
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(56.159646, 35.469827),
-    zoom: 4,
-  );
   List<PointMarketPlace> points;
   MapMarketPlaces({Key? key, required this.points}) : super(key: key);
 
@@ -24,31 +20,61 @@ class MapMarketPlaces extends StatefulWidget {
 
 class _MapMarketPlacesState extends State<MapMarketPlaces> {
   late CameraPosition pos;
-  GoogleMapController? mapController;
+  YandexMapController? mapController;
 
   Directions? routes;
-  List<MarkerData> marker = [];
+
+  final List<MapObject> mapObjects = [];
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
 
   void initMarkers() async {
+    final fromIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/from.png', 90));
     for (var element in widget.points) {
-      String name = element.name!.first.name![0];
-      marker.add(MarkerData(
-        marker: Marker(
-            onTap: () {
-              BlocProvider.of<MarketPlacePageBloc>(context)
-                  .add(SelectMarketPlaces(element));
-            },
-            markerId: MarkerId(element.iD!),
-            position: LatLng(element.latitude!, element.longitude!)),
-        child: _customMarker(name, Colors.red),
-      ));
+      // String name = element.name!.first.name![0];
+      mapObjects.add(
+        PlacemarkMapObject(
+          mapId: MapObjectId('placemark_start${element.iD}'),
+          point: Point(
+            latitude: element.latitude!,
+            longitude: element.longitude!,
+          ),
+          opacity: 1,
+          icon: PlacemarkIcon.single(
+            PlacemarkIconStyle(image: fromIcon),
+          ),
+          onTap: (mapObject, point) {
+            BlocProvider.of<MarketPlacePageBloc>(context)
+                .add(SelectMarketPlaces(element));
+          },
+        ),
+      );
     }
+    setState(() {});
+    mapController?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        const CameraPosition(
+          target: Point(
+            latitude: 55.750104,
+            longitude: 37.622895,
+          ),
+          zoom: 9,
+        ),
+      ),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    initMarkers();
   }
 
   Widget _customMarker(String title, Color color) {
@@ -77,27 +103,13 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
   Widget build(BuildContext context) {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: CustomGoogleMapMarkerBuilder(
-          customMarkers: marker,
-          builder: (context, markers) {
-            if (markers == null) {
-              return const Center(child: CupertinoActivityIndicator());
-            }
-            return GoogleMap(
-              markers: markers,
-              padding: EdgeInsets.zero,
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-              onCameraMove: (position) {
-                pos = position;
-              },
-              initialCameraPosition: MapMarketPlaces._kGooglePlex,
-              mapType: MapType.normal,
-              onMapCreated: (GoogleMapController controller) {
-                mapController = controller;
-              },
-            );
-          }),
+      child: YandexMap(
+        mapObjects: mapObjects,
+        onMapCreated: (controller) {
+          mapController = controller;
+          initMarkers();
+        },
+      ),
     );
   }
 }

@@ -6,7 +6,8 @@ import 'package:egorka/model/locations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui' as ui;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as googleMap;
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 part 'history_orders_event.dart';
 part 'history_orders_state.dart';
@@ -61,9 +62,9 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
     //     googleMapApiKey: apiKey);
 
     final directionsTo = await DirectionsRepository(dio: null).getDirections(
-        origin: LatLng(event.locations.first.point!.latitude!,
+        origin: googleMap.LatLng(event.locations.first.point!.latitude!,
             event.locations.first.point!.longitude!),
-        destination: LatLng(event.locations.last.point!.latitude!,
+        destination: googleMap.LatLng(event.locations.last.point!.latitude!,
             event.locations.last.point!.longitude!));
 
     if (directionsTo != null) {
@@ -71,20 +72,35 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/to.png', 90));
-      emit(HistoryOrderRoutePolilyne(directionsTo, {
-        Marker(
-          icon: fromIcon,
-          markerId: const MarkerId('start'),
-          position: LatLng(directionsTo.polylinePoints.first.latitude,
-              directionsTo.polylinePoints.first.longitude),
+      emit(
+        HistoryOrderRoutePolilyne(
+          directionsTo,
+          [
+            PlacemarkMapObject(
+              mapId: const MapObjectId('placemark_start'),
+              point: Point(
+                latitude: directionsTo.polylinePoints.first.latitude,
+                longitude: directionsTo.polylinePoints.first.longitude,
+              ),
+              opacity: 1,
+              icon: PlacemarkIcon.single(
+                PlacemarkIconStyle(image: fromIcon),
+              ),
+            ),
+            PlacemarkMapObject(
+              mapId: const MapObjectId('placemark_end'),
+              point: Point(
+                latitude: directionsTo.polylinePoints.last.latitude,
+                longitude: directionsTo.polylinePoints.last.longitude,
+              ),
+              opacity: 1,
+              icon: PlacemarkIcon.single(
+                PlacemarkIconStyle(image: toIcon),
+              ),
+            ),
+          ],
         ),
-        Marker(
-          icon: toIcon,
-          markerId: const MarkerId('finish'),
-          position: LatLng(directionsTo.polylinePoints.last.latitude,
-              directionsTo.polylinePoints.last.longitude),
-        ),
-      }));
+      );
     }
   }
 

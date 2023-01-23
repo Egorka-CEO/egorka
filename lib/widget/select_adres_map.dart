@@ -1,27 +1,30 @@
 import 'dart:async';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point.dart' as pointModel;
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:geocoding/geocoding.dart' as geo;
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class SelectAdresMap extends StatefulWidget {
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(53.160161, 24.468712),
-    zoom: 5,
+  static const CameraPosition kPlex = CameraPosition(
+    target: Point(
+      latitude: 53.946798,
+      longitude: 27.677952,
+    ),
+    zoom: 18,
   );
   @override
   State<SelectAdresMap> createState() => _SelectAdresMapState();
 }
 
 class _SelectAdresMapState extends State<SelectAdresMap> {
-  GoogleMapController? mapController;
+  YandexMapController? mapController;
   CameraPosition? pos;
   PanelController panelController = PanelController();
   String address = '';
@@ -38,14 +41,16 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
 
   void _getPosition() async {
     if (await LocationGeo().checkPermission()) {
-      // BlocProvider.of<SearchAddressBloc>(context).add(GetAddressPosition());
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       if (mapController != null) {
         await mapController!.moveCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
+              target: Point(
+                latitude: position.latitude,
+                longitude: position.longitude,
+              ),
               zoom: 20,
               tilt: 0,
             ),
@@ -74,7 +79,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
     suggestions = Suggestions(
       iD: '',
       name: address,
-      point: Point(
+      point: pointModel.Point(
         address: address,
         latitude: pos!.target.latitude,
         longitude: pos!.target.longitude,
@@ -129,21 +134,17 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.only(bottom: 100.h),
-                      child: GoogleMap(
-                        padding: EdgeInsets.zero,
-                        myLocationButtonEnabled: false,
-                        zoomControlsEnabled: false,
-                        onCameraMove: (position) {
-                          pos = position;
-                        },
-                        onCameraIdle: () {
-                          _getAddress();
-                        },
-                        initialCameraPosition: SelectAdresMap._kGooglePlex,
-                        mapType: MapType.normal,
-                        onMapCreated: (GoogleMapController controller) {
+                      child: YandexMap(
+                        onMapCreated: (controller) {
                           mapController = controller;
                           _getPosition();
+                        },
+                        onCameraPositionChanged:
+                            (cameraPosition, reason, finished) {
+                          pos = cameraPosition;
+                          if (pos != null) {
+                            _getAddress();
+                          }
                         },
                       ),
                     ),

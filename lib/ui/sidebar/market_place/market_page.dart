@@ -10,7 +10,7 @@ import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/cargos.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point.dart' as pointModel;
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
@@ -33,6 +33,7 @@ import 'dart:io' show Platform;
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MarketPage extends StatelessWidget {
   int? recordPIN, recorNumber;
@@ -175,36 +176,42 @@ class _MarketPageState extends State<MarketPages>
   }
 
   void checkPosition(double latitude, double longitude) async {
-    List<geo.Placemark> placemarks = await geo
-        .placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'ru');
-
     String address = '';
 
-    if (placemarks.first.street!.isNotEmpty) {
-      address += placemarks.first.street!;
-      if (placemarks.first.locality!.isNotEmpty) {
-        address += ', г.${placemarks.first.locality!}';
-      }
+    SearchResultWithSession adress = YandexSearch.searchByPoint(
+      point: Point(
+        latitude: latitude,
+        longitude: longitude,
+      ),
+      searchOptions: const SearchOptions(),
+    );
+
+    final value = await adress.result;
+
+    final house = value.items!.first.toponymMetadata?.address
+        .addressComponents[SearchComponentKind.house];
+
+    print('object ${house}');
+
+    if (house == null) {
+      errorAddress = 'Ошибка: Укажите номер дома';
     } else {
-      address = placemarks.first.locality!;
+      errorAddress = null;
     }
 
+    address = value.items!.first.name;
+
     fromController.text = address;
+
     suggestion = Suggestions(
       iD: '',
       name: address,
-      point: Point(
+      point: pointModel.Point(
         address: address,
         latitude: latitude,
         longitude: longitude,
       ),
     );
-
-    if (placemarks.first.subThoroughfare!.isEmpty) {
-      errorAddress = 'Ошибка: Укажите номер дома';
-    } else {
-      errorAddress = null;
-    }
     setState(() {});
 
     calcOrder();
@@ -1157,10 +1164,17 @@ class _MarketPageState extends State<MarketPages>
                                     );
 
                                     suggestion = sug;
+
+                                    errorAddress =
+                                        suggestion!.houseNumber != null
+                                            ? null
+                                            : 'Укажите номер дома';
                                     fromController.text =
                                         suggestion!.point!.address!;
-                                    checkPosition(suggestion!.point!.latitude,
-                                        suggestion!.point!.longitude);
+
+                                    setState(() {});
+
+                                    calcOrder();
                                   },
                                 ),
                                 onPanelClosed: () {},

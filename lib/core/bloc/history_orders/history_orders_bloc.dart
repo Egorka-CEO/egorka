@@ -52,35 +52,44 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
 
   void _getPoliline(
       HistoryOrderPolilyne event, Emitter<HistoryOrdersState> emit) async {
-    // final locationFrom = await Geocoder2.getDataFromCoordinates(
-    //     latitude: event.locations.first.point!.latitude!,
-    //     longitude: event.locations.first.point!.longitude!,
-    //     googleMapApiKey: apiKey);
-    // final locationTo = await Geocoder2.getDataFromCoordinates(
-    //     latitude: event.locations.last.point!.latitude!,
-    //     longitude: event.locations.last.point!.longitude!,
-    //     googleMapApiKey: apiKey);
+    DrivingSessionResult? drivingSessionResult;
 
-    final directionsTo = await DirectionsRepository(dio: null).getDirections(
-        origin: googleMap.LatLng(event.locations.first.point!.latitude!,
-            event.locations.first.point!.longitude!),
-        destination: googleMap.LatLng(event.locations.last.point!.latitude!,
-            event.locations.last.point!.longitude!));
+    DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
+      points: [
+        RequestPoint(
+            point: Point(
+              latitude: event.locations.first.point!.latitude,
+              longitude: event.locations.first.point!.longitude,
+            ),
+            requestPointType: RequestPointType.wayPoint),
+        RequestPoint(
+            point: Point(
+              latitude: event.locations.last.point!.latitude,
+              longitude: event.locations.last.point!.longitude,
+            ),
+            requestPointType: RequestPointType.wayPoint),
+      ],
+      drivingOptions: const DrivingOptions(),
+    );
 
-    if (directionsTo != null) {
+    drivingSessionResult = await requestRoutes.result;
+
+    if (drivingSessionResult != null) {
       final fromIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/to.png', 90));
       emit(
         HistoryOrderRoutePolilyne(
-          directionsTo,
+          drivingSessionResult,
           [
             PlacemarkMapObject(
               mapId: const MapObjectId('placemark_start'),
               point: Point(
-                latitude: directionsTo.polylinePoints.first.latitude,
-                longitude: directionsTo.polylinePoints.first.longitude,
+                latitude:
+                    drivingSessionResult.routes!.first.geometry.first.latitude,
+                longitude:
+                    drivingSessionResult.routes!.first.geometry.first.longitude,
               ),
               opacity: 1,
               icon: PlacemarkIcon.single(
@@ -90,8 +99,10 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
             PlacemarkMapObject(
               mapId: const MapObjectId('placemark_end'),
               point: Point(
-                latitude: directionsTo.polylinePoints.last.latitude,
-                longitude: directionsTo.polylinePoints.last.longitude,
+                latitude:
+                    drivingSessionResult.routes!.first.geometry.last.latitude,
+                longitude:
+                    drivingSessionResult.routes!.first.geometry.last.longitude,
               ),
               opacity: 1,
               icon: PlacemarkIcon.single(

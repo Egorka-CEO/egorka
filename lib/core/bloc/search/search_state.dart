@@ -7,7 +7,7 @@ class SearchLoading extends SearchAddressState {}
 class SearchAddressStated extends SearchAddressState {}
 
 class SearchAddressRoutePolilyne extends SearchAddressState {
-  Directions directions;
+  DrivingSessionResult? directions;
   List<PlacemarkMapObject> markers;
   List<CoastResponse> coasts;
 

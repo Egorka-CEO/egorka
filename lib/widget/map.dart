@@ -32,44 +32,18 @@ class _MapViewState extends State<MapView> {
     if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      if (mapController != null) {
-        await mapController!.moveCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: Point(
-                latitude: position.latitude,
-                longitude: position.longitude,
-              ),
-              zoom: 20,
-              tilt: 0,
-            ),
-          ),
-        );
-      }
+      _jumpToPoint(
+        pointModel.Point(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ),
+      );
     }
-    widget.callBack();
   }
 
   void _findMe() async {
     if (await LocationGeo().checkPermission()) {
       BlocProvider.of<SearchAddressBloc>(context).add(GetAddressPosition());
-      // var position = await Geolocator.getCurrentPosition(
-      //     desiredAccuracy: LocationAccuracy.high);
-      // if (mapController != null) {
-      //   await mapController!.moveCamera(
-      //     CameraUpdate.newCameraPosition(
-      //       CameraPosition(
-      //         target: Point(
-      //           latitude: position.latitude,
-      //           longitude: position.longitude,
-      //         ),
-      //         zoom: 18,
-      //         tilt: 0,
-      //       ),
-      //     ),
-      //   );
-      //   widget.callBack();
-      // }
     }
   }
 
@@ -105,7 +79,7 @@ class _MapViewState extends State<MapView> {
               final mapObject = PolylineMapObject(
                 mapId: mapObjectId,
                 polyline: Polyline(
-                    points: current.directions.polylinePoints
+                    points: current.directions!.routes!.first.geometry
                         .map((e) =>
                             Point(latitude: e.latitude, longitude: e.longitude))
                         .toList()),
@@ -127,24 +101,26 @@ class _MapViewState extends State<MapView> {
                 CameraUpdate.newBounds(
                   BoundingBox(
                     northEast: Point(
-                      latitude: current.directions.bounds.northeast.latitude,
-                      longitude: current.directions.bounds.northeast.longitude,
+                      latitude: current
+                          .directions!.routes!.first.geometry.first.latitude,
+                      longitude: current
+                          .directions!.routes!.first.geometry.first.longitude,
                     ),
                     southWest: Point(
-                      latitude:
-                          current.directions.bounds.southwest.latitude + 0.01,
-                      longitude:
-                          current.directions.bounds.southwest.longitude + 0.01,
+                      latitude: current
+                          .directions!.routes!.first.geometry.last.latitude,
+                      longitude: current
+                          .directions!.routes!.first.geometry.last.longitude,
                     ),
                   ),
-                  focusRect: const ScreenRect(
+                  focusRect: ScreenRect(
                     topLeft: ScreenPoint(
-                      x: 400,
-                      y: 600,
+                      x: 200.h,
+                      y: 350.h,
                     ),
                     bottomRight: ScreenPoint(
-                      x: 900,
-                      y: 1500,
+                      x: 600.h,
+                      y: 700.h,
                     ),
                   ),
                 ),
@@ -160,22 +136,13 @@ class _MapViewState extends State<MapView> {
           } else if (current is JumpToPointState) {
             _jumpToPoint(current.point);
             return true;
-          }
-          if (current is GetAddressSuccess) {
+          } else if (current is GetAddressSuccess) {
             _jumpToPoint(
               pointModel.Point(
                 latitude: current.latitude,
                 longitude: current.longitude,
               ),
             );
-            // BlocProvider.of<SearchAddressBloc>(context).add(
-            //   JumpToPointEvent(
-            //     Point(
-            //       latitude: current.latitude,
-            //       longitude: current.longitude,
-            //     ),
-            //   ),
-            // );
             return true;
           } else {
             return false;
@@ -192,7 +159,7 @@ class _MapViewState extends State<MapView> {
               },
               onCameraPositionChanged: (cameraPosition, reason, finished) {
                 pos = cameraPosition;
-                if (pos != null) {
+                if (pos != null && finished) {
                   BlocProvider.of<SearchAddressBloc>(context).add(
                     ChangeMapPosition(
                       pos!.target.latitude,

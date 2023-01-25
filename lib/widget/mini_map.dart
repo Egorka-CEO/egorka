@@ -2,6 +2,7 @@ import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -38,7 +39,7 @@ class _MiniMapViewState extends State<MiniMapView> {
           final mapObject = PolylineMapObject(
             mapId: mapObjectId,
             polyline: Polyline(
-                points: current.routes.polylinePoints
+                points: current.routes.routes!.first.geometry
                     .map((e) =>
                         Point(latitude: e.latitude, longitude: e.longitude))
                     .toList()),
@@ -59,23 +60,17 @@ class _MiniMapViewState extends State<MiniMapView> {
           mapController!.moveCamera(
             CameraUpdate.newBounds(
               BoundingBox(
-                northEast: Point(
-                  latitude: current.routes.bounds.northeast.latitude,
-                  longitude: current.routes.bounds.northeast.longitude,
-                ),
-                southWest: Point(
-                  latitude: current.routes.bounds.southwest.latitude + 0.01,
-                  longitude: current.routes.bounds.southwest.longitude + 0.01,
-                ),
+                northEast: current.routes.routes!.first.geometry.first,
+                southWest: current.routes.routes!.first.geometry.last,
               ),
-              focusRect: const ScreenRect(
+              focusRect: ScreenRect(
                 topLeft: ScreenPoint(
-                  x: 90,
-                  y: 90,
+                  x: MediaQuery.of(context).size.width / 2,
+                  y: 50.h,
                 ),
                 bottomRight: ScreenPoint(
-                  x: 1100,
-                  y: 500,
+                  x: MediaQuery.of(context).size.width + 80.w,
+                  y: 280.h,
                 ),
               ),
             ),

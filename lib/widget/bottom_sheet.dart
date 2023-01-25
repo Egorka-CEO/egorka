@@ -47,7 +47,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   bool _visible = false;
 
-  String? errorAddress;
+  String? errorAddress1;
+  String? errorAddress2;
 
   TypeAdd? typeAdd;
 
@@ -95,7 +96,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
           buildWhen: (previous, current) {
         if (current is GetAddressSuccess) {
-          errorAddress = current.errorAddress;
+          errorAddress1 = current.errorAddress != null ? 'ошибка' : null;
           suggestionsStart = Suggestions(
             iD: null,
             name: current.address,
@@ -109,7 +110,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           fromController.text = current.address;
 
           calc();
-          iconState = false;
+
+          if (suggestionsStart != null &&
+              suggestionsEnd != null &&
+              errorAddress1 == null) {
+            iconState = false;
+          }
         }
         return true;
       }, builder: (context, snapshot) {
@@ -133,11 +139,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             if (size.toStringAsFixed(1) == (0.5).toString()) {
               focusFrom.unfocus();
               focusTo.unfocus();
-              // if (_flipController!.state!.isFront) {
               if (focusFrom.hasFocus || focusTo.hasFocus) {
                 _flipController!.toggleCard();
               }
-              // }
             }
           },
           maxHeight: 735.h,
@@ -421,6 +425,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                               suggestionsEnd = res;
                                               toController.text =
                                                   suggestionsEnd!.name;
+
+                                              print(
+                                                  'error obj ${res.houseNumber}');
+                                              errorAddress2 =
+                                                  res.houseNumber == null
+                                                      ? 'Укажите номер дома'
+                                                      : null;
                                               calc();
                                             }
                                           },
@@ -491,7 +502,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
                   if (current is ChangeAddressSuccess) {
-                    errorAddress = current.errorAddress;
+                    errorAddress1 = current.errorAddress;
                     if (fromController.text != current.address) {
                       suggestionsStart = Suggestions(
                         iD: null,
@@ -667,7 +678,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     child: GestureDetector(
                       onTap: coasts.isNotEmpty
                           ? () {
-                              if (errorAddress != null) {
+                            print('object ${errorAddress1}---${errorAddress2}');
+                              if (errorAddress1 != null || errorAddress2 != null) {
                                 MessageDialogs()
                                     .showAlert('Ошибка', 'Укажите номер дома');
                               } else {
@@ -778,13 +790,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 _flipController!.toggleCard();
               }
               if (focusFrom.hasFocus) {
-                errorAddress = null;
+                errorAddress1 = null;
                 suggestionsStart = state.address!.result.suggestions![index];
                 fromController.text =
                     state.address!.result.suggestions![index].name;
                 // BlocProvider.of<SearchAddressBloc>(context)
                 //     .add(DeleteGeoDateEvent());
               } else if (focusTo.hasFocus) {
+                errorAddress2 = null;
                 suggestionsEnd = state.address!.result.suggestions![index];
                 toController.text =
                     state.address!.result.suggestions![index].name;

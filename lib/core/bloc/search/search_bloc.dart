@@ -7,6 +7,8 @@ import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart' as geo;
@@ -57,27 +59,25 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   void _changeMapPosition(
       ChangeMapPosition event, Emitter<SearchAddressState> emit) async {
     if (!isPolilyne) {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-        event.lat,
-        event.lon,
-        localeIdentifier: 'ru',
-      );
-
       String address = '';
-
-      if (placemarks.first.street!.isNotEmpty) {
-        address += placemarks.first.street!;
-        if (placemarks.first.locality!.isNotEmpty) {
-          address += ', г.${placemarks.first.locality!}';
-        }
-      } else {
-        address = placemarks.first.locality!;
-      }
-
       String? errorAddress;
 
-      if (placemarks.first.subThoroughfare!.isEmpty) {
-        errorAddress = 'Ошибка: Укажите номер дома';
+      SearchResultWithSession adress = YandexSearch.searchByPoint(
+        point: Point(
+          latitude: event.lat,
+          longitude: event.lon,
+        ),
+        searchOptions: const SearchOptions(),
+      );
+      final value = await adress.result;
+
+      address = value.items!.first.name;
+
+      final house = value.items!.first.toponymMetadata?.address
+          .addressComponents[SearchComponentKind.house];
+
+      if (house == null) {
+        errorAddress = 'ошибка';
       }
 
       emit(
@@ -88,6 +88,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           errorAddress,
         ),
       );
+
+      print('object res $house');
     }
   }
 
@@ -98,28 +100,28 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-        localeIdentifier: 'ru',
-      );
-
       String address = '';
-
-      if (placemarks.first.street!.isNotEmpty) {
-        address += placemarks.first.street!;
-        if (placemarks.first.locality!.isNotEmpty) {
-          address += ', г.${placemarks.first.locality!}';
-        }
-      } else {
-        address = placemarks.first.locality!;
-      }
-
       String? errorAddress;
 
-      if (placemarks.first.subThoroughfare!.isEmpty) {
-        errorAddress = 'Ошибка: Укажите номер дома';
+      SearchResultWithSession adress = YandexSearch.searchByPoint(
+        point: Point(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ),
+        searchOptions: const SearchOptions(),
+      );
+      final value = await adress.result;
+
+      address = value.items!.first.name;
+
+      final house = value.items!.first.toponymMetadata?.address
+          .addressComponents[SearchComponentKind.house];
+
+      if (house == null) {
+        errorAddress = 'Ошибка';
       }
+
+      print('object ${errorAddress}');
 
       emit(
         GetAddressSuccess(
@@ -129,6 +131,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           errorAddress,
         ),
       );
+      emit(SearchAddressStated());
     }
   }
 
@@ -137,58 +140,34 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     emit(SearchLoading());
     isPolilyne = true;
 
-    // final locationFrom = await Geocoder2.getDataFromAddress(
-    //   address: event.suggestionsStart.first!.name,
-    //   googleMapApiKey: apiKey,
-    // );
-    // final locationTo = await Geocoder2.getDataFromAddress(
-    //   address: event.suggestionsEnd.last!.name,
-    //   googleMapApiKey: apiKey,
-    // );
-
     final fromIcon = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/images/from.png', 90));
     final toIcon = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/images/to.png', 90));
 
-    Directions? directions;
+    DrivingSessionResult? drivingSessionResult;
     try {
-      directions = await DirectionsRepository(dio: null).getDirections(
-        origin: googleMap.LatLng(
-          event.suggestionsStart.last!.point!.latitude,
-          event.suggestionsStart.last!.point!.longitude,
-        ),
-        destination: googleMap.LatLng(
-          event.suggestionsEnd.last!.point!.latitude,
-          event.suggestionsEnd.last!.point!.longitude,
-        ),
+      DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsStart.last!.point!.latitude,
+                longitude: event.suggestionsStart.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsEnd.last!.point!.latitude,
+                longitude: event.suggestionsEnd.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        drivingOptions: const DrivingOptions(),
       );
-    } catch (e) {
-      // emit(
-      //   SearchAddressRoutePolilyne(
-      //     Directions(
-      //         bounds: LatLngBounds(
-      //           southwest: const LatLng(2, 2),
-      //           northeast: const LatLng(3, 3),
-      //         ),
-      //         polylinePoints: [],
-      //         totalDistance: '',
-      //         totalDuration: ''),
-      //     {
-      //       Marker(
-      //         icon: fromIcon,
-      //         markerId: const MarkerId('start'),
-      //       ),
-      //       Marker(
-      //         icon: toIcon,
-      //         markerId: const MarkerId('finish'),
-      //       ),
-      //     },
-      //     [],
-      //   ),
-      // );
-    }
-    if (directions != null) {
+
+      drivingSessionResult = await requestRoutes.result;
+    } catch (e) {}
+    if (drivingSessionResult != null) {
       List<String> type = ['Walk', 'Car'];
       List<CoastResponse> coasts = [];
       List<Location> locations = [];
@@ -232,24 +211,26 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
         emit(
           SearchAddressRoutePolilyne(
-            directions,
+            drivingSessionResult,
             [
               PlacemarkMapObject(
                 mapId: const MapObjectId('placemark_start'),
                 point: Point(
-                  latitude: directions.polylinePoints.first.latitude,
-                  longitude: directions.polylinePoints.first.longitude,
+                  latitude: drivingSessionResult
+                      .routes!.first.geometry.first.latitude,
+                  longitude: drivingSessionResult
+                      .routes!.first.geometry.first.longitude,
                 ),
                 opacity: 1,
-                icon: PlacemarkIcon.single(
-                  PlacemarkIconStyle(image: fromIcon),
-                ),
+                icon: PlacemarkIcon.single(PlacemarkIconStyle(image: fromIcon)),
               ),
               PlacemarkMapObject(
                 mapId: const MapObjectId('placemark_end'),
                 point: Point(
-                  latitude: directions.polylinePoints.last.latitude,
-                  longitude: directions.polylinePoints.last.longitude,
+                  latitude:
+                      drivingSessionResult.routes!.first.geometry.last.latitude,
+                  longitude: drivingSessionResult
+                      .routes!.first.geometry.last.longitude,
                 ),
                 opacity: 1,
                 icon: PlacemarkIcon.single(
@@ -263,27 +244,9 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       } catch (e) {
         isPolilyne = false;
         print('object error $e');
-        // emit(SearchAddressRoutePolilyne(
-        //   directions,
-        //   {
-        //     Marker(
-        //       icon: fromIcon,
-        //       markerId: const MarkerId('start'),
-        //       position: LatLng(directions.polylinePoints.first.latitude,
-        //           directions.polylinePoints.first.longitude),
-        //     ),
-        //     Marker(
-        //       icon: toIcon,
-        //       markerId: const MarkerId('finish'),
-        //       position: LatLng(directions.polylinePoints.last.latitude,
-        //           directions.polylinePoints.last.longitude),
-        //     ),
-        //   },
-        //   [],
-        // ));
       }
-      // } else {
-      // isPolilyne = false;
+    } else {
+      isPolilyne = false;
     }
   }
 

@@ -28,6 +28,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
   CameraPosition? pos;
   PanelController panelController = PanelController();
   String address = '';
+  String? houseNumber;
   final addressController = StreamController<bool>();
   Suggestions? suggestions;
 
@@ -44,6 +45,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       if (mapController != null) {
+        houseNumber = null;
         await mapController!.moveCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
@@ -56,25 +58,62 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
             ),
           ),
         );
+
+        SearchResultWithSession adress = YandexSearch.searchByPoint(
+          point: Point(
+            latitude: pos!.target.latitude,
+            longitude: pos!.target.longitude,
+          ),
+          searchOptions: const SearchOptions(),
+        );
+
+        final value = await adress.result;
+
+        final house = value.items!.first.toponymMetadata?.address
+            .addressComponents[SearchComponentKind.house];
+
+        if (house != null) {
+          houseNumber = house;
+        }
+
+        address = value.items!.first.name;
+
+        suggestions = Suggestions(
+          iD: '',
+          name: address,
+          point: pointModel.Point(
+            address: address,
+            latitude: pos!.target.latitude,
+            longitude: pos!.target.longitude,
+          ),
+          houseNumber: houseNumber,
+        );
+
+        addressController.add(true);
       }
     }
   }
 
   void _getAddress() async {
-    List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-        pos!.target.latitude, pos!.target.longitude,
-        localeIdentifier: 'ru');
+    houseNumber = null;
+    SearchResultWithSession adress = YandexSearch.searchByPoint(
+      point: Point(
+        latitude: pos!.target.latitude,
+        longitude: pos!.target.longitude,
+      ),
+      searchOptions: const SearchOptions(),
+    );
 
-    address = '';
+    final value = await adress.result;
 
-    if (placemarks.first.street!.isNotEmpty) {
-      address += placemarks.first.street!;
-      if (placemarks.first.locality!.isNotEmpty) {
-        address += ', г.${placemarks.first.locality!}';
-      }
-    } else {
-      address = placemarks.first.locality!;
+    final house = value.items!.first.toponymMetadata?.address
+        .addressComponents[SearchComponentKind.house];
+
+    if (house != null) {
+      houseNumber = house;
     }
+
+    address = value.items!.first.name;
 
     suggestions = Suggestions(
       iD: '',
@@ -84,6 +123,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
         latitude: pos!.target.latitude,
         longitude: pos!.target.longitude,
       ),
+      houseNumber: houseNumber,
     );
 
     addressController.add(true);
@@ -142,7 +182,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                         onCameraPositionChanged:
                             (cameraPosition, reason, finished) {
                           pos = cameraPosition;
-                          if (pos != null) {
+                          if (pos != null && finished) {
                             _getAddress();
                           }
                         },

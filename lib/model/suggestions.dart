@@ -4,11 +4,13 @@ class Suggestions {
   String? iD;
   String name;
   Point? point;
+  String? houseNumber;
 
   Suggestions({
     required this.iD,
     required this.name,
     required this.point,
+    this.houseNumber,
   });
 
   factory Suggestions.fromJson(Map<String, dynamic> json) {

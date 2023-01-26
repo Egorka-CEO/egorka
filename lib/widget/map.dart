@@ -113,18 +113,12 @@ class _MapViewState extends State<MapView> {
                           .directions!.routes!.first.geometry.last.longitude,
                     ),
                   ),
-                  focusRect: ScreenRect(
-                    topLeft: ScreenPoint(
-                      x: 200.h,
-                      y: 350.h,
-                    ),
-                    bottomRight: ScreenPoint(
-                      x: 600.h,
-                      y: 700.h,
-                    ),
-                  ),
                 ),
               );
+
+              mapController!.getCameraPosition().then((value) {
+                mapController!.moveCamera(CameraUpdate.zoomTo(value.zoom - 1));
+              });
             }
             return true;
           } else if (current is FindMeState) {

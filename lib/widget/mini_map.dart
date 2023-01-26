@@ -63,18 +63,12 @@ class _MiniMapViewState extends State<MiniMapView> {
                 northEast: current.routes.routes!.first.geometry.first,
                 southWest: current.routes.routes!.first.geometry.last,
               ),
-              focusRect: ScreenRect(
-                topLeft: ScreenPoint(
-                  x: MediaQuery.of(context).size.width / 2,
-                  y: 50.h,
-                ),
-                bottomRight: ScreenPoint(
-                  x: MediaQuery.of(context).size.width + 80.w,
-                  y: 280.h,
-                ),
-              ),
             ),
           );
+
+          mapController!.getCameraPosition().then((value) {
+            mapController!.moveCamera(CameraUpdate.zoomTo(value.zoom - 0.5));
+          });
         }
         return true;
       }, builder: (context, snapshot) {

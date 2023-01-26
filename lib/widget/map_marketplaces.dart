@@ -25,7 +25,9 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
   YandexMapController? mapController;
   Directions? routes;
   final List<MapObject> mapObjects = [];
-  GlobalKey globalKey = GlobalKey();
+  List<GlobalKey> globalKey = [];
+
+  bool initMarks = false;
 
   Future<Uint8List> getBytesFromAsset(GlobalKey globalKey) async {
     RenderRepaintBoundary boundary =
@@ -71,10 +73,9 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
 
   void initMarkers() async {
     int i = 0;
-    print('object ${widget.points.length}');
     for (var element in widget.points) {
       final fromIcon =
-          BitmapDescriptor.fromBytes(await getBytesFromAsset(globalKey));
+          BitmapDescriptor.fromBytes(await getBytesFromAsset(globalKey[i]));
       mapObjects.add(
         PlacemarkMapObject(
           mapId: MapObjectId('placemark_start${element.iD}'),
@@ -94,18 +95,22 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
       );
       ++i;
     }
+    initMarks = true;
     setState(() {});
     mapController?.moveCamera(
-      CameraUpdate.newCameraPosition(
-        const CameraPosition(
-          target: Point(
-            latitude: 55.750104,
-            longitude: 37.622895,
+        CameraUpdate.newCameraPosition(
+          const CameraPosition(
+            target: Point(
+              latitude: 55.750104,
+              longitude: 37.622895,
+            ),
+            zoom: 9,
           ),
-          zoom: 9,
         ),
-      ),
-    );
+        animation: const MapAnimation(
+          type: MapAnimationType.linear,
+          duration: 1,
+        ));
   }
 
   @override
@@ -114,15 +119,20 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Stack(
         children: [
-          cstMrk(context, 'M', globalKey),
-          Container(
-            color: Colors.white,
+          Stack(
+            children: widget.points.map((e) {
+              globalKey.add(GlobalKey());
+              return cstMrk(context, e.name!.first.name![0], globalKey.last);
+            }).toList(),
           ),
+          Container(color: Colors.white),
           YandexMap(
             mapObjects: mapObjects,
-            onMapCreated: (controller) {
+            onMapCreated: (controller) async {
               mapController = controller;
+              // Future.delayed(Duration(seconds: 1), () {
               initMarkers();
+              // });
             },
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/point.dart';
 import 'package:egorka/widget/bottom_sheet_map_marketplaces.dart';
 import 'package:egorka/widget/map_marketplaces.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +14,7 @@ class MarketPlacesMap extends StatelessWidget {
   MarketPlaces marketPlaces;
   MarketPlacesMap(this.marketPlaces, {super.key});
   PanelController panelController = PanelController();
+  bool visiblePopup = true;
 
   Point? points;
 
@@ -77,13 +79,60 @@ class MarketPlacesMap extends StatelessWidget {
             children: [
               MapMarketPlaces(points: marketPlaces.result.points),
               BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
+                  buildWhen: (previous, current) {
+                if (current is FindMarketPlacesSuccess) {
+                  visiblePopup = false;
+                }
+                return true;
+              }, builder: (context, snapshot) {
+                if (visiblePopup) {
+                  return Padding(
+                    padding: EdgeInsets.only(top: 30.h),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.r),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              offset: const Offset(0, 0),
+                              blurRadius: 10.r,
+                            )
+                          ],
+                        ),
+                        padding: EdgeInsets.all(15.h),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Поиск маркетплейсов',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(height: 5.h),
+                            const CupertinoActivityIndicator(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              }),
+              BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
                 buildWhen: (previous, current) {
                   if (current is MarketPlacesSelectPointState) {
                     panelController.animatePanelToPosition(1,
                         curve: Curves.easeInOutQuint,
                         duration: const Duration(milliseconds: 1000));
                   }
-    
+
                   return true;
                 },
                 builder: (context, snapshot) {

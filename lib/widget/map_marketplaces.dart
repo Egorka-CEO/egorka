@@ -96,6 +96,8 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
       ++i;
     }
     initMarks = true;
+    BlocProvider.of<MarketPlacePageBloc>(context)
+        .emit(FindMarketPlacesSuccess());
     setState(() {});
     mapController?.moveCamera(
         CameraUpdate.newCameraPosition(

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/router.dart';
+import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/auth_error.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -149,6 +151,24 @@ class _AuthPageState extends State<AuthPage> {
                                 horizontal: 20.w,
                                 vertical: 20.w,
                               ),
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 20.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context).pushNamed(
+                                      AppRoute.registration,
+                                      arguments: true),
+                                  child: const Text(
+                                    'Егорка ещё не возит для вас?',
+                                    style: CustomTextStyle.red15,
+                                  ),
+                                ),
+                              ],
                             ),
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),

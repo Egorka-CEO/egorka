@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:data_connection_checker_nulls/data_connection_checker_nulls.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
+import 'package:egorka/widget/disconnect_page.dart';
 import 'package:egorka/widget/bottom_sheet_history_orders.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/map.dart';
@@ -35,11 +37,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool logoVisibleMove = false;
   bool logoMoveBackgroundScale = false;
 
+  late StreamSubscription<DataConnectionStatus> listener;
+
+  checkConnection(BuildContext context) async {
+    listener = DataConnectionChecker().onStatusChange.listen((status) {
+      switch (status) {
+        case DataConnectionStatus.connected:
+          break;
+        case DataConnectionStatus.disconnected:
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: ((context) {
+                return Disconnected();
+              }),
+              fullscreenDialog: true,
+            ),
+          );
+          break;
+      }
+    });
+    return await DataConnectionChecker().connectionStatus;
+  }
+
   @override
   void initState() {
     super.initState();
     funcInit();
     BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
+    checkConnection(context);
   }
 
   void funcInit() async {

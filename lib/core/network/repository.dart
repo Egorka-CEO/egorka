@@ -4,6 +4,7 @@ import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/book_adresses.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/coast_marketplace.dart';
@@ -14,6 +15,8 @@ import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/payment_card.dart';
+import 'package:egorka/model/register_company.dart';
+import 'package:egorka/model/register_user.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -28,10 +31,11 @@ class Repository {
 
   Future<Map<String, dynamic>> auth() async {
     key = await MySecureStorage().getID() ?? '';
+    print('object ${key}');
+    String typeDevice = Platform.isAndroid ? 'Android' : 'Apple';
     return {
-      "Type": "Application",
-      "System": "Corp",
-      "Key": "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE",
+      "Type": typeDevice,
+      "UserUUID": key,
     };
   }
 
@@ -276,7 +280,7 @@ class Repository {
 
   Future<String?> paymentDeposit(int id, int pin, String key) async {
     var authData = await auth();
-    authData['Account'] = key;
+    // authData['Account'] = key;
 
     final response = await dio.post(
       '$server/service/payment/',
@@ -328,8 +332,8 @@ class Repository {
   Future<bool> UUIDCreate() async {
     var authData = await auth();
     await getIP();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -354,8 +358,8 @@ class Repository {
 
   Future<void> UUIDRegister(String value) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -373,8 +377,8 @@ class Repository {
 
   Future<AuthUser?> loginUsernameUser(String login, String password) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -400,8 +404,8 @@ class Repository {
 
   Future<AuthUser?> loginEmailUser(String login, String password) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -427,8 +431,8 @@ class Repository {
 
   Future<AuthUser?> loginPhoneUser(String login, String password) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -452,8 +456,8 @@ class Repository {
   Future<AuthUser?> loginUsernameAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -478,8 +482,8 @@ class Repository {
   Future<AuthUser?> loginEmailAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -508,8 +512,8 @@ class Repository {
   Future<AuthUser?> loginPhoneAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -672,5 +676,127 @@ class Repository {
     path = '${dir!.path}/$uniqueFileName';
 
     return path;
+  }
+
+  Future<bool?> registerUser(RegisterUserModel userModel) async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/auth/user/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Registration",
+        "Body": userModel.toJson(),
+        "Params": {}
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return null;
+    } else {
+      return true;
+    }
+  }
+
+  Future<bool?> registerCompany(RegisterCompanyModel companyModel) async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Registration",
+        "Body": companyModel.toJson(),
+        "Params": {}
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return null;
+    } else {
+      return true;
+    }
+  }
+
+  Future<int?> searchINN(int inn) async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Inn",
+        "Body": {
+          "Inn": inn,
+        },
+        "Params": {}
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return null;
+    } else {
+      return response.data['Result']['Companies'][0]['ID'];
+    }
+  }
+
+  Future<List<BookAdresses>?> getListBookAdress() async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/delivery/address/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "List",
+        "Body": {},
+        "Params": {
+          "Language": "RU",
+        }
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return null;
+    } else {
+      List<BookAdresses> list = [];
+      for (var element in response.data['Result']['Addresses']) {
+        list.add(BookAdresses.fromJson(element));
+      }
+      return list;
+    }
+  }
+
+  Future<bool> deleteAddress(String id) async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/delivery/address/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Remove",
+        "Body": {
+          "ID": id,
+        },
+        "Params": {
+          "Language": "RU",
+        }
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

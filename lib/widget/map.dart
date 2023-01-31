@@ -57,7 +57,7 @@ class _MapViewState extends State<MapView> {
                 latitude: point.latitude,
                 longitude: point.longitude,
               ),
-              zoom: 20,
+              zoom: 15,
               tilt: 0,
             ),
           ),

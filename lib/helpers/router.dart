@@ -4,6 +4,7 @@ import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
+import 'package:egorka/ui/auth/main_registration.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -40,6 +41,7 @@ class AppRoute {
   static const book = '/book';
   static const selectPoint = '/selectPoint';
   static const rate = '/rate';
+  static const registration = '/registration';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
@@ -146,6 +148,9 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => BookPage());
       case selectPoint:
         return MaterialPageRoute(builder: (_) => SelectAdresMap());
+      case registration:
+        final flag = route.arguments as bool;
+        return MaterialPageRoute(builder: (_) => MainRegPage(flag: flag));
       default:
         return null;
     }

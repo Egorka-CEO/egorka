@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:data_connection_checker_nulls/data_connection_checker_nulls.dart';
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
@@ -93,6 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     } else {
       await Repository().UUIDCreate();
     }
+    BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
   }
 
   @override

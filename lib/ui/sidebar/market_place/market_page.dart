@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
@@ -20,6 +21,7 @@ import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_slider.dart';
+import 'package:egorka/widget/list_books_dialog.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/tip_dialog.dart';
 import 'package:egorka/widget/total_price.dart';
@@ -831,6 +833,31 @@ class _MarketPageState extends State<MarketPages>
                                               'Ваши контакты',
                                               style: CustomTextStyle.grey15bold,
                                             ),
+                                            const Spacer(),
+                                            GestureDetector(
+                                              onTap: () => showBooksAddress(
+                                                  context,
+                                                  BlocProvider.of<BookBloc>(
+                                                          context)
+                                                      .books, (value) {
+                                                // phoneController.text = value;
+                                                calcOrder();
+                                              }),
+                                              child: Row(
+                                                children: [
+                                                  const Text(
+                                                    'Из книжки',
+                                                    style:
+                                                        CustomTextStyle.red15,
+                                                  ),
+                                                  SizedBox(width: 5.w),
+                                                  const Icon(
+                                                    Icons.menu_book,
+                                                    color: Colors.red,
+                                                  )
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
                                         SizedBox(height: 5.h),

@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
@@ -5,6 +6,7 @@ import 'package:egorka/model/poinDetails.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/list_books_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -246,11 +248,29 @@ class _DetailsPageState extends State<DetailsPageTemp> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Не обязательно к заполнению',
                       style: CustomTextStyle.grey15bold,
                     ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => showBooksAddress(context,
+                          BlocProvider.of<BookBloc>(context).books, (value) {}),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Из книжки',
+                            style: CustomTextStyle.red15,
+                          ),
+                          SizedBox(width: 5.w),
+                          const Icon(
+                            Icons.menu_book,
+                            color: Colors.red,
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

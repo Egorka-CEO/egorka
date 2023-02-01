@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -51,6 +52,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<DepositBloc>(
           create: (context) => DepositBloc(),
+        ),
+        BlocProvider<BookBloc>(
+          create: (context) => BookBloc(),
         ),
       ],
       child: ScreenUtilInit(

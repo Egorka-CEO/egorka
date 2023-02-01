@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
@@ -5,7 +6,9 @@ import 'package:egorka/model/address.dart';
 import 'package:egorka/model/book_adresses.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -16,28 +19,9 @@ class BookPage extends StatefulWidget {
 }
 
 class _BookPageState extends State<BookPage> {
-  @override
-  void initState() {
-    super.initState();
-    updateList();
-  }
-
-  void updateList() async {
-    List<BookAdresses>? res = await Repository().getListBookAdress();
-    if (res != null) {
-      bookAdresses.clear();
-      bookAdresses.addAll(res);
-      bookAdressesTemp.clear();
-      bookAdressesTemp.addAll(res);
-      setState(() {});
-    }
-  }
-
   List<BookAdresses> bookAdresses = [];
-  List<BookAdresses> bookAdressesTemp = [];
 
   TextEditingController searchController = TextEditingController();
-
   TextEditingController floorController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController entranceController = TextEditingController();
@@ -52,10 +36,14 @@ class _BookPageState extends State<BookPage> {
   FocusNode focusbtm = FocusNode();
 
   Address? address;
-
   Suggestions? selectAddress;
-
   PanelController panelController = PanelController();
+
+  @override
+  void initState() {
+    super.initState();
+    bookAdresses.addAll(BlocProvider.of<BookBloc>(context).books);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,15 +86,22 @@ class _BookPageState extends State<BookPage> {
                         height: 45.h,
                         contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
                         onChanged: (value) {
+                          final bloc = BlocProvider.of<BookBloc>(context);
                           bookAdresses.clear();
-                          for (var element in bookAdressesTemp) {
+                          List<BookAdresses> bookAdressesTemp = [];
+                          for (var element in bloc.books) {
                             if (element.name!
                                     .toLowerCase()
                                     .contains(value.toLowerCase()) ||
                                 element.address!
                                     .toLowerCase()
                                     .contains(value.toLowerCase())) {
-                              bookAdresses.add(element);
+                              bookAdressesTemp.add(element);
+                            }
+                            if (value.isEmpty) {
+                              bookAdresses.addAll(bloc.books);
+                            } else {
+                              bookAdresses.addAll(bookAdressesTemp);
                             }
                           }
                           setState(() {});
@@ -116,27 +111,97 @@ class _BookPageState extends State<BookPage> {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: bookAdresses.length + 2,
-                      itemBuilder: (context, index) {
-                        if (bookAdresses.length == index - 1) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: 20.h),
-                            child: ScaleButton(
-                              onTap: showAddAddress,
-                              bound: 0.01,
-                              child: Container(
-                                height: 40.h,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  color: Colors.red,
+                  BlocBuilder<BookBloc, BookState>(
+                      builder: (context, snapshot) {
+                    if (snapshot is UpdateBook) {
+                      bookAdresses.clear();
+                      final books = BlocProvider.of<BookBloc>(context).books;
+                      List<BookAdresses> bookAdressesTemp = [];
+                      for (var element in books) {
+                        if (element.name!.toLowerCase().contains(
+                                searchController.text.toLowerCase()) ||
+                            element.address!.toLowerCase().contains(
+                                searchController.text.toLowerCase())) {
+                          bookAdressesTemp.add(element);
+                        }
+                        if (searchController.text.isEmpty) {
+                          bookAdresses.addAll(books);
+                        } else {
+                          bookAdresses.addAll(bookAdressesTemp);
+                        }
+                      }
+                    }
+                    return Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: bookAdresses.length + 2,
+                        itemBuilder: (context, index) {
+                          if (bookAdresses.length == index - 1) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: 20.h),
+                              child: ScaleButton(
+                                onTap: showAddAddress,
+                                bound: 0.01,
+                                child: Container(
+                                  height: 40.h,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    color: Colors.red,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Добавить адрес',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.sp,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                child: Center(
+                              ),
+                            );
+                          }
+                          if (index == 0) {
+                            return Container(
+                              height: 50.h,
+                              color: index % 2 == 0
+                                  ? Colors.white
+                                  : Colors.grey[200],
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 10.w),
+                                  const Expanded(flex: 2, child: Text('№')),
+                                  SizedBox(width: 10.w),
+                                  const Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      'Адрес',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  const Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      'Обозначение',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.w),
+                                ],
+                              ),
+                            );
+                          }
+                          return Dismissible(
+                            key: UniqueKey(),
+                            background: Container(
+                              color: Colors.red,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 10.w),
                                   child: Text(
-                                    'Добавить адрес',
+                                    'Удалить',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 15.sp,
@@ -145,103 +210,54 @@ class _BookPageState extends State<BookPage> {
                                 ),
                               ),
                             ),
-                          );
-                        }
-                        if (index == 0) {
-                          return Container(
-                            height: 50.h,
-                            color: index % 2 == 0
-                                ? Colors.white
-                                : Colors.grey[200],
-                            child: Row(
-                              children: [
-                                SizedBox(width: 10.w),
-                                const Expanded(flex: 2, child: Text('№')),
-                                SizedBox(width: 10.w),
-                                const Expanded(
-                                  flex: 4,
-                                  child: Text(
-                                    'Адрес',
-                                    textAlign: TextAlign.center,
+                            confirmDismiss: bookAdresses.length == 1
+                                ? (direction) async {
+                                    return false;
+                                  }
+                                : (direction) async {
+                                    bool resDelete = await Repository()
+                                        .deleteAddress(
+                                            bookAdresses[index - 1].id!);
+
+                                    if (resDelete) {
+                                      bookAdresses.removeAt(index - 1);
+                                    }
+
+                                    return resDelete;
+                                  },
+                            direction: DismissDirection.endToStart,
+                            child: Container(
+                              height: 50.h,
+                              color: index % 2 == 0
+                                  ? Colors.white
+                                  : Colors.grey[200],
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 10.w),
+                                  Expanded(flex: 2, child: Text('$index')),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      bookAdresses[index - 1].address!,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                ),
-                                const Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    'Обозначение',
-                                    textAlign: TextAlign.center,
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      bookAdresses[index - 1].name!,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 10.w),
-                              ],
-                            ),
-                          );
-                        }
-                        return Dismissible(
-                          key: UniqueKey(),
-                          background: Container(
-                            color: Colors.red,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 10.w),
-                                child: Text(
-                                  'Удалить',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.sp,
-                                  ),
-                                ),
+                                  SizedBox(width: 10.w),
+                                ],
                               ),
                             ),
-                          ),
-                          confirmDismiss: bookAdresses.length == 1
-                              ? (direction) async {
-                                  return false;
-                                }
-                              : (direction) async {
-                                  bool resDelete = await Repository()
-                                      .deleteAddress(
-                                          bookAdresses[index - 1].id!);
-
-                                  if (resDelete) {
-                                    bookAdresses.removeAt(index - 1);
-                                  }
-
-                                  return resDelete;
-                                },
-                          direction: DismissDirection.endToStart,
-                          child: Container(
-                            height: 50.h,
-                            color: index % 2 == 0
-                                ? Colors.white
-                                : Colors.grey[200],
-                            child: Row(
-                              children: [
-                                SizedBox(width: 10.w),
-                                Expanded(flex: 2, child: Text('$index')),
-                                Expanded(
-                                  flex: 4,
-                                  child: Text(
-                                    bookAdresses[index - 1].address!,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    bookAdresses[index - 1].name!,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                          );
+                        },
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -388,7 +404,8 @@ class _BookPageState extends State<BookPage> {
                                   if (res) {
                                     Navigator.of(context).pop();
                                   }
-                                  updateList();
+                                  BlocProvider.of<BookBloc>(context)
+                                      .add(LoadBooksEvent());
                                 }
                               },
                               child: Container(
@@ -421,6 +438,15 @@ class _BookPageState extends State<BookPage> {
                     minHeight: 0,
                     maxHeight: 900.h,
                     borderRadius: BorderRadius.circular(15.r),
+                    onPanelOpened: () {
+                      focusbtm.requestFocus();
+                    },
+                    onPanelSlide: (value) {
+                      if (value == 0) {
+                        BlocProvider.of<BookBloc>(context).emit(BookStated());
+                        btmController.text = '';
+                      }
+                    },
                     panel: Container(
                       width: 100,
                       decoration: BoxDecoration(
@@ -474,12 +500,9 @@ class _BookPageState extends State<BookPage> {
                                     },
                                     textEditingController: btmController,
                                     onChanged: (value) async {
-                                      address = null;
-                                      setState(() {});
                                       if (value.length > 1) {
-                                        address = await Repository()
-                                            .getAddress(value);
-                                        setState(() {});
+                                        BlocProvider.of<BookBloc>(context)
+                                            .add(GetAddressEvent(value));
                                       }
                                     },
                                   ),
@@ -500,24 +523,32 @@ class _BookPageState extends State<BookPage> {
       );
 
   Widget _searchList() {
-    // print('object twtewtyetwyeyw ${address}-${address!.result.suggestions}');
-    if (address == null || address!.result.suggestions!.isEmpty) {
-      return const SizedBox();
-    }
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: SizedBox(
-        height: 300.h,
-        child: ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: address?.result.suggestions!.length,
-          itemBuilder: (context, index) {
-            return _pointCard(
-                address?.result.suggestions![index], index, context);
-          },
-        ),
-      ),
+    return BlocBuilder<BookBloc, BookState>(
+      builder: (context, snapshot) {
+        print('object herehrehre $snapshot');
+        if (snapshot is LoadingState) {
+          return const CupertinoActivityIndicator();
+        } else if (snapshot is GetAddress) {
+          address = snapshot.address;
+          print('object herehrehre');
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: SizedBox(
+              height: 300.h,
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: address?.result.suggestions!.length,
+                itemBuilder: (context, index) {
+                  return _pointCard(
+                      address?.result.suggestions![index], index, context);
+                },
+              ),
+            ),
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 
@@ -535,6 +566,7 @@ class _BookPageState extends State<BookPage> {
               address = null;
               selectAddress = suggestions;
               floorController.text = selectAddress!.name;
+              BlocProvider.of<BookBloc>(context).emit(BookStated());
               setState(() {});
             },
             child: Row(

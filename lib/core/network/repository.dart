@@ -802,6 +802,7 @@ class Repository {
 
   Future<bool> addAddress(BookAdresses bookAdresses) async {
     var authData = await auth();
+    print('object ${bookAdresses.toJson()}');
     final response = await dio.post(
       '$server/service/delivery/address/',
       options: header(),

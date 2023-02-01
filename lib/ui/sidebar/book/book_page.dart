@@ -124,11 +124,11 @@ class _BookPageState extends State<BookPage> {
                                 searchController.text.toLowerCase())) {
                           bookAdressesTemp.add(element);
                         }
-                        if (searchController.text.isEmpty) {
-                          bookAdresses.addAll(books);
-                        } else {
-                          bookAdresses.addAll(bookAdressesTemp);
-                        }
+                      }
+                      if (searchController.text.isEmpty) {
+                        bookAdresses.addAll(books);
+                      } else {
+                        bookAdresses.addAll(bookAdressesTemp);
                       }
                     }
                     return Expanded(
@@ -444,7 +444,7 @@ class _BookPageState extends State<BookPage> {
                     onPanelSlide: (value) {
                       if (value == 0) {
                         BlocProvider.of<BookBloc>(context).emit(BookStated());
-                        btmController.text = '';
+                        // btmController.text = '';
                       }
                     },
                     panel: Container(
@@ -525,12 +525,10 @@ class _BookPageState extends State<BookPage> {
   Widget _searchList() {
     return BlocBuilder<BookBloc, BookState>(
       builder: (context, snapshot) {
-        print('object herehrehre $snapshot');
         if (snapshot is LoadingState) {
           return const CupertinoActivityIndicator();
         } else if (snapshot is GetAddress) {
           address = snapshot.address;
-          print('object herehrehre');
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: SizedBox(
@@ -562,8 +560,7 @@ class _BookPageState extends State<BookPage> {
             onTap: () {
               btmController.text = '';
               focusbtm.unfocus();
-              panelController.close();
-              address = null;
+              panelController.animatePanelToPosition(0);
               selectAddress = suggestions;
               floorController.text = selectAddress!.name;
               BlocProvider.of<BookBloc>(context).emit(BookStated());

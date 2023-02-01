@@ -26,6 +26,7 @@ class _RegPageState extends State<RegPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController repeatPasswordController =
       TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
   final streamSwap = StreamController<int>();
@@ -35,6 +36,7 @@ class _RegPageState extends State<RegPage> {
   FocusNode focusNode3 = FocusNode();
   FocusNode focusNode4 = FocusNode();
   FocusNode focusNode5 = FocusNode();
+  FocusNode focusNode6 = FocusNode();
 
   bool state = false;
   int index = 0;
@@ -71,197 +73,214 @@ class _RegPageState extends State<RegPage> {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: StreamBuilder<int>(
-          stream: streamSwap.stream,
-          initialData: 0,
-          builder: (context, snapshot) {
-            return AnimatedPadding(
-              duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(vertical: 0.h),
-              child: Material(
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 40.h),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SvgPicture.asset(
-                                  'assets/icons/logo_egorka.svg',
-                                  height: 40.h,
-                                ),
+        stream: streamSwap.stream,
+        initialData: 0,
+        builder: (context, snapshot) {
+          return AnimatedPadding(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.symmetric(vertical: 0.h),
+            child: Material(
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 40.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SvgPicture.asset(
+                                'assets/icons/logo_egorka.svg',
+                                height: 40.h,
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 10.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Егорка готов к сотрудничеству!\nОстается пройти быструю регистрацию',
-                                style: TextStyle(fontSize: 19.sp),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Text('Укажите Ваше имя', style: labelStyle),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  focusNode: focusNode1,
-                                  textEditingController: nameController,
-                                  hintText: 'Ivanov',
-                                  height: 60.h,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20.w,
-                                    vertical: 20.w,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Text('Ваш мобильный', style: labelStyle),
-                          CustomTextField(
-                            focusNode: focusNode2,
-                            textEditingController: phoneController,
-                            hintText: '+7 999-888-7766',
-                            height: 60.h,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 20.w,
                             ),
-                            formatters: [
-                              MaskTextInputFormatter(
-                                initialText: '+7 ',
-                                mask: '+7 ###-###-####',
-                                filter: {"#": RegExp(r'[0-9]')},
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Text('Email', style: labelStyle),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  focusNode: focusNode3,
-                                  textEditingController: emailController,
-                                  hintText: 'ivanov@mail.ru',
-                                  height: 60.h,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20.w,
-                                    vertical: 20.w,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Text('Пароль', style: labelStyle),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  focusNode: focusNode4,
-                                  textEditingController: passwordController,
-                                  hintText: '******',
-                                  height: 60.h,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20.w,
-                                    vertical: 20.w,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Text('Пароль ещё раз', style: labelStyle),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  focusNode: focusNode5,
-                                  textEditingController:
-                                      repeatPasswordController,
-                                  hintText: '******',
-                                  height: 60.h,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20.w,
-                                    vertical: 20.w,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: true,
-                                fillColor:
-                                    MaterialStateProperty.all(Colors.red),
-                                shape: const CircleBorder(),
-                                onChanged: (value) {},
-                              ),
-                              Expanded(
-                                child: RichText(
-                                  textAlign: TextAlign.justify,
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            'Нажимаю кнопку «Начать работать» Вы соглашаетесь с ',
-                                        style: CustomTextStyle.black15w500
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                      TextSpan(
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => launch(
-                                              'https://egorka.delivery/egorka_rules.pdf'),
-                                        text: 'Договором оферты ',
-                                        style: CustomTextStyle.red15
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            'и Политикой конфиденциальности ООО «Егорка»',
-                                        style: CustomTextStyle.black15w500
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          RoundedLoadingButton(
-                            controller: _btnController,
-                            onPressed: _signIn,
-                            color: Colors.red,
-                            child: const Text(
-                              'Авторизация',
-                              style: TextStyle(color: Colors.white),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Егорка готов к сотрудничеству!\nОстается пройти быструю регистрацию',
+                              style: TextStyle(fontSize: 19.sp),
                             ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Text('Логин', style: labelStyle),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                focusNode: focusNode6,
+                                textEditingController: usernameController,
+                                hintText: 'Ivanov',
+                                height: 60.h,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 20.w,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Text('Укажите Ваше имя', style: labelStyle),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                focusNode: focusNode1,
+                                textEditingController: nameController,
+                                hintText: 'Ivanov',
+                                height: 60.h,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 20.w,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Text('Ваш мобильный', style: labelStyle),
+                        CustomTextField(
+                          focusNode: focusNode2,
+                          textEditingController: phoneController,
+                          hintText: '+7 999-888-7766',
+                          height: 60.h,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 20.w,
                           ),
-                          SizedBox(height: heightKeyBoard),
-                          SizedBox(height: 50.h),
-                        ],
-                      ),
+                          formatters: [
+                            MaskTextInputFormatter(
+                              initialText: '+7 ',
+                              mask: '+7 ###-###-####',
+                              filter: {"#": RegExp(r'[0-9]')},
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Text('Email', style: labelStyle),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                focusNode: focusNode3,
+                                textEditingController: emailController,
+                                hintText: 'ivanov@mail.ru',
+                                height: 60.h,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 20.w,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Text('Пароль', style: labelStyle),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                focusNode: focusNode4,
+                                textEditingController: passwordController,
+                                hintText: '******',
+                                height: 60.h,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 20.w,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Text('Пароль ещё раз', style: labelStyle),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                focusNode: focusNode5,
+                                textEditingController: repeatPasswordController,
+                                hintText: '******',
+                                height: 60.h,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 20.w,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: true,
+                              fillColor: MaterialStateProperty.all(Colors.red),
+                              shape: const CircleBorder(),
+                              onChanged: (value) {},
+                            ),
+                            Expanded(
+                              child: RichText(
+                                textAlign: TextAlign.justify,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          'Нажимаю кнопку «Начать работать» Вы соглашаетесь с ',
+                                      style: CustomTextStyle.black15w500
+                                          .copyWith(fontSize: 13.sp),
+                                    ),
+                                    TextSpan(
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () => launch(
+                                            'https://egorka.delivery/egorka_rules.pdf'),
+                                      text: 'Договором оферты ',
+                                      style: CustomTextStyle.red15
+                                          .copyWith(fontSize: 13.sp),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          'и Политикой конфиденциальности ООО «Егорка»',
+                                      style: CustomTextStyle.black15w500
+                                          .copyWith(fontSize: 13.sp),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        RoundedLoadingButton(
+                          controller: _btnController,
+                          onPressed: _signIn,
+                          color: Colors.red,
+                          child: const Text(
+                            'Авторизация',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(height: heightKeyBoard),
+                        SizedBox(height: 50.h),
+                      ],
                     ),
                   ),
                 ),
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -278,6 +297,7 @@ class _RegPageState extends State<RegPage> {
         mobile: phoneController.text,
         email: emailController.text,
         password: passwordController.text,
+        username: usernameController.text,
       );
       res = await Repository().registerUser(userModel);
 

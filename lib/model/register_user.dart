@@ -3,12 +3,14 @@ class RegisterUserModel {
   String mobile;
   String email;
   String password;
+  String username;
 
   RegisterUserModel({
     required this.name,
     required this.mobile,
     required this.email,
     required this.password,
+    required this.username,
   });
 
   Map<String, dynamic> toJson() {
@@ -17,6 +19,7 @@ class RegisterUserModel {
     data['Mobile'] = mobile;
     data['Email'] = email;
     data['Password'] = password;
+    data['Username'] = username;
     return data;
   }
 }

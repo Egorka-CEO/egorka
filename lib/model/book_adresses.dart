@@ -43,4 +43,14 @@ class BookAdresses {
       longitude: longtitude,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> data = {};
+    data['Name'] = name;
+    data['Code'] = code;
+    data['Entrance'] = entrance;
+    data['Floor'] = floor;
+    data['Room'] = room;
+    return data;
+  }
 }

@@ -799,4 +799,28 @@ class Repository {
       return true;
     }
   }
+
+  Future<bool> addAddress(BookAdresses bookAdresses) async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/delivery/address/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Remove",
+        "Body": bookAdresses.toJson(),
+        "Params": {
+          "Language": "RU",
+        }
+      },
+    );
+
+    print('${bookAdresses.toJson()} object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

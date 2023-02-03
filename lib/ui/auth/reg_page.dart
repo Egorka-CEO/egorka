@@ -3,6 +3,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -285,7 +286,7 @@ class _RegPageState extends State<RegPage> {
   }
 
   void _signIn() async {
-    bool? res;
+    int? res;
     if (nameController.text.isNotEmpty &&
         phoneController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
@@ -301,7 +302,42 @@ class _RegPageState extends State<RegPage> {
       );
       res = await Repository().registerUser(userModel);
 
-      if (res != null && res) {
+      if (res != null) {
+        String messageAlert = '';
+
+        switch (res) {
+          case 14810:
+            messageAlert = 'Имя должно состоять из кирилицы';
+            break;
+          case 14811:
+            messageAlert = 'Мобильный номер не указан/указан не верно';
+            break;
+          case 14822:
+            messageAlert = 'Пользователь с таким Номером уже зарегистрирован';
+            break;
+          case 14812:
+            messageAlert = 'Email указан не верно';
+            break;
+          case 14813:
+            messageAlert = 'Логин должен быть на латинице';
+            break;
+          case 14831:
+            messageAlert = 'Пользователь с таким Логином уже зарегистрирован';
+            break;
+          case 14821:
+            messageAlert = 'Указан неверный номер телефона';
+            break;
+          case 14814:
+            messageAlert = 'Пароль должен состоять из 6-30 символов';
+            break;
+          default:
+            messageAlert = 'Введены неверные данные';
+        }
+
+        MessageDialogs().showMessage('Ошибка', messageAlert);
+      }
+
+      if (res == null) {
         _btnController.success();
         Future.delayed(const Duration(seconds: 1), (() {
           _btnController.reset();

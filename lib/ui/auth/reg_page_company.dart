@@ -3,6 +3,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_company.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,6 +49,8 @@ class _RegPageCompanyState extends State<RegPageCompany> {
 
   bool state = false;
   int index = 0;
+
+  String? companyName;
 
   @override
   void initState() {
@@ -131,12 +134,17 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   height: 60.h,
                                   onChanged: (value) async {
                                     if (innController.text.isNotEmpty) {
-                                      idCompany = await Repository()
-                                          .searchINN(innController.text);
+                                      Map<String, dynamic>? temp =
+                                          await Repository()
+                                              .searchINN(innController.text);
+                                      idCompany = temp?['ID'];
+                                      companyName = temp?['Name'];
+
+                                      idCompany = idCompany ?? '';
                                     } else {
                                       idCompany = null;
                                     }
-                                    print('object id $idCompany');
+
                                     setState(() {});
                                   },
                                   contentPadding: EdgeInsets.symmetric(
@@ -151,6 +159,12 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                             const Text(
                               'Ни одной компании не найдено ',
                               style: CustomTextStyle.red15,
+                            ),
+                          if (companyName != null)
+                            Text(
+                              companyName!,
+                              style: CustomTextStyle.red15
+                                  .copyWith(color: Colors.green),
                             ),
                           SizedBox(height: 20.h),
                           Text('Логин компании', style: labelStyle),
@@ -378,7 +392,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
   }
 
   void _signIn() async {
-    bool? res;
+    int? res;
     if (innController.text.isNotEmpty &&
         loginCompanyController.text.isNotEmpty &&
         phoneCompanyController.text.isNotEmpty &&
@@ -401,7 +415,68 @@ class _RegPageCompanyState extends State<RegPageCompany> {
       _btnController.start();
       res = await Repository().registerCompany(companyModel);
 
-      if (res != null && res) {
+      if (res != null) {
+        String messageAlert = '';
+
+        switch (res) {
+          case 14710:
+            messageAlert = 'Неверно указан ИНН компании';
+            break;
+          case 14720:
+            messageAlert = 'Неверно указан ИНН компании';
+            break;
+          case 14721:
+            messageAlert = 'Компания с таким ИНН уже зарегистрирована';
+            break;
+          case 14711:
+            messageAlert =
+                'Логин компании должен состоять из латинских символов и цифр';
+            break;
+          case 14722:
+            messageAlert =
+                'Логин компании должен состоять из латинских символов и цифр';
+            break;
+          case 14723:
+            messageAlert = 'Компания с таким Логином уже зарегистрирована';
+            break;
+          case 14712:
+            messageAlert = 'Неверно указан Телефон компании';
+            break;
+          case 14724:
+            messageAlert = 'Неверно указан Телефон компании';
+            break;
+          case 14713:
+            messageAlert = 'Неверно указан Email компании';
+            break;
+          case 14725:
+            messageAlert = 'Неверно указан Email компании';
+            break;
+          case 14714:
+            messageAlert = 'Неверно указан Номер пользователя';
+            break;
+          case 14726:
+            messageAlert = 'Неверно указан Номер пользователя';
+            break;
+          case 14715:
+            messageAlert = 'Неверно указан Email пользователя';
+            break;
+          case 14727:
+            messageAlert = 'Неверно указан Email пользователя';
+            break;
+          case 14716:
+            messageAlert = 'Пароль должен состоять из 6-30 символов';
+            break;
+          case 14728:
+            messageAlert = 'Пароль должен состоять из 6-30 символов';
+            break;
+          default:
+            messageAlert = 'Введены неверные данные';
+        }
+
+        MessageDialogs().showMessage('Ошибка', messageAlert);
+      }
+
+      if (res == null) {
         _btnController.success();
         Future.delayed(const Duration(seconds: 1), (() {
           _btnController.reset();

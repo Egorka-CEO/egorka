@@ -680,7 +680,7 @@ class Repository {
     return path;
   }
 
-  Future<bool?> registerUser(RegisterUserModel userModel) async {
+  Future<int?> registerUser(RegisterUserModel userModel) async {
     var authData = await auth();
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -696,13 +696,13 @@ class Repository {
     print('object ${response.data}');
 
     if (response.data['Errors'] != null) {
-      return null;
+      return response.data['Errors'][0]['Code'];
     } else {
-      return true;
+      return null;
     }
   }
 
-  Future<bool?> registerCompany(RegisterCompanyModel companyModel) async {
+  Future<int?> registerCompany(RegisterCompanyModel companyModel) async {
     var authData = await auth();
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -718,13 +718,13 @@ class Repository {
     print('object ${response.data}');
 
     if (response.data['Errors'] != null) {
-      return null;
+      return response.data['Errors'][0]['Code'];
     } else {
-      return true;
+      return null;
     }
   }
 
-  Future<String?> searchINN(String inn) async {
+  Future<Map<String, dynamic>?> searchINN(String inn) async {
     var authData = await auth();
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -742,9 +742,9 @@ class Repository {
     print('object111 ${response.data}');
 
     if (response.data['Result'] == null) {
-      return '';
+      return {};
     } else {
-      return response.data['Result']['Companies'][0]['ID'];
+      return response.data['Result']['Companies'][0];
     }
   }
 

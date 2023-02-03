@@ -475,6 +475,8 @@ class Repository {
       },
     );
 
+    print('object ${response.data}');
+
     final user = AuthUser.fromJson(response.data);
     return user;
   }
@@ -722,7 +724,7 @@ class Repository {
     }
   }
 
-  Future<int?> searchINN(int inn) async {
+  Future<String?> searchINN(String inn) async {
     var authData = await auth();
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -737,10 +739,10 @@ class Repository {
       },
     );
 
-    print('object ${response.data}');
+    print('object111 ${response.data}');
 
-    if (response.data['Errors'] != null) {
-      return null;
+    if (response.data['Result'] == null) {
+      return '';
     } else {
       return response.data['Result']['Companies'][0]['ID'];
     }
@@ -808,7 +810,7 @@ class Repository {
       options: header(),
       data: {
         "Auth": authData,
-        "Method": "Remove",
+        "Method": "Add",
         "Body": bookAdresses.toJson(),
         "Params": {
           "Language": "RU",

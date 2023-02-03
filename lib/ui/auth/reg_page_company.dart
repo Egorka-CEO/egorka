@@ -131,11 +131,12 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   height: 60.h,
                                   onChanged: (value) async {
                                     if (innController.text.isNotEmpty) {
-                                      idCompany =
-                                          '${await Repository().searchINN(int.parse(innController.text))}';
+                                      idCompany = await Repository()
+                                          .searchINN(innController.text);
                                     } else {
                                       idCompany = null;
                                     }
+                                    print('object id $idCompany');
                                     setState(() {});
                                   },
                                   contentPadding: EdgeInsets.symmetric(
@@ -146,7 +147,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                               ),
                             ],
                           ),
-                          if (idCompany != null && idCompany!.isNotEmpty)
+                          if (idCompany != null && idCompany!.isEmpty)
                             const Text(
                               'Ни одной компании не найдено ',
                               style: CustomTextStyle.red15,

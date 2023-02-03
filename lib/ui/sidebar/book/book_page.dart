@@ -227,7 +227,7 @@ class _BookPageState extends State<BookPage> {
                                   },
                             direction: DismissDirection.endToStart,
                             child: Container(
-                              height: 50.h,
+                              // height: 50.h,
                               color: index % 2 == 0
                                   ? Colors.white
                                   : Colors.grey[200],

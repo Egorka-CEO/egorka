@@ -74,6 +74,7 @@ class _BottomSheetDraggableState
           SizedBox(height: 10.h),
           Expanded(
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: _searchList(),
             ),
           ),

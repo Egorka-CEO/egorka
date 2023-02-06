@@ -256,6 +256,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                               : MessageDialogs().errorDialog(
                                                   text: 'Ошибка отмены');
                                           resPaid = res;
+                                          getForm();
                                           setState(() {});
                                         },
                                         child: const Text(

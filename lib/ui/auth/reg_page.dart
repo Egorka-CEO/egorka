@@ -39,6 +39,8 @@ class _RegPageState extends State<RegPage> {
   FocusNode focusNode5 = FocusNode();
   FocusNode focusNode6 = FocusNode();
 
+  bool confirmTermPolitics = false;
+
   bool state = false;
   int index = 0;
 
@@ -225,10 +227,14 @@ class _RegPageState extends State<RegPage> {
                         Row(
                           children: [
                             Checkbox(
-                              value: true,
+                              value: confirmTermPolitics,
                               fillColor: MaterialStateProperty.all(Colors.red),
                               shape: const CircleBorder(),
-                              onChanged: (value) {},
+                              onChanged: (value) {
+                                setState(() {
+                                  confirmTermPolitics = !confirmTermPolitics;
+                                });
+                              },
                             ),
                             Expanded(
                               child: RichText(
@@ -291,7 +297,8 @@ class _RegPageState extends State<RegPage> {
         phoneController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
-        repeatPasswordController.text.isNotEmpty) {
+        repeatPasswordController.text.isNotEmpty &&
+        confirmTermPolitics) {
       _btnController.start();
       RegisterUserModel userModel = RegisterUserModel(
         name: nameController.text,
@@ -350,6 +357,10 @@ class _RegPageState extends State<RegPage> {
         }));
       }
     } else {
+      if (!confirmTermPolitics) {
+        MessageDialogs().showMessage('Ошибка',
+            'Для продолжения дайте ваше согласие на Договор оферты и Политики конфиденциальности');
+      }
       _btnController.reset();
     }
   }

@@ -135,6 +135,7 @@ class _BookPageState extends State<BookPage> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: bookAdresses.length + 2,
+                        physics: const ClampingScrollPhysics(),
                         itemBuilder: (context, index) {
                           if (bookAdresses.length == index - 1) {
                             return Padding(
@@ -223,11 +224,13 @@ class _BookPageState extends State<BookPage> {
                                       bookAdresses.removeAt(index - 1);
                                     }
 
+                                    BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
+
                                     return resDelete;
                                   },
                             direction: DismissDirection.endToStart,
                             child: Container(
-                              // height: 50.h,
+                              height: 50.h,
                               color: index % 2 == 0
                                   ? Colors.white
                                   : Colors.grey[200],

@@ -26,7 +26,8 @@ class _RegPageCompanyState extends State<RegPageCompany> {
   final TextEditingController phoneCompanyController =
       TextEditingController(text: '+7 ');
   final TextEditingController emailCompanyController = TextEditingController();
-  final TextEditingController loginUserController = TextEditingController();
+  final TextEditingController loginUserController =
+      TextEditingController(text: 'Admin');
   final TextEditingController phoneUserController =
       TextEditingController(text: '+7 ');
   final TextEditingController emailUserController = TextEditingController();
@@ -46,6 +47,8 @@ class _RegPageCompanyState extends State<RegPageCompany> {
   FocusNode focusNode7 = FocusNode();
   FocusNode focusNode8 = FocusNode();
   FocusNode focusNode9 = FocusNode();
+
+  bool confirmTermPolitics = false;
 
   bool state = false;
   int index = 0;
@@ -250,8 +253,9 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                 child: CustomTextField(
                                   focusNode: focusNode5,
                                   textEditingController: loginUserController,
-                                  hintText: 'Ivanov',
+                                  hintText: 'Admin',
                                   height: 60.h,
+                                  enabled: false,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -259,6 +263,15 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                 ),
                               ),
                             ],
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            'Логин главной учётной записи',
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 12.sp,
+                            ),
+                            textAlign: TextAlign.justify,
                           ),
                           SizedBox(height: 20.h),
                           Text('Ваш мобильный', style: labelStyle),
@@ -331,11 +344,15 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           Row(
                             children: [
                               Checkbox(
-                                value: true,
+                                value: confirmTermPolitics,
                                 fillColor:
                                     MaterialStateProperty.all(Colors.red),
                                 shape: const CircleBorder(),
-                                onChanged: (value) {},
+                                onChanged: (value) {
+                                  setState(() {
+                                    confirmTermPolitics = !confirmTermPolitics;
+                                  });
+                                },
                               ),
                               Expanded(
                                 child: RichText(
@@ -402,7 +419,8 @@ class _RegPageCompanyState extends State<RegPageCompany> {
         emailUserController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         repeatPasswordController.text.isNotEmpty &&
-        idCompany != null) {
+        idCompany != null &&
+        confirmTermPolitics) {
       RegisterCompanyModel companyModel = RegisterCompanyModel(
         id: idCompany!,
         company: loginCompanyController.text,
@@ -489,6 +507,10 @@ class _RegPageCompanyState extends State<RegPageCompany> {
         }));
       }
     } else {
+      if (!confirmTermPolitics) {
+        MessageDialogs().showMessage('Ошибка',
+            'Для продолжения дайте ваше согласие на Договор оферты и Политики конфиденциальности');
+      }
       _btnController.reset();
     }
   }

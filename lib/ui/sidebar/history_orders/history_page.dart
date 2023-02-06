@@ -251,6 +251,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                               : MessageDialogs().errorDialog(
                                                   text: 'Ошибка отмены');
                                           resPaid = res;
+                                          getForm();
                                           setState(() {});
                                         },
                                         child: const Text(
@@ -968,7 +969,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
 
                                                   print(
                                                       'object123123 ${formOrder!.result!.invoices!.first.iD!} ${formOrder!.result!.invoices!.first.pIN!}');
-                                                  if (res != null && res.url != null) {
+                                                  if (res != null &&
+                                                      res.url != null) {
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(

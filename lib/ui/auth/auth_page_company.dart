@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
@@ -222,19 +223,21 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
     res = await Repository().loginUsernameAgent(_loginController.text,
         _passwordController.text, _companyController.text);
 
-    if (res?.errors == null) {
+    if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
       storage.setTypeUser('1');
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
       storage.setCompany(_companyController.text);
-      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res!));
+      storage.setKey(res.result!.key);
+      BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
+      BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();
-      MessageDialogs()
-          .showAlert('Ошибка', authError(res!.errors!.first.description));
+      MessageDialogs().showAlert(
+          'Ошибка', 'Введен неверный логин компании/пользователя или пароль');
     }
     Future.delayed(const Duration(seconds: 1), (() {
       _btnController.reset();

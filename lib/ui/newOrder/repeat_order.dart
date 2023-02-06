@@ -287,8 +287,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                       MessageDialogs()
                           .completeDialog(text: 'Заявка создана')
                           .then((value) {
-                        BlocProvider.of<HistoryOrdersBloc>(context).add(
-                            HistoryUpdateListEvent(current.createFormModel));
+                        // BlocProvider.of<HistoryOrdersBloc>(context).add(
+                        //     HistoryUpdateListEvent(current.createFormModel));
                         Navigator.of(context).pop();
                       });
                     } else if (current is CreateFormFail) {

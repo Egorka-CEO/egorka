@@ -4,12 +4,17 @@ class MySecureStorage {
   final storage = const FlutterSecureStorage();
 
   static const String ID = 'ID';
+  static const String KEY = 'KEY';
   static const String SECURE = 'Secure';
   static const String LOGIN = 'Login';
   static const String PASSWORD = 'Password';
   static const String COMPANY = 'Company';
   static const String TYPE_AUTH = 'TypeAuth'; // 0-username, 1-email, 2-phone
   static const String TYPE_USER = 'TypeUser'; // 0-user, 1-company
+
+  Future<String?> getKey() => storage.read(key: KEY);
+
+  void setKey(String? value) => storage.write(key: KEY, value: value);
 
   Future<String?> getID() => storage.read(key: ID);
 

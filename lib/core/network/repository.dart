@@ -10,6 +10,7 @@ import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/create_form_model.dart' as crtForm;
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/employee.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
@@ -38,9 +39,8 @@ class Repository {
       "Type": typeDevice,
       "UserUUID": id,
     };
-    if (key.isNotEmpty && !sessionKey) data['Session'] = '{$key}';
+    if (key.isNotEmpty && !sessionKey) data['Session'] = key;
 
-    print('object $data');
     return data;
   }
 
@@ -482,7 +482,7 @@ class Repository {
       },
     );
 
-    print('object ${response.data}');
+    print('object user ${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
@@ -720,16 +720,19 @@ class Repository {
 
   Future<int?> registerCompany(RegisterCompanyModel companyModel) async {
     var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserCreate",
+      "Body": companyModel.toJson(),
+      "Params": {}
+    };
     final response = await dio.post(
       '$server/service/auth/agent/',
       options: header(),
-      data: {
-        "Auth": authData,
-        "Method": "Registration",
-        "Body": companyModel.toJson(),
-        "Params": {}
-      },
+      data: data,
     );
+
+    print('object ${data}');
 
     print('object ${response.data}');
 
@@ -836,12 +839,130 @@ class Repository {
       },
     );
 
-    print('${bookAdresses.toJson()}');
+    print('jjhbjbhjh ${bookAdresses.toJson()}');
+
+    print('jjhbjbhjh ${response.data}');
 
     if (response.data['Errors'] != null) {
       return false;
     } else {
       return true;
+    }
+  }
+
+  Future<List<Employee>> getListEmployee() async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Users",
+        "Body": {},
+        "Params": {},
+      },
+    );
+
+    print('object employee ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      List<Employee> employee = [];
+      if (response.data != '') {
+        for (var element in response.data['Result']['Users']) {
+          employee.add(Employee.fromJson(element));
+        }
+      }
+      return employee;
+    } else {
+      return [];
+    }
+  }
+
+  Future<bool> addEmployee(
+    String name,
+    String phone,
+    String email,
+    String login,
+    String password,
+  ) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserCreate",
+      "Body": {
+        "Name": name,
+        "Mobile": phone,
+        "Email": email,
+        "Username": login,
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+    print('object employee ${data}');
+
+    print('object employee ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      // List<Employee> employee = [];
+      // if (response.data != '') {
+      //   for (var element in response.data['Result']['Users']) {
+      //     employee.add(Employee.fromJson(element));
+      //   }
+      // }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> editEmployee(
+    String name,
+    String phone,
+    String email,
+    String login,
+    String password,
+    String id,
+  ) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserUpdate",
+      "Body": {
+        "ID": id,
+        "Name": name,
+        "Mobile": phone,
+        "Email": email,
+        "Username": login,
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+    print('object employee ${data}');
+
+    print('object employee ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      // List<Employee> employee = [];
+      // if (response.data != '') {
+      //   for (var element in response.data['Result']['Users']) {
+      //     employee.add(Employee.fromJson(element));
+      //   }
+      // }
+      return true;
+    } else {
+      return false;
     }
   }
 }

@@ -840,7 +840,22 @@ class _MarketPageState extends State<MarketPages>
                                                   BlocProvider.of<BookBloc>(
                                                           context)
                                                       .books, (value) {
-                                                // phoneController.text = value;
+                                                suggestion = Suggestions(
+                                                  iD: value.id,
+                                                  name: value.name ?? '',
+                                                  point: pointModel.Point(
+                                                    latitude: value.latitude,
+                                                    longitude: value.longitude,
+                                                  ),
+                                                  houseNumber: value.room,
+                                                );
+                                                fromController.text =
+                                                    value.address ?? '';
+                                                nameController.text =
+                                                    value.contact?.name ?? '';
+                                                phoneController.text = value
+                                                        .contact?.phoneMobile ??
+                                                    '';
                                                 calcOrder();
                                               }),
                                               child: Row(

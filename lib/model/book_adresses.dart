@@ -1,3 +1,5 @@
+import 'package:egorka/model/contact.dart';
+
 class BookAdresses {
   String? id;
   String? code;
@@ -6,6 +8,7 @@ class BookAdresses {
   String? entrance;
   String? floor;
   String? room;
+  Contact? contact;
   dynamic latitude;
   dynamic longitude;
 
@@ -19,6 +22,7 @@ class BookAdresses {
     required this.room,
     required this.latitude,
     required this.longitude,
+    required this.contact,
   });
 
   factory BookAdresses.fromJson(Map<String, dynamic> data) {
@@ -31,17 +35,20 @@ class BookAdresses {
     String room = data['Room'] ?? '';
     dynamic latitude = data['Latitude'] ?? '';
     dynamic longtitude = data['Longitude'] ?? '';
+    dynamic contact;
+    if (data['Contact'] != null)
+      contact = Contact.fromJson(data['Contact']);
     return BookAdresses(
-      id: id,
-      code: code,
-      name: name,
-      address: address,
-      entrance: entrance,
-      floor: floor,
-      room: room,
-      latitude: latitude,
-      longitude: longtitude,
-    );
+        id: id,
+        code: code,
+        name: name,
+        address: address,
+        entrance: entrance,
+        floor: floor,
+        room: room,
+        latitude: latitude,
+        longitude: longtitude,
+        contact: contact);
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +58,7 @@ class BookAdresses {
     data['Entrance'] = entrance;
     data['Floor'] = floor;
     data['Room'] = room;
+    data['Contact'] = contact!.toJson();
     return data;
   }
 }

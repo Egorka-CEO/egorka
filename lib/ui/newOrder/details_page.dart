@@ -3,6 +3,8 @@ import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -255,8 +257,38 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () => showBooksAddress(context,
-                          BlocProvider.of<BookBloc>(context).books, (value) {}),
+                      onTap: () => showBooksAddress(
+                          context, BlocProvider.of<BookBloc>(context).books,
+                          (value) {
+                        widget.routeOrder.suggestions = Suggestions(
+                          iD: value.id,
+                          name: value.address ?? '',
+                          point: Point(
+                            latitude: value.latitude,
+                            longitude: value.longitude,
+                          ),
+                          houseNumber: value.room,
+                        );
+                        // controllerName.text = value.contact?.name ?? '';
+                        controllerPhone.text = value.contact?.phoneMobile ?? '';
+                        controller.text = value.address ?? '';
+                        controllerName.text = value.contact?.name ?? '';
+
+                        controllerEntrance.text = value.entrance ?? '';
+                        controllerFloor.text = value.floor ?? '';
+                        controllerRoom.text = value.room ?? '';
+
+                        widget.routeOrder.details?.entrance =
+                            controllerEntrance.text;
+
+                        widget.routeOrder.details?.floor = controllerFloor.text;
+
+                        widget.routeOrder.details?.room = controllerRoom.text;
+
+                        widget.routeOrder.details?.name = controllerName.text;
+                        widget.routeOrder.details?.phone = controllerPhone.text;
+
+                      }),
                       child: Row(
                         children: [
                           const Text(

@@ -424,3 +424,58 @@ void iconSelectModal(
         );
       },
     );
+
+void iconDateOrder(
+  BuildContext context,
+  Offset offset,
+) =>
+    showDialog(
+      useSafeArea: false,
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (context) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: AlertDialog(
+            insetPadding:
+                EdgeInsets.only(top: offset.dy + 40.h),
+            alignment: Alignment.topCenter,
+            contentPadding: EdgeInsets.zero,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            content: Container(
+              width: MediaQuery.of(context).size.width - 30.w,
+              height: 60.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  )
+                ],
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      padding: EdgeInsets.all(10.h),
+                      height: 70.h,
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Курьера можно вызвать не менее, чем за 2 часа от планированного времени забора груза',
+                        style: CustomTextStyle.black15w500
+                            .copyWith(fontSize: 15.sp),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );

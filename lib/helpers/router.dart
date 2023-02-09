@@ -14,6 +14,7 @@ import 'package:egorka/ui/sidebar/book/book_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
 import 'package:egorka/ui/sidebar/deposit/add_deposit.dart';
 import 'package:egorka/ui/sidebar/deposit/traffic_deposit.dart';
+import 'package:egorka/ui/sidebar/employee/employee.dart';
 import 'package:egorka/ui/sidebar/history_orders/details_page.dart';
 import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
@@ -42,6 +43,7 @@ class AppRoute {
   static const selectPoint = '/selectPoint';
   static const rate = '/rate';
   static const registration = '/registration';
+  static const employee = '/employee';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
@@ -49,6 +51,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const HomePage());
       case rate:
         return MaterialPageRoute(builder: (_) => RatePage());
+      case employee:
+        return MaterialPageRoute(builder: (_) => EmployeePage());
       case currentOrder:
         final list = route.arguments as List<int?>;
         var number = list[0];

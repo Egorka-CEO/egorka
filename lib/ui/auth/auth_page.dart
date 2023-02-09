@@ -82,7 +82,7 @@ class _AuthPageState extends State<AuthPage> {
                     child: SingleChildScrollView(
                       physics: const ClampingScrollPhysics(),
                       child: SizedBox(
-                        height: 500.h,
+                        height: 505.h,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,

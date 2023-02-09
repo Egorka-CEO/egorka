@@ -20,6 +20,7 @@ import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
+import 'package:egorka/widget/tip_dialog.dart';
 import 'package:egorka/widget/total_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -144,6 +145,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
   FocusNode whoDeparture2Focus = FocusNode();
   FocusNode numberDeparture2Focus = FocusNode();
   FocusNode contactDeparture2Focus = FocusNode();
+
+  GlobalKey iconDate = GlobalKey();
 
   @override
   void initState() {
@@ -461,9 +464,16 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                           ),
                                         ),
                                         SizedBox(width: 10.w),
-                                        const Icon(
-                                          Icons.help_outline_outlined,
-                                          color: Colors.red,
+                                        GestureDetector(
+                                          onTap: () => iconDateOrder(
+                                            context,
+                                            getWidgetPosition(iconDate),
+                                          ),
+                                          child: Icon(
+                                            Icons.help_outline_outlined,
+                                            key: iconDate,
+                                            color: Colors.red,
+                                          ),
                                         ),
                                         SizedBox(width: 10.w),
                                       ],

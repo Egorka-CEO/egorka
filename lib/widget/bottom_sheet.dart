@@ -638,18 +638,22 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                     Text(
                                       listChoice[index].title,
                                       style: TextStyle(
-                                        color: snapshot.data! == index
-                                            ? Colors.black
-                                            : Colors.black,
-                                      ),
+                                          color: snapshot.data! == index
+                                              ? Colors.black
+                                              : Colors.black,
+                                          fontWeight: snapshot.data! == index
+                                              ? FontWeight.w600
+                                              : FontWeight.w400),
                                     ),
                                     Text(
                                       '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
                                       style: TextStyle(
-                                        color: snapshot.data! == index
-                                            ? Colors.grey
-                                            : Colors.black,
-                                      ),
+                                          color: snapshot.data! == index
+                                              ? Colors.black
+                                              : Colors.black,
+                                          fontWeight: snapshot.data! == index
+                                              ? FontWeight.w600
+                                              : FontWeight.w400),
                                     ),
                                   ],
                                 ),
@@ -678,8 +682,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     child: GestureDetector(
                       onTap: coasts.isNotEmpty
                           ? () {
-                            print('object ${errorAddress1}---${errorAddress2}');
-                              if (errorAddress1 != null || errorAddress2 != null) {
+                              print(
+                                  'object ${errorAddress1}---${errorAddress2}');
+                              if (errorAddress1 != null ||
+                                  errorAddress2 != null) {
                                 MessageDialogs()
                                     .showAlert('Ошибка', 'Укажите номер дома');
                               } else {

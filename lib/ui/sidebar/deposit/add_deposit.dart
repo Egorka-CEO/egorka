@@ -41,30 +41,30 @@ class _AddDepositState extends State<AddDeposit> {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.5,
-          title: const Text(
-            'Пополнение депозита',
-            style: CustomTextStyle.black15w500,
-          ),
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.red,
-            ),
-          ),
-          backgroundColor: Colors.white,
-        ),
+        // appBar: AppBar(
+        //   elevation: 0.5,
+        //   title: const Text(
+        //     'Пополнение депозита',
+        //     style: CustomTextStyle.black15w500,
+        //   ),
+        //   leading: GestureDetector(
+        //     onTap: () => Navigator.of(context).pop(),
+        //     child: const Icon(
+        //       Icons.arrow_back_ios,
+        //       color: Colors.red,
+        //     ),
+        //   ),
+        //   backgroundColor: Colors.white,
+        // ),
         body: Padding(
           padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.w),
           child: Column(
             children: [
-              SizedBox(height: 20.h),
-              const Text(
-                'Укажите сумму пополнения:',
-                style: CustomTextStyle.black15w500,
-              ),
+              // SizedBox(height: 20.h),
+              // const Text(
+              //   'Укажите сумму пополнения:',
+              //   style: CustomTextStyle.black15w500,
+              // ),
               SizedBox(height: 10.h),
               Row(
                 children: [

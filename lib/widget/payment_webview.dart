@@ -20,6 +20,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   @override
   void dispose() {
     super.dispose();
+    _controller?.clearCache();
   }
 
   @override
@@ -74,14 +75,17 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                         _controller = controller;
                       },
                       onPageStarted: (url) {
-                        // print('object ${widget.url}-${widget.id}-${widget.pin}');
-                        if (url ==
-                            'https://ws.egorka.dev/payment/tinkoff/confirm?id=${widget.id}-${widget.pin}&status=Success') {
+                        print('object ${url}');
+                        if (url.contains('Success')) {
                           Navigator.of(context).pop(true);
-                        } else if (url ==
-                            'https://ws.egorka.dev/payment/tinkoff/confirm?id=${widget.id}-${widget.pin}&status=Fail') {
+                          _controller?.loadUrl(widget.url);
+                        } else if (url.contains('Fail')) {
                           Navigator.of(context).pop(false);
+                          _controller?.loadUrl(widget.url);
                         }
+                        // else {
+                        //   Navigator.of(context).pop(false);
+                        // }
                         // print('object $url');
                         // else if (url ==
                         //     'https://ws.egorka.dev/payment/tinkoff/redirect/?id=${widget.id}-${widget.pin}') {

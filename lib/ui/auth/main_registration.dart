@@ -3,6 +3,7 @@ import 'package:egorka/ui/auth/reg_page.dart';
 import 'package:egorka/ui/auth/reg_page_company.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MainRegPage extends StatefulWidget {
   final bool flag;
@@ -48,6 +49,28 @@ class _MainRegPageState extends State<MainRegPage> {
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: SvgPicture.asset(
+                    'assets/icons/logo_egorka.svg',
+                    height: 40.h,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Егорка готов к сотрудничеству!\nОстается пройти быструю регистрацию',
+                  style: TextStyle(fontSize: 19.sp),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: StreamBuilder<int>(
@@ -92,9 +115,9 @@ class _MainRegPageState extends State<MainRegPage> {
                     );
                   }),
             ),
+            SizedBox(height: 10.h),
             Expanded(
               child: SizedBox(
-                // height: 400.h,
                 child: PageView(
                   controller: pageController,
                   scrollDirection: Axis.vertical,

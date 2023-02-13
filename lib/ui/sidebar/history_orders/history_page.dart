@@ -273,50 +273,50 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                         Expanded(
                           child: Column(
                             children: [
-                              SizedBox(
-                                height: 350.h,
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 10.h),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5.h, horizontal: 10.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(12.r),
-                                        color: colorStatus,
-                                      ),
-                                      child: Text(
-                                        status,
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.h),
-                                    Text(
-                                      '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
-                                      style: CustomTextStyle.black15w500,
-                                    ),
-                                    SizedBox(height: 10.h),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 15.w),
-                                      child: SizedBox(
-                                        height: 250.h,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20.r),
-                                          ),
-                                          child: MiniMapView(
-                                              locations: widget
-                                                  .coast.result.locations),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.h),
-                                  ],
-                                ),
-                              ),
+                              // SizedBox(
+                              //   height: 350.h,
+                              //   child: Column(
+                              //     children: [
+                              //       SizedBox(height: 10.h),
+                              //       Container(
+                              //         padding: EdgeInsets.symmetric(
+                              //             vertical: 5.h, horizontal: 10.h),
+                              //         decoration: BoxDecoration(
+                              //           borderRadius:
+                              //               BorderRadius.circular(12.r),
+                              //           color: colorStatus,
+                              //         ),
+                              //         child: Text(
+                              //           status,
+                              //           style: const TextStyle(
+                              //               color: Colors.white),
+                              //         ),
+                              //       ),
+                              //       SizedBox(height: 10.h),
+                              //       Text(
+                              //         '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
+                              //         style: CustomTextStyle.black15w500,
+                              //       ),
+                              //       SizedBox(height: 10.h),
+                              //       Padding(
+                              //         padding: EdgeInsets.symmetric(
+                              //             horizontal: 15.w),
+                              //         child: SizedBox(
+                              //           height: 250.h,
+                              //           child: ClipRRect(
+                              //             borderRadius: BorderRadius.all(
+                              //               Radius.circular(20.r),
+                              //             ),
+                              //             child: MiniMapView(
+                              //                 locations: widget
+                              //                     .coast.result.locations),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //       SizedBox(height: 10.h),
+                              //     ],
+                              //   ),
+                              // ),
                               Expanded(
                                 child: SingleChildScrollView(
                                   physics: const ClampingScrollPhysics(),
@@ -329,6 +329,39 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
+                                        SizedBox(height: 10.h),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 5.h, horizontal: 10.h),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
+                                            color: colorStatus,
+                                          ),
+                                          child: Text(
+                                            status,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Text(
+                                          '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
+                                          style: CustomTextStyle.black15w500,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        SizedBox(
+                                          height: 250.h,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(20.r),
+                                            ),
+                                            child: MiniMapView(
+                                                locations: widget
+                                                    .coast.result.locations),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.h),
                                         Padding(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 15.w),
@@ -1049,8 +1082,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                         .first.pIN!,
                                                   );
 
-                                                  print(
-                                                      'object123123 ${formOrder!.result!.invoices!.first.iD!} ${formOrder!.result!.invoices!.first.pIN!}');
+                                                  print('object123123 ${res}');
                                                   if (res != null &&
                                                       res.url != null) {
                                                     Navigator.push(

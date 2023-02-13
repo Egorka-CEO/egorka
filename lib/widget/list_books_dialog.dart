@@ -69,70 +69,175 @@ void showBooksAddress(BuildContext context, List<BookAdresses> bookAdresses,
                             width: MediaQuery.of(context).size.width - 20.w,
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: bookAdresses.length + 1,
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: bookAdresses.length,
+                              padding: EdgeInsets.zero,
                               itemBuilder: ((context, index) {
-                                if (index == 0) {
-                                  return Container(
-                                    height: 50.h,
-                                    color: index % 2 == 0
-                                        ? Colors.white
-                                        : Colors.grey[200],
-                                    child: Row(
-                                      children: [
-                                        SizedBox(width: 10.w),
-                                        const Expanded(
-                                            flex: 2, child: Text('№')),
-                                        SizedBox(width: 10.w),
-                                        const Expanded(
-                                          flex: 4,
-                                          child: Text(
-                                            'Адрес',
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            'Обозначение',
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                      ],
-                                    ),
-                                  );
-                                }
+                                // if (index == 0) {
+                                //   return Container(
+                                //     height: 50.h,
+                                //     color: index % 2 == 0
+                                //         ? Colors.white
+                                //         : Colors.grey[200],
+                                //     child: Row(
+                                //       children: [
+                                //         SizedBox(width: 10.w),
+                                //         const Expanded(
+                                //             flex: 2, child: Text('№')),
+                                //         SizedBox(width: 10.w),
+                                //         const Expanded(
+                                //           flex: 4,
+                                //           child: Text(
+                                //             'Адрес',
+                                //             textAlign: TextAlign.center,
+                                //           ),
+                                //         ),
+                                //         const Expanded(
+                                //           flex: 3,
+                                //           child: Text(
+                                //             'Обозначение',
+                                //             textAlign: TextAlign.center,
+                                //           ),
+                                //         ),
+                                //         SizedBox(width: 10.w),
+                                //       ],
+                                //     ),
+                                //   );
+                                // }
                                 return ScaleButton(
                                   bound: 0.01,
                                   onTap: () {
-                                    onSelect(bookAdresses[index - 1]);
+                                    onSelect(bookAdresses[index]);
                                     Navigator.pop(context);
                                   },
                                   child: Container(
                                     // height: 50.h,
-                                    color: index % 2 == 0
+                                    color: index % 2 != 0
                                         ? Colors.white
                                         : Colors.grey[200],
-                                    child: Row(
+                                    child: Column(
                                       children: [
-                                        SizedBox(width: 10.w),
-                                        Expanded(
-                                            flex: 2, child: Text('$index')),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Text(
-                                            bookAdresses[index - 1].address!,
-                                            textAlign: TextAlign.center,
-                                          ),
+                                        // Row(
+                                        //   children: [
+                                        //     SizedBox(width: 10.w),
+                                        //     Expanded(
+                                        //         flex: 2, child: Text('$index')),
+                                        //     Expanded(
+                                        //       flex: 4,
+                                        //       child: Text(
+                                        //         bookAdresses[index - 1]
+                                        //             .address!,
+                                        //         style:
+                                        //             TextStyle(fontSize: 14.sp),
+                                        //         textAlign: TextAlign.center,
+                                        //       ),
+                                        //     ),
+                                        //     Expanded(
+                                        //       flex: 3,
+                                        //       child: Column(
+                                        //         children: [
+                                        //           SizedBox(height: 3.h),
+                                        //           Text(
+                                        //             bookAdresses[index - 1]
+                                        //                 .name!,
+                                        //             textAlign: TextAlign.center,
+                                        //             style: TextStyle(
+                                        //                 fontSize: 14.sp),
+                                        //           ),
+                                        //           SizedBox(height: 3.h)
+                                        //         ],
+                                        //       ),
+                                        //     ),
+                                        //     SizedBox(width: 10.w),
+                                        //   ],
+                                        // ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 10.h),
+                                            Text(
+                                              'Название: ',
+                                              style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w700),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              bookAdresses[index].name ?? '-',
+                                              style: TextStyle(fontSize: 14.sp),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(width: 10.h),
+                                          ],
                                         ),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            bookAdresses[index - 1].name!,
-                                            textAlign: TextAlign.center,
-                                          ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 10.h),
+                                            Text(
+                                              'Адрес: ',
+                                              style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w700),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(
+                                              width: 280.w,
+                                              child: Text(
+                                                bookAdresses[index].address ??
+                                                    '-',
+                                                style:
+                                                    TextStyle(fontSize: 14.sp),
+                                                maxLines: 3,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10.h),
+                                          ],
                                         ),
-                                        SizedBox(width: 10.w),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 10.h),
+                                            Text(
+                                              'Имя: ',
+                                              style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w700),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              bookAdresses[index]
+                                                      .contact
+                                                      ?.name ??
+                                                  '-',
+                                              style: TextStyle(fontSize: 14.sp),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(width: 10.h),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 10.h),
+                                            Text(
+                                              'Номер телефона: ',
+                                              style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w700),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              bookAdresses[index]
+                                                      .contact
+                                                      ?.phoneMobile ??
+                                                  '-',
+                                              style: TextStyle(fontSize: 14.sp),
+                                            ),
+                                            SizedBox(width: 10.h),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10.h),
                                       ],
                                     ),
                                   ),

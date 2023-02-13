@@ -278,49 +278,6 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                         Expanded(
                           child: Column(
                             children: [
-                              SizedBox(
-                                height: 350.h,
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 10.h),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5.h, horizontal: 10.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(12.r),
-                                        color: colorStatus,
-                                      ),
-                                      child: Text(
-                                        status,
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20.h),
-                                    Text(
-                                      '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
-                                      style: CustomTextStyle.black15w500,
-                                    ),
-                                    SizedBox(height: 10.h),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 15.w),
-                                      child: SizedBox(
-                                        height: 250.h,
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
-                                          child: MiniMapView(
-                                              locations: formOrder!
-                                                  .result!.locations!),
-                                        ),
-                                      ),
-                                    ),
-                                    // SizedBox(height: 10.h),
-                                  ],
-                                ),
-                              ),
                               Expanded(
                                 child: SingleChildScrollView(
                                   physics: const ClampingScrollPhysics(),
@@ -333,6 +290,38 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
+                                        SizedBox(height: 10.h),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 5.h, horizontal: 10.h),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
+                                            color: colorStatus,
+                                          ),
+                                          child: Text(
+                                            status,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                        SizedBox(height: 20.h),
+                                        Text(
+                                          '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
+                                          style: CustomTextStyle.black15w500,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        SizedBox(
+                                          height: 250.h,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
+                                            child: MiniMapView(
+                                                locations: formOrder!
+                                                    .result!.locations!),
+                                          ),
+                                        ),
                                         SizedBox(height: 10.h),
                                         Row(
                                           children: const [

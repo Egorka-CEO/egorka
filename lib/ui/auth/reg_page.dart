@@ -7,7 +7,6 @@ import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -93,25 +92,10 @@ class _RegPageState extends State<RegPage> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 40.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: SvgPicture.asset(
-                                'assets/icons/logo_egorka.svg',
-                                height: 40.h,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Егорка готов к сотрудничеству!\nОстается пройти быструю регистрацию',
-                              style: TextStyle(fontSize: 19.sp),
-                            ),
+                          children: const [
+                            Text('Физ. лицо'),
                           ],
                         ),
                         SizedBox(height: 20.h),
@@ -298,6 +282,7 @@ class _RegPageState extends State<RegPage> {
         emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         repeatPasswordController.text.isNotEmpty &&
+        (passwordController.text == repeatPasswordController.text) &&
         confirmTermPolitics) {
       _btnController.start();
       RegisterUserModel userModel = RegisterUserModel(
@@ -357,7 +342,21 @@ class _RegPageState extends State<RegPage> {
         }));
       }
     } else {
-      if (!confirmTermPolitics) {
+      if (usernameController.text.isEmpty) {
+        MessageDialogs().showMessage('Ошибка', 'Укажите логин');
+      } else if (passwordController.text.isEmpty) {
+        MessageDialogs().showMessage('Ошибка', 'Укажите пароль');
+      } else if (repeatPasswordController.text.isEmpty) {
+        MessageDialogs().showMessage('Ошибка', 'Укажите пароль ещё раз');
+      } else if (passwordController.text != repeatPasswordController.text) {
+        MessageDialogs().showMessage('Ошибка', 'Пароли не совпадают');
+      } else if (nameController.text.isEmpty) {
+        MessageDialogs().showMessage('Ошибка', 'Укажите ваше Имя');
+      } else if (phoneController.text.isEmpty) {
+        MessageDialogs().showMessage('Ошибка', 'Укажите номер телефона');
+      } else if (emailController.text.isEmpty) {
+        MessageDialogs().showMessage('Ошибка', 'Укажите email');
+      } else if (!confirmTermPolitics) {
         MessageDialogs().showMessage('Ошибка',
             'Для продолжения дайте ваше согласие на Договор оферты и Политики конфиденциальности');
       }

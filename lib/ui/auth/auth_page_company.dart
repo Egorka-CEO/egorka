@@ -5,7 +5,6 @@ import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/auth_error.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
@@ -16,7 +15,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AuthPageCompany extends StatefulWidget {
-  AuthPageCompany({super.key});
+  const AuthPageCompany({super.key});
 
   @override
   State<AuthPageCompany> createState() => _AuthPageCompanyState();

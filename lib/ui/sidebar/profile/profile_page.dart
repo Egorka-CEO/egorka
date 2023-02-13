@@ -1,18 +1,38 @@
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
+import 'package:egorka/core/database/secure_storage.dart';
+import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final FocusNode password1Focus = FocusNode();
+
   final FocusNode password2Focus = FocusNode();
+
   final FocusNode password3Focus = FocusNode();
+
+  // TextEditingController currrentPassword = TextEditingController();
+
+  TextEditingController newPassword1 = TextEditingController();
+
+  TextEditingController newPassword2 = TextEditingController();
+
+  // bool currrentPasswordVisible = true;
+  bool newPassword1PasswordVisible = true;
+  bool newPassword2PasswordVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -311,28 +331,64 @@ class ProfilePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Текущий пароль: ',
-                                  style: CustomTextStyle.black15w700.copyWith(
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                SizedBox(height: 5.h),
-                                CustomTextField(
-                                  height: 45.h,
-                                  obscureText: true,
-                                  focusNode: password1Focus,
-                                  hintText: '',
-                                  fillColor: backgroundColor,
-                                  textEditingController:
-                                      TextEditingController(text: 'password'),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 15.h),
+                            // Column(
+                            //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //   children: [
+                            //     Text(
+                            //       'Текущий пароль: ',
+                            //       style: CustomTextStyle.black15w700.copyWith(
+                            //         color: Colors.grey[700],
+                            //       ),
+                            //     ),
+                            //     SizedBox(height: 5.h),
+                            //     SizedBox(
+                            //       height: 45.h,
+                            //       child: Stack(
+                            //         children: [
+                            //           CustomTextField(
+                            //             height: 45.h,
+                            //             obscureText: currrentPasswordVisible,
+                            //             focusNode: password1Focus,
+                            //             hintText: '',
+                            //             onChanged: (value) {
+                            //               setState(() {});
+                            //             },
+                            //             fillColor: backgroundColor,
+                            //             textEditingController: currrentPassword,
+                            //           ),
+                            //           Padding(
+                            //             padding: EdgeInsets.only(right: 15.w),
+                            //             child: Align(
+                            //                 alignment: Alignment.centerRight,
+                            //                 child: GestureDetector(
+                            //                   onTap: () {
+                            //                     setState(() {
+                            //                       currrentPasswordVisible =
+                            //                           !currrentPasswordVisible;
+                            //                     });
+                            //                   },
+                            //                   child: Row(
+                            //                     mainAxisAlignment:
+                            //                         MainAxisAlignment.end,
+                            //                     children: [
+                            //                       !currrentPasswordVisible
+                            //                           ? Icon(Icons.visibility,
+                            //                               color:
+                            //                                   Colors.grey[500])
+                            //                           : Icon(
+                            //                               Icons.visibility_off,
+                            //                               color:
+                            //                                   Colors.grey[500]),
+                            //                     ],
+                            //                   ),
+                            //                 )),
+                            //           )
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                            // SizedBox(height: 15.h),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -343,14 +399,51 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 5.h),
-                                CustomTextField(
+                                SizedBox(
                                   height: 45.h,
-                                  obscureText: true,
-                                  focusNode: password2Focus,
-                                  hintText: '',
-                                  fillColor: backgroundColor,
-                                  textEditingController:
-                                      TextEditingController(text: 'password'),
+                                  child: Stack(
+                                    children: [
+                                      CustomTextField(
+                                        height: 45.h,
+                                        obscureText:
+                                            newPassword1PasswordVisible,
+                                        focusNode: password2Focus,
+                                        hintText: '',
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
+                                        fillColor: backgroundColor,
+                                        textEditingController: newPassword1,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 15.w),
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  newPassword1PasswordVisible =
+                                                      !newPassword1PasswordVisible;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  !newPassword1PasswordVisible
+                                                      ? Icon(Icons.visibility,
+                                                          color:
+                                                              Colors.grey[500])
+                                                      : Icon(
+                                                          Icons.visibility_off,
+                                                          color:
+                                                              Colors.grey[500]),
+                                                ],
+                                              ),
+                                            )),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -365,14 +458,51 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 5.h),
-                                CustomTextField(
+                                SizedBox(
                                   height: 45.h,
-                                  focusNode: password3Focus,
-                                  obscureText: true,
-                                  hintText: '',
-                                  fillColor: backgroundColor,
-                                  textEditingController:
-                                      TextEditingController(text: 'password'),
+                                  child: Stack(
+                                    children: [
+                                      CustomTextField(
+                                        height: 45.h,
+                                        focusNode: password3Focus,
+                                        obscureText:
+                                            newPassword2PasswordVisible,
+                                        hintText: '',
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
+                                        fillColor: backgroundColor,
+                                        textEditingController: newPassword2,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 15.w),
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  newPassword2PasswordVisible =
+                                                      !newPassword2PasswordVisible;
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  !newPassword2PasswordVisible
+                                                      ? Icon(Icons.visibility,
+                                                          color:
+                                                              Colors.grey[500])
+                                                      : Icon(
+                                                          Icons.visibility_off,
+                                                          color:
+                                                              Colors.grey[500]),
+                                                ],
+                                              ),
+                                            )),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -380,7 +510,70 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 50.h),
+                    SizedBox(height: 20.h),
+                    if (newPassword1.text.isNotEmpty ||
+                        newPassword2.text.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        child: SizedBox(
+                          height: 60.h,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if ((newPassword1.text == newPassword2.text) &&
+                                  newPassword1.text.isNotEmpty &&
+                                  newPassword2.text.isNotEmpty) {
+                                final storage = MySecureStorage();
+                                final type = await storage.getTypeUser();
+                                if (type == '0') {
+                                  final res = await Repository()
+                                      .updateProfileUser(newPassword1.text);
+                                  if (res) {
+                                    MessageDialogs().completeDialog(
+                                        text: 'Пароль успешно изменен');
+                                  }
+                                } else {
+                                  final res = await Repository()
+                                      .updateProfileAgent(newPassword1.text);
+                                  if (res) {
+                                    MySecureStorage storage = MySecureStorage();
+                                    storage.setPassword(newPassword1.text);
+                                    MessageDialogs().completeDialog(
+                                        text: 'Пароль успешно изменен');
+                                  }
+                                }
+                              } else {
+                                if (newPassword1.text.isEmpty) {
+                                  MessageDialogs().showAlert(
+                                      'Ошибка', 'Введите новый пароль');
+                                } else if (newPassword2.text.isEmpty) {
+                                  MessageDialogs().showAlert(
+                                      'Ошибка', 'Введите новый пароль еще раз');
+                                } else if (newPassword1.text !=
+                                    newPassword2.text) {
+                                  MessageDialogs().showAlert(
+                                      'Ошибка', 'Пароли не совпадают');
+                                }
+                              }
+                            },
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  const MaterialStatePropertyAll(Colors.red),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Обновить пароль',
+                              style:
+                                  TextStyle(fontSize: 17.sp, letterSpacing: 1),
+                            ),
+                          ),
+                        ),
+                      ),
+                    SizedBox(height: 20.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15.w),
                       child: SizedBox(
@@ -400,7 +593,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           child: Text(
                             'ВЫХОД',
-                            style: TextStyle(fontSize: 17.sp, letterSpacing: 2),
+                            style: TextStyle(fontSize: 17.sp, letterSpacing: 1),
                           ),
                         ),
                       ),

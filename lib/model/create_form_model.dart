@@ -96,9 +96,11 @@ class Result {
     locations =
         List.from(json['Locations']).map((e) => Location.fromJson(e)).toList();
     Ancillaries = List.castFrom<dynamic, dynamic>(json['Ancillaries']);
-    calculation = List.from(json['Calculation'])
-        .map((e) => Calculation.fromJson(e))
-        .toList();
+    calculation = json['Calculation'] != null
+        ? List.from(json['Calculation'])
+            .map((e) => Calculation.fromJson(e))
+            .toList()
+        : [];
     totalPrice = TotalPrice.fromJson(json['TotalPrice']);
     Status = json['Status'];
     StatusPay = json['StatusPay'];

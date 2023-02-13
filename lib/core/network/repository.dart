@@ -206,18 +206,20 @@ class Repository {
 
   Future<List<crtForm.CreateFormModel>?> getListForm() async {
     var authData = await auth(sessionKey: true);
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "Orders",
+      "Body": {
+        "Limit": 50,
+        "Offset": 0,
+      },
+      "Params": {"Language": "RU"}
+    };
+    print('object ${data}');
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
-      data: {
-        "Auth": authData,
-        "Method": "Orders",
-        "Body": {
-          "Limit": 50,
-          "Offset": 0,
-        },
-        "Params": {"Language": "RU"}
-      },
+      data: data,
     );
 
     if (response.data == '' || response.data['Result'] != null) {
@@ -313,21 +315,25 @@ class Repository {
 
   Future<PaymentCard?> paymentCard(int id, int pin) async {
     var authData = await auth(sessionKey: true);
+    Map<String, dynamic> data = {
+      "ID": id,
+      "PIN": pin,
+      "Gate": "Tinkoff",
+      "Logic": "Card",
+    };
     final response = await dio.post(
       '$server/service/payment/',
       options: header(),
       data: {
         "Auth": authData,
         "Method": "Redirect",
-        "Body": {
-          "ID": id,
-          "PIN": pin,
-          "Gate": "Tinkoff",
-          "Logic": "Card",
-        },
+        "Body": data,
         "Params": params()
       },
     );
+    print('object ${authData} ${data}');
+
+    print('object ${response.data}');
 
     if (response.data['Result'] != null) {
       PaymentCard? res = PaymentCard.fromJson(response.data['Result']);
@@ -400,6 +406,8 @@ class Repository {
         "Params": params()
       },
     );
+
+    print('object ${response.data}');
 
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
@@ -722,7 +730,7 @@ class Repository {
     var authData = await auth();
     Map<String, dynamic> data = {
       "Auth": authData,
-      "Method": "UserCreate",
+      "Method": "Create",
       "Body": companyModel.toJson(),
       "Params": {}
     };
@@ -909,12 +917,6 @@ class Repository {
     print('object employee ${response.data}');
 
     if (response.data['Errors'] == null) {
-      // List<Employee> employee = [];
-      // if (response.data != '') {
-      //   for (var element in response.data['Result']['Users']) {
-      //     employee.add(Employee.fromJson(element));
-      //   }
-      // }
       return true;
     } else {
       return false;
@@ -949,17 +951,61 @@ class Repository {
       options: header(),
       data: data,
     );
-    print('object employee ${data}');
-
-    print('object employee ${response.data}');
 
     if (response.data['Errors'] == null) {
-      // List<Employee> employee = [];
-      // if (response.data != '') {
-      //   for (var element in response.data['Result']['Users']) {
-      //     employee.add(Employee.fromJson(element));
-      //   }
-      // }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> updateProfileUser(String password) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "Update",
+      "Body": {
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/user/',
+      options: header(),
+      data: data,
+    );
+    print('object ${data}');
+    print('object ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> updateProfileAgent(String password) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserUpdate",
+      "Body": {
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+
+    print('object1 ${data}');
+    print('object1 ${response.data}');
+
+    if (response.data['Errors'] == null) {
       return true;
     } else {
       return false;

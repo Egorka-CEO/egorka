@@ -114,20 +114,20 @@ class _NavBarState extends State<NavBar> {
                                 onTap: () => Navigator.pushNamed(
                                     context, AppRoute.trafficDeposit),
                                 child: Text(
-                                  'Движение по депозиту',
+                                  'Депозит',
                                   style: CustomTextStyle.black15w500
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () => Navigator.pushNamed(
-                                    context, AppRoute.addDeposit),
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.red.withOpacity(0.6),
-                                ),
-                              )
+                              // const Spacer(),
+                              // GestureDetector(
+                              //   onTap: () => Navigator.pushNamed(
+                              //       context, AppRoute.addDeposit),
+                              //   child: Icon(
+                              //     Icons.add,
+                              //     color: Colors.red.withOpacity(0.6),
+                              //   ),
+                              // )
                             ],
                           ),
                         ),

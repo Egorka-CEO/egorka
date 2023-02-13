@@ -64,7 +64,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     funcInit();
-    BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
     checkConnection(context);
   }
 
@@ -97,6 +96,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     } else {
       await Repository().UUIDCreate();
     }
+    BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
     BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
   }
 

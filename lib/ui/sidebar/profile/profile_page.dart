@@ -157,8 +157,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                         SizedBox(width: 20.w),
                                         GestureDetector(
-                                          onTap: () => Navigator.pushNamed(
-                                              context, AppRoute.addDeposit),
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.pushNamed(context,
+                                                AppRoute.trafficDeposit);
+                                          },
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color:

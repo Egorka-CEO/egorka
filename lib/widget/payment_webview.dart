@@ -15,12 +15,34 @@ class PaymentWebView extends StatefulWidget {
 }
 
 class _PaymentWebViewState extends State<PaymentWebView> {
-  WebViewController? _controller;
+  late WebViewController _controller;
+  bool state = true;
 
   @override
-  void dispose() {
-    super.dispose();
-    _controller?.clearCache();
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {},
+          onPageStarted: (String url) {
+            print('object ${url}');
+            if (url.contains('Success')) {
+              Navigator.pop(context, true);
+            } else if (url.contains('Fail')) {
+              Navigator.pop(context, false);
+            }
+          },
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.url));
   }
 
   @override
@@ -67,31 +89,8 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                     color: Colors.black.withOpacity(0.2),
                   ),
                   Expanded(
-                    // height: 400.h,
-                    child: WebView(
-                      initialUrl: widget.url,
-                      javascriptMode: JavascriptMode.unrestricted,
-                      onWebViewCreated: (controller) {
-                        _controller = controller;
-                      },
-                      onPageStarted: (url) {
-                        print('object ${url}');
-                        if (url.contains('Success')) {
-                          Navigator.of(context).pop(true);
-                          _controller?.loadUrl(widget.url);
-                        } else if (url.contains('Fail')) {
-                          Navigator.of(context).pop(false);
-                          _controller?.loadUrl(widget.url);
-                        }
-                        // else {
-                        //   Navigator.of(context).pop(false);
-                        // }
-                        // print('object $url');
-                        // else if (url ==
-                        //     'https://ws.egorka.dev/payment/tinkoff/redirect/?id=${widget.id}-${widget.pin}') {
-                        //   Navigator.of(context).pop(false);
-                        // }
-                      },
+                    child: WebViewWidget(
+                      controller: _controller,
                     ),
                   ),
                 ],

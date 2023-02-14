@@ -20,7 +20,6 @@ import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_places.dart';
 import 'package:egorka/ui/sidebar/profile/profile_page.dart';
-import 'package:egorka/ui/sidebar/rate/rate_page.dart';
 import 'package:egorka/widget/select_adres_map.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +40,6 @@ class AppRoute {
   static const historyDetailsOrder = '/historyDetailsOrder';
   static const book = '/book';
   static const selectPoint = '/selectPoint';
-  static const rate = '/rate';
   static const registration = '/registration';
   static const employee = '/employee';
 
@@ -49,8 +47,6 @@ class AppRoute {
     switch (route.name) {
       case home:
         return MaterialPageRoute(builder: (_) => const HomePage());
-      case rate:
-        return MaterialPageRoute(builder: (_) => RatePage());
       case employee:
         return MaterialPageRoute(builder: (_) => EmployeePage());
       case currentOrder:

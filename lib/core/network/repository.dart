@@ -641,6 +641,7 @@ class Repository {
 
   Future<String> getPDF(int id, int pin) async {
     String savePath = await getFilePath('$id$pin.pdf');
+    print('object ${id}${pin}');
     final response = await dio.get(
       '$server/export/invoice/pdf/?ID=$id$pin',
       options: Options(

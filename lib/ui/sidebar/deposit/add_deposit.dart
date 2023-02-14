@@ -28,7 +28,7 @@ class _AddDepositState extends State<AddDeposit> {
   final focusCoast = FocusNode();
 
   void loadDeposit() => BlocProvider.of<DepositBloc>(context)
-      .add(LoadReplenishmentDepositEvent(Filter(type: 'Bill')));
+      .add(LoadReplenishmentDepositEvent(Filter(type: 'Invoice')));
 
   @override
   void initState() {
@@ -196,13 +196,34 @@ class _AddDepositState extends State<AddDeposit> {
                                 child: Row(
                                   children: [
                                     SizedBox(width: 10.w),
-                                    const Expanded(flex: 2, child: Text('№')),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        '№',
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 13.sp),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
                                     SizedBox(width: 10.w),
-                                    const Expanded(
-                                        flex: 4,
-                                        child: Text('Дата выставления')),
-                                    const Expanded(
-                                        flex: 3, child: Text('Сумма')),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        'Дата выставления',
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 13.sp),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        'Сумма',
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 13.sp),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
                                     SizedBox(width: 10.w),
                                   ],
                                 ),
@@ -220,9 +241,14 @@ class _AddDepositState extends State<AddDeposit> {
                                     children: [
                                       SizedBox(width: 10.w),
                                       Expanded(
-                                          flex: 2,
-                                          child: Text(
-                                              '${depositHistory[index - 1].date}')),
+                                        flex: 3,
+                                        child: Text(
+                                          '${depositHistory[index - 1].iD!}-${depositHistory[index - 1].pIN!}',
+                                          style: CustomTextStyle.black15w500
+                                              .copyWith(fontSize: 13.sp),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
                                       Expanded(
                                         flex: 4,
                                         child: Text(
@@ -232,12 +258,20 @@ class _AddDepositState extends State<AddDeposit> {
                                                   1000,
                                             ),
                                           ),
+                                          textAlign: TextAlign.center,
+                                          style: CustomTextStyle.black15w500
+                                              .copyWith(fontSize: 13.sp),
                                         ),
                                       ),
                                       Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                              '${depositHistory[index - 1].amount} руб.')),
+                                        flex: 3,
+                                        child: Text(
+                                          '${depositHistory[index - 1].amount} руб.',
+                                          style: CustomTextStyle.black15w500
+                                              .copyWith(fontSize: 13.sp),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
                                       SizedBox(width: 10.w),
                                     ],
                                   ),
@@ -256,9 +290,12 @@ class _AddDepositState extends State<AddDeposit> {
                                           await OpenFile.open(pdf);
                                           SmartDialog.dismiss();
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           'Скачать PDF',
-                                          style: TextStyle(color: Colors.red),
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 13.sp,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 10.w),
@@ -274,11 +311,13 @@ class _AddDepositState extends State<AddDeposit> {
                                           await OpenFile.open(excel);
                                           SmartDialog.dismiss();
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           'Скачать EXCEL',
                                           style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 71, 170, 74)),
+                                            fontSize: 13.sp,
+                                            color: const Color.fromARGB(
+                                                255, 71, 170, 74),
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 10.w),

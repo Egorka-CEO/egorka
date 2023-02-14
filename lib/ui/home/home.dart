@@ -80,11 +80,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       if (type == '0') {
         res = await Repository().loginUsernameUser(login!, password!);
-        storage.setKey(res!.result!.key);
       } else if (type == '1') {
         res =
             await Repository().loginUsernameAgent(login!, password!, company!);
-        storage.setKey(res!.result!.key);
       }
 
       if (res != null) {

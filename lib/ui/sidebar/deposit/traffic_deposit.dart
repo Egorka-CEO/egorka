@@ -186,7 +186,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                     controller: pageController,
                     children: [
                       AddDeposit(),
-                      ItemTraffic(Filter(type: 'Invoice')),
+                      ItemTraffic(Filter(type: 'Bill')),
                       ItemTraffic(Filter(direction: 'Debet')),
                       ItemTraffic(Filter(direction: 'Credit')),
                     ],

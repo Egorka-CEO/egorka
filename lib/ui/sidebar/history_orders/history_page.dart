@@ -91,6 +91,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   }
 
   void getForm() async {
+
     print(
         'object ${widget.coast.result.RecordNumber.toString()} ${widget.coast.result.RecordPIN.toString()}');
     formOrder = await Repository().infoForm(
@@ -102,6 +103,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       }
     }
 
+    print('object ${formOrder?.result?.locations?.first.dateTo}');
+
     if (formOrder!.result!.locations!.first.date != null) {
       parseDate = DateTime.fromMillisecondsSinceEpoch(
           formOrder!.result!.locations!.first.date! * 1000);
@@ -110,7 +113,6 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       pickDate =
           '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
     }
-    //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
     day = DateFormat('dd').format(
         DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000));
     checkOrder();

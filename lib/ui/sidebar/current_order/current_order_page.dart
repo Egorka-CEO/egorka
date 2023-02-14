@@ -104,19 +104,17 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
           declaredCost = (element.params?.first.value / 100).ceil().toString();
         }
       }
-      if (formOrder!.result!.locations!.first.date != null &&
-          formOrder!.result!.date != null) {
+      if (formOrder!.result!.locations!.first.date != null) {
         parseDate = DateTime.fromMillisecondsSinceEpoch(
             formOrder!.result!.locations!.first.date! * 1000);
 
-        day = DateFormat('dd').format(DateTime.fromMillisecondsSinceEpoch(
-            formOrder!.result!.date! * 1000));
         pickDay = DateFormat.EEEE('ru').format(parseDate!);
         pickDate =
             '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
       }
       //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
-
+      day = DateFormat('dd').format(
+          DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000));
       checkOrder();
     }
   }
@@ -345,7 +343,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                     style: CustomTextStyle
                                                         .black15w500,
                                                   )
-                                                : Text(
+                                                : const Text(
                                                     '-',
                                                     style: CustomTextStyle
                                                         .black15w500,

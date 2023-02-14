@@ -39,7 +39,8 @@ class Repository {
       "Type": typeDevice,
       "UserUUID": id,
     };
-    if (key.isNotEmpty && !sessionKey) data['Session'] = key;
+    if (key.isNotEmpty) data['Session'] = key;
+    print('object ${data}');
 
     return data;
   }
@@ -288,13 +289,8 @@ class Repository {
   }
 
   Future<String?> paymentDeposit(int id, int pin, String key) async {
-    var authData = await auth(sessionKey: true);
-    // authData['Account'] = key;
-
-    final response = await dio.post(
-      '$server/service/payment/',
-      options: header(),
-      data: {
+    var authData = await auth();
+    Map<String, dynamic> data = {
         "Auth": authData,
         "Method": "Request",
         "Body": {
@@ -303,8 +299,16 @@ class Repository {
           "Gate": "Account",
         },
         "Params": params()
-      },
+      };
+
+    final response = await dio.post(
+      '$server/service/payment/',
+      options: header(),
+      data: data,
     );
+
+    print('object1 ${data}');
+    print('object2 ${response.data}');
 
     if (response.data['Errors'] == null) {
       return null;
@@ -314,7 +318,7 @@ class Repository {
   }
 
   Future<PaymentCard?> paymentCard(int id, int pin) async {
-    var authData = await auth(sessionKey: true);
+    var authData = await auth();
     Map<String, dynamic> data = {
       "ID": id,
       "PIN": pin,

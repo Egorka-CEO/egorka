@@ -62,7 +62,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
       locations.add(
         Location(
           date: event.time != null && i == 0
-              ? DateFormat('yyyy-MM-DD HH:MM:ss').format(event.time!)
+              ? DateFormat('yyyy-MM-dd HH:MM:ss').format(event.time!)
               : null,
           type: 'Pickup',
           point: Point(

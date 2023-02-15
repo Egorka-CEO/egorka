@@ -290,6 +290,7 @@ class Repository {
 
   Future<String?> paymentDeposit(int id, int pin, String key) async {
     var authData = await auth();
+    authData['Account'] = key;
     Map<String, dynamic> data = {
         "Auth": authData,
         "Method": "Request",

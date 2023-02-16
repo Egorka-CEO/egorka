@@ -216,7 +216,7 @@ class Repository {
       },
       "Params": {"Language": "RU"}
     };
-    print('object ${data}');
+    print('object authData ${authData}');
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -632,6 +632,8 @@ class Repository {
         "Params": {"Language": "RU"}
       },
     );
+
+    print('object invoice ${response.data['Result']}');
 
     if (response.data['Result'] != null) {
       List<Invoice> list = [];

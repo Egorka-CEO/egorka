@@ -250,7 +250,12 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               MessageDialogs()
                   .completeDialog(text: 'Заявка создана')
                   .then((value) {
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                  ..pop()
+                  ..pushNamed(AppRoute.currentOrder, arguments: [
+                    current.createFormModel.result.RecordNumber!,
+                    current.createFormModel.result.RecordPIN!
+                  ]);
               });
             } else if (current is CreateFormFail) {
               String errors = '';

@@ -167,7 +167,7 @@ class _AddDepositState extends State<AddDeposit> {
               Text(
                 'Ранее выставленные счета',
                 style: CustomTextStyle.black15w700.copyWith(
-                  fontSize: 19,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),

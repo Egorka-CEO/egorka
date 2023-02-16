@@ -316,7 +316,14 @@ class _MarketPageState extends State<MarketPages>
                           MessageDialogs()
                               .completeDialog(text: 'Заявка создана')
                               .then((value) {
-                            Navigator.of(context).pop();
+                            print(
+                                'object ${current.createFormModel.result.RecordNumber} - ${current.createFormModel.result.RecordPIN!}');
+                            Navigator.of(context)
+                              ..pop()
+                              ..pushNamed(AppRoute.currentOrder, arguments: [
+                                current.createFormModel.result.RecordNumber!,
+                                current.createFormModel.result.RecordPIN!
+                              ]);
                           });
                         } else if (current is CreateFormFail) {
                           String errors = '';

@@ -1013,67 +1013,64 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 setState(() {});
                                               },
                                               child: const Text('Депозит'),
-                                            )
-                                          else
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                PaymentCard? res =
-                                                    await Repository()
-                                                        .paymentCard(
-                                                  formOrder!.result!.invoices!
-                                                      .first.iD!,
-                                                  formOrder!.result!.invoices!
-                                                      .first.pIN!,
-                                                );
-                                                if (res != null &&
-                                                    res.url != null) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return PaymentWebView(
-                                                          res.url!,
-                                                          formOrder!
-                                                              .result!
-                                                              .invoices!
-                                                              .first
-                                                              .iD!,
-                                                          formOrder!
-                                                              .result!
-                                                              .invoices!
-                                                              .first
-                                                              .pIN!,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ).then((value) {
-                                                    if (value != null) {
-                                                      if (value) {
-                                                        MessageDialogs()
-                                                            .completeDialog(
-                                                                text:
-                                                                    'Олачено');
-                                                        getForm();
-                                                      } else {
-                                                        MessageDialogs()
-                                                            .errorDialog(
-                                                                text:
-                                                                    'Ошибка оплаты');
-                                                      }
-                                                    }
-                                                  });
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.r),
-                                                ),
-                                              ),
-                                              child: const Text('Карта'),
                                             ),
+                                          SizedBox(width: 10.h),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              PaymentCard? res =
+                                                  await Repository()
+                                                      .paymentCard(
+                                                formOrder!.result!.invoices!
+                                                    .first.iD!,
+                                                formOrder!.result!.invoices!
+                                                    .first.pIN!,
+                                              );
+                                              if (res != null &&
+                                                  res.url != null) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return PaymentWebView(
+                                                        res.url!,
+                                                        formOrder!
+                                                            .result!
+                                                            .invoices!
+                                                            .first
+                                                            .iD!,
+                                                        formOrder!
+                                                            .result!
+                                                            .invoices!
+                                                            .first
+                                                            .pIN!,
+                                                      );
+                                                    },
+                                                  ),
+                                                ).then((value) {
+                                                  if (value != null) {
+                                                    if (value) {
+                                                      MessageDialogs()
+                                                          .completeDialog(
+                                                              text: 'Олачено');
+                                                      getForm();
+                                                    } else {
+                                                      MessageDialogs().errorDialog(
+                                                          text:
+                                                              'Ошибка оплаты');
+                                                    }
+                                                  }
+                                                });
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
+                                              ),
+                                            ),
+                                            child: const Text('Карта'),
+                                          ),
                                         ],
                                       )
                                     ],

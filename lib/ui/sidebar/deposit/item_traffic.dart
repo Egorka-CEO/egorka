@@ -43,21 +43,21 @@ class _ItemTrafficState extends State<ItemTraffic> {
 
   Widget statusOrder(String str) {
     if (str == 'Active') {
-      return const Text(
+      return Text(
         'Активно',
-        style: TextStyle(color: Colors.orange),
+        style: TextStyle(color: Colors.orange, fontSize: 13.sp),
         textAlign: TextAlign.center,
       );
     } else if (str == 'Paid') {
-      return const Text(
+      return Text(
         'Оплачено',
-        style: TextStyle(color: Colors.green),
+        style: TextStyle(color: Colors.green, fontSize: 13.sp),
         textAlign: TextAlign.center,
       );
     } else {
       return Text(
         str,
-        style: const TextStyle(color: Colors.orange),
+        style: TextStyle(color: Colors.orange, fontSize: 13.sp),
         textAlign: TextAlign.center,
       );
     }
@@ -175,26 +175,30 @@ class _ItemTrafficState extends State<ItemTraffic> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 SizedBox(width: 10.w),
-                                const Expanded(
+                                Expanded(
                                     child: Text(
                                   '№',
+                                  style: TextStyle(fontSize: 13.sp),
                                   textAlign: TextAlign.center,
                                 )),
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Создано',
+                                    style: TextStyle(fontSize: 13.sp),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Сумма',
+                                    style: TextStyle(fontSize: 13.sp),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Статус',
+                                    style: TextStyle(fontSize: 13.sp),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -203,41 +207,49 @@ class _ItemTrafficState extends State<ItemTraffic> {
                             ),
                           );
                         }
-                        return Container(
-                          height: 50.h,
-                          color:
-                              index % 2 == 0 ? Colors.white : Colors.grey[200],
-                          child: Row(
-                            children: [
-                              SizedBox(width: 10.w),
-                              Expanded(
-                                child: Text(
-                                  '${list[index - 1].iD}${list[index - 1].pIN}',
-                                  style: const TextStyle(color: Colors.red),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  DateFormat.yMd('ru').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      list[index - 1].dateStamp! * 1000,
-                                    ),
+                        return GestureDetector(
+                          onTap: () {
+                            print('object');
+                          },
+                          child: Container(
+                            height: 50.h,
+                            color:
+                                index % 2 == 0 ? Colors.white : Colors.grey[200],
+                            child: Row(
+                              children: [
+                                SizedBox(width: 10.w),
+                                Expanded(
+                                  child: Text(
+                                    '${list[index - 1].iD}-${list[index - 1].pIN}',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 13.sp),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  '${list[index - 1].amount} ₽',
-                                  textAlign: TextAlign.center,
+                                Expanded(
+                                  child: Text(
+                                    DateFormat.yMd('ru').format(
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                        list[index - 1].dateStamp! * 1000,
+                                      ),
+                                    ),
+                                    style: TextStyle(fontSize: 13.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: statusOrder(list[index - 1].status!),
-                              ),
-                              SizedBox(width: 10.w),
-                            ],
+                                Expanded(
+                                  child: Text(
+                                    '${list[index - 1].amount} ₽',
+                                    style: TextStyle(fontSize: 13.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: statusOrder(list[index - 1].status!),
+                                ),
+                                SizedBox(width: 10.w),
+                              ],
+                            ),
                           ),
                         );
                       },

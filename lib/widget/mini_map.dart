@@ -73,6 +73,7 @@ class _MiniMapViewState extends State<MiniMapView> {
         return true;
       }, builder: (context, snapshot) {
         return YandexMap(
+          zoomGesturesEnabled: false,
           mapObjects: mapObjects,
           onMapCreated: (controller) {
             mapController = controller;

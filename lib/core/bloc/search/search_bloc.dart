@@ -146,6 +146,10 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         await getBytesFromAsset('assets/images/to.png', 90));
 
     DrivingSessionResult? drivingSessionResult;
+    // YandexBicycle.requestRoutes(
+    //   points: [],
+    //   bicycleVehicleType: BicycleVehicleType.bicycle
+    // );
     try {
       DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
         points: [

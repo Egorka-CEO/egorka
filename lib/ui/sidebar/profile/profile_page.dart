@@ -39,6 +39,8 @@ class _ProfilePageState extends State<ProfilePage> {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
     BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
 
+    print('object ${user!.result!.user!.name}');
+
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Scaffold(
@@ -67,38 +69,38 @@ class _ProfilePageState extends State<ProfilePage> {
                   physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
                   children: [
+                    // SizedBox(height: 20.h),
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 15.w),
+                    //   child: Column(
+                    //     children: [
+                    //       Row(
+                    //         children: [
+                    //           // ClipRRect(
+                    //           //   borderRadius: BorderRadius.circular(100.r),
+                    //           //   child: Image.asset(
+                    //           //     'assets/images/company.jpg',
+                    //           //     height: 80.w,
+                    //           //     width: 80.w,
+                    //           //     fit: BoxFit.cover,
+                    //           //   ),
+                    //           // ),
+                    //           // SizedBox(width: 20.w),
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Text(
+                    //                 user!.result!.user!.name ?? '-',
+                    //                 style: CustomTextStyle.black15w700,
+                    //               ),
+                    //             ],
+                    //           )
+                    //         ],
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
                     SizedBox(height: 20.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(100.r),
-                                child: Image.asset(
-                                  'assets/images/company.jpg',
-                                  height: 80.w,
-                                  width: 80.w,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              SizedBox(width: 20.w),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    user!.result!.user!.name ?? '-',
-                                    style: CustomTextStyle.black15w700,
-                                  ),
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
                     if (user.result!.agent != null)
                       BlocBuilder<ProfileBloc, ProfileState>(
                           builder: (context, snapshot) {
@@ -211,6 +213,24 @@ class _ProfilePageState extends State<ProfilePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Имя: ',
+                                        style: CustomTextStyle.black15w700
+                                            .copyWith(
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: user.result!.user!.name ?? '-',
+                                        style: CustomTextStyle.black15w700,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 15.h),
                                 RichText(
                                   text: TextSpan(
                                     children: [

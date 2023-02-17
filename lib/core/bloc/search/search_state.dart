@@ -8,10 +8,16 @@ class SearchAddressStated extends SearchAddressState {}
 
 class SearchAddressRoutePolilyne extends SearchAddressState {
   DrivingSessionResult? directions;
+  BicycleSessionResult? directionsBicycle;
   List<PlacemarkMapObject> markers;
   List<CoastResponse> coasts;
 
-  SearchAddressRoutePolilyne(this.directions, this.markers, this.coasts);
+  SearchAddressRoutePolilyne(
+    this.directions,
+    this.directionsBicycle,
+    this.markers,
+    this.coasts,
+  );
 }
 
 class DeletePolilyneState extends SearchAddressState {}

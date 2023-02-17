@@ -3,6 +3,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/employee.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_uppercase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -236,6 +237,9 @@ class _EmployeePageState extends State<EmployeePage> {
                                   child: CustomTextField(
                                     focusNode: focusNode1,
                                     hintText: 'Иван',
+                                    formatters: [
+                                      CustomInputFormatterUpperCase()
+                                    ],
                                     textEditingController: nameController,
                                     fillColor: Colors.grey[100],
                                     height: 45.h,

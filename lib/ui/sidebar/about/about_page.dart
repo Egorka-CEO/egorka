@@ -32,7 +32,7 @@ class AboutPage extends StatelessWidget {
                   height: 60.h,
                 ),
                 SizedBox(height: 20.h),
-                const Text('Version 0.1', style: CustomTextStyle.black15w500),
+                const Text('Версия 0.1', style: CustomTextStyle.black15w500),
                 const Spacer(flex: 20),
                 const Text('Команда разработки',
                     style: CustomTextStyle.black15w500),

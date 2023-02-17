@@ -8,6 +8,7 @@ import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/formatter_uppercase.dart';
 import 'package:egorka/widget/list_books_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,6 +67,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   bool btmSheet = false;
   TypeAdd? typeAdd;
 
+  late PointDetails routeOrder;
+
   TextEditingController controller = TextEditingController();
   TextEditingController controllerEntrance = TextEditingController();
   TextEditingController controllerFloor = TextEditingController();
@@ -86,13 +89,14 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   @override
   void initState() {
     super.initState();
-    controller.text = widget.routeOrder.suggestions.name;
-    controllerEntrance.text = widget.routeOrder.details?.entrance ?? '';
-    controllerFloor.text = widget.routeOrder.details?.floor ?? '';
-    controllerRoom.text = widget.routeOrder.details?.room ?? '';
-    controllerName.text = widget.routeOrder.details?.name ?? '';
-    controllerPhone.text = widget.routeOrder.details?.phone ?? '';
-    controllerComment.text = widget.routeOrder.details?.comment ?? '';
+    routeOrder = widget.routeOrder;
+    controller.text = routeOrder.suggestions.name;
+    controllerEntrance.text = routeOrder.details?.entrance ?? '';
+    controllerFloor.text = routeOrder.details?.floor ?? '';
+    controllerRoom.text = routeOrder.details?.room ?? '';
+    controllerName.text = routeOrder.details?.name ?? '';
+    controllerPhone.text = routeOrder.details?.phone ?? '';
+    controllerComment.text = routeOrder.details?.comment ?? '';
   }
 
   @override
@@ -117,8 +121,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         alignment: Alignment.centerRight,
                         children: [
                           GestureDetector(
-                            onTap: () =>
-                                Navigator.pop(context, widget.routeOrder),
+                            onTap: () => Navigator.pop(context),
                             child: Row(
                               children: [
                                 Icon(
@@ -135,8 +138,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Text('Удалить',
+                            onTap: () => Navigator.pop(context, routeOrder),
+                            child: Text('Готово',
                                 style: CustomTextStyle.red15
                                     .copyWith(fontSize: 17)),
                           ),
@@ -260,7 +263,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       onTap: () => showBooksAddress(
                           context, BlocProvider.of<BookBloc>(context).books,
                           (value) {
-                        widget.routeOrder.suggestions = Suggestions(
+                        routeOrder.suggestions = Suggestions(
                           iD: value.id,
                           name: value.address ?? '',
                           point: Point(
@@ -278,16 +281,11 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         controllerFloor.text = value.floor ?? '';
                         controllerRoom.text = value.room ?? '';
 
-                        widget.routeOrder.details?.entrance =
-                            controllerEntrance.text;
-
-                        widget.routeOrder.details?.floor = controllerFloor.text;
-
-                        widget.routeOrder.details?.room = controllerRoom.text;
-
-                        widget.routeOrder.details?.name = controllerName.text;
-                        widget.routeOrder.details?.phone = controllerPhone.text;
-
+                        routeOrder.details?.entrance = controllerEntrance.text;
+                        routeOrder.details?.floor = controllerFloor.text;
+                        routeOrder.details?.room = controllerRoom.text;
+                        routeOrder.details?.name = controllerName.text;
+                        routeOrder.details?.phone = controllerPhone.text;
                       }),
                       child: Row(
                         children: [
@@ -318,7 +316,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Подъезд',
                         focusNode: podFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.entrance =
+                          routeOrder.details?.entrance =
                               controllerEntrance.text;
                         },
                         textInputType: TextInputType.number,
@@ -333,8 +331,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Этаж',
                         focusNode: etajFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.floor =
-                              controllerFloor.text;
+                          routeOrder.details?.floor = controllerFloor.text;
                         },
                         textInputType: TextInputType.number,
                         textEditingController: controllerFloor,
@@ -348,7 +345,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Офис/кв.',
                         focusNode: officeFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.room = controllerRoom.text;
+                          routeOrder.details?.room = controllerRoom.text;
                         },
                         textInputType: TextInputType.number,
                         textEditingController: controllerRoom,
@@ -377,9 +374,10 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     height: 45.h,
                     focusNode: nameFocus,
                     fillColor: Colors.white,
+                    formatters: [CustomInputFormatterUpperCase()],
                     hintText: 'Имя',
                     onChanged: (value) {
-                      widget.routeOrder.details?.name = controllerName.text;
+                      routeOrder.details?.name = controllerName.text;
                     },
                     textEditingController: controllerName,
                   ),
@@ -397,7 +395,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     hintText: '+7 (___) ___-__-__',
                     textInputType: TextInputType.phone,
                     onChanged: (value) {
-                      widget.routeOrder.details?.phone = controllerPhone.text;
+                      routeOrder.details?.phone = controllerPhone.text;
                     },
                     textEditingController: controllerPhone,
                     formatters: [
@@ -440,7 +438,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           fillColor: Colors.white.withOpacity(0),
                           hintText: '',
                           onChanged: (value) {
-                            widget.routeOrder.details?.comment =
+                            routeOrder.details?.comment =
                                 controllerComment.text;
                           },
                           maxLines: 10,
@@ -462,8 +460,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 btmSheet = true;
               } else if (current is NewOrderStateCloseBtmSheet) {
                 btmSheet = false;
-                widget.routeOrder.suggestions = current.value!;
-                controller.text = widget.routeOrder.suggestions.name;
+                routeOrder.suggestions = current.value!;
+                controller.text = routeOrder.suggestions.name;
                 if (typeAdd != null && typeAdd == TypeAdd.sender) {
                 } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {}
               }
@@ -489,8 +487,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       ),
                     );
 
-                    widget.routeOrder.suggestions = sug;
-                    controller.text = widget.routeOrder.suggestions.name;
+                    routeOrder.suggestions = sug;
+                    controller.text = routeOrder.suggestions.name;
                   },
                 ),
                 onPanelClosed: () {},

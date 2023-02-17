@@ -18,6 +18,7 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_max_coast.dart';
 import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/tip_dialog.dart';
@@ -553,6 +554,9 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                                           fontWeight: FontWeight.w400,
                                         ),
                                         hintText: 'До 100000 ₽',
+                                        formatters: [
+                                          CustomInputFormatterMaxCoast()
+                                        ],
                                         textEditingController: coastController,
                                         textInputType: TextInputType.number,
                                       ),
@@ -1640,7 +1644,6 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
       }
     } else {
       showDialog(
-        barrierDismissible: false,
         useSafeArea: false,
         barrierColor: Colors.transparent,
         context: context,
@@ -1654,23 +1657,31 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey),
-                        ),
-                        onPressed: () {
-                          if (time == null) {
-                            time = initialData;
-                            startOrderController.text =
-                                DateFormat('dd.MM.yyyy  HH:mm').format(time!);
-                          }
-                          Navigator.of(ctx).pop();
-                          calc();
-                        },
-                        child: const Text('Готово'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[200],
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CupertinoButton(
+                            onPressed: () {
+                              if (time == null) {
+                                time = initialData;
+                                startOrderController.text =
+                                    DateFormat('dd.MM.yyyy  HH:mm')
+                                        .format(time!);
+                              }
+                              Navigator.of(ctx).pop();
+                              calc();
+                            },
+                            child: const Text(
+                              'Готово',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(

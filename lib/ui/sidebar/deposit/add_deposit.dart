@@ -282,12 +282,13 @@ class _AddDepositState extends State<AddDeposit> {
                                         onPressed: () async {
                                           MessageDialogs().showLoadDialog(
                                               'Скачивание и открытие...');
-                                          String pdf = await Repository()
+                                          String? pdf = await Repository()
                                               .getPDF(
                                                   depositHistory[index - 1].iD!,
                                                   depositHistory[index - 1]
                                                       .pIN!);
-                                          await OpenFile.open(pdf);
+                                          if (pdf != null)
+                                            await OpenFile.open(pdf);
                                           SmartDialog.dismiss();
                                         },
                                         child: Text(
@@ -303,12 +304,13 @@ class _AddDepositState extends State<AddDeposit> {
                                         onPressed: () async {
                                           MessageDialogs().showLoadDialog(
                                               'Скачивание и открытие...');
-                                          String excel = await Repository()
+                                          String? excel = await Repository()
                                               .getEXCEL(
                                                   depositHistory[index - 1].iD!,
                                                   depositHistory[index - 1]
                                                       .pIN!);
-                                          await OpenFile.open(excel);
+                                          if (excel != null)
+                                            await OpenFile.open(excel);
                                           SmartDialog.dismiss();
                                         },
                                         child: Text(

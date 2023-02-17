@@ -8,6 +8,7 @@ import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_uppercase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -131,7 +132,11 @@ class _BookPageState extends State<BookPage> {
                           if (element.name!.toLowerCase().contains(
                                   searchController.text.toLowerCase()) ||
                               element.address!.toLowerCase().contains(
-                                  searchController.text.toLowerCase())) {
+                                  searchController.text.toLowerCase()) ||
+                              element.contact!.phoneMobile!
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase())) {
                             bookAdressesTemp.add(element);
                           }
                         }
@@ -192,23 +197,29 @@ class _BookPageState extends State<BookPage> {
                                 child: Row(
                                   children: [
                                     SizedBox(width: 10.w),
-                                    const Expanded(
+                                    Expanded(
                                       child: Text(
                                         'Обозначение',
                                         textAlign: TextAlign.center,
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
                                     SizedBox(width: 10.w),
-                                    const Expanded(
+                                    Expanded(
                                       child: Text(
                                         'Адрес',
                                         textAlign: TextAlign.center,
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
-                                    const Expanded(
+                                    Expanded(
                                       child: Text(
                                         'Телефон',
                                         textAlign: TextAlign.center,
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
                                     SizedBox(width: 10.w),
@@ -265,12 +276,16 @@ class _BookPageState extends State<BookPage> {
                                       child: Text(
                                         bookAdresses[index - 1].name!,
                                         textAlign: TextAlign.center,
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
                                         bookAdresses[index - 1].address!,
                                         textAlign: TextAlign.center,
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
                                     Expanded(
@@ -280,6 +295,8 @@ class _BookPageState extends State<BookPage> {
                                                 ?.phoneMobile ??
                                             '-',
                                         textAlign: TextAlign.center,
+                                        style: CustomTextStyle.black15w500
+                                            .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
                                     SizedBox(width: 10.w),
@@ -440,6 +457,9 @@ class _BookPageState extends State<BookPage> {
                                       focusNode: focusNode6,
                                       hintText: 'Иван Иванов',
                                       textEditingController: fioController,
+                                      formatters: [
+                                        CustomInputFormatterUpperCase()
+                                      ],
                                       fillColor: Colors.grey[100],
                                       height: 45.h,
                                       contentPadding: EdgeInsets.symmetric(

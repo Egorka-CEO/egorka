@@ -21,6 +21,7 @@ import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_slider.dart';
+import 'package:egorka/widget/formatter_uppercase.dart';
 import 'package:egorka/widget/list_books_dialog.dart';
 import 'package:egorka/widget/load_form.dart';
 import 'package:egorka/widget/tip_dialog.dart';
@@ -897,6 +898,9 @@ class _MarketPageState extends State<MarketPages>
                                                         horizontal: 10.w),
                                                 fillColor: Colors.white,
                                                 hintText: 'Имя',
+                                                formatters: [
+                                                  CustomInputFormatterUpperCase()
+                                                ],
                                                 hintStyle: CustomTextStyle
                                                     .textHintStyle,
                                                 textEditingController:
@@ -1654,8 +1658,8 @@ class _MarketPageState extends State<MarketPages>
 
   void showMarketPlaces(MarketPlaces marketplaces) {
     showCupertinoModalPopup<String>(
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
+      // barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.4),
       context: context,
       builder: (ctx) {
         return MediaQuery(
@@ -1667,17 +1671,25 @@ class _MarketPageState extends State<MarketPages>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.grey),
-                      ),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                        calcOrder();
-                      },
-                      child: const Text('Готово'),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.grey[200],
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        CupertinoButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                            calcOrder();
+                          },
+                          child: const Text(
+                            'Готово',
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
@@ -1745,9 +1757,9 @@ class _MarketPageState extends State<MarketPages>
       }
     } else {
       showDialog(
-        barrierDismissible: false,
+        // barrierDismissible: false,
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.4),
         context: context,
         builder: (ctx) {
           return MediaQuery(
@@ -1759,23 +1771,30 @@ class _MarketPageState extends State<MarketPages>
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey),
-                        ),
-                        onPressed: () {
-                          if (time == null) {
-                            time = initialData;
-                            startOrderController.text =
-                                DateFormat('dd.MM.yyyy').format(time!);
-                          }
-                          Navigator.of(ctx).pop();
-                          calcOrder();
-                        },
-                        child: const Text('Готово'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[200],
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CupertinoButton(
+                            onPressed: () {
+                              if (time == null) {
+                                time = initialData;
+                                startOrderController.text =
+                                    DateFormat('dd.MM.yyyy').format(time!);
+                              }
+                              Navigator.of(ctx).pop();
+                              calcOrder();
+                            },
+                            child: const Text(
+                              'Готово',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(

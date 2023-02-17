@@ -613,20 +613,20 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               coastResponse = coasts[index];
                               streamDelivery.add(index);
                             },
-                            child: Opacity(
-                              opacity: snapshot.data! == index ? 1 : 0.3,
-                              child: Container(
-                                width: 80.w,
-                                decoration: BoxDecoration(
-                                  color: snapshot.data! == index
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(15.r),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
+                            child: Container(
+                              width: 80.w,
+                              decoration: BoxDecoration(
+                                color: snapshot.data! == index
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Opacity(
+                                    opacity: snapshot.data! == index ? 1 : 0.3,
+                                    child: SizedBox(
                                       height: 45.h,
                                       child: Image.asset(
                                         listChoice[index].icon,
@@ -635,7 +635,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                             : Colors.black,
                                       ),
                                     ),
-                                    Text(
+                                  ),
+                                  Opacity(
+                                    opacity: snapshot.data! == index ? 1 : 0.3,
+                                    child: Text(
                                       listChoice[index].title,
                                       style: TextStyle(
                                           color: snapshot.data! == index
@@ -645,18 +648,16 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                               ? FontWeight.w600
                                               : FontWeight.w400),
                                     ),
-                                    Text(
-                                      '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
-                                      style: TextStyle(
-                                          color: snapshot.data! == index
-                                              ? Colors.black
-                                              : Colors.black,
-                                          fontWeight: snapshot.data! == index
-                                              ? FontWeight.w600
-                                              : FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  Text(
+                                    '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
+                                    style: TextStyle(
+                                        color: snapshot.data! == index
+                                            ? Colors.black
+                                            : Colors.black,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

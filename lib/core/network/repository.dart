@@ -292,15 +292,15 @@ class Repository {
     var authData = await auth();
     authData['Account'] = key;
     Map<String, dynamic> data = {
-        "Auth": authData,
-        "Method": "Request",
-        "Body": {
-          "ID": id,
-          "PIN": pin,
-          "Gate": "Account",
-        },
-        "Params": params()
-      };
+      "Auth": authData,
+      "Method": "Request",
+      "Body": {
+        "ID": id,
+        "PIN": pin,
+        "Gate": "Account",
+      },
+      "Params": params()
+    };
 
     final response = await dio.post(
       '$server/service/payment/',
@@ -646,53 +646,62 @@ class Repository {
     }
   }
 
-  Future<String> getPDF(int id, int pin) async {
-    String savePath = await getFilePath('$id$pin.pdf');
+  Future<String?> getPDF(int id, int pin) async {
     print('object ${id}${pin}');
-    final response = await dio.get(
-      '$server/export/invoice/pdf/?ID=$id$pin',
-      options: Options(
-        responseType: ResponseType.bytes,
-        followRedirects: false,
-      ),
-    );
+    try {
+      String savePath = await getFilePath('$id$pin.pdf');
+      final response = await dio.get(
+        '$server/export/invoice/pdf/?ID=$id$pin',
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
 
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-    ].request();
+      if (response.statusCode == 200) {
+        Map<Permission, PermissionStatus> statuses = await [
+          Permission.storage,
+        ].request();
 
-    if (statuses[Permission.storage]!.isGranted) {
-      File file = File(savePath);
-      var raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-    }
+        if (statuses[Permission.storage]!.isGranted) {
+          File file = File(savePath);
+          var raf = file.openSync(mode: FileMode.write);
+          raf.writeFromSync(response.data);
+          await raf.close();
+        }
+        return savePath;
+      }
+    } catch (e) {}
 
-    return savePath;
+    return null;
   }
 
-  Future<String> getEXCEL(int id, int pin) async {
-    String savePath = await getFilePath('$id$pin.xlsx');
-    final response = await dio.get(
-      '$server/export/invoice/excel/?ID=$id$pin',
-      options: Options(
-        responseType: ResponseType.bytes,
-        followRedirects: false,
-      ),
-    );
+  Future<String?> getEXCEL(int id, int pin) async {
+    try {
+      String savePath = await getFilePath('$id$pin.xlsx');
+      final response = await dio.get(
+        '$server/export/invoice/excel/?ID=$id$pin',
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
+      if (response.statusCode == 200) {
+        Map<Permission, PermissionStatus> statuses = await [
+          Permission.storage,
+        ].request();
 
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-    ].request();
+        if (statuses[Permission.storage]!.isGranted) {
+          File file = File(savePath);
+          var raf = file.openSync(mode: FileMode.write);
+          raf.writeFromSync(response.data);
+          await raf.close();
+        }
 
-    if (statuses[Permission.storage]!.isGranted) {
-      File file = File(savePath);
-      var raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-    }
-
-    return savePath;
+        return savePath;
+      }
+    } catch (e) {}
+    return null;
   }
 
   Future<String> getFilePath(uniqueFileName) async {

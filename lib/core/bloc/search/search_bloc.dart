@@ -1,22 +1,16 @@
-import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
-import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui' as ui;
 import 'package:egorka/model/point.dart' as pointModel;
 import 'package:yandex_mapkit/yandex_mapkit.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as googleMap;
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -146,10 +140,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         await getBytesFromAsset('assets/images/to.png', 90));
 
     DrivingSessionResult? drivingSessionResult;
-    // YandexBicycle.requestRoutes(
-    //   points: [],
-    //   bicycleVehicleType: BicycleVehicleType.bicycle
-    // );
+    BicycleSessionResult? bicycleResultWithSession;
     try {
       DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
         points: [
@@ -168,8 +159,27 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         ],
         drivingOptions: const DrivingOptions(),
       );
+      BicycleResultWithSession? requestRoutesBicycle =
+          YandexBicycle.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsStart.last!.point!.latitude,
+                longitude: event.suggestionsStart.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsEnd.last!.point!.latitude,
+                longitude: event.suggestionsEnd.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        bicycleVehicleType: BicycleVehicleType.bicycle,
+      );
 
       drivingSessionResult = await requestRoutes.result;
+      bicycleResultWithSession = await requestRoutesBicycle.result;
     } catch (e) {}
     if (drivingSessionResult != null) {
       List<String> type = ['Walk', 'Car'];
@@ -216,6 +226,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         emit(
           SearchAddressRoutePolilyne(
             drivingSessionResult,
+            bicycleResultWithSession,
             [
               PlacemarkMapObject(
                 mapId: const MapObjectId('placemark_start'),

@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -943,6 +944,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                           children: [
                             Blur(
                               blur: 2.5,
+                              blurColor: Colors.grey[300]!.withOpacity(0.1),
                               child: Container(height: 120.h),
                             ),
                             Padding(
@@ -966,7 +968,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                               auth.result!.agent != null)
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
+                                                backgroundColor: Colors.white,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -1012,7 +1014,20 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 getForm();
                                                 setState(() {});
                                               },
-                                              child: const Text('Депозит'),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    'Депозит',
+                                                    style: CustomTextStyle
+                                                        .black15w500,
+                                                  ),
+                                                  SizedBox(width: 5.w),
+                                                  SvgPicture.asset(
+                                                    'assets/icons/deposit.svg',
+                                                    height: 25.h,
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           SizedBox(width: 10.h),
                                           ElevatedButton(
@@ -1063,13 +1078,26 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                               }
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
+                                              backgroundColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10.r),
                                               ),
                                             ),
-                                            child: const Text('Карта'),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Карта',
+                                                  style: CustomTextStyle
+                                                      .black15w500,
+                                                ),
+                                                SizedBox(width: 5.w),
+                                                SvgPicture.asset(
+                                                  'assets/icons/credit-card.svg',
+                                                  height: 25.h,
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       )

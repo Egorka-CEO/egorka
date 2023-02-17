@@ -213,8 +213,9 @@ class _ItemTrafficState extends State<ItemTraffic> {
                           },
                           child: Container(
                             height: 50.h,
-                            color:
-                                index % 2 == 0 ? Colors.white : Colors.grey[200],
+                            color: index % 2 == 0
+                                ? Colors.white
+                                : Colors.grey[200],
                             child: Row(
                               children: [
                                 SizedBox(width: 10.w),
@@ -286,9 +287,8 @@ class _ItemTrafficState extends State<ItemTraffic> {
       }
     } else {
       showDialog(
-        barrierDismissible: false,
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.4),
         context: context,
         builder: (ctx) {
           return MediaQuery(
@@ -300,17 +300,24 @@ class _ItemTrafficState extends State<ItemTraffic> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey),
-                        ),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: const Text('Готово'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[200],
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CupertinoButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: const Text(
+                              'Готово',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(

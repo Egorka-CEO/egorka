@@ -35,6 +35,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
 
   bool state = false;
   int index = 0;
+  bool obscureText = true;
 
   @override
   void initState() {
@@ -161,15 +162,37 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               'Пароль',
                               style: labelStyle,
                             ),
-                            CustomTextField(
-                              focusNode: focusNode3,
-                              textEditingController: _passwordController,
-                              hintText: '******',
-                              height: 60.h,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 20.w,
-                              ),
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CustomTextField(
+                                  focusNode: focusNode3,
+                                  textEditingController: _passwordController,
+                                  hintText: '••••••',
+                                  height: 60.h,
+                                  obscureText: obscureText,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.w,
+                                    vertical: 20.w,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          obscureText = !obscureText;
+                                        });
+                                      },
+                                      child: obscureText
+                                          ? const Icon(Icons.visibility_off)
+                                          : const Icon(Icons.visibility),
+                                    ),
+                                    SizedBox(width: 15.w)
+                                  ],
+                                ),
+                              ],
                             ),
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),

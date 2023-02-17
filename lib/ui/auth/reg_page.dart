@@ -4,6 +4,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_uppercase.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -125,6 +126,7 @@ class _RegPageState extends State<RegPage> {
                                 focusNode: focusNode1,
                                 textEditingController: nameController,
                                 hintText: 'Ivanov',
+                                formatters: [CustomInputFormatterUpperCase()],
                                 height: 60.h,
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: 20.w,

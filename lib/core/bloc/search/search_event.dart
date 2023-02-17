@@ -17,6 +17,15 @@ class ChangeMapPosition extends SearchAddressEvent {
 
 class GetAddressPosition extends SearchAddressEvent {}
 
+class EditPolilynesEvent extends SearchAddressEvent {
+  DrivingSessionResult? directions;
+  BicycleSessionResult? directionsBicycle;
+  List<PlacemarkMapObject> markers;
+
+  EditPolilynesEvent(
+      {this.directions, this.directionsBicycle, this.markers = const []});
+}
+
 class SearchAddressClear extends SearchAddressEvent {}
 
 class SearchMeEvent extends SearchAddressEvent {}

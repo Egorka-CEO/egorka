@@ -16,7 +16,12 @@ class HistoryUpdateList extends HistoryOrdersState {
 
 class HistoryOrderRoutePolilyne extends HistoryOrdersState {
   DrivingSessionResult routes;
+  BicycleSessionResult bicycleSessionResult;
   List<PlacemarkMapObject> markers;
 
-  HistoryOrderRoutePolilyne(this.routes, this.markers);
+  HistoryOrderRoutePolilyne(
+    this.routes,
+    this.bicycleSessionResult,
+    this.markers,
+  );
 }

@@ -79,7 +79,7 @@ class _MapViewState extends State<MapView> {
               final mapObject = PolylineMapObject(
                 mapId: mapObjectId,
                 polyline: Polyline(
-                    points: current.directions!.routes!.first.geometry
+                    points: current.directionsBicycle!.routes!.first.geometry
                         .map((e) =>
                             Point(latitude: e.latitude, longitude: e.longitude))
                         .toList()),
@@ -101,16 +101,16 @@ class _MapViewState extends State<MapView> {
                 CameraUpdate.newBounds(
                   BoundingBox(
                     northEast: Point(
-                      latitude: current
-                          .directions!.routes!.first.geometry.first.latitude,
-                      longitude: current
-                          .directions!.routes!.first.geometry.first.longitude,
+                      latitude: current.directionsBicycle!.routes!.first
+                          .geometry.first.latitude,
+                      longitude: current.directionsBicycle!.routes!.first
+                          .geometry.first.longitude,
                     ),
                     southWest: Point(
-                      latitude: current
-                          .directions!.routes!.first.geometry.last.latitude,
-                      longitude: current
-                          .directions!.routes!.first.geometry.last.longitude,
+                      latitude: current.directionsBicycle!.routes!.first
+                          .geometry.last.latitude,
+                      longitude: current.directionsBicycle!.routes!.first
+                          .geometry.last.longitude,
                     ),
                   ),
                 ),
@@ -121,6 +121,53 @@ class _MapViewState extends State<MapView> {
               });
             }
             return true;
+          } else if (current is EditPolilynesState) {
+            if (current.directionsDrive != null) {
+              mapObjects.clear();
+              final mapObject = PolylineMapObject(
+                mapId: mapObjectId,
+                polyline: Polyline(
+                    points: current.directionsDrive!.routes!.first.geometry
+                        .map((e) =>
+                            Point(latitude: e.latitude, longitude: e.longitude))
+                        .toList()),
+                strokeColor: Colors.red,
+                strokeWidth: 5,
+                outlineColor: Colors.white,
+                outlineWidth: 1,
+                turnRadius: 10.0,
+                arcApproximationStep: 1.0,
+                gradientLength: 1.0,
+                isInnerOutlineEnabled: true,
+              );
+              mapObjects.add(mapObject);
+
+              final placemarks = current.markers;
+              mapObjects.addAll(placemarks);
+            } else {
+              mapObjects.clear();
+              final mapObject = PolylineMapObject(
+                mapId: mapObjectId,
+                polyline: Polyline(
+                    points: current.directionsBicycle!.routes!.first.geometry
+                        .map((e) =>
+                            Point(latitude: e.latitude, longitude: e.longitude))
+                        .toList()),
+                strokeColor: Colors.red,
+                strokeWidth: 5,
+                outlineColor: Colors.white,
+                outlineWidth: 1,
+                turnRadius: 10.0,
+                arcApproximationStep: 1.0,
+                gradientLength: 1.0,
+                isInnerOutlineEnabled: true,
+              );
+              mapObjects.add(mapObject);
+
+              final placemarks = current.markers;
+              mapObjects.addAll(placemarks);
+            }
+            return false;
           } else if (current is FindMeState) {
             _findMe();
             return true;

@@ -1580,9 +1580,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
       }
     } else {
       showDialog(
-        barrierDismissible: false,
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.4),
         context: context,
         builder: (ctx) {
           return MediaQuery(

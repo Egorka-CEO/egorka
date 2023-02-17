@@ -20,6 +20,18 @@ class SearchAddressRoutePolilyne extends SearchAddressState {
   );
 }
 
+class EditPolilynesState extends SearchAddressState {
+  DrivingSessionResult? directionsDrive;
+  BicycleSessionResult? directionsBicycle;
+  List<PlacemarkMapObject> markers;
+
+  EditPolilynesState({
+    this.directionsDrive,
+    this.directionsBicycle,
+    this.markers = const [],
+  });
+}
+
 class DeletePolilyneState extends SearchAddressState {}
 
 class SearchAddressLoading extends SearchAddressState {}

@@ -122,8 +122,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.easeInOutQuint,
                       margin: EdgeInsets.only(
-                        bottom:
-                            snapshot is SearchAddressRoutePolilyne ? 100.h : 0,
+                        bottom: (snapshot is SearchAddressRoutePolilyne) ||
+                                (snapshot is EditPolilynesState)
+                            ? 100.h
+                            : 0,
                       ),
                       child: MapView(
                         callBack: () {

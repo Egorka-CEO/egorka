@@ -972,6 +972,15 @@ class _MarketPageState extends State<MarketPages>
                                                       } else {
                                                         countBucket.add(0);
                                                       }
+                                                      countPalletControllerLess15kg
+                                                          .text = '';
+                                                      countPalletControllerMore15kg
+                                                          .text = '';
+                                                      bucketCountLess15kg
+                                                          .add(0);
+                                                      bucketCountMore15kg
+                                                          .add(0);
+                                                      setState(() {});
                                                     },
                                                     focusNode: bucketFocus,
                                                     height: 45.h,
@@ -1030,6 +1039,16 @@ class _MarketPageState extends State<MarketPages>
                                                           value
                                                               .toInt()
                                                               .toString();
+
+                                                      countPalletControllerLess15kg
+                                                          .text = '';
+                                                      countPalletControllerMore15kg
+                                                          .text = '';
+                                                      bucketCountLess15kg
+                                                          .add(0);
+                                                      bucketCountMore15kg
+                                                          .add(0);
+                                                      setState(() {});
                                                     },
                                                   ),
                                                 )
@@ -1139,7 +1158,7 @@ class _MarketPageState extends State<MarketPages>
 
                                             double height;
                                             if (additional) {
-                                              height = 335.h;
+                                              height = 385.h;
                                               if (additional1) height += 170.h;
                                               if (additional2) height += 90.h;
                                             } else {
@@ -1339,7 +1358,7 @@ class _MarketPageState extends State<MarketPages>
                               ),
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 100),
-                                height: snapshot.data! ? 170.h : 0.h,
+                                height: snapshot.data! ? 180.h : 0.h,
                                 child: Stack(
                                   children: [
                                     Column(
@@ -1373,6 +1392,7 @@ class _MarketPageState extends State<MarketPages>
                                                           bucketCountLess15kg
                                                               .add(0);
                                                         }
+                                                        setState(() {});
                                                       },
                                                       focusNode:
                                                           bucketFocusLess15kg,
@@ -1385,8 +1405,15 @@ class _MarketPageState extends State<MarketPages>
                                                       textInputType:
                                                           TextInputType.number,
                                                       formatters: [
-                                                        CustomInputFormatterSlider(
-                                                            maxSlider)
+                                                        CustomInputFormatterSlider((double
+                                                                    .tryParse(
+                                                                        countBucketController
+                                                                            .text) ??
+                                                                0) -
+                                                            (double.tryParse(
+                                                                    countPalletControllerMore15kg
+                                                                        .text) ??
+                                                                0))
                                                       ],
                                                       textEditingController:
                                                           countPalletControllerLess15kg,
@@ -1397,15 +1424,24 @@ class _MarketPageState extends State<MarketPages>
                                                     flex: 2,
                                                     child: Slider(
                                                       min: minSlider,
-                                                      max: maxSlider,
+                                                      max: (double.tryParse(
+                                                                  countBucketController
+                                                                      .text) ??
+                                                              0) -
+                                                          (double.tryParse(
+                                                                  countPalletControllerMore15kg
+                                                                      .text) ??
+                                                              0),
                                                       activeColor: Colors.red,
                                                       inactiveColor:
                                                           Colors.grey[300],
                                                       thumbColor: Colors.white,
                                                       value: snapshot.data!
                                                           .toDouble(),
-                                                      onChangeEnd: (value) =>
-                                                          calcOrder(),
+                                                      onChangeEnd: (value) {
+                                                        setState(() {});
+                                                        calcOrder();
+                                                      },
                                                       onChanged: (value) {
                                                         bucketCountLess15kg
                                                             .add(value.toInt());
@@ -1449,6 +1485,7 @@ class _MarketPageState extends State<MarketPages>
                                                           bucketCountMore15kg
                                                               .add(0);
                                                         }
+                                                        setState(() {});
                                                       },
                                                       focusNode:
                                                           bucketFocusMore15kg,
@@ -1461,8 +1498,15 @@ class _MarketPageState extends State<MarketPages>
                                                       textInputType:
                                                           TextInputType.number,
                                                       formatters: [
-                                                        CustomInputFormatterSlider(
-                                                            maxSlider)
+                                                        CustomInputFormatterSlider((double
+                                                                    .tryParse(
+                                                                        countBucketController
+                                                                            .text) ??
+                                                                0) -
+                                                            (double.tryParse(
+                                                                    countPalletControllerLess15kg
+                                                                        .text) ??
+                                                                0))
                                                       ],
                                                       textEditingController:
                                                           countPalletControllerMore15kg,
@@ -1473,15 +1517,24 @@ class _MarketPageState extends State<MarketPages>
                                                     flex: 2,
                                                     child: Slider(
                                                       min: minSlider,
-                                                      max: maxSlider,
+                                                      max: (double.tryParse(
+                                                                  countBucketController
+                                                                      .text) ??
+                                                              0) -
+                                                          (double.tryParse(
+                                                                  countPalletControllerLess15kg
+                                                                      .text) ??
+                                                              0),
                                                       activeColor: Colors.red,
                                                       inactiveColor:
                                                           Colors.grey[300],
                                                       thumbColor: Colors.white,
                                                       value: snapshot.data!
                                                           .toDouble(),
-                                                      onChangeEnd: (value) =>
-                                                          calcOrder(),
+                                                      onChangeEnd: (value) {
+                                                        setState(() {});
+                                                        calcOrder();
+                                                      },
                                                       onChanged: (value) {
                                                         bucketCountMore15kg
                                                             .add(value.toInt());
@@ -1658,7 +1711,6 @@ class _MarketPageState extends State<MarketPages>
 
   void showMarketPlaces(MarketPlaces marketplaces) {
     showCupertinoModalPopup<String>(
-      // barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.4),
       context: context,
       builder: (ctx) {
@@ -1757,7 +1809,6 @@ class _MarketPageState extends State<MarketPages>
       }
     } else {
       showDialog(
-        // barrierDismissible: false,
         useSafeArea: false,
         barrierColor: Colors.black.withOpacity(0.4),
         context: context,

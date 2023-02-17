@@ -1645,7 +1645,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
     } else {
       showDialog(
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.4),
         context: context,
         builder: (ctx) {
           return MediaQuery(

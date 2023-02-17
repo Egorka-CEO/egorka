@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart' as yandex_mapkit;
 
 class BottomSheetDraggable extends StatefulWidget {
   const BottomSheetDraggable({Key? key});
@@ -59,6 +60,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   List<CoastResponse> coasts = [];
 
   bool iconState = true;
+
+  yandex_mapkit.DrivingSessionResult? directions;
+  yandex_mapkit.BicycleSessionResult? directionsBicycle;
+  List<yandex_mapkit.PlacemarkMapObject> markers = [];
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(
@@ -533,11 +538,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     });
                   }
                   if (current is FindMeState) return false;
+                  if (current is EditPolilynesState) return false;
 
                   return true;
                 },
                 builder: (context, state) {
-                  var bloc = BlocProvider.of<SearchAddressBloc>(context);
                   if (state is SearchLoading) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -574,7 +579,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     } else {
                       return Container();
                     }
-                  } else if (state is SearchAddressRoutePolilyne) {
+                  } else if (state is SearchAddressRoutePolilyne ||
+                      state is EditPolilynesState) {
+                    if (state is SearchAddressRoutePolilyne) {
+                      directions = state.directions;
+                      directionsBicycle = state.directionsBicycle;
+                      markers = state.markers;
+                    }
                     if (coasts.isEmpty) {
                       return Column(
                         children: [
@@ -599,6 +610,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         ],
                       );
                     }
+
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: listChoice.length,
@@ -612,6 +624,15 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             onTap: () {
                               coastResponse = coasts[index];
                               streamDelivery.add(index);
+                              if (index != snapshot.data) {
+                                BlocProvider.of<SearchAddressBloc>(context)
+                                    .add(EditPolilynesEvent(
+                                  directions: index == 1 ? directions : null,
+                                  directionsBicycle:
+                                      index == 0 ? directionsBicycle : null,
+                                  markers: markers,
+                                ));
+                              }
                             },
                             child: Container(
                               width: 80.w,

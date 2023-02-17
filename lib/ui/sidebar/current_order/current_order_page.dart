@@ -236,34 +236,78 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         style: CustomTextStyle.black15w500,
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          MessageDialogs()
-                                              .showLoadDialog('Отмена заявки');
-                                          bool res = await Repository().cancelForm(
-                                              '${formOrder!.result!.recordNumber}',
-                                              '${formOrder!.result!.recordPIN}');
-                                          SmartDialog.dismiss();
-                                          BlocProvider.of<HistoryOrdersBloc>(
-                                                  context)
-                                              .add(GetListOrdersEvent());
-                                          res
-                                              ? MessageDialogs().completeDialog(
-                                                  text: 'Заявка отменена')
-                                              : MessageDialogs().errorDialog(
-                                                  text: 'Ошибка отмены');
-                                          resPaid = res;
-                                          getForm();
-                                          setState(() {});
-                                        },
-                                        child: const Text(
-                                          'Отмена',
-                                          style: CustomTextStyle.red15,
+                                    if (status != 'Выполнено' &&
+                                        status != 'Отменено' &&
+                                        status != 'Отказано' &&
+                                        status != 'Оплачено' &&
+                                        status != 'Ошибка')
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return CupertinoAlertDialog(
+                                                    title: Text('Подтвердить?'),
+                                                    content: Text(
+                                                        'Текущая заявка будет отменена'),
+                                                    actions: [
+                                                      CupertinoDialogAction(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          textStyle: TextStyle(
+                                                              color:
+                                                                  Colors.red),
+                                                          isDefaultAction: true,
+                                                          child:
+                                                              Text("Отменить")),
+                                                      CupertinoDialogAction(
+                                                          onPressed: () async {
+                                                            MessageDialogs()
+                                                                .showLoadDialog(
+                                                                    'Отмена заявки');
+                                                            bool res = await Repository()
+                                                                .cancelForm(
+                                                                    '${formOrder!.result!.recordNumber}',
+                                                                    '${formOrder!.result!.recordPIN}');
+                                                            SmartDialog
+                                                                .dismiss();
+                                                            BlocProvider.of<
+                                                                        HistoryOrdersBloc>(
+                                                                    context)
+                                                                .add(
+                                                                    GetListOrdersEvent());
+                                                            res
+                                                                ? MessageDialogs()
+                                                                    .completeDialog(
+                                                                        text:
+                                                                            'Заявка отменена')
+                                                                : MessageDialogs()
+                                                                    .errorDialog(
+                                                                        text:
+                                                                            'Ошибка отмены');
+                                                            resPaid = res;
+                                                            Navigator.pop(
+                                                                context);
+                                                            getForm();
+                                                            setState(() {});
+                                                          },
+                                                          isDefaultAction: true,
+                                                          child: Text(
+                                                              "Подтвердить"))
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                          child: const Text(
+                                            'Отмена',
+                                            style: CustomTextStyle.red15,
+                                          ),
                                         ),
-                                      ),
-                                    )
+                                      )
                                   ],
                                 ),
                               ),
@@ -317,6 +361,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 const BorderRadius.all(
                                                     Radius.circular(20)),
                                             child: MiniMapView(
+                                                type: formOrder!.result!.type!,
                                                 locations: formOrder!
                                                     .result!.locations!),
                                           ),
@@ -520,28 +565,44 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                             }
                                           }),
                                         ),
-                                        SizedBox(height: 30.h),
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Кто везёт',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 20.h),
+                                        if (status != 'Отказано' &&
+                                            status != 'Ошибка' &&
+                                            status != 'Отменено')
+                                          SizedBox(height: 30.h),
+                                        if (status != 'Отказано' &&
+                                            status != 'Ошибка' &&
+                                            status != 'Отменено')
+                                          Row(
+                                            children: const [
+                                              Text(
+                                                'Кто везёт',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                            ],
+                                          ),
+                                        if (status != 'Отказано' &&
+                                            status != 'Ошибка' &&
+                                            status != 'Отменено')
+                                          SizedBox(height: 20.h),
                                         formOrder!.result!.courier == null
-                                            ? Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10.w),
-                                                child: const Text(
-                                                  'Курьер еще не назначен на Ваш заказ. '
-                                                  'Как только логисты закончат планирование, '
-                                                  'Вам придёт пуш-уведомление и здесь отобразятся '
-                                                  'данные водителя и его ТС.',
-                                                  textAlign: TextAlign.justify,
-                                                ),
-                                              )
+                                            ? (status == 'Отказано' ||
+                                                    status == 'Ошибка' ||
+                                                    status == 'Отменено')
+                                                ? SizedBox()
+                                                : Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10.w),
+                                                    child: const Text(
+                                                      'Курьер еще не назначен на Ваш заказ. '
+                                                      'Как только логисты закончат планирование, '
+                                                      'Вам придёт пуш-уведомление и здесь отобразятся '
+                                                      'данные водителя и его ТС.',
+                                                      textAlign:
+                                                          TextAlign.justify,
+                                                    ),
+                                                  )
                                             : Column(
                                                 children: [
                                                   Row(
@@ -1016,7 +1077,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                               },
                                               child: Row(
                                                 children: [
-                                                  Text(
+                                                  const Text(
                                                     'Депозит',
                                                     style: CustomTextStyle
                                                         .black15w500,
@@ -1086,7 +1147,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                             ),
                                             child: Row(
                                               children: [
-                                                Text(
+                                                const Text(
                                                   'Карта',
                                                   style: CustomTextStyle
                                                       .black15w500,

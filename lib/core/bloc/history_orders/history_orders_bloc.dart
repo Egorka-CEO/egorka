@@ -74,7 +74,30 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
 
     drivingSessionResult = await requestRoutes.result;
 
-    if (drivingSessionResult != null) {
+    BicycleSessionResult? bicycleSessionResult;
+
+    BicycleResultWithSession? requestRoutesBicycle =
+        YandexBicycle.requestRoutes(
+      points: [
+        RequestPoint(
+            point: Point(
+              latitude: event.locations.first.point!.latitude,
+              longitude: event.locations.first.point!.longitude,
+            ),
+            requestPointType: RequestPointType.wayPoint),
+        RequestPoint(
+            point: Point(
+              latitude: event.locations.last.point!.latitude,
+              longitude: event.locations.last.point!.longitude,
+            ),
+            requestPointType: RequestPointType.wayPoint),
+      ],
+      bicycleVehicleType: BicycleVehicleType.bicycle,
+    );
+
+    bicycleSessionResult = await requestRoutesBicycle.result;
+
+    if (drivingSessionResult != null && bicycleSessionResult != null) {
       final fromIcon = BitmapDescriptor.fromBytes(
           await getBytesFromAsset('assets/images/from.png', 90));
       final toIcon = BitmapDescriptor.fromBytes(
@@ -82,6 +105,7 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
       emit(
         HistoryOrderRoutePolilyne(
           drivingSessionResult,
+          bicycleSessionResult,
           [
             PlacemarkMapObject(
               mapId: const MapObjectId('placemark_start'),

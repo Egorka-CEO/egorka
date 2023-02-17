@@ -26,6 +26,18 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
     on<SearchAddressPolilyne>(_getPoliline);
     on<GetAddressPosition>(_getAddress);
+    on<EditPolilynesEvent>(_editPolilynes);
+  }
+
+  void _editPolilynes(
+      EditPolilynesEvent event, Emitter<SearchAddressState> emit) {
+    emit(
+      EditPolilynesState(
+        directionsDrive: event.directions,
+        directionsBicycle: event.directionsBicycle,
+        markers: event.markers,
+      ),
+    );
   }
 
   void _deletePolyline(

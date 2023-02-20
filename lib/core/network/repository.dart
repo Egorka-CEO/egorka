@@ -633,7 +633,9 @@ class Repository {
       },
     );
 
-    print('object invoice ${response.data['Result']}');
+    print('object invoice ${fltr}');
+
+    // print('object invoice ${response.data['Result']}');
 
     if (response.data['Result'] != null) {
       List<Invoice> list = [];

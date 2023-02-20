@@ -1,5 +1,6 @@
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/poinDetails.dart';
@@ -259,48 +260,58 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                       style: CustomTextStyle.grey15bold,
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: () => showBooksAddress(
-                          context, BlocProvider.of<BookBloc>(context).books,
-                          (value) {
-                        routeOrder.suggestions = Suggestions(
-                          iD: value.id,
-                          name: value.address ?? '',
-                          point: Point(
-                            latitude: value.latitude,
-                            longitude: value.longitude,
-                          ),
-                          houseNumber: value.room,
-                        );
-                        // controllerName.text = value.contact?.name ?? '';
-                        controllerPhone.text = value.contact?.phoneMobile ?? '';
-                        controller.text = value.address ?? '';
-                        controllerName.text = value.contact?.name ?? '';
+                    BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, snapshot) {
+                      final auth =
+                          BlocProvider.of<ProfileBloc>(context).getUser();
+                      if (auth == null) {
+                        return const SizedBox();
+                      }
+                      return GestureDetector(
+                        onTap: () => showBooksAddress(
+                            context, BlocProvider.of<BookBloc>(context).books,
+                            (value) {
+                          routeOrder.suggestions = Suggestions(
+                            iD: value.id,
+                            name: value.address ?? '',
+                            point: Point(
+                              latitude: value.latitude,
+                              longitude: value.longitude,
+                            ),
+                            houseNumber: value.room,
+                          );
+                          // controllerName.text = value.contact?.name ?? '';
+                          controllerPhone.text =
+                              value.contact?.phoneMobile ?? '';
+                          controller.text = value.address ?? '';
+                          controllerName.text = value.contact?.name ?? '';
 
-                        controllerEntrance.text = value.entrance ?? '';
-                        controllerFloor.text = value.floor ?? '';
-                        controllerRoom.text = value.room ?? '';
+                          controllerEntrance.text = value.entrance ?? '';
+                          controllerFloor.text = value.floor ?? '';
+                          controllerRoom.text = value.room ?? '';
 
-                        routeOrder.details?.entrance = controllerEntrance.text;
-                        routeOrder.details?.floor = controllerFloor.text;
-                        routeOrder.details?.room = controllerRoom.text;
-                        routeOrder.details?.name = controllerName.text;
-                        routeOrder.details?.phone = controllerPhone.text;
-                      }),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Из книжки',
-                            style: CustomTextStyle.red15,
-                          ),
-                          SizedBox(width: 5.w),
-                          const Icon(
-                            Icons.menu_book,
-                            color: Colors.red,
-                          )
-                        ],
-                      ),
-                    )
+                          routeOrder.details?.entrance =
+                              controllerEntrance.text;
+                          routeOrder.details?.floor = controllerFloor.text;
+                          routeOrder.details?.room = controllerRoom.text;
+                          routeOrder.details?.name = controllerName.text;
+                          routeOrder.details?.phone = controllerPhone.text;
+                        }),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Из книжки',
+                              style: CustomTextStyle.red15,
+                            ),
+                            SizedBox(width: 5.w),
+                            const Icon(
+                              Icons.menu_book,
+                              color: Colors.red,
+                            )
+                          ],
+                        ),
+                      );
+                    })
                   ],
                 ),
               ),

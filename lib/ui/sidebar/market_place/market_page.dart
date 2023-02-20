@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
@@ -842,45 +843,58 @@ class _MarketPageState extends State<MarketPages>
                                               style: CustomTextStyle.grey15bold,
                                             ),
                                             const Spacer(),
-                                            GestureDetector(
-                                              onTap: () => showBooksAddress(
-                                                  context,
-                                                  BlocProvider.of<BookBloc>(
+                                            BlocBuilder<ProfileBloc,
+                                                    ProfileState>(
+                                                builder: (context, snapshot) {
+                                              final auth =
+                                                  BlocProvider.of<ProfileBloc>(
                                                           context)
-                                                      .books, (value) {
-                                                suggestion = Suggestions(
-                                                  iD: value.id,
-                                                  name: value.name ?? '',
-                                                  point: pointModel.Point(
-                                                    latitude: value.latitude,
-                                                    longitude: value.longitude,
-                                                  ),
-                                                  houseNumber: value.room,
-                                                );
-                                                fromController.text =
-                                                    value.address ?? '';
-                                                nameController.text =
-                                                    value.contact?.name ?? '';
-                                                phoneController.text = value
-                                                        .contact?.phoneMobile ??
-                                                    '';
-                                                calcOrder();
-                                              }),
-                                              child: Row(
-                                                children: [
-                                                  const Text(
-                                                    'Из книжки',
-                                                    style:
-                                                        CustomTextStyle.red15,
-                                                  ),
-                                                  SizedBox(width: 5.w),
-                                                  const Icon(
-                                                    Icons.menu_book,
-                                                    color: Colors.red,
-                                                  )
-                                                ],
-                                              ),
-                                            )
+                                                      .getUser();
+                                              if (auth == null) {
+                                                return const SizedBox();
+                                              }
+                                              return GestureDetector(
+                                                onTap: () => showBooksAddress(
+                                                    context,
+                                                    BlocProvider.of<BookBloc>(
+                                                            context)
+                                                        .books, (value) {
+                                                  suggestion = Suggestions(
+                                                    iD: value.id,
+                                                    name: value.name ?? '',
+                                                    point: pointModel.Point(
+                                                      latitude: value.latitude,
+                                                      longitude:
+                                                          value.longitude,
+                                                    ),
+                                                    houseNumber: value.room,
+                                                  );
+                                                  fromController.text =
+                                                      value.address ?? '';
+                                                  nameController.text =
+                                                      value.contact?.name ?? '';
+                                                  phoneController.text = value
+                                                          .contact
+                                                          ?.phoneMobile ??
+                                                      '';
+                                                  calcOrder();
+                                                }),
+                                                child: Row(
+                                                  children: [
+                                                    const Text(
+                                                      'Из книжки',
+                                                      style:
+                                                          CustomTextStyle.red15,
+                                                    ),
+                                                    SizedBox(width: 5.w),
+                                                    const Icon(
+                                                      Icons.menu_book,
+                                                      color: Colors.red,
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            })
                                           ],
                                         ),
                                         SizedBox(height: 5.h),

@@ -198,8 +198,9 @@ class _BookPageState extends State<BookPage> {
                                   children: [
                                     SizedBox(width: 10.w),
                                     Expanded(
+                                      flex: 1,
                                       child: Text(
-                                        'Обозначение',
+                                        'Название',
                                         textAlign: TextAlign.center,
                                         style: CustomTextStyle.black15w500
                                             .copyWith(fontSize: 14.sp),
@@ -207,6 +208,7 @@ class _BookPageState extends State<BookPage> {
                                     ),
                                     SizedBox(width: 10.w),
                                     Expanded(
+                                      flex: 2,
                                       child: Text(
                                         'Адрес',
                                         textAlign: TextAlign.center,
@@ -215,6 +217,7 @@ class _BookPageState extends State<BookPage> {
                                       ),
                                     ),
                                     Expanded(
+                                      flex: 1,
                                       child: Text(
                                         'Телефон',
                                         textAlign: TextAlign.center,
@@ -265,7 +268,7 @@ class _BookPageState extends State<BookPage> {
                                     },
                               direction: DismissDirection.endToStart,
                               child: Container(
-                                height: 50.h,
+                                height: 70.h,
                                 color: index % 2 == 0
                                     ? Colors.white
                                     : Colors.grey[200],
@@ -273,6 +276,7 @@ class _BookPageState extends State<BookPage> {
                                   children: [
                                     SizedBox(width: 10.w),
                                     Expanded(
+                                      flex: 1,
                                       child: Text(
                                         bookAdresses[index - 1].name!,
                                         textAlign: TextAlign.center,
@@ -280,7 +284,9 @@ class _BookPageState extends State<BookPage> {
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
+                                    // Spacer(),
                                     Expanded(
+                                      flex: 2,
                                       child: Text(
                                         bookAdresses[index - 1].address!,
                                         textAlign: TextAlign.center,
@@ -288,16 +294,15 @@ class _BookPageState extends State<BookPage> {
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Text(
-                                        bookAdresses[index - 1]
-                                                .contact
-                                                ?.phoneMobile ??
-                                            '-',
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black15w500
-                                            .copyWith(fontSize: 14.sp),
-                                      ),
+                                    Text(
+                                      bookAdresses[index - 1]
+                                              .contact
+                                              ?.phoneMobile ??
+                                          '-',
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: CustomTextStyle.black15w500
+                                          .copyWith(fontSize: 14.sp),
                                     ),
                                     SizedBox(width: 10.w),
                                   ],

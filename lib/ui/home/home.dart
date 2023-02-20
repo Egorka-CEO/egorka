@@ -89,13 +89,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         storage.setKey(res.result!.key);
         BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
         BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
+        BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
       }
     } else if (id != null) {
     } else {
       await Repository().UUIDCreate();
     }
     BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
-    BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
   }
 
   @override

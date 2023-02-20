@@ -258,24 +258,33 @@ class _NavBarState extends State<NavBar> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18.w),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, AppRoute.book),
-                      child: Container(
-                        color: Colors.transparent,
-                        height: 50.h,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Записная книжка',
-                            style: CustomTextStyle.black15w500
-                                .copyWith(color: Colors.black),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    if (auth == null) {
+                      return const SizedBox();
+                    }
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, AppRoute.book),
+                        child: Container(
+                          color: Colors.transparent,
+                          height: 50.h,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Записная книжка',
+                              style: CustomTextStyle.black15w500
+                                  .copyWith(color: Colors.black),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
                     child: GestureDetector(

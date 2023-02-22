@@ -87,8 +87,10 @@ class _MarketPageState extends State<MarketPages>
   bool loadOrder = false;
   int indexTab = 0;
   String? errorAddress;
-  double minSlider = 0;
-  double maxSlider = 25;
+  double minSliderBucket = 0;
+  double maxSliderBucket = 25;
+  double minSliderPallet = 0;
+  double maxSliderPallet = 33;
 
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
@@ -1007,7 +1009,7 @@ class _MarketPageState extends State<MarketPages>
                                                         TextInputType.number,
                                                     formatters: [
                                                       CustomInputFormatterSlider(
-                                                          maxSlider)
+                                                          maxSliderBucket)
                                                     ],
                                                     textEditingController:
                                                         countBucketController,
@@ -1035,8 +1037,8 @@ class _MarketPageState extends State<MarketPages>
                                                 Expanded(
                                                   flex: 2,
                                                   child: Slider(
-                                                    min: minSlider,
-                                                    max: maxSlider,
+                                                    min: minSliderBucket,
+                                                    max: maxSliderBucket,
                                                     activeColor: Colors.red,
                                                     inactiveColor:
                                                         Colors.grey[300],
@@ -1113,7 +1115,7 @@ class _MarketPageState extends State<MarketPages>
                                                         TextInputType.number,
                                                     formatters: [
                                                       CustomInputFormatterSlider(
-                                                          maxSlider)
+                                                          maxSliderPallet)
                                                     ],
                                                     textEditingController:
                                                         countPalletController,
@@ -1138,8 +1140,8 @@ class _MarketPageState extends State<MarketPages>
                                                 Expanded(
                                                   flex: 2,
                                                   child: Slider(
-                                                    min: minSlider,
-                                                    max: maxSlider,
+                                                    min: minSliderPallet,
+                                                    max: maxSliderPallet,
                                                     activeColor: Colors.red,
                                                     inactiveColor:
                                                         Colors.grey[300],
@@ -1437,7 +1439,7 @@ class _MarketPageState extends State<MarketPages>
                                                   Expanded(
                                                     flex: 2,
                                                     child: Slider(
-                                                      min: minSlider,
+                                                      min: minSliderBucket,
                                                       max: (double.tryParse(
                                                                   countBucketController
                                                                       .text) ??
@@ -1530,7 +1532,7 @@ class _MarketPageState extends State<MarketPages>
                                                   Expanded(
                                                     flex: 2,
                                                     child: Slider(
-                                                      min: minSlider,
+                                                      min: minSliderBucket,
                                                       max: (double.tryParse(
                                                                   countBucketController
                                                                       .text) ??

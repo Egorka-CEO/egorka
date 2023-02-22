@@ -128,6 +128,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         return SlidingUpPanel(
           controller: panelController,
           renderPanelSheet: false,
+          isDraggable: false,
           panel: _floatingPanel(context),
           onPanelClosed: () {
             focusFrom.unfocus();
@@ -189,13 +190,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               right: ((MediaQuery.of(context).size.width * 47) / 100).w,
               bottom: 10.w,
             ),
-            child: Container(
-              height: 5.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.r),
-                color: Colors.grey[400],
-              ),
-            ),
+            // child: Container(
+            //   height: 5.h,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(25.r),
+            //     color: Colors.grey[400],
+            // ),
+            // ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 35.w),

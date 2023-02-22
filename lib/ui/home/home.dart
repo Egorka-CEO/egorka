@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool initHeight = true;
   bool logoVisibleMove = false;
   bool logoMoveBackgroundScale = false;
+  double panelSize = 0;
 
   late StreamSubscription<DataConnectionStatus> listener;
 
@@ -241,10 +242,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       isDraggable: true,
                       collapsed: Container(),
                       panel: HistoryOrdersBottomSheetDraggable(
-                          panelController: panelController),
+                        panelController: panelController,
+                        panelSize: panelSize,
+                      ),
                       onPanelClosed: () {},
                       onPanelOpened: () {},
-                      onPanelSlide: (size) {},
+                      onPanelSlide: (size) {
+                        panelSize = size;
+                        setState(() {});
+                      },
                       maxHeight: 700.h,
                       minHeight: 0,
                       defaultPanelState: PanelState.CLOSED,

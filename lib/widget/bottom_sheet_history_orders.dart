@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
@@ -7,14 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
   PanelController panelController;
+  double panelSize;
   HistoryOrdersBottomSheetDraggable({
     Key? key,
     required this.panelController,
+    required this.panelSize,
   });
 
   @override
@@ -23,8 +27,17 @@ class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
 }
 
 class _BottomSheetDraggableState
-    extends State<HistoryOrdersBottomSheetDraggable> {
+    extends State<HistoryOrdersBottomSheetDraggable>
+    with TickerProviderStateMixin {
   List<CreateFormModel> coast = [];
+  late final AnimationController controller;
+  bool printText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    animationEmpty();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,31 +96,109 @@ class _BottomSheetDraggableState
     );
   }
 
+  void animationEmpty() async {
+    controller = AnimationController(vsync: this);
+    controller.addListener(() {
+      print('object ${controller.status}');
+      if (widget.panelSize == 0.0) {
+        // controller.reset();
+        setState(() {
+          printText = false;
+        });
+      } else if (coast.isNotEmpty) {
+        controller.stop();
+        setState(() {
+          printText = false;
+        });
+      } else if (controller.status == AnimationStatus.completed) {
+        setState(() {
+          printText = false;
+        });
+        controller.reset();
+        controller
+          ..duration = const Duration(seconds: 10)
+          ..forward();
+      } else if (controller.value >= 0.44 && controller.value <= 0.45) {
+        setState(() {
+          printText = true;
+        });
+      }
+    });
+    controller
+      ..duration = const Duration(seconds: 10)
+      ..forward();
+  }
+
   Widget _searchList() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
-          buildWhen: (previous, current) {
-        if (current is HistoryUpdateList) {
-          coast = current.coast;
-          return true;
-        }
-        return false;
-      }, builder: (context, snapshot) {
-        return ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: coast.length,
-          itemBuilder: (context, index) {
-            if (coast[index].result.locations.isEmpty) {
-              return const SizedBox();
-            }
-            return _pointCard(coast[index], index, context);
-          },
+    return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
+        buildWhen: (previous, current) {
+      if (current is HistoryUpdateList) {
+        coast = current.coast;
+        // animationEmpty();
+        controller.forward();
+        return true;
+      }
+      return false;
+    }, builder: (context, snapshot) {
+      if (widget.panelSize == 0.0) {
+        return SizedBox();
+      } else if (coast.isEmpty) {
+        return Column(
+          children: [
+            LottieBuilder.asset(
+              'assets/anim/empty_orders.json',
+              controller: controller,
+            ),
+            printText
+                ? Container(
+                    padding: EdgeInsets.all(20.h),
+                    margin: EdgeInsets.all(20.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey[200]!),
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 20.r,
+                        )
+                      ],
+                    ),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TypewriterAnimatedText(
+                          'У вас еще не было заказов!',
+                          cursor: '',
+                          textAlign: TextAlign.center,
+                          textStyle: TextStyle(
+                            fontSize: 25.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          speed: const Duration(milliseconds: 60),
+                        ),
+                      ],
+                      pause: const Duration(milliseconds: 4000),
+                      repeatForever: true,
+                    ),
+                  )
+                : const SizedBox(),
+          ],
         );
-      }),
-    );
+      }
+
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        itemCount: coast.length,
+        itemBuilder: (context, index) {
+          if (coast[index].result.locations.isEmpty) {
+            return const SizedBox();
+          }
+          return _pointCard(coast[index], index, context);
+        },
+      );
+    });
   }
 
   Container _pointCard(CreateFormModel state, int index, BuildContext context) {

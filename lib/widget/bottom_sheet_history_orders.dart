@@ -99,7 +99,6 @@ class _BottomSheetDraggableState
   void animationEmpty() async {
     controller = AnimationController(vsync: this);
     controller.addListener(() {
-      print('object ${controller.status}');
       if (widget.panelSize == 0.0) {
         // controller.reset();
         setState(() {
@@ -132,6 +131,13 @@ class _BottomSheetDraggableState
   Widget _searchList() {
     return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
         buildWhen: (previous, current) {
+      if (current is HistoryOpenBtmSheetState && coast.isEmpty) {
+        controller.reset();
+        controller.forward();
+      }
+      if (current is HistoryCloseBtmSheetState && coast.isEmpty) {
+        controller.reset();
+      }
       if (current is HistoryUpdateList) {
         coast = current.coast;
         // animationEmpty();
@@ -151,23 +157,24 @@ class _BottomSheetDraggableState
             ),
             printText
                 ? Container(
+                    height: 100.h,
                     padding: EdgeInsets.all(20.h),
                     margin: EdgeInsets.all(20.h),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: Colors.grey[200]!),
                       borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 20.r,
-                        )
-                      ],
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.black.withOpacity(0.2),
+                      //     blurRadius: 20.r,
+                      //   )
+                      // ],
                     ),
                     child: AnimatedTextKit(
                       animatedTexts: [
                         TypewriterAnimatedText(
-                          'У вас еще не было заказов!',
+                          'У вас еще не было\nзаказов!',
                           cursor: '',
                           textAlign: TextAlign.center,
                           textStyle: TextStyle(

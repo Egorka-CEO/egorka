@@ -12,6 +12,7 @@ import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/payment_card.dart';
 import 'package:egorka/model/status_order.dart';
 import 'package:egorka/model/type_add.dart';
+import 'package:egorka/widget/bottom_sheet_support.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
 import 'package:egorka/widget/payment_webview.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HistoryOrdersPage extends StatefulWidget {
@@ -53,6 +55,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   List<Widget> additionalInfo = [];
 
   DeliveryChocie? deliveryChocie;
+
+  PanelController panelController = PanelController();
 
   @override
   void initState() {
@@ -247,8 +251,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                 context: context,
                                                 builder: (context) {
                                                   return CupertinoAlertDialog(
-                                                    title: Text('Подтвердить?'),
-                                                    content: Text(
+                                                    title: const Text(
+                                                        'Подтвердить?'),
+                                                    content: const Text(
                                                         'Текущая заявка будет отменена'),
                                                     actions: [
                                                       CupertinoDialogAction(
@@ -256,12 +261,13 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                             Navigator.pop(
                                                                 context);
                                                           },
-                                                          textStyle: TextStyle(
-                                                              color:
-                                                                  Colors.red),
+                                                          textStyle:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .red),
                                                           isDefaultAction: true,
-                                                          child:
-                                                              Text("Отменить")),
+                                                          child: const Text(
+                                                              "Отменить")),
                                                       CupertinoDialogAction(
                                                           onPressed: () async {
                                                             MessageDialogs()
@@ -294,7 +300,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                             setState(() {});
                                                           },
                                                           isDefaultAction: true,
-                                                          child: Text(
+                                                          child: const Text(
                                                               "Подтвердить"))
                                                     ],
                                                   );
@@ -439,7 +445,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                       style: CustomTextStyle
                                                           .black15w500,
                                                     )
-                                                  : Text(
+                                                  : const Text(
                                                       '-',
                                                       style: CustomTextStyle
                                                           .black15w500,
@@ -640,7 +646,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             ? (status == 'Отказано' ||
                                                     status == 'Ошибка' ||
                                                     status == 'Отменено')
-                                                ? SizedBox()
+                                                ? const SizedBox()
                                                 : Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -997,20 +1003,25 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   ],
                                                 ),
                                               ),
-                                            Column(
-                                              children: [
-                                                Icon(
-                                                  Icons.send,
-                                                  color: Colors.red,
-                                                  size: 50.h,
-                                                ),
-                                                const Text(
-                                                  'Написать в\nподдержку',
-                                                  textAlign: TextAlign.center,
-                                                  style: CustomTextStyle
-                                                      .black15w700,
-                                                ),
-                                              ],
+                                            GestureDetector(
+                                              onTap: () {
+                                                panelController.open();
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Icon(
+                                                    Icons.send,
+                                                    color: Colors.red,
+                                                    size: 50.h,
+                                                  ),
+                                                  const Text(
+                                                    'Написать в\nподдержку',
+                                                    textAlign: TextAlign.center,
+                                                    style: CustomTextStyle
+                                                        .black15w700,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -1137,7 +1148,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                 },
                                                 child: Row(
                                                   children: [
-                                                    Text(
+                                                    const Text(
                                                       'Депозит',
                                                       style: CustomTextStyle
                                                           .black15w500,
@@ -1212,7 +1223,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                               ),
                                               child: Row(
                                                 children: [
-                                                  Text(
+                                                  const Text(
                                                     'Карта',
                                                     style: CustomTextStyle
                                                         .black15w500,
@@ -1221,7 +1232,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   SvgPicture.asset(
                                                     'assets/icons/credit-card.svg',
                                                     height: 25.h,
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -1235,7 +1246,19 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                             ],
                           );
                         },
-                      )
+                      ),
+                    SlidingUpPanel(
+                      controller: panelController,
+                      renderPanelSheet: false,
+                      isDraggable: false,
+                      panel: SupportMessageBtmSheet(panelController),
+                      onPanelClosed: () {},
+                      onPanelOpened: () {},
+                      onPanelSlide: (size) {},
+                      maxHeight: MediaQuery.of(context).size.height,
+                      minHeight: 0,
+                      defaultPanelState: PanelState.CLOSED,
+                    )
                   ],
                 ),
         ),

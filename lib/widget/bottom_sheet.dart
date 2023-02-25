@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
@@ -544,6 +545,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   return true;
                 },
                 builder: (context, state) {
+                  log('message $state');
                   if (state is SearchLoading) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -553,9 +555,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       ],
                     );
                   }
-                  if (state is SearchAddressStated) {
-                    return const SizedBox();
-                  } else if (state is SearchAddressLoading) {
+                  if (state is SearchAddressLoading) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [CupertinoActivityIndicator()],
@@ -581,7 +581,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       return Container();
                     }
                   } else if (state is SearchAddressRoutePolilyne ||
-                      state is EditPolilynesState) {
+                      state is EditPolilynesState ||
+                      state is SearchAddressStated) {
+                    if (state is SearchAddressStated && coasts.isEmpty) {
+                      return const SizedBox();
+                    }
                     if (state is SearchAddressRoutePolilyne) {
                       directions = state.directions;
                       directionsBicycle = state.directionsBicycle;
@@ -611,6 +615,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         ],
                       );
                     }
+
+                    log('message ssss ${state} ${coasts.isEmpty} ${listChoice}');
 
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,

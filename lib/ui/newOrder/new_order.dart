@@ -252,7 +252,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                   .completeDialog(text: 'Заявка создана')
                   .then((value) {
                 Navigator.of(context)
-                  ..pop()
+                  ..pop(true)
                   ..pushNamed(AppRoute.currentOrder, arguments: [
                     current.createFormModel.result.RecordNumber!,
                     current.createFormModel.result.RecordPIN!

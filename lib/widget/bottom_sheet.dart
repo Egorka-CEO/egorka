@@ -16,7 +16,6 @@ import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/dialog.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -81,12 +80,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     // DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
   ];
 
-  bool showFront = true;
-  FlipCardController? _flipController;
   @override
   void initState() {
     super.initState();
-    _flipController = FlipCardController();
   }
 
   @override
@@ -146,9 +142,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             if (size.toStringAsFixed(1) == (0.5).toString()) {
               focusFrom.unfocus();
               focusTo.unfocus();
-              if (focusFrom.hasFocus || focusTo.hasFocus) {
-                _flipController!.toggleCard();
-              }
             }
           },
           maxHeight: 735.h,
@@ -229,9 +222,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               ],
             ),
           ),
-          SizedBox(
-            height: 10.h,
-          ),
+          SizedBox(height: 10.h),
           StreamBuilder<dynamic>(
             stream: stream.stream,
             builder: (context, snapshot) {
@@ -259,16 +250,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               child: CustomTextField(
                                 height: 45.h,
                                 onTap: () {
-                                  if (_flipController!.state!.isFront) {
-                                    _flipController!.toggleCard();
-                                  }
                                   typeAdd = TypeAdd.sender;
                                   panelController.open();
+                                  bloc.add(SearchAddressClear());
                                   Future.delayed(
                                       const Duration(milliseconds: 300), () {
                                     focusFrom.requestFocus();
                                   });
-                                  bloc.add(SearchAddressClear());
                                 },
                                 focusNode: focusFrom,
                                 fillColor: Colors.white.withOpacity(0),
@@ -284,46 +272,102 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            SizedBox(width: 10.w),
-                            FlipCard(
-                              controller: _flipController,
-                              back: GestureDetector(
-                                onTap: () {
-                                  bloc.add(DeletePolilyneEvent());
-                                  fromController.text = '';
-                                  stream.add('event');
-                                  setState(() {
-                                    iconState = true;
-                                  });
-                                },
-                                child: Container(
-                                  height: 20.h,
-                                  width: 20.h,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey[500],
+                            fromController.text.isNotEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.only(right: 15.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        bloc.add(DeletePolilyneEvent());
+                                        fromController.text = '';
+                                        stream.add('event');
+                                        coasts.clear();
+                                        setState(() {
+                                          iconState = true;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 20.h,
+                                        width: 20.h,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[500],
+                                        ),
+                                        child: const Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.only(right: 5.w),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 0.h),
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            width: 1,
+                                            height: 40.h,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            // focusFrom.unfocus();
+                                            final res =
+                                                await Navigator.of(context)
+                                                    .pushNamed(
+                                                        AppRoute.selectPoint);
+                                            if (res != null &&
+                                                res is Suggestions) {
+                                              suggestionsStart = res;
+                                              fromController.text =
+                                                  suggestionsStart!.name;
+
+                                              errorAddress1 =
+                                                  res.houseNumber == null
+                                                      ? 'Укажите номер дома'
+                                                      : null;
+                                              calc();
+                                            }
+                                          },
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(10.r),
+                                                  topRight:
+                                                      Radius.circular(10.r),
+                                                ),
+                                              ),
+                                            ),
+                                            backgroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.transparent),
+                                            foregroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.white),
+                                            overlayColor:
+                                                MaterialStatePropertyAll(
+                                              Colors.grey[400],
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Карта',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.sp),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: const Icon(
-                                    Icons.clear,
-                                    color: Colors.white,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                              front: GestureDetector(
-                                onTap: () {
-                                  focusFrom.unfocus();
-                                  focusTo.unfocus();
-                                  // panelController.close();
-                                  bloc.add(GetAddressPosition());
-                                },
-                                child: const Icon(
-                                  Icons.gps_fixed,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 15.w),
                           ],
                         ),
                       ),
@@ -353,9 +397,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               child: CustomTextField(
                                 height: 45.h,
                                 onTap: () {
-                                  if (!_flipController!.state!.isFront) {
-                                    _flipController!.toggleCard();
-                                  }
                                   typeAdd = TypeAdd.receiver;
                                   panelController.open();
                                   bloc.add(SearchAddressClear());
@@ -389,9 +430,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                         bloc.add(DeletePolilyneEvent());
                                         toController.text = '';
                                         stream.add('event');
-                                        if (focusFrom.hasFocus) {
-                                          _flipController?.toggleCard();
-                                        }
+                                        coasts.clear();
                                         setState(() {
                                           iconState = true;
                                         });
@@ -417,8 +456,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.symmetric(
-                                              vertical: 8.h),
-                                          child: const VerticalDivider(),
+                                              vertical: 0.h),
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            width: 1,
+                                            height: 40.h,
+                                          ),
                                         ),
                                         TextButton(
                                           onPressed: () async {
@@ -433,8 +476,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                               toController.text =
                                                   suggestionsEnd!.name;
 
-                                              print(
-                                                  'error obj ${res.houseNumber}');
                                               errorAddress2 =
                                                   res.houseNumber == null
                                                       ? 'Укажите номер дома'
@@ -618,79 +659,85 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
                     log('message ssss ${state} ${coasts.isEmpty} ${listChoice}');
 
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: listChoice.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: index == 0 ? 20.w : 0,
-                            right: index == coasts.length - 1 ? 5.w : 0,
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              coastResponse = coasts[index];
-                              streamDelivery.add(index);
-                              if (index != snapshot.data) {
-                                BlocProvider.of<SearchAddressBloc>(context)
-                                    .add(EditPolilynesEvent(
-                                  directions: index == 1 ? directions : null,
-                                  directionsBicycle:
-                                      index == 0 ? directionsBicycle : null,
-                                  markers: markers,
-                                ));
-                              }
-                            },
-                            child: Container(
-                              width: 80.w,
-                              decoration: BoxDecoration(
-                                color: snapshot.data! == index
-                                    ? Colors.white
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(15.r),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Opacity(
-                                    opacity: snapshot.data! == index ? 1 : 0.3,
-                                    child: SizedBox(
-                                      height: 45.h,
-                                      child: Image.asset(
-                                        listChoice[index].icon,
-                                        color: snapshot.data! == index
-                                            ? Colors.black
-                                            : Colors.black,
+                    return SizedBox(
+                      height: 100.h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: listChoice.length,
+                        // shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              left: index == 0 ? 20.w : 0,
+                              right: index == coasts.length - 1 ? 5.w : 0,
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                coastResponse = coasts[index];
+                                streamDelivery.add(index);
+                                if (index != snapshot.data) {
+                                  BlocProvider.of<SearchAddressBloc>(context)
+                                      .add(EditPolilynesEvent(
+                                    directions: index == 1 ? directions : null,
+                                    directionsBicycle:
+                                        index == 0 ? directionsBicycle : null,
+                                    markers: markers,
+                                  ));
+                                }
+                              },
+                              child: Container(
+                                width: 80.w,
+                                decoration: BoxDecoration(
+                                  color: snapshot.data! == index
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Opacity(
+                                      opacity:
+                                          snapshot.data! == index ? 1 : 0.3,
+                                      child: SizedBox(
+                                        height: 45.h,
+                                        child: Image.asset(
+                                          listChoice[index].icon,
+                                          color: snapshot.data! == index
+                                              ? Colors.black
+                                              : Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Opacity(
-                                    opacity: snapshot.data! == index ? 1 : 0.3,
-                                    child: Text(
-                                      listChoice[index].title,
+                                    Opacity(
+                                      opacity:
+                                          snapshot.data! == index ? 1 : 0.3,
+                                      child: Text(
+                                        listChoice[index].title,
+                                        style: TextStyle(
+                                            color: snapshot.data! == index
+                                                ? Colors.black
+                                                : Colors.black,
+                                            fontWeight: snapshot.data! == index
+                                                ? FontWeight.w600
+                                                : FontWeight.w400),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
                                       style: TextStyle(
                                           color: snapshot.data! == index
                                               ? Colors.black
                                               : Colors.black,
-                                          fontWeight: snapshot.data! == index
-                                              ? FontWeight.w600
-                                              : FontWeight.w400),
+                                          fontWeight: FontWeight.w600),
                                     ),
-                                  ),
-                                  Text(
-                                    '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
-                                    style: TextStyle(
-                                        color: snapshot.data! == index
-                                            ? Colors.black
-                                            : Colors.black,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     );
                   } else {
                     return const Text('');
@@ -750,22 +797,43 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   void authShowDialog(int index) async {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
+    var bloc = BlocProvider.of<SearchAddressBloc>(context);
 
     if (user != null) {
-      Navigator.of(context).pushNamed(AppRoute.newOrder, arguments: [
-        coastResponse,
-        listChoice[index],
-        suggestionsStart ??
-            Suggestions(
+      final res = await Navigator.of(context).pushNamed(
+        AppRoute.newOrder,
+        arguments: [
+          coastResponse,
+          listChoice[index],
+          suggestionsStart ??
+              Suggestions(
                 iD: null,
                 name: coastResponse!.result!.locations!.first.point!.address!,
                 point: pointModel.Point(
-                    latitude: coastResponse!
-                        .result!.locations!.first.point!.latitude!,
-                    longitude: coastResponse!
-                        .result!.locations!.first.point!.longitude!)),
-        suggestionsEnd,
-      ]);
+                  latitude:
+                      coastResponse!.result!.locations!.first.point!.latitude!,
+                  longitude:
+                      coastResponse!.result!.locations!.first.point!.longitude!,
+                ),
+              ),
+          suggestionsEnd,
+        ],
+      );
+      print('object ');
+      if (res is bool) {
+        bloc.add(DeletePolilyneEvent());
+        fromController.text = '';
+        toController.text = '';
+
+        suggestionsStart = null;
+        suggestionsEnd = null;
+
+        coasts.clear();
+        setState(() {
+          iconState = true;
+        });
+        stream.add('event');
+      }
     } else {
       await showDialog(
         context: context,
@@ -774,17 +842,34 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             message: 'Хотите авторизоваться?',
             buttons: [
               StandartButton(
-                label: 'Нет',
-                color: Colors.red.withOpacity(0.9),
-                onTap: () => Navigator.of(context)
-                  ..pop()
-                  ..pushNamed(AppRoute.newOrder, arguments: [
-                    coastResponse,
-                    listChoice[index],
-                    suggestionsStart,
-                    suggestionsEnd,
-                  ]),
-              ),
+                  label: 'Нет',
+                  color: Colors.red.withOpacity(0.9),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    final res = await Navigator.of(context).pushNamed(
+                      AppRoute.newOrder,
+                      arguments: [
+                        coastResponse,
+                        listChoice[index],
+                        suggestionsStart,
+                        suggestionsEnd,
+                      ],
+                    );
+                    if (res is bool) {
+                      bloc.add(DeletePolilyneEvent());
+                      fromController.text = '';
+                      toController.text = '';
+
+                      suggestionsStart = null;
+                      suggestionsEnd = null;
+
+                      coasts.clear();
+                      setState(() {
+                        iconState = true;
+                      });
+                      stream.add('event');
+                    }
+                  }),
               StandartButton(
                 label: 'Да',
                 color: Colors.green,
@@ -794,14 +879,30 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   if (result != null) {
                     BlocProvider.of<ProfileBloc>(context)
                         .add(ProfileEventUpdate(result as AuthUser));
-                    Navigator.of(context)
-                      ..pop()
-                      ..pushNamed(AppRoute.newOrder, arguments: [
+                    Navigator.of(context).pop();
+                    final res = await Navigator.of(context).pushNamed(
+                      AppRoute.newOrder,
+                      arguments: [
                         coastResponse,
                         listChoice[index],
                         suggestionsStart,
                         suggestionsEnd,
-                      ]);
+                      ],
+                    );
+                    if (res is bool) {
+                      bloc.add(DeletePolilyneEvent());
+                      fromController.text = '';
+                      toController.text = '';
+
+                      suggestionsStart = null;
+                      suggestionsEnd = null;
+
+                      coasts.clear();
+                      setState(() {
+                        iconState = true;
+                      });
+                      stream.add('event');
+                    }
                   }
                 },
               )
@@ -821,9 +922,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           height: 50.h,
           child: GestureDetector(
             onTap: () {
-              if (!_flipController!.state!.isFront) {
-                _flipController!.toggleCard();
-              }
               if (focusFrom.hasFocus) {
                 errorAddress1 = null;
                 suggestionsStart = state.address!.result.suggestions![index];

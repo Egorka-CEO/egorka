@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/employee.dart';
@@ -28,6 +30,8 @@ class _EmployeePageState extends State<EmployeePage> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  int countEmployee = 0;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +46,7 @@ class _EmployeePageState extends State<EmployeePage> {
 
   @override
   Widget build(BuildContext context) {
+    countEmployee = 0;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Scaffold(
@@ -65,7 +70,6 @@ class _EmployeePageState extends State<EmployeePage> {
           physics: const ClampingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
           itemBuilder: (context, index) {
-            if (index == 0) return SizedBox();
             if (index == employee.length) {
               return Padding(
                 padding: EdgeInsets.only(top: 20.h),
@@ -93,6 +97,8 @@ class _EmployeePageState extends State<EmployeePage> {
                 ),
               );
             }
+            if (employee[index].username == 'Admin') return SizedBox();
+            ++countEmployee;
             return itemEmployee(employee[index], index);
           },
         ),
@@ -132,7 +138,7 @@ class _EmployeePageState extends State<EmployeePage> {
                     child: SizedBox(
                       height: 130.h,
                       child: Text(
-                        (index).toString(),
+                        (countEmployee).toString(),
                         style: TextStyle(
                           fontSize: 140.sp,
                           fontWeight: FontWeight.w900,
@@ -317,14 +323,15 @@ class _EmployeePageState extends State<EmployeePage> {
                                   emailController.text.isNotEmpty &&
                                   loginController.text.isNotEmpty &&
                                   passwordController.text.isNotEmpty) {
-                                bool res = await Repository().addEmployee(
+                                String? res = await Repository().addEmployee(
                                   nameController.text,
                                   phoneController.text,
                                   emailController.text,
                                   loginController.text,
                                   passwordController.text,
                                 );
-                                if (res) {
+                                log('$res');
+                                if (res == null) {
                                   getEmployee();
                                   nameController.text = '';
                                   phoneController.text = '';
@@ -333,8 +340,21 @@ class _EmployeePageState extends State<EmployeePage> {
                                   passwordController.text = '';
                                   Navigator.of(context).pop();
                                 } else {
-                                  MessageDialogs().showAlert('Ошибка',
-                                      'Пользватель с таким email или телефоном уже зарегистрирован');
+                                  if (res == 'Wrong Name') {
+                                    MessageDialogs().showAlert(
+                                        'Ошибка', 'Укажите правильное имя');
+                                  } else if (res == 'User mobile is wrong') {
+                                    MessageDialogs().showAlert('Ошибка',
+                                        'Укажите правильный номер телефона');
+                                  } else if (res == 'User email is wrong') {
+                                    MessageDialogs().showAlert(
+                                        'Ошибка', 'Укажите правильный email');
+                                  } else if (res == 'Wrong Username') {
+                                    MessageDialogs().showAlert(
+                                        'Ошибка', 'Укажите правильный Логин');
+                                  }
+                                  // MessageDialogs().showAlert('Ошибка',
+                                  //     'Пользватель с таким email или телефоном уже зарегистрирован');
                                 }
                               } else {
                                 String error = '';

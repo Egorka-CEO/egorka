@@ -199,15 +199,15 @@ class _MapViewState extends State<MapView> {
                 _getPosition();
               },
               onCameraPositionChanged: (cameraPosition, reason, finished) {
-                pos = cameraPosition;
-                if (pos != null && finished) {
-                  BlocProvider.of<SearchAddressBloc>(context).add(
-                    ChangeMapPosition(
-                      pos!.target.latitude,
-                      pos!.target.longitude,
-                    ),
-                  );
-                }
+                // pos = cameraPosition;
+                // if (pos != null && finished) {
+                //   BlocProvider.of<SearchAddressBloc>(context).add(
+                //     ChangeMapPosition(
+                //       pos!.target.latitude,
+                //       pos!.target.longitude,
+                //     ),
+                //   );
+                // }
               },
             ),
           );

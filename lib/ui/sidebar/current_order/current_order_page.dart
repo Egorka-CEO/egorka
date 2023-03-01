@@ -220,6 +220,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    pointSentCount = 0;
+    pointReceiveCount = 0;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Material(
@@ -380,6 +382,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 const BorderRadius.all(
                                                     Radius.circular(20)),
                                             child: MiniMapView(
+                                                pointSentCount: pointSentCount,
                                                 type: formOrder!.result!.type!,
                                                 locations: formOrder!
                                                     .result!.locations!),

@@ -224,6 +224,19 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
 
   @override
   Widget build(BuildContext context) {
+    pointSentCount = 0;
+    pointReceiveCount = 0;
+
+    int pickUpPoint = 0;
+
+    if (formOrder != null) {
+      for (var element in formOrder!.result!.locations!) {
+        if (element.type == 'Pickup') {
+          ++pickUpPoint;
+        }
+      }
+    }
+
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Material(
@@ -384,6 +397,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                               Radius.circular(20.r),
                                             ),
                                             child: MiniMapView(
+                                                pointSentCount: pickUpPoint,
                                                 type: formOrder!.result!.type!,
                                                 locations: widget
                                                     .coast.result.locations),
@@ -397,12 +411,12 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             children: [
                                               formOrder?.result?.group ==
                                                       'Express'
-                                                  ? Text(
+                                                  ? const Text(
                                                       'Дата и время забора',
                                                       style: CustomTextStyle
                                                           .grey15bold,
                                                     )
-                                                  : Text(
+                                                  : const Text(
                                                       'Дата забора',
                                                       style: CustomTextStyle
                                                           .grey15bold,

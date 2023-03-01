@@ -908,7 +908,7 @@ class Repository {
     }
   }
 
-  Future<bool> addEmployee(
+  Future<String?> addEmployee(
     String name,
     String phone,
     String email,
@@ -934,14 +934,11 @@ class Repository {
       options: header(),
       data: data,
     );
-    print('object employee ${data}');
-
-    print('object employee ${response.data}');
 
     if (response.data['Errors'] == null) {
-      return true;
+      return null;
     } else {
-      return false;
+      return response.data['Errors'][0]['Description'];
     }
   }
 
@@ -973,7 +970,7 @@ class Repository {
       options: header(),
       data: data,
     );
-    
+
     log('message ${response.data}');
 
     if (response.data['Errors'] == null) {

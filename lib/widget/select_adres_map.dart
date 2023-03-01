@@ -158,7 +158,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                               const Align(
                                 child: Text(
                                   'Выберите точку на карте',
-                                  style: CustomTextStyle.black15w500,
+                                  style: CustomTextStyle.black17w400,
                                 ),
                               ),
                             ],

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -48,6 +50,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   Color colorStatus = Colors.red;
   String status = 'Ошибка';
   String? declaredCost;
+  String? gatePay;
 
   int pointSentCount = 0;
   int pointReceiveCount = 0;
@@ -57,6 +60,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   DeliveryChocie? deliveryChocie;
 
   PanelController panelController = PanelController();
+
+  bool cardTap = true;
 
   @override
   void initState() {
@@ -107,15 +112,22 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       }
     }
 
-    print('object ${formOrder?.result?.locations?.first.dateTo}');
+    print('object12 ${formOrder?.result?.group}');
 
     if (formOrder!.result!.locations!.first.date != null) {
       parseDate = DateTime.fromMillisecondsSinceEpoch(
           formOrder!.result!.locations!.first.date! * 1000);
+      print('object12 ${parseDate}');
 
       pickDay = DateFormat.EEEE('ru').format(parseDate!);
+      String? timePick;
+      if (formOrder?.result?.group == 'Express') {
+        timePick = '';
+        timePick =
+            '${parseDate!.hour < 10 ? '0${parseDate!.hour}' : parseDate!.hour}:${parseDate!.minute < 10 ? '0${parseDate!.minute}' : parseDate!.minute}';
+      }
       pickDate =
-          '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
+          '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year} ${timePick ?? ''}';
     }
     day = DateFormat('dd').format(
         DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000));
@@ -200,6 +212,13 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       deliveryChocie = listChoice[2];
     }
 
+    if (formOrder != null &&
+        formOrder!.result != null &&
+        formOrder!.result!.invoices != null &&
+        formOrder!.result!.invoices!.first.payments.isNotEmpty) {
+      gatePay = formOrder?.result?.invoices?.first.payments.first.gate ?? '';
+    }
+
     setState(() {});
   }
 
@@ -235,7 +254,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                     const Align(
                                       child: Text(
                                         'История',
-                                        style: CustomTextStyle.black15w500,
+                                        style: CustomTextStyle.black17w400,
                                       ),
                                     ),
                                     if (status != 'Выполнено' &&
@@ -325,50 +344,6 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                         Expanded(
                           child: Column(
                             children: [
-                              // SizedBox(
-                              //   height: 350.h,
-                              //   child: Column(
-                              //     children: [
-                              //       SizedBox(height: 10.h),
-                              //       Container(
-                              //         padding: EdgeInsets.symmetric(
-                              //             vertical: 5.h, horizontal: 10.h),
-                              //         decoration: BoxDecoration(
-                              //           borderRadius:
-                              //               BorderRadius.circular(12.r),
-                              //           color: colorStatus,
-                              //         ),
-                              //         child: Text(
-                              //           status,
-                              //           style: const TextStyle(
-                              //               color: Colors.white),
-                              //         ),
-                              //       ),
-                              //       SizedBox(height: 10.h),
-                              //       Text(
-                              //         '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
-                              //         style: CustomTextStyle.black15w500,
-                              //       ),
-                              //       SizedBox(height: 10.h),
-                              //       Padding(
-                              //         padding: EdgeInsets.symmetric(
-                              //             horizontal: 15.w),
-                              //         child: SizedBox(
-                              //           height: 250.h,
-                              //           child: ClipRRect(
-                              //             borderRadius: BorderRadius.all(
-                              //               Radius.circular(20.r),
-                              //             ),
-                              //             child: MiniMapView(
-                              //                 locations: widget
-                              //                     .coast.result.locations),
-                              //           ),
-                              //         ),
-                              //       ),
-                              //       SizedBox(height: 10.h),
-                              //     ],
-                              //   ),
-                              // ),
                               Expanded(
                                 child: SingleChildScrollView(
                                   physics: const ClampingScrollPhysics(),
@@ -399,7 +374,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         SizedBox(height: 10.h),
                                         Text(
                                           '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
-                                          style: CustomTextStyle.black15w500,
+                                          style: CustomTextStyle.black17w400,
                                         ),
                                         SizedBox(height: 10.h),
                                         SizedBox(
@@ -419,12 +394,19 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 15.w),
                                           child: Row(
-                                            children: const [
-                                              Text(
-                                                'Дата и время забора',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
+                                            children: [
+                                              formOrder?.result?.group ==
+                                                      'Express'
+                                                  ? Text(
+                                                      'Дата и время забора',
+                                                      style: CustomTextStyle
+                                                          .grey15bold,
+                                                    )
+                                                  : Text(
+                                                      'Дата забора',
+                                                      style: CustomTextStyle
+                                                          .grey15bold,
+                                                    ),
                                             ],
                                           ),
                                         ),
@@ -443,12 +425,16 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   ? Text(
                                                       pickDate,
                                                       style: CustomTextStyle
-                                                          .black15w500,
+                                                          .black15w700
+                                                          .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
                                                     )
                                                   : const Text(
                                                       '-',
                                                       style: CustomTextStyle
-                                                          .black15w500,
+                                                          .black17w400,
                                                     ),
                                             ],
                                           ),
@@ -504,7 +490,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                                   .point!
                                                                   .address!,
                                                               style: CustomTextStyle
-                                                                  .black15w500,
+                                                                  .black17w400,
                                                             ),
                                                           ),
                                                         ],
@@ -578,7 +564,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                                   .point!
                                                                   .address!,
                                                               style: CustomTextStyle
-                                                                  .black15w500,
+                                                                  .black17w400,
                                                             ),
                                                           ),
                                                         ],
@@ -880,37 +866,34 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 20.h),
-                                        Row(
-                                          children: [
-                                            SizedBox(width: 10.w),
-                                            const Text(
-                                              'Способ оплаты',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                            const Spacer(),
-                                            BlocBuilder<ProfileBloc,
-                                                    ProfileState>(
-                                                builder: (context, snapshot) {
-                                              final auth =
-                                                  BlocProvider.of<ProfileBloc>(
-                                                          context)
-                                                      .getUser();
-                                              return Text(
-                                                (auth != null &&
-                                                        auth.result!.agent !=
-                                                            null)
-                                                    ? 'Депозит'
-                                                    : 'Карта',
-                                                style: CustomTextStyle
-                                                    .black15w700
-                                                    .copyWith(
-                                                        color:
-                                                            Colors.grey[500]),
-                                              );
-                                            }),
-                                          ],
-                                        ),
+                                        if (gatePay != null)
+                                          SizedBox(height: 20.h),
+                                        if (gatePay != null)
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 10.w),
+                                              const Text(
+                                                'Способ оплаты',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                              const Spacer(),
+                                              BlocBuilder<ProfileBloc,
+                                                      ProfileState>(
+                                                  builder: (context, snapshot) {
+                                                return Text(
+                                                  gatePay == 'Account'
+                                                      ? 'Депозит'
+                                                      : 'Карта',
+                                                  style: CustomTextStyle
+                                                      .black15w700
+                                                      .copyWith(
+                                                          color:
+                                                              Colors.grey[500]),
+                                                );
+                                              }),
+                                            ],
+                                          ),
                                         SizedBox(height: 20.h),
                                         Row(
                                           children: [
@@ -1044,21 +1027,22 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
 
                           String coast = '0';
 
-                          if (auth != null && auth.result!.agent != null) {
-                            for (var element
-                                in formOrder!.result!.invoices!.first.options) {
-                              if (element.logic == 'Account') {
-                                coast = '${((element.amount)! / 100).ceil()}';
-                                break;
-                              }
+                          // if (auth != null && auth.result!.agent != null) {
+                          for (var element
+                              in formOrder!.result!.invoices!.first.options) {
+                            if (element.logic == 'Account') {
+                              coast = '${((element.amount)! / 100).ceil()}';
+                              break;
                             }
-                          } else {
-                            for (var element
-                                in formOrder!.result!.invoices!.first.options) {
-                              if (element.logic == 'Card') {
-                                coast = '${((element.amount)! / 100).ceil()}';
-                                break;
-                              }
+                          }
+
+                          String cardTotal = '0';
+                          for (var element
+                              in formOrder!.result!.invoices!.first.options) {
+                            if (element.logic == 'Card') {
+                              cardTotal =
+                                  '${((element.amount)! / 100).toStringAsFixed(2)}';
+                              break;
                             }
                           }
 
@@ -1085,31 +1069,113 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             fontSize: 20,
                                           ),
                                         ),
-                                        const SizedBox(width: 20),
+                                        const SizedBox(height: 5),
                                         Row(
                                           children: [
                                             if (auth != null &&
                                                 auth.result!.agent != null)
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.r),
+                                              SizedBox(
+                                                height: 50.h,
+                                                child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.r),
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    final deposit = BlocProvider
+                                                            .of<ProfileBloc>(
+                                                                context)
+                                                        .deposit;
+
+                                                    MessageDialogs().showLoadDialog(
+                                                        'Производится оплата с вашего депозита');
+                                                    String?
+                                                        res = await Repository()
+                                                            .paymentDeposit(
+                                                                formOrder!
+                                                                    .result!
+                                                                    .invoices!
+                                                                    .first
+                                                                    .iD!,
+                                                                formOrder!
+                                                                    .result!
+                                                                    .invoices!
+                                                                    .first
+                                                                    .pIN!,
+                                                                deposit!
+                                                                    .result!
+                                                                    .accounts
+                                                                    .first
+                                                                    .iD);
+                                                    SmartDialog.dismiss();
+                                                    BlocProvider.of<
+                                                                HistoryOrdersBloc>(
+                                                            context)
+                                                        .add(
+                                                            GetListOrdersEvent());
+                                                    res == null
+                                                        ? MessageDialogs()
+                                                            .completeDialog(
+                                                                text:
+                                                                    'Оплачено')
+                                                        : MessageDialogs()
+                                                            .errorDialog(
+                                                                text:
+                                                                    'Ошибка оплаты',
+                                                                error: res);
+                                                    resPaid = res == null
+                                                        ? true
+                                                        : false;
+                                                    getForm();
+                                                    setState(() {});
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      const Text(
+                                                        'Депозит',
+                                                        style: CustomTextStyle
+                                                            .black17w400,
+                                                      ),
+                                                      SizedBox(width: 5.w),
+                                                      SvgPicture.asset(
+                                                        'assets/icons/deposit.svg',
+                                                        height: 25.h,
+                                                      )
+                                                    ],
                                                   ),
                                                 ),
+                                              ),
+                                            SizedBox(width: 10.h),
+                                            SizedBox(
+                                              height: 50.h,
+                                              child: ElevatedButton(
                                                 onPressed: () async {
-                                                  final deposit = BlocProvider
-                                                          .of<ProfileBloc>(
-                                                              context)
-                                                      .deposit;
+                                                  if (cardTap) {
+                                                    cardTap = false;
+                                                    PaymentCard? res =
+                                                        await Repository()
+                                                            .paymentCard(
+                                                      formOrder!.result!
+                                                          .invoices!.first.iD!,
+                                                      formOrder!.result!
+                                                          .invoices!.first.pIN!,
+                                                    );
 
-                                                  MessageDialogs().showLoadDialog(
-                                                      'Производится оплата с вашего депозита');
-                                                  String? res =
-                                                      await Repository()
-                                                          .paymentDeposit(
+                                                    if (res != null &&
+                                                        res.url != null) {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return PaymentWebView(
+                                                              res.url!,
                                                               formOrder!
                                                                   .result!
                                                                   .invoices!
@@ -1120,120 +1186,71 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                                   .invoices!
                                                                   .first
                                                                   .pIN!,
-                                                              deposit!
-                                                                  .result!
-                                                                  .accounts
-                                                                  .first
-                                                                  .iD);
-                                                  SmartDialog.dismiss();
-                                                  BlocProvider.of<
-                                                              HistoryOrdersBloc>(
-                                                          context)
-                                                      .add(
-                                                          GetListOrdersEvent());
-                                                  res == null
-                                                      ? MessageDialogs()
-                                                          .completeDialog(
-                                                              text: 'Оплачено')
-                                                      : MessageDialogs()
-                                                          .errorDialog(
-                                                              text:
-                                                                  'Ошибка оплаты',
-                                                              error: res);
-                                                  resPaid = res == null
-                                                      ? true
-                                                      : false;
-                                                  getForm();
-                                                  setState(() {});
+                                                            );
+                                                          },
+                                                        ),
+                                                      ).then((value) {
+                                                        if (value != null) {
+                                                          if (value) {
+                                                            MessageDialogs()
+                                                                .completeDialog(
+                                                                    text:
+                                                                        'Олачено');
+                                                            getForm();
+                                                          } else {
+                                                            MessageDialogs()
+                                                                .errorDialog(
+                                                                    text:
+                                                                        'Ошибка оплаты');
+                                                          }
+                                                        }
+                                                      });
+                                                    }
+                                                    cardTap = true;
+                                                  }
                                                 },
-                                                child: Row(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
-                                                    const Text(
-                                                      'Депозит',
-                                                      style: CustomTextStyle
-                                                          .black15w500,
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        const Text(
+                                                          'Карта',
+                                                          style: CustomTextStyle
+                                                              .black17w400,
+                                                        ),
+                                                        SizedBox(width: 5.w),
+                                                        SvgPicture.asset(
+                                                          'assets/icons/credit-card.svg',
+                                                          height: 25.h,
+                                                        ),
+                                                      ],
                                                     ),
-                                                    SizedBox(width: 5.w),
-                                                    SvgPicture.asset(
-                                                      'assets/icons/deposit.svg',
-                                                      height: 25.h,
+                                                    Text(
+                                                      '+${(double.parse(cardTotal) - double.parse(coast)).toStringAsFixed(2)} ₽',
+                                                      style: CustomTextStyle
+                                                          .black15w700
+                                                          .copyWith(
+                                                        color: Colors.grey[500],
+                                                        fontSize: 13.sp,
+                                                      ),
                                                     )
                                                   ],
                                                 ),
-                                              ),
-                                            SizedBox(width: 10.h),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                PaymentCard? res =
-                                                    await Repository()
-                                                        .paymentCard(
-                                                  formOrder!.result!.invoices!
-                                                      .first.iD!,
-                                                  formOrder!.result!.invoices!
-                                                      .first.pIN!,
-                                                );
-
-                                                print('object123123 ${res}');
-                                                if (res != null &&
-                                                    res.url != null) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return PaymentWebView(
-                                                          res.url!,
-                                                          formOrder!
-                                                              .result!
-                                                              .invoices!
-                                                              .first
-                                                              .iD!,
-                                                          formOrder!
-                                                              .result!
-                                                              .invoices!
-                                                              .first
-                                                              .pIN!,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ).then((value) {
-                                                    if (value != null) {
-                                                      if (value) {
-                                                        MessageDialogs()
-                                                            .completeDialog(
-                                                                text:
-                                                                    'Олачено');
-                                                        getForm();
-                                                      } else {
-                                                        MessageDialogs()
-                                                            .errorDialog(
-                                                                text:
-                                                                    'Ошибка оплаты');
-                                                      }
-                                                    }
-                                                  });
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.r),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  const Text(
-                                                    'Карта',
-                                                    style: CustomTextStyle
-                                                        .black15w500,
-                                                  ),
-                                                  SizedBox(width: 5.w),
-                                                  SvgPicture.asset(
-                                                    'assets/icons/credit-card.svg',
-                                                    height: 25.h,
-                                                  ),
-                                                ],
                                               ),
                                             ),
                                           ],

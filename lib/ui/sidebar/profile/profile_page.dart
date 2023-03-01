@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Colors.white,
           title: const Text(
             'Профиль',
-            style: CustomTextStyle.black15w500,
+            style: CustomTextStyle.black17w400,
           ),
           foregroundColor: Colors.red,
           elevation: 0.5,
@@ -193,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: const [
                           Text(
                             'Основные данные',
-                            style: CustomTextStyle.black15w500,
+                            style: CustomTextStyle.black17w400,
                           ),
                         ],
                       ),
@@ -336,7 +336,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: const [
                           Text(
                             'Пароль',
-                            style: CustomTextStyle.black15w500,
+                            style: CustomTextStyle.black17w400,
                           ),
                         ],
                       ),

@@ -10,6 +10,7 @@ class DepositLoading extends DepositState {}
 
 class DepositLoad extends DepositState {
   List<Invoice>? list;
+  int page;
 
-  DepositLoad(this.list);
+  DepositLoad(this.list, this.page);
 }

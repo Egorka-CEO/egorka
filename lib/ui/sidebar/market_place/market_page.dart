@@ -278,7 +278,7 @@ class _MarketPageState extends State<MarketPages>
                                           SizedBox(width: 15.w),
                                           const Text(
                                             'Доставка до маркетплейса',
-                                            style: CustomTextStyle.black15w500,
+                                            style: CustomTextStyle.black17w400,
                                           ),
                                         ],
                                       ),

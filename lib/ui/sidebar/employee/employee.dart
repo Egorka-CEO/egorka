@@ -49,7 +49,7 @@ class _EmployeePageState extends State<EmployeePage> {
           elevation: 0.5,
           title: const Text(
             'Список сотрудников',
-            style: CustomTextStyle.black15w500,
+            style: CustomTextStyle.black17w400,
           ),
           leading: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
@@ -65,6 +65,7 @@ class _EmployeePageState extends State<EmployeePage> {
           physics: const ClampingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
           itemBuilder: (context, index) {
+            if (index == 0) return SizedBox();
             if (index == employee.length) {
               return Padding(
                 padding: EdgeInsets.only(top: 20.h),
@@ -105,6 +106,10 @@ class _EmployeePageState extends State<EmployeePage> {
       child: ScaleButton(
         bound: 0.02,
         onTap: () {
+          nameController.text = '${employee.name!} ${employee.surname!}';
+          phoneController.text = employee.phoneMobile ?? '';
+          emailController.text = employee.email ?? '';
+          loginController.text = employee.username ?? '';
           editEmployee(context, employee);
         },
         child: Container(
@@ -127,7 +132,7 @@ class _EmployeePageState extends State<EmployeePage> {
                     child: SizedBox(
                       height: 130.h,
                       child: Text(
-                        (index + 1).toString(),
+                        (index).toString(),
                         style: TextStyle(
                           fontSize: 140.sp,
                           fontWeight: FontWeight.w900,
@@ -186,7 +191,7 @@ class _EmployeePageState extends State<EmployeePage> {
   ) =>
       showDialog(
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.2),
         context: context,
         builder: (context) {
           return MediaQuery(
@@ -220,7 +225,7 @@ class _EmployeePageState extends State<EmployeePage> {
                           children: const [
                             Text(
                               'Укажите данные нового сотрудника',
-                              style: CustomTextStyle.black15w500,
+                              style: CustomTextStyle.black17w400,
                             ),
                           ],
                         ),
@@ -326,8 +331,11 @@ class _EmployeePageState extends State<EmployeePage> {
                                   emailController.text = '';
                                   loginController.text = '';
                                   passwordController.text = '';
+                                  Navigator.of(context).pop();
+                                } else {
+                                  MessageDialogs().showAlert('Ошибка',
+                                      'Пользватель с таким email или телефоном уже зарегистрирован');
                                 }
-                                Navigator.of(context).pop();
                               } else {
                                 String error = '';
                                 if (nameController.text.isEmpty) {
@@ -375,14 +383,9 @@ class _EmployeePageState extends State<EmployeePage> {
 
   void editEmployee(BuildContext context, Employee employee) => showDialog(
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.2),
         context: context,
         builder: (context) {
-          nameController.text = '${employee.name!} ${employee.surname!}';
-          phoneController.text = employee.phoneMobile ?? '';
-          emailController.text = employee.email ?? '';
-          loginController.text = employee.username ?? '';
-
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
             child: StatefulBuilder(builder: (context, snapshot) {
@@ -414,7 +417,7 @@ class _EmployeePageState extends State<EmployeePage> {
                           children: const [
                             Text(
                               'Укажите данные нового сотрудника',
-                              style: CustomTextStyle.black15w500,
+                              style: CustomTextStyle.black17w400,
                             ),
                           ],
                         ),

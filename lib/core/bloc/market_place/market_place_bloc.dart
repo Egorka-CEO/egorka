@@ -42,7 +42,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
         locations: [
           Location(
             date: event.time != null
-                ? DateFormat('yyyy-MM-dd HH:MM:ss').format(event.time!)
+                ? DateFormat('yyyy-MM-dd HH:mm:ss').format(event.time!)
                 : null,
             point: Point(
               code:

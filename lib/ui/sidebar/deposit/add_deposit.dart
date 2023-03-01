@@ -13,9 +13,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
-// import 'package:tinkoff_sdk/tinkoff_sdk.dart';
 
 class AddDeposit extends StatefulWidget {
+  int page;
+  AddDeposit(this.page);
   @override
   State<AddDeposit> createState() => _AddDepositState();
 }
@@ -28,7 +29,7 @@ class _AddDepositState extends State<AddDeposit> {
   final focusCoast = FocusNode();
 
   void loadDeposit() => BlocProvider.of<DepositBloc>(context)
-      .add(LoadReplenishmentDepositEvent(Filter(type: 'Invoice')));
+      .add(LoadReplenishmentDepositEvent(Filter(type: 'Invoice'), widget.page));
 
   @override
   void initState() {
@@ -41,30 +42,10 @@ class _AddDepositState extends State<AddDeposit> {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Scaffold(
-        // appBar: AppBar(
-        //   elevation: 0.5,
-        //   title: const Text(
-        //     'Пополнение депозита',
-        //     style: CustomTextStyle.black15w500,
-        //   ),
-        //   leading: GestureDetector(
-        //     onTap: () => Navigator.of(context).pop(),
-        //     child: const Icon(
-        //       Icons.arrow_back_ios,
-        //       color: Colors.red,
-        //     ),
-        //   ),
-        //   backgroundColor: Colors.white,
-        // ),
         body: Padding(
           padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.w),
           child: Column(
             children: [
-              // SizedBox(height: 20.h),
-              // const Text(
-              //   'Укажите сумму пополнения:',
-              //   style: CustomTextStyle.black15w500,
-              // ),
               SizedBox(height: 10.h),
               Row(
                 children: [
@@ -81,55 +62,6 @@ class _AddDepositState extends State<AddDeposit> {
                   SizedBox(width: 15.w),
                   const Text('руб'),
                   const Spacer(),
-                  // GestureDetector(
-                  //   onTap: () async {
-                  //     const _TERMINAL_KEY = 'TERMINAL_KEY';
-                  //     const _PASSWORD = 'PASSWORD';
-                  //     const _PUBLIC_KEY = 'PUBLIC_KEY';
-
-                  //     final TinkoffSdk acquiring = TinkoffSdk();
-
-                  //     await acquiring.activate(
-                  //         terminalKey: _TERMINAL_KEY,
-                  //         password: _PASSWORD,
-                  //         publicKey: _PUBLIC_KEY,
-                  //         logging: true,
-                  //         isDeveloperMode: true);
-                  //     final resultPaymentSuccessful =
-                  //         await TinkoffSdk().openPaymentScreen(
-                  //       orderOptions: const OrderOptions(
-                  //           orderId: '1',
-                  //           amount: 10000,
-                  //           title: "Название платежа",
-                  //           description: "Описание платежа",
-                  //           saveAsParent: false),
-                  //       customerOptions: const CustomerOptions(
-                  //           customerKey: "CUSTOMER_KEY",
-                  //           email: "email@example.com",
-                  //           checkType: CheckType.no),
-                  //       featuresOptions: const FeaturesOptions(
-                  //         useSecureKeyboard: true,
-                  //         enableCameraCardScanner: false,
-                  //       ),
-                  //     );
-                  //   },
-                  //   child: Container(
-                  //     height: 45.h,
-                  //     width: 60.w,
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.red,
-                  //       borderRadius: BorderRadius.circular(15.r),
-                  //     ),
-                  //     child: Center(
-                  //       child: Text(
-                  //         'TinkOFF',
-                  //         style:
-                  //             CustomTextStyle.white15w600.copyWith(fontSize: 12),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(width: 5.w),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -176,6 +108,10 @@ class _AddDepositState extends State<AddDeposit> {
                 child: BlocBuilder<DepositBloc, DepositState>(
                   builder: (context, snapshot) {
                     if (snapshot is DepositLoad) {
+                      if (widget.page != snapshot.page) {
+                        return const Center(
+                            child: CupertinoActivityIndicator());
+                      }
                       depositHistory.clear();
                       depositHistory.addAll(snapshot.list!);
                       return RefreshIndicator(
@@ -200,7 +136,7 @@ class _AddDepositState extends State<AddDeposit> {
                                       flex: 3,
                                       child: Text(
                                         '№',
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 13.sp),
                                         textAlign: TextAlign.center,
                                       ),
@@ -210,7 +146,7 @@ class _AddDepositState extends State<AddDeposit> {
                                       flex: 4,
                                       child: Text(
                                         'Дата выставления',
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 13.sp),
                                         textAlign: TextAlign.center,
                                       ),
@@ -219,7 +155,7 @@ class _AddDepositState extends State<AddDeposit> {
                                       flex: 3,
                                       child: Text(
                                         'Сумма',
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 13.sp),
                                         textAlign: TextAlign.center,
                                       ),
@@ -244,7 +180,7 @@ class _AddDepositState extends State<AddDeposit> {
                                         flex: 3,
                                         child: Text(
                                           '${depositHistory[index - 1].iD!}-${depositHistory[index - 1].pIN!}',
-                                          style: CustomTextStyle.black15w500
+                                          style: CustomTextStyle.black17w400
                                               .copyWith(fontSize: 13.sp),
                                           textAlign: TextAlign.center,
                                         ),
@@ -259,7 +195,7 @@ class _AddDepositState extends State<AddDeposit> {
                                             ),
                                           ),
                                           textAlign: TextAlign.center,
-                                          style: CustomTextStyle.black15w500
+                                          style: CustomTextStyle.black17w400
                                               .copyWith(fontSize: 13.sp),
                                         ),
                                       ),
@@ -267,7 +203,7 @@ class _AddDepositState extends State<AddDeposit> {
                                         flex: 3,
                                         child: Text(
                                           '${depositHistory[index - 1].amount} руб.',
-                                          style: CustomTextStyle.black15w500
+                                          style: CustomTextStyle.black17w400
                                               .copyWith(fontSize: 13.sp),
                                           textAlign: TextAlign.center,
                                         ),

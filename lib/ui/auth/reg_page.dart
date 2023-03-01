@@ -230,7 +230,7 @@ class _RegPageState extends State<RegPage> {
                                     TextSpan(
                                       text:
                                           'Нажимаю кнопку «Начать работать» Вы соглашаетесь с ',
-                                      style: CustomTextStyle.black15w500
+                                      style: CustomTextStyle.black17w400
                                           .copyWith(fontSize: 13.sp),
                                     ),
                                     TextSpan(
@@ -244,7 +244,7 @@ class _RegPageState extends State<RegPage> {
                                     TextSpan(
                                       text:
                                           'и Политикой конфиденциальности ООО «Егорка»',
-                                      style: CustomTextStyle.black15w500
+                                      style: CustomTextStyle.black17w400
                                           .copyWith(fontSize: 13.sp),
                                     ),
                                   ],

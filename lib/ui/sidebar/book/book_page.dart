@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
@@ -66,7 +68,7 @@ class _BookPageState extends State<BookPage> {
           elevation: 0.5,
           title: const Text(
             'Записная книжка',
-            style: CustomTextStyle.black15w500,
+            style: CustomTextStyle.black17w400,
           ),
           leading: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
@@ -86,7 +88,7 @@ class _BookPageState extends State<BookPage> {
                   SizedBox(height: 30.h),
                   Row(
                     children: [
-                      const Text('Поиск', style: CustomTextStyle.black15w500),
+                      const Text('Поиск', style: CustomTextStyle.black17w400),
                       SizedBox(width: 20.w),
                       CustomTextField(
                         focusNode: focusSearch,
@@ -124,10 +126,12 @@ class _BookPageState extends State<BookPage> {
                   SizedBox(height: 20.h),
                   BlocBuilder<BookBloc, BookState>(
                     builder: (context, snapshot) {
+                      log('message $snapshot');
                       if (snapshot is UpdateBook) {
                         bookAdresses.clear();
-                        final books = BlocProvider.of<BookBloc>(context).books;
+                        final books = context.read<BookBloc>().books;
                         List<BookAdresses> bookAdressesTemp = [];
+                        log('message $books');
                         for (var element in books) {
                           if (element.name!.toLowerCase().contains(
                                   searchController.text.toLowerCase()) ||
@@ -202,7 +206,7 @@ class _BookPageState extends State<BookPage> {
                                       child: Text(
                                         'Название',
                                         textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
@@ -212,7 +216,7 @@ class _BookPageState extends State<BookPage> {
                                       child: Text(
                                         'Адрес',
                                         textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
@@ -221,7 +225,7 @@ class _BookPageState extends State<BookPage> {
                                       child: Text(
                                         'Телефон',
                                         textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
@@ -248,24 +252,20 @@ class _BookPageState extends State<BookPage> {
                                   ),
                                 ),
                               ),
-                              confirmDismiss: bookAdresses.length == 1
-                                  ? (direction) async {
-                                      return false;
-                                    }
-                                  : (direction) async {
-                                      bool resDelete = await Repository()
-                                          .deleteAddress(
-                                              bookAdresses[index - 1].id!);
+                              confirmDismiss: (direction) async {
+                                print('object here');
+                                bool resDelete = await Repository()
+                                    .deleteAddress(bookAdresses[index - 1].id!);
 
-                                      if (resDelete) {
-                                        bookAdresses.removeAt(index - 1);
-                                      }
+                                if (resDelete) {
+                                  bookAdresses.removeAt(index - 1);
+                                }
 
-                                      BlocProvider.of<BookBloc>(context)
-                                          .add(LoadBooksEvent());
+                                BlocProvider.of<BookBloc>(context)
+                                    .add(LoadBooksEvent());
 
-                                      return resDelete;
-                                    },
+                                return resDelete;
+                              },
                               direction: DismissDirection.endToStart,
                               child: Container(
                                 height: 70.h,
@@ -280,7 +280,7 @@ class _BookPageState extends State<BookPage> {
                                       child: Text(
                                         bookAdresses[index - 1].name!,
                                         textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
@@ -290,7 +290,7 @@ class _BookPageState extends State<BookPage> {
                                       child: Text(
                                         bookAdresses[index - 1].address!,
                                         textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black15w500
+                                        style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
@@ -301,7 +301,7 @@ class _BookPageState extends State<BookPage> {
                                           '-',
                                       maxLines: 1,
                                       textAlign: TextAlign.center,
-                                      style: CustomTextStyle.black15w500
+                                      style: CustomTextStyle.black17w400
                                           .copyWith(fontSize: 14.sp),
                                     ),
                                     SizedBox(width: 10.w),
@@ -368,7 +368,7 @@ class _BookPageState extends State<BookPage> {
                                       children: [
                                         const Text(
                                           'Добавление адреса',
-                                          style: CustomTextStyle.black15w500,
+                                          style: CustomTextStyle.black17w400,
                                         ),
                                         Align(
                                           alignment: Alignment.centerRight,

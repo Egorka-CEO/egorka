@@ -16,7 +16,7 @@ class AboutPage extends StatelessWidget {
             backgroundColor: Colors.white,
             title: const Text(
               'О приложении',
-              style: CustomTextStyle.black15w500,
+              style: CustomTextStyle.black17w400,
             ),
             foregroundColor: Colors.red,
             elevation: 0.5,
@@ -32,10 +32,10 @@ class AboutPage extends StatelessWidget {
                   height: 60.h,
                 ),
                 SizedBox(height: 20.h),
-                const Text('Версия 0.1', style: CustomTextStyle.black15w500),
+                const Text('Версия 0.1', style: CustomTextStyle.black17w400),
                 const Spacer(flex: 20),
                 const Text('Команда разработки',
-                    style: CustomTextStyle.black15w500),
+                    style: CustomTextStyle.black17w400),
                 SizedBox(height: 10.h),
                 Image.asset(
                   'assets/images/ic_broseph.png',

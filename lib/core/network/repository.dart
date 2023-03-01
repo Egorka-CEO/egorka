@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:egorka/core/database/secure_storage.dart';
@@ -153,6 +154,8 @@ class Repository {
         "Params": params()
       },
     );
+    log('object ${response.data['Errors']}');
+    log('object ${response.data['Result']}');
 
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
@@ -970,6 +973,8 @@ class Repository {
       options: header(),
       data: data,
     );
+    
+    log('message ${response.data}');
 
     if (response.data['Errors'] == null) {
       return true;

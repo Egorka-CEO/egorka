@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -46,6 +48,8 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   String status = 'Ошибка';
   bool loadOrder = false;
   String? declaredCost;
+  bool cardTap = true;
+  String? gatePay;
 
   int pointSentCount = 0;
   int pointReceiveCount = 0;
@@ -110,8 +114,14 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
             formOrder!.result!.locations!.first.date! * 1000);
 
         pickDay = DateFormat.EEEE('ru').format(parseDate!);
+        String? timePick;
+        if (formOrder?.result?.group == 'Express') {
+          timePick = '';
+          timePick =
+              '${parseDate!.hour < 10 ? '0${parseDate!.hour}' : parseDate!.hour}:${parseDate!.minute < 10 ? '0${parseDate!.minute}' : parseDate!.minute}';
+        }
         pickDate =
-            '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year}';
+            '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year} ${timePick ?? ''}';
       }
       //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
       day = DateFormat('dd').format(
@@ -198,6 +208,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
       deliveryChocie = listChoice[2];
     }
 
+    if (formOrder != null &&
+        formOrder!.result != null &&
+        formOrder!.result!.invoices != null &&
+        formOrder!.result!.invoices!.first.payments.isNotEmpty) {
+      gatePay = formOrder?.result?.invoices?.first.payments.first.gate ?? '';
+    }
+
     setState(() {});
   }
 
@@ -233,7 +250,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                     const Align(
                                       child: Text(
                                         'Текущий заказ',
-                                        style: CustomTextStyle.black15w500,
+                                        style: CustomTextStyle.black17w400,
                                       ),
                                     ),
                                     if (status != 'Выполнено' &&
@@ -249,8 +266,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 context: context,
                                                 builder: (context) {
                                                   return CupertinoAlertDialog(
-                                                    title: Text('Подтвердить?'),
-                                                    content: Text(
+                                                    title: const Text(
+                                                        'Подтвердить?'),
+                                                    content: const Text(
                                                         'Текущая заявка будет отменена'),
                                                     actions: [
                                                       CupertinoDialogAction(
@@ -258,12 +276,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                             Navigator.pop(
                                                                 context);
                                                           },
-                                                          textStyle: TextStyle(
-                                                              color:
-                                                                  Colors.red),
+                                                          textStyle:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .red),
                                                           isDefaultAction: true,
-                                                          child:
-                                                              Text("Отменить")),
+                                                          child: const Text(
+                                                              "Отменить")),
                                                       CupertinoDialogAction(
                                                           onPressed: () async {
                                                             MessageDialogs()
@@ -296,7 +315,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                             setState(() {});
                                                           },
                                                           isDefaultAction: true,
-                                                          child: Text(
+                                                          child: const Text(
                                                               "Подтвердить"))
                                                     ],
                                                   );
@@ -351,7 +370,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         SizedBox(height: 20.h),
                                         Text(
                                           '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
-                                          style: CustomTextStyle.black15w500,
+                                          style: CustomTextStyle.black17w400,
                                         ),
                                         SizedBox(height: 10.h),
                                         SizedBox(
@@ -368,11 +387,19 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ),
                                         SizedBox(height: 10.h),
                                         Row(
-                                          children: const [
-                                            Text(
-                                              'Дата и время забора',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
+                                          children: [
+                                            formOrder?.result?.group ==
+                                                    'Express'
+                                                ? const Text(
+                                                    'Дата и время забора',
+                                                    style: CustomTextStyle
+                                                        .grey15bold,
+                                                  )
+                                                : const Text(
+                                                    'Дата забора',
+                                                    style: CustomTextStyle
+                                                        .grey15bold,
+                                                  ),
                                           ],
                                         ),
                                         SizedBox(height: 15.h),
@@ -387,12 +414,16 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                 ? Text(
                                                     pickDate,
                                                     style: CustomTextStyle
-                                                        .black15w500,
+                                                        .black15w700
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
                                                   )
                                                 : const Text(
                                                     '-',
                                                     style: CustomTextStyle
-                                                        .black15w500,
+                                                        .black17w400,
                                                   ),
                                           ],
                                         ),
@@ -447,7 +478,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                                   .point!
                                                                   .address!,
                                                               style: CustomTextStyle
-                                                                  .black15w500,
+                                                                  .black17w400,
                                                             ),
                                                           ),
                                                         ],
@@ -521,7 +552,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                                   .point!
                                                                   .address!,
                                                               style: CustomTextStyle
-                                                                  .black15w500,
+                                                                  .black17w400,
                                                             ),
                                                           ),
                                                         ],
@@ -589,7 +620,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                             ? (status == 'Отказано' ||
                                                     status == 'Ошибка' ||
                                                     status == 'Отменено')
-                                                ? SizedBox()
+                                                ? const SizedBox()
                                                 : Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -823,37 +854,34 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 20.h),
-                                        Row(
-                                          children: [
-                                            SizedBox(width: 10.w),
-                                            const Text(
-                                              'Способ оплаты',
-                                              style: CustomTextStyle.grey15bold,
-                                            ),
-                                            const Spacer(),
-                                            BlocBuilder<ProfileBloc,
-                                                    ProfileState>(
-                                                builder: (context, snapshot) {
-                                              final auth =
-                                                  BlocProvider.of<ProfileBloc>(
-                                                          context)
-                                                      .getUser();
-                                              return Text(
-                                                (auth != null &&
-                                                        auth.result!.agent !=
-                                                            null)
-                                                    ? 'Депозит'
-                                                    : 'Карта',
-                                                style: CustomTextStyle
-                                                    .black15w700
-                                                    .copyWith(
-                                                        color:
-                                                            Colors.grey[500]),
-                                              );
-                                            }),
-                                          ],
-                                        ),
+                                        if (gatePay != null)
+                                          SizedBox(height: 20.h),
+                                        if (gatePay != null)
+                                          Row(
+                                            children: [
+                                              SizedBox(width: 10.w),
+                                              const Text(
+                                                'Способ оплаты',
+                                                style:
+                                                    CustomTextStyle.grey15bold,
+                                              ),
+                                              const Spacer(),
+                                              BlocBuilder<ProfileBloc,
+                                                      ProfileState>(
+                                                  builder: (context, snapshot) {
+                                                return Text(
+                                                  gatePay == 'Account'
+                                                      ? 'Депозит'
+                                                      : 'Карта',
+                                                  style: CustomTextStyle
+                                                      .black15w700
+                                                      .copyWith(
+                                                          color:
+                                                              Colors.grey[500]),
+                                                );
+                                              }),
+                                            ],
+                                          ),
                                         SizedBox(height: 20.h),
                                         Row(
                                           children: [
@@ -982,21 +1010,22 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
 
                         String coast = '0';
 
-                        if (auth != null && auth.result!.agent != null) {
-                          for (var element
-                              in formOrder!.result!.invoices!.first.options) {
-                            if (element.logic == 'Account') {
-                              coast = '${((element.amount)! / 100).ceil()}';
-                              break;
-                            }
+                        // if (auth != null && auth.result!.agent != null) {
+                        for (var element
+                            in formOrder!.result!.invoices!.first.options) {
+                          if (element.logic == 'Account') {
+                            coast = '${((element.amount)! / 100).ceil()}';
+                            break;
                           }
-                        } else {
-                          for (var element
-                              in formOrder!.result!.invoices!.first.options) {
-                            if (element.logic == 'Card') {
-                              coast = '${((element.amount)! / 100).ceil()}';
-                              break;
-                            }
+                        }
+
+                        String cardTotal = '0';
+                        for (var element
+                            in formOrder!.result!.invoices!.first.options) {
+                          if (element.logic == 'Card') {
+                            cardTotal =
+                                '${((element.amount)! / 100).toStringAsFixed(2)}';
+                            break;
                           }
                         }
 
@@ -1023,11 +1052,140 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                           fontSize: 20,
                                         ),
                                       ),
+                                      const SizedBox(height: 5),
                                       Row(
                                         children: [
                                           if (auth != null &&
                                               auth.result!.agent != null)
-                                            ElevatedButton(
+                                            SizedBox(
+                                              height: 50.h,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  final deposit = BlocProvider
+                                                          .of<ProfileBloc>(
+                                                              context)
+                                                      .deposit;
+                                                  MessageDialogs().showLoadDialog(
+                                                      'Производится оплата с вашего депозита');
+                                                  String? res =
+                                                      await Repository()
+                                                          .paymentDeposit(
+                                                              formOrder!
+                                                                  .result!
+                                                                  .invoices!
+                                                                  .first
+                                                                  .iD!,
+                                                              formOrder!
+                                                                  .result!
+                                                                  .invoices!
+                                                                  .first
+                                                                  .pIN!,
+                                                              deposit!
+                                                                  .result!
+                                                                  .accounts
+                                                                  .first
+                                                                  .iD);
+                                                  SmartDialog.dismiss();
+                                                  BlocProvider.of<
+                                                              HistoryOrdersBloc>(
+                                                          context)
+                                                      .add(
+                                                          GetListOrdersEvent());
+                                                  res == null
+                                                      ? MessageDialogs()
+                                                          .completeDialog(
+                                                              text: 'Оплачено')
+                                                      : MessageDialogs()
+                                                          .errorDialog(
+                                                              text:
+                                                                  'Ошибка оплаты',
+                                                              error: res);
+                                                  resPaid = res == null
+                                                      ? true
+                                                      : false;
+                                                  getForm();
+                                                  setState(() {});
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    const Text(
+                                                      'Депозит',
+                                                      style: CustomTextStyle
+                                                          .black17w400,
+                                                    ),
+                                                    SizedBox(width: 5.w),
+                                                    SvgPicture.asset(
+                                                      'assets/icons/deposit.svg',
+                                                      height: 25.h,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          SizedBox(width: 10.h),
+                                          SizedBox(
+                                            height: 50.h,
+                                            child: ElevatedButton(
+                                              onPressed: () async {
+                                                if (cardTap) {
+                                                  cardTap = false;
+                                                  PaymentCard? res =
+                                                      await Repository()
+                                                          .paymentCard(
+                                                    formOrder!.result!.invoices!
+                                                        .first.iD!,
+                                                    formOrder!.result!.invoices!
+                                                        .first.pIN!,
+                                                  );
+                                                  if (res != null &&
+                                                      res.url != null) {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) {
+                                                          return PaymentWebView(
+                                                            res.url!,
+                                                            formOrder!
+                                                                .result!
+                                                                .invoices!
+                                                                .first
+                                                                .iD!,
+                                                            formOrder!
+                                                                .result!
+                                                                .invoices!
+                                                                .first
+                                                                .pIN!,
+                                                          );
+                                                        },
+                                                      ),
+                                                    ).then((value) {
+                                                      if (value != null) {
+                                                        if (value) {
+                                                          MessageDialogs()
+                                                              .completeDialog(
+                                                                  text:
+                                                                      'Олачено');
+                                                          getForm();
+                                                        } else {
+                                                          MessageDialogs()
+                                                              .errorDialog(
+                                                                  text:
+                                                                      'Ошибка оплаты');
+                                                        }
+                                                      }
+                                                    });
+                                                  }
+                                                  cardTap = true;
+                                                }
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.white,
                                                 shape: RoundedRectangleBorder(
@@ -1036,128 +1194,37 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                           10.r),
                                                 ),
                                               ),
-                                              onPressed: () async {
-                                                final deposit = BlocProvider.of<
-                                                        ProfileBloc>(context)
-                                                    .deposit;
-                                                MessageDialogs().showLoadDialog(
-                                                    'Производится оплата с вашего депозита');
-                                                String? res = await Repository()
-                                                    .paymentDeposit(
-                                                        formOrder!
-                                                            .result!
-                                                            .invoices!
-                                                            .first
-                                                            .iD!,
-                                                        formOrder!
-                                                            .result!
-                                                            .invoices!
-                                                            .first
-                                                            .pIN!,
-                                                        deposit!.result!
-                                                            .accounts.first.iD);
-                                                SmartDialog.dismiss();
-                                                BlocProvider.of<
-                                                            HistoryOrdersBloc>(
-                                                        context)
-                                                    .add(GetListOrdersEvent());
-                                                res == null
-                                                    ? MessageDialogs()
-                                                        .completeDialog(
-                                                            text: 'Оплачено')
-                                                    : MessageDialogs()
-                                                        .errorDialog(
-                                                            text:
-                                                                'Ошибка оплаты',
-                                                            error: res);
-                                                resPaid =
-                                                    res == null ? true : false;
-                                                getForm();
-                                                setState(() {});
-                                              },
-                                              child: Row(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  const Text(
-                                                    'Депозит',
-                                                    style: CustomTextStyle
-                                                        .black15w500,
+                                                  Row(
+                                                    children: [
+                                                      const Text(
+                                                        'Карта',
+                                                        style: CustomTextStyle
+                                                            .black17w400,
+                                                      ),
+                                                      SizedBox(width: 5.w),
+                                                      SvgPicture.asset(
+                                                        'assets/icons/credit-card.svg',
+                                                        height: 25.h,
+                                                      )
+                                                    ],
                                                   ),
-                                                  SizedBox(width: 5.w),
-                                                  SvgPicture.asset(
-                                                    'assets/icons/deposit.svg',
-                                                    height: 25.h,
+                                                  Text(
+                                                    '+${(double.parse(cardTotal) - double.parse(coast)).toStringAsFixed(2)} ₽',
+                                                    style: CustomTextStyle
+                                                        .black15w700
+                                                        .copyWith(
+                                                      color: Colors.grey[500],
+                                                      fontSize: 13.sp,
+                                                    ),
                                                   )
                                                 ],
                                               ),
-                                            ),
-                                          SizedBox(width: 10.h),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              PaymentCard? res =
-                                                  await Repository()
-                                                      .paymentCard(
-                                                formOrder!.result!.invoices!
-                                                    .first.iD!,
-                                                formOrder!.result!.invoices!
-                                                    .first.pIN!,
-                                              );
-                                              if (res != null &&
-                                                  res.url != null) {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) {
-                                                      return PaymentWebView(
-                                                        res.url!,
-                                                        formOrder!
-                                                            .result!
-                                                            .invoices!
-                                                            .first
-                                                            .iD!,
-                                                        formOrder!
-                                                            .result!
-                                                            .invoices!
-                                                            .first
-                                                            .pIN!,
-                                                      );
-                                                    },
-                                                  ),
-                                                ).then((value) {
-                                                  if (value != null) {
-                                                    if (value) {
-                                                      MessageDialogs()
-                                                          .completeDialog(
-                                                              text: 'Олачено');
-                                                      getForm();
-                                                    } else {
-                                                      MessageDialogs().errorDialog(
-                                                          text:
-                                                              'Ошибка оплаты');
-                                                    }
-                                                  }
-                                                });
-                                              }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  'Карта',
-                                                  style: CustomTextStyle
-                                                      .black15w500,
-                                                ),
-                                                SizedBox(width: 5.w),
-                                                SvgPicture.asset(
-                                                  'assets/icons/credit-card.svg',
-                                                  height: 25.h,
-                                                )
-                                              ],
                                             ),
                                           ),
                                         ],

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/model/filter_invoice.dart';
@@ -12,8 +13,13 @@ import 'package:intl/intl.dart';
 
 class ItemTraffic extends StatefulWidget {
   Filter filter;
+  int page;
 
-  ItemTraffic(this.filter, {super.key});
+  ItemTraffic(
+    this.filter, {
+    super.key,
+    required this.page,
+  });
 
   @override
   State<ItemTraffic> createState() => _ItemTrafficState();
@@ -21,7 +27,7 @@ class ItemTraffic extends StatefulWidget {
 
 class _ItemTrafficState extends State<ItemTraffic> {
   void loadDeposit() => BlocProvider.of<DepositBloc>(context)
-      .add(LoadReplenishmentDepositEvent(widget.filter));
+      .add(LoadReplenishmentDepositEvent(widget.filter, widget.page));
 
   @override
   void initState() {
@@ -32,7 +38,6 @@ class _ItemTrafficState extends State<ItemTraffic> {
   List<Invoice> list = [];
 
   final FocusNode date1Focus = FocusNode();
-
   final FocusNode date2Focus = FocusNode();
 
   DateTime? dateFrom;
@@ -74,7 +79,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 70.w,
+                  width: 90.w,
                   child: const Text('Дата с...'),
                 ),
                 GestureDetector(
@@ -101,7 +106,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 70.w,
+                  width: 90.w,
                   child: const Text('Дата по...'),
                 ),
                 GestureDetector(
@@ -156,6 +161,9 @@ class _ItemTrafficState extends State<ItemTraffic> {
             child: BlocBuilder<DepositBloc, DepositState>(
               builder: (context, snapshot) {
                 if (snapshot is DepositLoad) {
+                  if (widget.page != snapshot.page) {
+                    return const Center(child: CupertinoActivityIndicator());
+                  }
                   list.clear();
                   list.addAll(snapshot.list!);
                   return RefreshIndicator(
@@ -209,7 +217,8 @@ class _ItemTrafficState extends State<ItemTraffic> {
                         }
                         return GestureDetector(
                           onTap: () {
-                            print('object ${list[index - 1].iD} ${list[index-1].pIN}');
+                            print(
+                                'object ${list[index - 1].iD} ${list[index - 1].pIN}');
                           },
                           child: Container(
                             height: 50.h,

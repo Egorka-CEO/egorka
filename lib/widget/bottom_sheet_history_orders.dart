@@ -99,56 +99,52 @@ class _BottomSheetDraggableState
   void animationEmpty() async {
     controller = AnimationController(vsync: this);
     controller.addListener(() {
-      if (widget.panelSize == 0.0) {
-        // controller.reset();
-        setState(() {
-          printText = false;
-        });
-      } else if (coast.isNotEmpty) {
-        controller.stop();
-        setState(() {
-          printText = false;
-        });
-      } else if (controller.status == AnimationStatus.completed) {
+      print('object 123');
+      if (controller.status == AnimationStatus.completed) {
         setState(() {
           printText = false;
         });
         controller.reset();
         controller
-          ..duration = const Duration(seconds: 10)
+          ..duration = const Duration(seconds: 6)
           ..forward();
       } else if (controller.value >= 0.44 && controller.value <= 0.45) {
         setState(() {
           printText = true;
         });
+        controller.animateBack(0.47);
+        controller.animateBack(0.46);
+        controller.animateTo(0.47);
+        controller.forward();
       }
     });
     controller
-      ..duration = const Duration(seconds: 10)
+      ..duration = const Duration(seconds: 6)
       ..forward();
   }
 
   Widget _searchList() {
     return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
         buildWhen: (previous, current) {
-      if (current is HistoryOpenBtmSheetState && coast.isEmpty) {
-        controller.reset();
-        controller.forward();
-      }
-      if (current is HistoryCloseBtmSheetState && coast.isEmpty) {
-        controller.reset();
-      }
+      if (current is HistoryOpenBtmSheetState && coast.isEmpty) {}
+      if (current is HistoryCloseBtmSheetState && coast.isEmpty) {}
       if (current is HistoryUpdateList) {
         coast = current.coast;
-        // animationEmpty();
-        controller.forward();
         return true;
       }
       return false;
     }, builder: (context, snapshot) {
-      if (widget.panelSize == 0.0) {
-        return SizedBox();
-      } else if (coast.isEmpty) {
+      if (coast.isEmpty) {
+        if (widget.panelSize > 0 && widget.panelSize < 0.1) {
+          controller
+            ..duration = const Duration(seconds: 6)
+            ..forward();
+        } else if (widget.panelSize == 0) {
+          printText = false;
+          controller.reset();
+        }
+      }
+      if (coast.isEmpty) {
         return Column(
           children: [
             LottieBuilder.asset(
@@ -164,12 +160,6 @@ class _BottomSheetDraggableState
                       color: Colors.white,
                       border: Border.all(color: Colors.grey[200]!),
                       borderRadius: BorderRadius.circular(20.r),
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color: Colors.black.withOpacity(0.2),
-                      //     blurRadius: 20.r,
-                      //   )
-                      // ],
                     ),
                     child: AnimatedTextKit(
                       animatedTexts: [
@@ -181,10 +171,10 @@ class _BottomSheetDraggableState
                             fontSize: 25.sp,
                             fontWeight: FontWeight.bold,
                           ),
-                          speed: const Duration(milliseconds: 60),
+                          speed: const Duration(milliseconds: 40),
                         ),
                       ],
-                      pause: const Duration(milliseconds: 4000),
+                      pause: const Duration(milliseconds: 8000),
                       repeatForever: true,
                     ),
                   )

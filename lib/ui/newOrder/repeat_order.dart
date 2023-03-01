@@ -247,7 +247,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                           Align(
                             child: Text(
                               'Оформление заказа',
-                              style: CustomTextStyle.black15w500.copyWith(
+                              style: CustomTextStyle.black17w400.copyWith(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
                           )
@@ -1458,7 +1458,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                 Flexible(
                   child: Text(
                     points[index].suggestions.name,
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 16),
+                    style: CustomTextStyle.black17w400.copyWith(fontSize: 16),
                   ),
                 ),
               ],

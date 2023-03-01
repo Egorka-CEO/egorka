@@ -115,7 +115,7 @@ class _NavBarState extends State<NavBar> {
                                     context, AppRoute.trafficDeposit),
                                 child: Text(
                                   'Депозит',
-                                  style: CustomTextStyle.black15w500
+                                  style: CustomTextStyle.black17w400
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
@@ -155,7 +155,7 @@ class _NavBarState extends State<NavBar> {
                                     context, AppRoute.employee),
                                 child: Text(
                                   'Мои сотрудники',
-                                  style: CustomTextStyle.black15w500
+                                  style: CustomTextStyle.black17w400
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
@@ -182,7 +182,7 @@ class _NavBarState extends State<NavBar> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Профиль',
-                              style: CustomTextStyle.black15w500
+                              style: CustomTextStyle.black17w400
                                   .copyWith(color: Colors.black),
                             ),
                           ),
@@ -209,7 +209,7 @@ class _NavBarState extends State<NavBar> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Текущий заказ',
-                              style: CustomTextStyle.black15w500
+                              style: CustomTextStyle.black17w400
                                   .copyWith(color: Colors.black),
                             ),
                           ),
@@ -230,7 +230,7 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'История заказов',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),
@@ -251,7 +251,7 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Маркетплейсы',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),
@@ -277,7 +277,7 @@ class _NavBarState extends State<NavBar> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Записная книжка',
-                              style: CustomTextStyle.black15w500
+                              style: CustomTextStyle.black17w400
                                   .copyWith(color: Colors.black),
                             ),
                           ),
@@ -297,7 +297,7 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Тарифы',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),
@@ -316,7 +316,7 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'О приложении',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),

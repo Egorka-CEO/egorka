@@ -62,7 +62,7 @@ class MarketPlacesMap extends StatelessWidget {
                               const Align(
                                 child: Text(
                                   'Маркетплейсы',
-                                  style: CustomTextStyle.black15w500,
+                                  style: CustomTextStyle.black17w400,
                                 ),
                               )
                             ],

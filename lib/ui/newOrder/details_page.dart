@@ -147,7 +147,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           Align(
                             child: Text(
                               'Указать детали',
-                              style: CustomTextStyle.black15w500.copyWith(
+                              style: CustomTextStyle.black17w400.copyWith(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
                           )

@@ -210,7 +210,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           Align(
                             child: Text(
                               'Оформление заказа',
-                              style: CustomTextStyle.black15w500.copyWith(
+                              style: CustomTextStyle.black17w400.copyWith(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
                           )
@@ -1354,24 +1354,24 @@ class _NewOrderPageState extends State<NewOrderPageState> {
           borderRadius: BorderRadius.only(
             bottomLeft: points.length == 1
                 ? const Radius.circular(15)
-                : routeOrderSender.length - 1 == index
+                : index == points.length - 1
                     ? const Radius.circular(15)
                     : Radius.zero,
             bottomRight: points.length == 1
                 ? const Radius.circular(15)
-                : points.length - 1 == index
+                : index == points.length - 1
                     ? const Radius.circular(15)
                     : Radius.zero,
             topLeft: points.length == 1
                 ? const Radius.circular(15)
-                : points.length - 1 == index
+                : index == points.length - 1
                     ? Radius.zero
                     : index == 0
                         ? const Radius.circular(15)
                         : Radius.zero,
             topRight: points.length == 1
                 ? const Radius.circular(15)
-                : points.length - 1 == index
+                : index == points.length - 1
                     ? Radius.zero
                     : index == 0
                         ? const Radius.circular(15)
@@ -1392,7 +1392,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 Flexible(
                   child: Text(
                     points[index].suggestions.name,
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 16),
+                    style: CustomTextStyle.black17w400.copyWith(fontSize: 16),
                   ),
                 ),
               ],

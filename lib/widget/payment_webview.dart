@@ -75,7 +75,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                               const Align(
                                 child: Text(
                                   'Оплата картой',
-                                  style: CustomTextStyle.black15w500,
+                                  style: CustomTextStyle.black17w400,
                                 ),
                               )
                             ],

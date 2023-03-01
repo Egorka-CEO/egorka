@@ -467,7 +467,7 @@ void iconDateOrder(
                       alignment: Alignment.center,
                       child: Text(
                         'Курьера можно вызвать не менее, чем за 2 часа от планированного времени забора груза',
-                        style: CustomTextStyle.black15w500
+                        style: CustomTextStyle.black17w400
                             .copyWith(fontSize: 15.sp),
                       ),
                     ),

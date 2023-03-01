@@ -80,6 +80,8 @@ class _MiniMapViewState extends State<MiniMapView> {
               ),
             );
 
+            log('message ${widget.pointSentCount - 1}---${current.routes.length}');
+
             for (int i = 0; i < current.bicycleSessionResult.length; i++) {
               if (i < widget.pointSentCount - 1) {
                 mapObjects.add(
@@ -161,6 +163,8 @@ class _MiniMapViewState extends State<MiniMapView> {
                 icon: current.startMarker,
               ),
             );
+
+            log('message ${widget.pointSentCount - 1}---${current.routes.length}');
 
             for (int i = 0; i < current.routes.length; i++) {
               if (i < widget.pointSentCount - 1) {

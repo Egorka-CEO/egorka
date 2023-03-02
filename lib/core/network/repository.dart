@@ -1,19 +1,24 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/model/account_deposit.dart';
 import 'package:egorka/model/address.dart';
+import 'package:egorka/model/book_adresses.dart';
 import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/coast_base.dart';
 import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/create_form_model.dart' as crtForm;
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/employee.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/invoice.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/model/payment.dart';
+import 'package:egorka/model/payment_card.dart';
+import 'package:egorka/model/register_company.dart';
+import 'package:egorka/model/register_user.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -23,16 +28,22 @@ import 'package:permission_handler/permission_handler.dart';
 class Repository {
   var dio = Dio();
 
+  String id = '';
   String key = '';
   String IP = '';
 
-  Future<Map<String, dynamic>> auth() async {
-    key = await MySecureStorage().getID() ?? '';
-    return {
-      "Type": "Application",
-      "System": "Corp",
-      "Key": "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE",
+  Future<Map<String, dynamic>> auth({bool sessionKey = false}) async {
+    id = await MySecureStorage().getID() ?? '';
+    key = await MySecureStorage().getKey() ?? '';
+    String typeDevice = Platform.isAndroid ? 'Android' : 'Apple';
+    Map<String, dynamic> data = {
+      "Type": typeDevice,
+      "UserUUID": id,
     };
+    if (key.isNotEmpty) data['Session'] = key;
+    print('object ${data}');
+
+    return data;
   }
 
   Map<String, dynamic> params() {
@@ -111,7 +122,7 @@ class Repository {
 
   Future<CoastResponse?> getCoastBase(CoastBase value) async {
     final body = value.toJson();
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -132,7 +143,7 @@ class Repository {
 
   Future<CoastResponse?> getCoastMarketPlace(CoastMarketPlace value) async {
     final body = value.toJson();
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -143,6 +154,8 @@ class Repository {
         "Params": params()
       },
     );
+    log('object ${response.data['Errors']}');
+    log('object ${response.data['Result']}');
 
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
@@ -153,7 +166,7 @@ class Repository {
 
   Future<CoastResponse?> getCoastAdvanced(CoastAdvanced value) async {
     final body = value.toJson();
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -173,7 +186,7 @@ class Repository {
   }
 
   Future<crtForm.CreateFormModel?> createForm(String value) async {
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -196,31 +209,35 @@ class Repository {
   }
 
   Future<List<crtForm.CreateFormModel>?> getListForm() async {
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "Orders",
+      "Body": {
+        "Limit": 50,
+        "Offset": 0,
+      },
+      "Params": {"Language": "RU"}
+    };
+    print('object authData ${authData}');
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
-      data: {
-        "Auth": authData,
-        "Method": "Orders",
-        "Body": {
-          "Limit": 50,
-          "Offset": 0,
-        },
-        "Params": {"Language": "RU"}
-      },
+      data: data,
     );
 
-    if (response.data['Result'] != null) {
+    if (response.data == '' || response.data['Result'] != null) {
       List<CreateFormModel> list = [];
-      for (var element in response.data['Result']['Orders']) {
-        list.add(crtForm.CreateFormModel(
-            time: null,
-            timeStamp: null,
-            execution: null,
-            method: null,
-            errors: null,
-            result: crtForm.Result.fromJson(element)));
+      if (response.data != '') {
+        for (var element in response.data['Result']['Orders']) {
+          list.add(crtForm.CreateFormModel(
+              time: null,
+              timeStamp: null,
+              execution: null,
+              method: null,
+              errors: null,
+              result: crtForm.Result.fromJson(element)));
+        }
       }
       return list;
     }
@@ -229,7 +246,7 @@ class Repository {
   }
 
   Future<InfoForm?> infoForm(String recordNumber, String recordPin) async {
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -252,7 +269,7 @@ class Repository {
   }
 
   Future<bool> cancelForm(String number, String pin) async {
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -277,21 +294,25 @@ class Repository {
   Future<String?> paymentDeposit(int id, int pin, String key) async {
     var authData = await auth();
     authData['Account'] = key;
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "Request",
+      "Body": {
+        "ID": id,
+        "PIN": pin,
+        "Gate": "Account",
+      },
+      "Params": params()
+    };
 
     final response = await dio.post(
       '$server/service/payment/',
       options: header(),
-      data: {
-        "Auth": authData,
-        "Method": "Request",
-        "Body": {
-          "ID": id,
-          "PIN": pin,
-          "Gate": "Account",
-        },
-        "Params": params()
-      },
+      data: data,
     );
+
+    print('object1 ${data}');
+    print('object2 ${response.data}');
 
     if (response.data['Errors'] == null) {
       return null;
@@ -300,33 +321,40 @@ class Repository {
     }
   }
 
-  Future<void> paymentCard(Payment payment) async {
-    //?
+  Future<PaymentCard?> paymentCard(int id, int pin) async {
     var authData = await auth();
+    Map<String, dynamic> data = {
+      "ID": id,
+      "PIN": pin,
+      "Gate": "Tinkoff",
+      "Logic": "Card",
+    };
     final response = await dio.post(
       '$server/service/payment/',
       options: header(),
       data: {
         "Auth": authData,
         "Method": "Redirect",
-        "Body": {
-          "ID": payment.iD,
-          "PIN": payment.pIN,
-          "Gate": payment.gate,
-          "Return": payment.answer,
-        },
+        "Body": data,
         "Params": params()
       },
     );
-  }
+    print('object ${authData} ${data}');
 
-  //Авторизация Пользователь
+    print('object ${response.data}');
+
+    if (response.data['Result'] != null) {
+      PaymentCard? res = PaymentCard.fromJson(response.data['Result']);
+      return res;
+    }
+    return null;
+  }
 
   Future<bool> UUIDCreate() async {
     var authData = await auth();
     await getIP();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -351,8 +379,8 @@ class Repository {
 
   Future<void> UUIDRegister(String value) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -369,9 +397,9 @@ class Repository {
   }
 
   Future<AuthUser?> loginUsernameUser(String login, String password) async {
-    var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    var authData = await auth(sessionKey: true);
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -387,6 +415,8 @@ class Repository {
       },
     );
 
+    print('object ${response.data}');
+
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
@@ -397,8 +427,8 @@ class Repository {
 
   Future<AuthUser?> loginEmailUser(String login, String password) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -424,8 +454,8 @@ class Repository {
 
   Future<AuthUser?> loginPhoneUser(String login, String password) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -434,27 +464,23 @@ class Repository {
         "Auth": authData,
         "Method": "Login",
         "Body": {
-          "Username": login,
+          "Phone": login,
           "Password": password,
         },
         "Params": params()
       },
     );
 
-    if (response.data['Errors'] == null) {
-      final user = AuthUser.fromJson(response.data);
-      return user;
-    } else {
-      return null;
-    }
+    final user = AuthUser.fromJson(response.data);
+    return user;
   }
 
   //Авторизация Субагент или Корпорат
   Future<AuthUser?> loginUsernameAgent(
       String login, String password, String company) async {
-    var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    var authData = await auth(sessionKey: true);
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -472,19 +498,24 @@ class Repository {
       },
     );
 
+    print('object user ${response.data}');
+
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
     } else {
       return null;
     }
+
+    // final user = AuthUser.fromJson(response.data);
+    // return user;
   }
 
   Future<AuthUser?> loginEmailAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -513,8 +544,8 @@ class Repository {
   Future<AuthUser?> loginPhoneAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    authData['UserIP'] = IP;
-    authData['UserUUID'] = '';
+    // authData['UserIP'] = IP;
+    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -540,9 +571,8 @@ class Repository {
     }
   }
 
-  // депозит
   Future<AccountsDeposit?> getDeposit() async {
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/account/',
       options: header(),
@@ -554,7 +584,9 @@ class Repository {
       },
     );
 
-    if (response.data['Errors'] == null) {
+    if (response.data == '') {
+      return null;
+    } else if (response.data['Errors'] == null) {
       final user = AccountsDeposit.fromJson(response.data);
       return user;
     } else {
@@ -563,7 +595,7 @@ class Repository {
   }
 
   Future<Invoice?> createInvoice(int value) async {
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/invoice/',
       options: header(),
@@ -588,7 +620,7 @@ class Repository {
 
   Future<List<Invoice>?> getInvoiceFilter(Filter filter) async {
     final fltr = filter.toJson();
-    var authData = await auth();
+    var authData = await auth(sessionKey: true);
     final response = await dio.post(
       '$server/service/invoice/',
       options: header(),
@@ -604,6 +636,10 @@ class Repository {
       },
     );
 
+    print('object invoice ${fltr}');
+
+    // print('object invoice ${response.data['Result']}');
+
     if (response.data['Result'] != null) {
       List<Invoice> list = [];
       for (var element in response.data['Result']['Invoices']) {
@@ -615,52 +651,62 @@ class Repository {
     }
   }
 
-  Future<String> getPDF(int id, int pin) async {
-    String savePath = await getFilePath('$id$pin.pdf');
-    final response = await dio.get(
-      '$server/export/invoice/pdf/?ID=$id$pin',
-      options: Options(
-        responseType: ResponseType.bytes,
-        followRedirects: false,
-      ),
-    );
+  Future<String?> getPDF(int id, int pin) async {
+    print('object ${id}${pin}');
+    try {
+      String savePath = await getFilePath('$id$pin.pdf');
+      final response = await dio.get(
+        '$server/export/invoice/pdf/?ID=$id$pin',
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
 
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-    ].request();
+      if (response.statusCode == 200) {
+        Map<Permission, PermissionStatus> statuses = await [
+          Permission.storage,
+        ].request();
 
-    if (statuses[Permission.storage]!.isGranted) {
-      File file = File(savePath);
-      var raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-    }
+        if (statuses[Permission.storage]!.isGranted) {
+          File file = File(savePath);
+          var raf = file.openSync(mode: FileMode.write);
+          raf.writeFromSync(response.data);
+          await raf.close();
+        }
+        return savePath;
+      }
+    } catch (e) {}
 
-    return savePath;
+    return null;
   }
 
-  Future<String> getEXCEL(int id, int pin) async {
-    String savePath = await getFilePath('$id$pin.xlsx');
-    final response = await dio.get(
-      '$server/export/invoice/excel/?ID=$id$pin',
-      options: Options(
-        responseType: ResponseType.bytes,
-        followRedirects: false,
-      ),
-    );
+  Future<String?> getEXCEL(int id, int pin) async {
+    try {
+      String savePath = await getFilePath('$id$pin.xlsx');
+      final response = await dio.get(
+        '$server/export/invoice/excel/?ID=$id$pin',
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
+      if (response.statusCode == 200) {
+        Map<Permission, PermissionStatus> statuses = await [
+          Permission.storage,
+        ].request();
 
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-    ].request();
+        if (statuses[Permission.storage]!.isGranted) {
+          File file = File(savePath);
+          var raf = file.openSync(mode: FileMode.write);
+          raf.writeFromSync(response.data);
+          await raf.close();
+        }
 
-    if (statuses[Permission.storage]!.isGranted) {
-      File file = File(savePath);
-      var raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-    }
-
-    return savePath;
+        return savePath;
+      }
+    } catch (e) {}
+    return null;
   }
 
   Future<String> getFilePath(uniqueFileName) async {
@@ -678,5 +724,312 @@ class Repository {
     path = '${dir!.path}/$uniqueFileName';
 
     return path;
+  }
+
+  Future<int?> registerUser(RegisterUserModel userModel) async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/auth/user/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Create",
+        "Body": userModel.toJson(),
+        "Params": {}
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return response.data['Errors'][0]['Code'];
+    } else {
+      return null;
+    }
+  }
+
+  Future<int?> registerCompany(RegisterCompanyModel companyModel) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "Create",
+      "Body": companyModel.toJson(),
+      "Params": {}
+    };
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+
+    print('object ${data}');
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return response.data['Errors'][0]['Code'];
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> searchINN(String inn) async {
+    var authData = await auth(sessionKey: true);
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Inn",
+        "Body": {
+          "Inn": inn,
+        },
+        "Params": {}
+      },
+    );
+
+    print('object111 ${response.data}');
+
+    if (response.data['Result'] == null) {
+      return {};
+    } else {
+      return response.data['Result']['Companies'][0];
+    }
+  }
+
+  Future<List<BookAdresses>?> getListBookAdress() async {
+    var authData = await auth(sessionKey: true);
+    final response = await dio.post(
+      '$server/service/delivery/address/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "List",
+        "Body": {},
+        "Params": {
+          "Language": "RU",
+        }
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data == '') {
+      return null;
+    } else if (response.data['Errors'] != null) {
+      return null;
+    } else {
+      List<BookAdresses> list = [];
+      for (var element in response.data['Result']['Addresses']) {
+        list.add(BookAdresses.fromJson(element));
+      }
+      return list;
+    }
+  }
+
+  Future<bool> deleteAddress(String id) async {
+    var authData = await auth(sessionKey: true);
+    final response = await dio.post(
+      '$server/service/delivery/address/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Remove",
+        "Body": {
+          "ID": id,
+        },
+        "Params": {
+          "Language": "RU",
+        }
+      },
+    );
+
+    print('object ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<bool> addAddress(BookAdresses bookAdresses) async {
+    var authData = await auth(sessionKey: true);
+    print('object ${bookAdresses.toJson()}');
+    final response = await dio.post(
+      '$server/service/delivery/address/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Add",
+        "Body": bookAdresses.toJson(),
+        "Params": {
+          "Language": "RU",
+        }
+      },
+    );
+
+    print('jjhbjbhjh ${bookAdresses.toJson()}');
+
+    print('jjhbjbhjh ${response.data}');
+
+    if (response.data['Errors'] != null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<List<Employee>> getListEmployee() async {
+    var authData = await auth();
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: {
+        "Auth": authData,
+        "Method": "Users",
+        "Body": {},
+        "Params": {},
+      },
+    );
+
+    print('object employee ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      List<Employee> employee = [];
+      if (response.data != '') {
+        for (var element in response.data['Result']['Users']) {
+          employee.add(Employee.fromJson(element));
+        }
+      }
+      return employee;
+    } else {
+      return [];
+    }
+  }
+
+  Future<String?> addEmployee(
+    String name,
+    String phone,
+    String email,
+    String login,
+    String password,
+  ) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserCreate",
+      "Body": {
+        "Name": name,
+        "Mobile": phone,
+        "Email": email,
+        "Username": login,
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+
+    if (response.data['Errors'] == null) {
+      return null;
+    } else {
+      return response.data['Errors'][0]['Description'];
+    }
+  }
+
+  Future<bool> editEmployee(
+    String name,
+    String phone,
+    String email,
+    String login,
+    String password,
+    String id,
+  ) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserUpdate",
+      "Body": {
+        "ID": id,
+        "Name": name,
+        "Mobile": phone,
+        "Email": email,
+        "Username": login,
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+
+    log('message ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> updateProfileUser(String password) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "Update",
+      "Body": {
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/user/',
+      options: header(),
+      data: data,
+    );
+    print('object ${data}');
+    print('object ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> updateProfileAgent(String password) async {
+    var authData = await auth();
+    Map<String, dynamic> data = {
+      "Auth": authData,
+      "Method": "UserUpdate",
+      "Body": {
+        "Password": password,
+      },
+      "Params": {},
+    };
+
+    final response = await dio.post(
+      '$server/service/auth/agent/',
+      options: header(),
+      data: data,
+    );
+
+    print('object1 ${data}');
+    print('object1 ${response.data}');
+
+    if (response.data['Errors'] == null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

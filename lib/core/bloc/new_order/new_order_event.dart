@@ -21,18 +21,22 @@ class NewOrder extends NewOrderEvent {
 }
 
 class CalculateCoastEvent extends NewOrderEvent {
+  DateTime? time;
   List<PointDetails> start;
   List<PointDetails> end;
   String typeCoast;
   List<Ancillaries>? ancillaries;
   String description;
+  String? id;
 
   CalculateCoastEvent(
+    this.time,
     this.start,
     this.end,
     this.typeCoast,
     this.ancillaries,
     this.description,
+    this.id,
   );
 }
 

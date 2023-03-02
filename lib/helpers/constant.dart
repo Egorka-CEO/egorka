@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-const String server = 'https://ws.egorka.dev';
+const String server = 'https://app.egorka.dev';
 const String apiKey = 'AIzaSyC2enrbrduQm8Ku7fBqdP8gOKanBct4JkQ';
 
 const Color backgroundColor = Color.fromRGBO(247, 247, 249, 1);

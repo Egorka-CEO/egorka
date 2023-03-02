@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/router.dart';
+import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/auth_error.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,6 +35,7 @@ class _AuthPageState extends State<AuthPage> {
 
   bool state = false;
   int index = 0;
+  bool obscureText = true;
 
   @override
   void initState() {
@@ -78,7 +83,7 @@ class _AuthPageState extends State<AuthPage> {
                     child: SingleChildScrollView(
                       physics: const ClampingScrollPhysics(),
                       child: SizedBox(
-                        height: 500.h,
+                        height: 505.h,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,15 +144,55 @@ class _AuthPageState extends State<AuthPage> {
                               'Пароль',
                               style: labelStyle,
                             ),
-                            CustomTextField(
-                              focusNode: focusNode3,
-                              textEditingController: _passwordController,
-                              hintText: '******',
-                              height: 60.h,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 20.w,
-                              ),
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CustomTextField(
+                                  focusNode: focusNode3,
+                                  textEditingController: _passwordController,
+                                  hintText: '••••••',
+                                  obscureText: obscureText,
+                                  height: 60.h,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.w,
+                                    vertical: 20.w,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          obscureText = !obscureText;
+                                        });
+                                      },
+                                      child: obscureText
+                                          ? const Icon(Icons.visibility_off)
+                                          : const Icon(Icons.visibility),
+                                    ),
+                                    SizedBox(width: 15.w)
+                                  ],
+                                ),
+                              ],
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 20.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context).pushNamed(
+                                      AppRoute.registration,
+                                      arguments: true),
+                                  child: const Text(
+                                    'Егорка ещё не возит для вас?',
+                                    style: CustomTextStyle.red15,
+                                  ),
+                                ),
+                              ],
                             ),
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
@@ -180,63 +225,24 @@ class _AuthPageState extends State<AuthPage> {
     AuthUser? res;
     _btnController.start();
     res = await Repository()
-        .loginPhoneUser(_phoneController.text, _passwordController.text);
+        .loginUsernameUser(_phoneController.text, _passwordController.text);
+
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
       storage.setTypeUser('0');
       storage.setLogin(_phoneController.text);
       storage.setPassword(_passwordController.text);
+      storage.setKey(res.result!.key);
       BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
+      BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();
+      MessageDialogs().showAlert('Ошибка', 'Введен неверный логин или пароль');
     }
     Future.delayed(const Duration(seconds: 1), (() {
       _btnController.reset();
     }));
-  }
-}
-
-class CustomInputFormatter extends TextInputFormatter {
-  // +7 (___) ___-__-__
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-
-    if (newValue.text.length > oldValue.text.length) {
-      if (newValue.text[0] == '7') {
-        return newValue.copyWith(
-            text: '+7 (', selection: const TextSelection.collapsed(offset: 4));
-      }
-      if (newValue.selection.baseOffset == 2) {
-        return newValue.copyWith(
-            text: '${newValue.text} (',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 2));
-      }
-      if (newValue.selection.baseOffset == 7) {
-        return newValue.copyWith(
-            text: '${newValue.text}) ',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 2));
-      }
-      if (newValue.selection.baseOffset == 12) {
-        return newValue.copyWith(
-            text: '${newValue.text}-',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 1));
-      }
-      if (newValue.selection.baseOffset == 15) {
-        return newValue.copyWith(
-            text: '${newValue.text}-',
-            selection:
-                TextSelection.collapsed(offset: newValue.text.length + 1));
-      }
-    }
-
-    return newValue.copyWith(
-        text: text, selection: TextSelection.collapsed(offset: text.length));
   }
 }

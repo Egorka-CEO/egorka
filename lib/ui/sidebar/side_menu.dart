@@ -3,10 +3,12 @@ import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/model/create_form_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NavBar extends StatefulWidget {
   NavBar({Key? key}) : super(key: key);
@@ -30,6 +32,16 @@ class _NavBarState extends State<NavBar> {
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
           builder: (context, snapshot) {
         final blocHistory = BlocProvider.of<HistoryOrdersBloc>(context);
+        CreateFormModel? createFormModel;
+
+        for (var element in blocHistory.coast) {
+          if (element.result.Status == 'Booked' &&
+              element.result.StatusPay != 'Paid') {
+            createFormModel = element;
+            break;
+          }
+        }
+
         return SizedBox(
           width: 270.w,
           height: MediaQuery.of(context).size.height,
@@ -52,7 +64,8 @@ class _NavBarState extends State<NavBar> {
                   SizedBox(height: 30.h),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
-                    final auth = BlocProvider.of<ProfileBloc>(context).getUser();
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
                     if (auth != null) return const SizedBox();
                     return SizedBox(
                       width: 270.w,
@@ -61,8 +74,8 @@ class _NavBarState extends State<NavBar> {
                         onPressed: () =>
                             Navigator.of(context).pushNamed(AppRoute.auth),
                         style: ButtonStyle(
-                            shape:
-                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(0),
                               ),
@@ -83,7 +96,8 @@ class _NavBarState extends State<NavBar> {
                   // SizedBox(height: 30.h),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
-                    final auth = BlocProvider.of<ProfileBloc>(context).getUser();
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
                     if (auth == null || auth.result!.agent == null) {
                       return const SizedBox();
                     }
@@ -100,20 +114,20 @@ class _NavBarState extends State<NavBar> {
                                 onTap: () => Navigator.pushNamed(
                                     context, AppRoute.trafficDeposit),
                                 child: Text(
-                                  'Движение по депозиту',
-                                  style: CustomTextStyle.black15w500
+                                  'Депозит',
+                                  style: CustomTextStyle.black17w400
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
-                              SizedBox(width: 10.w),
-                              GestureDetector(
-                                onTap: () => Navigator.pushNamed(
-                                    context, AppRoute.addDeposit),
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.red.withOpacity(0.6),
-                                ),
-                              )
+                              // const Spacer(),
+                              // GestureDetector(
+                              //   onTap: () => Navigator.pushNamed(
+                              //       context, AppRoute.addDeposit),
+                              //   child: Icon(
+                              //     Icons.add,
+                              //     color: Colors.red.withOpacity(0.6),
+                              //   ),
+                              // )
                             ],
                           ),
                         ),
@@ -122,7 +136,39 @@ class _NavBarState extends State<NavBar> {
                   }),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
-                    final auth = BlocProvider.of<ProfileBloc>(context).getUser();
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    if (auth == null || auth.result!.agent == null) {
+                      return const SizedBox();
+                    }
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Container(
+                        color: Colors.transparent,
+                        height: 50.h,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => Navigator.pushNamed(
+                                    context, AppRoute.employee),
+                                child: Text(
+                                  'Мои сотрудники',
+                                  style: CustomTextStyle.black17w400
+                                      .copyWith(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
                     if (auth == null) return const SizedBox();
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.w),
@@ -136,7 +182,7 @@ class _NavBarState extends State<NavBar> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Профиль',
-                              style: CustomTextStyle.black15w500
+                              style: CustomTextStyle.black17w400
                                   .copyWith(color: Colors.black),
                             ),
                           ),
@@ -144,16 +190,18 @@ class _NavBarState extends State<NavBar> {
                       ),
                     );
                   }),
-                  if (blocHistory.coast.isNotEmpty)
+                  if (createFormModel != null)
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.w),
                       child: GestureDetector(
                         onTap: () => Navigator.pushNamed(
-                            context,
-                            AppRoute.currentOrder,
-                            arguments:[
-                                blocHistory.coast.first.result.RecordNumber,
-                            blocHistory.coast.first.result.RecordPIN]),
+                          context,
+                          AppRoute.currentOrder,
+                          arguments: [
+                            createFormModel!.result.RecordNumber,
+                            createFormModel.result.RecordPIN
+                          ],
+                        ),
                         child: Container(
                           color: Colors.transparent,
                           height: 50.h,
@@ -161,7 +209,7 @@ class _NavBarState extends State<NavBar> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Текущий заказ',
-                              style: CustomTextStyle.black15w500
+                              style: CustomTextStyle.black17w400
                                   .copyWith(color: Colors.black),
                             ),
                           ),
@@ -182,7 +230,7 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'История заказов',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),
@@ -192,8 +240,10 @@ class _NavBarState extends State<NavBar> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
                     child: GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AppRoute.marketplaces),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.pushNamed(context, AppRoute.marketplaces);
+                      },
                       child: Container(
                         color: Colors.transparent,
                         height: 50.h,
@@ -201,25 +251,53 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Маркетплейсы',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),
                       ),
                     ),
                   ),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    if (auth == null) {
+                      return const SizedBox();
+                    }
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, AppRoute.book),
+                        child: Container(
+                          color: Colors.transparent,
+                          height: 50.h,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Записная книжка',
+                              style: CustomTextStyle.black17w400
+                                  .copyWith(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
                     child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, AppRoute.book),
+                      onTap: () =>
+                          launch('https://marketplace.egorka.delivery'),
                       child: Container(
                         color: Colors.transparent,
                         height: 50.h,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Записная книжка',
-                            style: CustomTextStyle.black15w500
+                            'Тарифы',
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),
@@ -238,7 +316,7 @@ class _NavBarState extends State<NavBar> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'О приложении',
-                            style: CustomTextStyle.black15w500
+                            style: CustomTextStyle.black17w400
                                 .copyWith(color: Colors.black),
                           ),
                         ),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/invoice.dart';
@@ -15,6 +17,6 @@ class DepositBloc extends Bloc<DepositEvent, DepositState> {
       LoadReplenishmentDepositEvent event, Emitter<DepositState> emit) async {
     emit(DepositLoading());
     List<Invoice>? list = await Repository().getInvoiceFilter(event.filter);
-    emit(DepositLoad(list));
+    emit(DepositLoad(list, event.page));
   }
 }

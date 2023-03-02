@@ -10,6 +10,7 @@ class CreateDeposotEvent extends DepositEvent {
 
 class LoadReplenishmentDepositEvent extends DepositEvent {
   Filter filter;
+  int page;
 
-  LoadReplenishmentDepositEvent(this.filter);
+  LoadReplenishmentDepositEvent(this.filter, this.page);
 }

@@ -1,12 +1,10 @@
-import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/create_form_model.dart';
-import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui' as ui;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 part 'history_orders_event.dart';
 part 'history_orders_state.dart';
@@ -51,41 +49,67 @@ class HistoryOrdersBloc extends Bloc<HistoryOrdersEvent, HistoryOrdersState> {
 
   void _getPoliline(
       HistoryOrderPolilyne event, Emitter<HistoryOrdersState> emit) async {
-    // final locationFrom = await Geocoder2.getDataFromCoordinates(
-    //     latitude: event.locations.first.point!.latitude!,
-    //     longitude: event.locations.first.point!.longitude!,
-    //     googleMapApiKey: apiKey);
-    // final locationTo = await Geocoder2.getDataFromCoordinates(
-    //     latitude: event.locations.last.point!.latitude!,
-    //     longitude: event.locations.last.point!.longitude!,
-    //     googleMapApiKey: apiKey);
+    List<DrivingSessionResult> drivingSessionResult = [];
 
-    final directionsTo = await DirectionsRepository(dio: null).getDirections(
-        origin: LatLng(event.locations.first.point!.latitude!,
-            event.locations.first.point!.longitude!),
-        destination: LatLng(event.locations.last.point!.latitude!,
-            event.locations.last.point!.longitude!));
+    for (int i = 0; i < event.locations.length - 1; i++) {
+      DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.locations[i].point!.latitude,
+                longitude: event.locations[i].point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.locations[i + 1].point!.latitude,
+                longitude: event.locations[i + 1].point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        drivingOptions: const DrivingOptions(),
+      );
 
-    if (directionsTo != null) {
-      final fromIcon = BitmapDescriptor.fromBytes(
-          await getBytesFromAsset('assets/images/from.png', 90));
-      final toIcon = BitmapDescriptor.fromBytes(
-          await getBytesFromAsset('assets/images/to.png', 90));
-      emit(HistoryOrderRoutePolilyne(directionsTo, {
-        Marker(
-          icon: fromIcon,
-          markerId: const MarkerId('start'),
-          position: LatLng(directionsTo.polylinePoints.first.latitude,
-              directionsTo.polylinePoints.first.longitude),
-        ),
-        Marker(
-          icon: toIcon,
-          markerId: const MarkerId('finish'),
-          position: LatLng(directionsTo.polylinePoints.last.latitude,
-              directionsTo.polylinePoints.last.longitude),
-        ),
-      }));
+      drivingSessionResult.add(await requestRoutes.result);
     }
+
+    List<BicycleSessionResult> bicycleSessionResult = [];
+
+    for (int i = 0; i < event.locations.length - 1; i++) {
+      BicycleResultWithSession? requestRoutesBicycle =
+          YandexBicycle.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.locations.first.point!.latitude,
+                longitude: event.locations.first.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.locations.last.point!.latitude,
+                longitude: event.locations.last.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        bicycleVehicleType: BicycleVehicleType.bicycle,
+      );
+
+      bicycleSessionResult.add(await requestRoutesBicycle.result);
+    }
+
+    final fromIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/from.png', 90));
+    final toIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/to.png', 90));
+    emit(
+      HistoryOrderRoutePolilyne(
+        drivingSessionResult,
+        bicycleSessionResult,
+        PlacemarkIcon.single(PlacemarkIconStyle(image: fromIcon)),
+        PlacemarkIcon.single(PlacemarkIconStyle(image: toIcon)),
+      ),
+    );
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

@@ -1,10 +1,13 @@
 import 'dart:async';
-import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
+import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/router.dart';
+import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +15,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AuthPageCompany extends StatefulWidget {
-  AuthPageCompany({super.key});
+  const AuthPageCompany({super.key});
 
   @override
   State<AuthPageCompany> createState() => _AuthPageCompanyState();
@@ -32,6 +35,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
 
   bool state = false;
   int index = 0;
+  bool obscureText = true;
 
   @override
   void initState() {
@@ -158,15 +162,55 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               'Пароль',
                               style: labelStyle,
                             ),
-                            CustomTextField(
-                              focusNode: focusNode3,
-                              textEditingController: _passwordController,
-                              hintText: '******',
-                              height: 60.h,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 20.w,
-                              ),
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CustomTextField(
+                                  focusNode: focusNode3,
+                                  textEditingController: _passwordController,
+                                  hintText: '••••••',
+                                  height: 60.h,
+                                  obscureText: obscureText,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.w,
+                                    vertical: 20.w,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          obscureText = !obscureText;
+                                        });
+                                      },
+                                      child: obscureText
+                                          ? const Icon(Icons.visibility_off)
+                                          : const Icon(Icons.visibility),
+                                    ),
+                                    SizedBox(width: 15.w)
+                                  ],
+                                ),
+                              ],
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              height: state ? 5.h : 20.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => Navigator.of(context).pushNamed(
+                                      AppRoute.registration,
+                                      arguments: false),
+                                  child: const Text(
+                                    'Егорка ещё не возит для вас?',
+                                    style: CustomTextStyle.red15,
+                                  ),
+                                ),
+                              ],
                             ),
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
@@ -198,10 +242,9 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
   void _signIn() async {
     AuthUser? res;
     _btnController.start();
-    if (_companyController.text.isNotEmpty) {
-      res = await Repository().loginUsernameAgent(_loginController.text,
-          _passwordController.text, _companyController.text);
-    }
+    res = await Repository().loginUsernameAgent(_loginController.text,
+        _passwordController.text, _companyController.text);
+
     if (res != null) {
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
@@ -209,11 +252,14 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
       storage.setLogin(_loginController.text);
       storage.setPassword(_passwordController.text);
       storage.setCompany(_companyController.text);
-      // BlocProvider.of<DepositBloc>(context).add(LoadReplenishmentDepositEvent());
+      storage.setKey(res.result!.key);
       BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
+      BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
       Navigator.of(context).pop(res);
     } else {
       _btnController.error();
+      MessageDialogs().showAlert(
+          'Ошибка', 'Введен неверный логин компании/пользователя или пароль');
     }
     Future.delayed(const Duration(seconds: 1), (() {
       _btnController.reset();

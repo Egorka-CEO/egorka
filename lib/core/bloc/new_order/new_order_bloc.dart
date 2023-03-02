@@ -10,6 +10,7 @@ import 'package:egorka/model/point.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 part 'new_order_event.dart';
 part 'new_order_state.dart';
 
@@ -55,10 +56,14 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
 
     CoastResponse? coasts;
     List<Location> locations = [];
+    int i = 0;
 
     for (var element in event.start) {
       locations.add(
         Location(
+          date: event.time != null && i == 0
+              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(event.time!)
+              : null,
           type: 'Pickup',
           point: Point(
             code:
@@ -73,6 +78,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
           ),
         ),
       );
+      ++i;
     }
 
     for (var element in event.end) {
@@ -96,6 +102,7 @@ class NewOrderPageBloc extends Bloc<NewOrderEvent, NewOrderState> {
 
     final res = await Repository().getCoastAdvanced(
       CoastAdvanced(
+        iD: event.id,
         type: event.typeCoast,
         locations: locations,
         ancillaries: event.ancillaries,

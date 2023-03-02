@@ -7,11 +7,29 @@ class SearchLoading extends SearchAddressState {}
 class SearchAddressStated extends SearchAddressState {}
 
 class SearchAddressRoutePolilyne extends SearchAddressState {
-  Directions routes;
-  Set<Marker> markers;
+  DrivingSessionResult? directions;
+  BicycleSessionResult? directionsBicycle;
+  List<PlacemarkMapObject> markers;
   List<CoastResponse> coasts;
 
-  SearchAddressRoutePolilyne(this.routes, this.markers, this.coasts);
+  SearchAddressRoutePolilyne(
+    this.directions,
+    this.directionsBicycle,
+    this.markers,
+    this.coasts,
+  );
+}
+
+class EditPolilynesState extends SearchAddressState {
+  DrivingSessionResult? directionsDrive;
+  BicycleSessionResult? directionsBicycle;
+  List<PlacemarkMapObject> markers;
+
+  EditPolilynesState({
+    this.directionsDrive,
+    this.directionsBicycle,
+    this.markers = const [],
+  });
 }
 
 class DeletePolilyneState extends SearchAddressState {}
@@ -57,7 +75,7 @@ class SearchAddressFailed extends SearchAddressState {}
 class FindMeState extends SearchAddressState {}
 
 class JumpToPointState extends SearchAddressState {
-  final Point point;
+  final pointModel.Point point;
 
   JumpToPointState(this.point);
 }

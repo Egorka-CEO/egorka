@@ -36,12 +36,13 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     emit(CalcLoading());
     var result = await Repository().getCoastMarketPlace(
       CoastMarketPlace(
+        iD: event.id,
         type: "Truck",
         group: event.group,
         locations: [
           Location(
             date: event.time != null
-                ? DateFormat('YYYY.MM.DD HH:MM:SS').format(event.time!)
+                ? DateFormat('yyyy-MM-dd HH:mm:ss').format(event.time!)
                 : null,
             point: Point(
               code:

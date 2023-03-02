@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/model/filter_invoice.dart';
@@ -12,8 +13,13 @@ import 'package:intl/intl.dart';
 
 class ItemTraffic extends StatefulWidget {
   Filter filter;
+  int page;
 
-  ItemTraffic(this.filter, {super.key});
+  ItemTraffic(
+    this.filter, {
+    super.key,
+    required this.page,
+  });
 
   @override
   State<ItemTraffic> createState() => _ItemTrafficState();
@@ -21,7 +27,7 @@ class ItemTraffic extends StatefulWidget {
 
 class _ItemTrafficState extends State<ItemTraffic> {
   void loadDeposit() => BlocProvider.of<DepositBloc>(context)
-      .add(LoadReplenishmentDepositEvent(widget.filter));
+      .add(LoadReplenishmentDepositEvent(widget.filter, widget.page));
 
   @override
   void initState() {
@@ -32,11 +38,35 @@ class _ItemTrafficState extends State<ItemTraffic> {
   List<Invoice> list = [];
 
   final FocusNode date1Focus = FocusNode();
-
   final FocusNode date2Focus = FocusNode();
+
+  DateTime? dateFrom;
+  DateTime? dateTo;
 
   TextEditingController controllerFrom = TextEditingController();
   TextEditingController controllerTo = TextEditingController();
+
+  Widget statusOrder(String str) {
+    if (str == 'Active') {
+      return Text(
+        'Активно',
+        style: TextStyle(color: Colors.orange, fontSize: 13.sp),
+        textAlign: TextAlign.center,
+      );
+    } else if (str == 'Paid') {
+      return Text(
+        'Оплачено',
+        style: TextStyle(color: Colors.green, fontSize: 13.sp),
+        textAlign: TextAlign.center,
+      );
+    } else {
+      return Text(
+        str,
+        style: TextStyle(color: Colors.orange, fontSize: 13.sp),
+        textAlign: TextAlign.center,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +79,13 @@ class _ItemTrafficState extends State<ItemTraffic> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 70.w,
+                  width: 90.w,
                   child: const Text('Дата с...'),
                 ),
                 GestureDetector(
                   onTap: () => showDateTime(true),
                   child: CustomTextField(
-                    hintText: '2023-01-10',
+                    hintText: '10.01.2023',
                     focusNode: date1Focus,
                     textEditingController: controllerFrom,
                     textInputType: TextInputType.number,
@@ -76,13 +106,13 @@ class _ItemTrafficState extends State<ItemTraffic> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 70.w,
+                  width: 90.w,
                   child: const Text('Дата по...'),
                 ),
                 GestureDetector(
                   onTap: () => showDateTime(false),
                   child: CustomTextField(
-                    hintText: '2023-01-31',
+                    hintText: '31.01.2023',
                     focusNode: date2Focus,
                     textEditingController: controllerTo,
                     textInputType: TextInputType.number,
@@ -98,8 +128,12 @@ class _ItemTrafficState extends State<ItemTraffic> {
                 GestureDetector(
                   onTap: () {
                     FilterDate filterDate = FilterDate(
-                      from: controllerFrom.text,
-                      to: controllerTo.text,
+                      from: dateFrom != null
+                          ? DateFormat('yyyy-MM-dd').format(dateFrom!)
+                          : '',
+                      to: dateTo != null
+                          ? DateFormat('yyyy-MM-dd').format(dateTo!)
+                          : '',
                     );
                     widget.filter.filterDate = filterDate;
                     loadDeposit();
@@ -127,6 +161,9 @@ class _ItemTrafficState extends State<ItemTraffic> {
             child: BlocBuilder<DepositBloc, DepositState>(
               builder: (context, snapshot) {
                 if (snapshot is DepositLoad) {
+                  if (widget.page != snapshot.page) {
+                    return const Center(child: CupertinoActivityIndicator());
+                  }
                   list.clear();
                   list.addAll(snapshot.list!);
                   return RefreshIndicator(
@@ -146,26 +183,30 @@ class _ItemTrafficState extends State<ItemTraffic> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 SizedBox(width: 10.w),
-                                const Expanded(
+                                Expanded(
                                     child: Text(
                                   '№',
+                                  style: TextStyle(fontSize: 13.sp),
                                   textAlign: TextAlign.center,
                                 )),
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Создано',
+                                    style: TextStyle(fontSize: 13.sp),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Сумма',
+                                    style: TextStyle(fontSize: 13.sp),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     'Статус',
+                                    style: TextStyle(fontSize: 13.sp),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -174,45 +215,51 @@ class _ItemTrafficState extends State<ItemTraffic> {
                             ),
                           );
                         }
-                        return Container(
-                          height: 50.h,
-                          color:
-                              index % 2 == 0 ? Colors.white : Colors.grey[200],
-                          child: Row(
-                            children: [
-                              SizedBox(width: 10.w),
-                              Expanded(
-                                child: Text(
-                                  '${list[index - 1].iD}${list[index - 1].pIN}',
-                                  style: const TextStyle(color: Colors.red),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  DateFormat.yMd('ru').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                      list[index - 1].dateStamp! * 1000,
-                                    ),
+                        return GestureDetector(
+                          onTap: () {
+                            print(
+                                'object ${list[index - 1].iD} ${list[index - 1].pIN}');
+                          },
+                          child: Container(
+                            height: 50.h,
+                            color: index % 2 == 0
+                                ? Colors.white
+                                : Colors.grey[200],
+                            child: Row(
+                              children: [
+                                SizedBox(width: 10.w),
+                                Expanded(
+                                  child: Text(
+                                    '${list[index - 1].iD}-${list[index - 1].pIN}',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 13.sp),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  '${list[index - 1].amount} ₽',
-                                  textAlign: TextAlign.center,
+                                Expanded(
+                                  child: Text(
+                                    DateFormat.yMd('ru').format(
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                        list[index - 1].dateStamp! * 1000,
+                                      ),
+                                    ),
+                                    style: TextStyle(fontSize: 13.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  list[index - 1].status!,
-                                  style: const TextStyle(color: Colors.orange),
-                                  textAlign: TextAlign.center,
+                                Expanded(
+                                  child: Text(
+                                    '${list[index - 1].amount} ₽',
+                                    style: TextStyle(fontSize: 13.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 10.w),
-                            ],
+                                Expanded(
+                                  child: statusOrder(list[index - 1].status!),
+                                ),
+                                SizedBox(width: 10.w),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -240,32 +287,17 @@ class _ItemTrafficState extends State<ItemTraffic> {
               lastDate: DateTime(2030),
             );
           });
-      if (value != null) {
-        final TimeOfDay? timePicked = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay(
-            hour: TimeOfDay.now().hour,
-            minute: TimeOfDay.now().minute,
-          ),
-        );
-        final DateTime temp = DateTime(
-          value.year,
-          value.month,
-          value.day,
-          timePicked != null ? timePicked.hour : 0,
-          timePicked != null ? timePicked.minute : 0,
-        );
-        if (flag) {
-          controllerFrom.text = DateFormat('yyyy-MM-dd').format(temp);
-        } else {
-          controllerTo.text = DateFormat('yyyy-MM-dd').format(temp);
-        }
+      if (flag) {
+        controllerFrom.text = DateFormat('dd.MM.yyyy').format(value);
+        dateFrom = value;
+      } else {
+        controllerTo.text = DateFormat('dd.MM.yyyy').format(value);
+        dateTo = value;
       }
     } else {
       showDialog(
-        barrierDismissible: false,
         useSafeArea: false,
-        barrierColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.4),
         context: context,
         builder: (ctx) {
           return MediaQuery(
@@ -277,17 +309,24 @@ class _ItemTrafficState extends State<ItemTraffic> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey),
-                        ),
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: const Text('Готово'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[200],
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CupertinoButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: const Text(
+                              'Готово',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(
@@ -299,10 +338,12 @@ class _ItemTrafficState extends State<ItemTraffic> {
                         onDateTimeChanged: (value) {
                           if (flag) {
                             controllerFrom.text =
-                                DateFormat('yyyy-MM-dd').format(value);
+                                DateFormat('dd.MM.yyyy').format(value);
+                            dateFrom = value;
                           } else {
                             controllerTo.text =
-                                DateFormat('yyyy-MM-dd').format(value);
+                                DateFormat('dd.MM.yyyy').format(value);
+                            dateTo = value;
                           }
                         },
                       ),

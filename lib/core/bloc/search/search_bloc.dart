@@ -1,19 +1,17 @@
-import 'package:egorka/core/network/directions_repository.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
-import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
-import 'package:egorka/model/point.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
+import 'package:egorka/model/point.dart' as pointModel;
+import 'package:yandex_mapkit/yandex_mapkit.dart';
+
 part 'search_event.dart';
 part 'search_state.dart';
 
@@ -28,6 +26,18 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
     on<SearchAddressPolilyne>(_getPoliline);
     on<GetAddressPosition>(_getAddress);
+    on<EditPolilynesEvent>(_editPolilynes);
+  }
+
+  void _editPolilynes(
+      EditPolilynesEvent event, Emitter<SearchAddressState> emit) {
+    emit(
+      EditPolilynesState(
+        directionsDrive: event.directions,
+        directionsBicycle: event.directionsBicycle,
+        markers: event.markers,
+      ),
+    );
   }
 
   void _deletePolyline(
@@ -55,33 +65,37 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   void _changeMapPosition(
       ChangeMapPosition event, Emitter<SearchAddressState> emit) async {
     if (!isPolilyne) {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-          event.coordinates.latitude, event.coordinates.longitude,
-          localeIdentifier: 'ru');
-
       String address = '';
-
-      if (placemarks.first.street!.isNotEmpty) {
-        address += placemarks.first.street!;
-        if (placemarks.first.locality!.isNotEmpty) {
-          address += ', г.${placemarks.first.locality!}';
-        }
-      } else {
-        address = placemarks.first.locality!;
-      }
-
       String? errorAddress;
 
-      if (placemarks.first.subThoroughfare!.isEmpty) {
-        errorAddress = 'Ошибка: Укажите номер дома';
+      SearchResultWithSession adress = YandexSearch.searchByPoint(
+        point: Point(
+          latitude: event.lat,
+          longitude: event.lon,
+        ),
+        searchOptions: const SearchOptions(),
+      );
+      final value = await adress.result;
+
+      address = value.items!.first.name;
+
+      final house = value.items!.first.toponymMetadata?.address
+          .addressComponents[SearchComponentKind.house];
+
+      if (house == null) {
+        errorAddress = 'ошибка';
       }
 
-      emit(ChangeAddressSuccess(
-        address,
-        event.coordinates.latitude,
-        event.coordinates.longitude,
-        errorAddress,
-      ));
+      emit(
+        ChangeAddressSuccess(
+          address,
+          event.lat,
+          event.lon,
+          errorAddress,
+        ),
+      );
+
+      print('object res $house');
     }
   }
 
@@ -89,35 +103,41 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       GetAddressPosition event, Emitter<SearchAddressState> emit) async {
     if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-          position.latitude, position.longitude,
-          localeIdentifier: 'ru');
+        desiredAccuracy: LocationAccuracy.high,
+      );
 
       String address = '';
-
-      if (placemarks.first.street!.isNotEmpty) {
-        address += placemarks.first.street!;
-        if (placemarks.first.locality!.isNotEmpty) {
-          address += ', г.${placemarks.first.locality!}';
-        }
-      } else {
-        address = placemarks.first.locality!;
-      }
-
       String? errorAddress;
 
-      if (placemarks.first.subThoroughfare!.isEmpty) {
-        errorAddress = 'Ошибка: Укажите номер дома';
+      SearchResultWithSession adress = YandexSearch.searchByPoint(
+        point: Point(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ),
+        searchOptions: const SearchOptions(),
+      );
+      final value = await adress.result;
+
+      address = value.items!.first.name;
+
+      final house = value.items!.first.toponymMetadata?.address
+          .addressComponents[SearchComponentKind.house];
+
+      if (house == null) {
+        errorAddress = 'Ошибка';
       }
 
-      emit(GetAddressSuccess(
-        address,
-        position.latitude,
-        position.longitude,
-        errorAddress,
-      ));
+      print('object ${errorAddress}');
+
+      emit(
+        GetAddressSuccess(
+          address,
+          position.latitude,
+          position.longitude,
+          errorAddress,
+        ),
+      );
+      emit(SearchAddressStated());
     }
   }
 
@@ -126,49 +146,54 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     emit(SearchLoading());
     isPolilyne = true;
 
-    // final locationFrom = await Geocoder2.getDataFromAddress(
-    //     address: event.suggestionsStart.first!.name, googleMapApiKey: apiKey);
-    // final locationTo = await Geocoder2.getDataFromAddress(
-    //     address: event.suggestionsEnd.last!.name, googleMapApiKey: apiKey);
-
     final fromIcon = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/images/from.png', 90));
     final toIcon = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/images/to.png', 90));
 
-    Directions? directions;
+    DrivingSessionResult? drivingSessionResult;
+    BicycleSessionResult? bicycleResultWithSession;
     try {
-      directions = await DirectionsRepository(dio: null).getDirections(
-          origin: LatLng(event.suggestionsStart.last!.point!.latitude,
-              event.suggestionsStart.last!.point!.longitude),
-          destination: LatLng(event.suggestionsEnd.last!.point!.latitude,
-              event.suggestionsEnd.last!.point!.longitude));
-    } catch (e) {
-      emit(
-        SearchAddressRoutePolilyne(
-          Directions(
-              bounds: LatLngBounds(
-                southwest: const LatLng(2, 2),
-                northeast: const LatLng(3, 3),
+      DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsStart.last!.point!.latitude,
+                longitude: event.suggestionsStart.last!.point!.longitude,
               ),
-              polylinePoints: [],
-              totalDistance: '',
-              totalDuration: ''),
-          {
-            Marker(
-              icon: fromIcon,
-              markerId: const MarkerId('start'),
-            ),
-            Marker(
-              icon: toIcon,
-              markerId: const MarkerId('finish'),
-            ),
-          },
-          [],
-        ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsEnd.last!.point!.latitude,
+                longitude: event.suggestionsEnd.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        drivingOptions: const DrivingOptions(),
       );
-    }
-    if (directions != null) {
+      BicycleResultWithSession? requestRoutesBicycle =
+          YandexBicycle.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsStart.last!.point!.latitude,
+                longitude: event.suggestionsStart.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsEnd.last!.point!.latitude,
+                longitude: event.suggestionsEnd.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        bicycleVehicleType: BicycleVehicleType.bicycle,
+      );
+
+      drivingSessionResult = await requestRoutes.result;
+      bicycleResultWithSession = await requestRoutesBicycle.result;
+    } catch (e) {}
+    if (drivingSessionResult != null) {
       List<String> type = ['Walk', 'Car'];
       List<CoastResponse> coasts = [];
       List<Location> locations = [];
@@ -177,7 +202,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         locations.add(
           Location(
             type: 'Pickup',
-            point: Point(
+            point: pointModel.Point(
               latitude: element!.point!.latitude!,
               longitude: element.point!.longitude!,
             ),
@@ -189,9 +214,10 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         locations.add(
           Location(
             type: 'Drop',
-            point: Point(
-                latitude: element!.point!.latitude!,
-                longitude: element.point!.longitude!),
+            point: pointModel.Point(
+              latitude: element!.point!.latitude,
+              longitude: element.point!.longitude,
+            ),
           ),
         );
       }
@@ -211,44 +237,40 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
         emit(
           SearchAddressRoutePolilyne(
-            directions,
-            {
-              Marker(
-                icon: fromIcon,
-                markerId: const MarkerId('start'),
-                position: LatLng(directions.polylinePoints.first.latitude,
-                    directions.polylinePoints.first.longitude),
+            drivingSessionResult,
+            bicycleResultWithSession,
+            [
+              PlacemarkMapObject(
+                mapId: const MapObjectId('placemark_start'),
+                point: Point(
+                  latitude: drivingSessionResult
+                      .routes!.first.geometry.first.latitude,
+                  longitude: drivingSessionResult
+                      .routes!.first.geometry.first.longitude,
+                ),
+                opacity: 1,
+                icon: PlacemarkIcon.single(PlacemarkIconStyle(image: fromIcon)),
               ),
-              Marker(
-                icon: toIcon,
-                markerId: const MarkerId('finish'),
-                position: LatLng(directions.polylinePoints.last.latitude,
-                    directions.polylinePoints.last.longitude),
+              PlacemarkMapObject(
+                mapId: const MapObjectId('placemark_end'),
+                point: Point(
+                  latitude:
+                      drivingSessionResult.routes!.first.geometry.last.latitude,
+                  longitude: drivingSessionResult
+                      .routes!.first.geometry.last.longitude,
+                ),
+                opacity: 1,
+                icon: PlacemarkIcon.single(
+                  PlacemarkIconStyle(image: toIcon),
+                ),
               ),
-            },
+            ],
             coasts,
           ),
         );
       } catch (e) {
         isPolilyne = false;
-        emit(SearchAddressRoutePolilyne(
-          directions,
-          {
-            Marker(
-              icon: fromIcon,
-              markerId: const MarkerId('start'),
-              position: LatLng(directions.polylinePoints.first.latitude,
-                  directions.polylinePoints.first.longitude),
-            ),
-            Marker(
-              icon: toIcon,
-              markerId: const MarkerId('finish'),
-              position: LatLng(directions.polylinePoints.last.latitude,
-                  directions.polylinePoints.last.longitude),
-            ),
-          },
-          [],
-        ));
+        print('object error $e');
       }
     } else {
       isPolilyne = false;

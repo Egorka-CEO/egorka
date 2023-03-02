@@ -1,14 +1,20 @@
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
+import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/cutom_input_formatter.dart';
+import 'package:egorka/widget/formatter_uppercase.dart';
+import 'package:egorka/widget/list_books_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -62,13 +68,16 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   bool btmSheet = false;
   TypeAdd? typeAdd;
 
+  late PointDetails routeOrder;
+
   TextEditingController controller = TextEditingController();
   TextEditingController controllerEntrance = TextEditingController();
   TextEditingController controllerFloor = TextEditingController();
   TextEditingController controllerRoom = TextEditingController();
   TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerPhone = TextEditingController();
+  TextEditingController controllerPhone = TextEditingController(text: '+7 (');
   TextEditingController controllerComment = TextEditingController();
+  TextEditingController controllerBtmSheet = TextEditingController();
   PanelController panelController = PanelController();
 
   final FocusNode podFocus = FocusNode();
@@ -81,13 +90,14 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   @override
   void initState() {
     super.initState();
-    controller.text = widget.routeOrder.suggestions.name;
-    controllerEntrance.text = widget.routeOrder.details?.entrance ?? '';
-    controllerFloor.text = widget.routeOrder.details?.floor ?? '';
-    controllerRoom.text = widget.routeOrder.details?.room ?? '';
-    controllerName.text = widget.routeOrder.details?.name ?? '';
-    controllerPhone.text = widget.routeOrder.details?.phone ?? '';
-    controllerComment.text = widget.routeOrder.details?.comment ?? '';
+    routeOrder = widget.routeOrder;
+    controller.text = routeOrder.suggestions.name;
+    controllerEntrance.text = routeOrder.details?.entrance ?? '';
+    controllerFloor.text = routeOrder.details?.floor ?? '';
+    controllerRoom.text = routeOrder.details?.room ?? '';
+    controllerName.text = routeOrder.details?.name ?? '';
+    controllerPhone.text = routeOrder.details?.phone ?? '';
+    controllerComment.text = routeOrder.details?.comment ?? '';
   }
 
   @override
@@ -112,8 +122,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         alignment: Alignment.centerRight,
                         children: [
                           GestureDetector(
-                            onTap: () =>
-                                Navigator.pop(context, widget.routeOrder),
+                            onTap: () => Navigator.pop(context),
                             child: Row(
                               children: [
                                 Icon(
@@ -130,15 +139,15 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Text('Удалить',
+                            onTap: () => Navigator.pop(context, routeOrder),
+                            child: Text('Готово',
                                 style: CustomTextStyle.red15
                                     .copyWith(fontSize: 17)),
                           ),
                           Align(
                             child: Text(
                               'Указать детали',
-                              style: CustomTextStyle.black15w500.copyWith(
+                              style: CustomTextStyle.black17w400.copyWith(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
                           )
@@ -216,6 +225,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             child: GestureDetector(
                               onTap: () {
                                 typeAdd = TypeAdd.sender;
+                                controllerBtmSheet.text = controller.text;
                                 setState(() {});
                                 panelController.animatePanelToPosition(
                                   1,
@@ -244,11 +254,64 @@ class _DetailsPageState extends State<DetailsPageTemp> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Не обязательно к заполнению',
                       style: CustomTextStyle.grey15bold,
                     ),
+                    const Spacer(),
+                    BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, snapshot) {
+                      final auth =
+                          BlocProvider.of<ProfileBloc>(context).getUser();
+                      if (auth == null) {
+                        return const SizedBox();
+                      }
+                      return GestureDetector(
+                        onTap: () => showBooksAddress(
+                            context, BlocProvider.of<BookBloc>(context).books,
+                            (value) {
+                          routeOrder.suggestions = Suggestions(
+                            iD: value.id,
+                            name: value.address ?? '',
+                            point: Point(
+                              latitude: value.latitude,
+                              longitude: value.longitude,
+                            ),
+                            houseNumber: value.room,
+                          );
+                          // controllerName.text = value.contact?.name ?? '';
+                          controllerPhone.text =
+                              value.contact?.phoneMobile ?? '';
+                          controller.text = value.address ?? '';
+                          controllerName.text = value.contact?.name ?? '';
+
+                          controllerEntrance.text = value.entrance ?? '';
+                          controllerFloor.text = value.floor ?? '';
+                          controllerRoom.text = value.room ?? '';
+
+                          routeOrder.details?.entrance =
+                              controllerEntrance.text;
+                          routeOrder.details?.floor = controllerFloor.text;
+                          routeOrder.details?.room = controllerRoom.text;
+                          routeOrder.details?.name = controllerName.text;
+                          routeOrder.details?.phone = controllerPhone.text;
+                        }),
+                        child: Row(
+                          children: [
+                            const Text(
+                              'Из книжки',
+                              style: CustomTextStyle.red15,
+                            ),
+                            SizedBox(width: 5.w),
+                            const Icon(
+                              Icons.menu_book,
+                              color: Colors.red,
+                            )
+                          ],
+                        ),
+                      );
+                    })
                   ],
                 ),
               ),
@@ -264,7 +327,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Подъезд',
                         focusNode: podFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.entrance =
+                          routeOrder.details?.entrance =
                               controllerEntrance.text;
                         },
                         textInputType: TextInputType.number,
@@ -279,8 +342,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Этаж',
                         focusNode: etajFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.floor =
-                              controllerFloor.text;
+                          routeOrder.details?.floor = controllerFloor.text;
                         },
                         textInputType: TextInputType.number,
                         textEditingController: controllerFloor,
@@ -294,7 +356,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                         hintText: 'Офис/кв.',
                         focusNode: officeFocus,
                         onChanged: (value) {
-                          widget.routeOrder.details?.room = controllerRoom.text;
+                          routeOrder.details?.room = controllerRoom.text;
                         },
                         textInputType: TextInputType.number,
                         textEditingController: controllerRoom,
@@ -323,9 +385,10 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     height: 45.h,
                     focusNode: nameFocus,
                     fillColor: Colors.white,
+                    formatters: [CustomInputFormatterUpperCase()],
                     hintText: 'Имя',
                     onChanged: (value) {
-                      widget.routeOrder.details?.name = controllerName.text;
+                      routeOrder.details?.name = controllerName.text;
                     },
                     textEditingController: controllerName,
                   ),
@@ -343,11 +406,15 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                     hintText: '+7 (___) ___-__-__',
                     textInputType: TextInputType.phone,
                     onChanged: (value) {
-                      widget.routeOrder.details?.phone = controllerPhone.text;
+                      routeOrder.details?.phone = controllerPhone.text;
                     },
                     textEditingController: controllerPhone,
                     formatters: [
-                      CustomInputFormatter(),
+                      MaskTextInputFormatter(
+                        initialText: '+7 (',
+                        mask: '+7 (###) ###-##-##',
+                        filter: {"#": RegExp(r'[0-9]')},
+                      )
                     ],
                   ),
                 ),
@@ -382,7 +449,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                           fillColor: Colors.white.withOpacity(0),
                           hintText: '',
                           onChanged: (value) {
-                            widget.routeOrder.details?.comment =
+                            routeOrder.details?.comment =
                                 controllerComment.text;
                           },
                           maxLines: 10,
@@ -404,7 +471,8 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 btmSheet = true;
               } else if (current is NewOrderStateCloseBtmSheet) {
                 btmSheet = false;
-                widget.routeOrder.suggestions = current.value!;
+                routeOrder.suggestions = current.value!;
+                controller.text = routeOrder.suggestions.name;
                 if (typeAdd != null && typeAdd == TypeAdd.sender) {
                 } else if (typeAdd != null && typeAdd == TypeAdd.receiver) {}
               }
@@ -419,8 +487,20 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 collapsed: Container(),
                 panel: AddAdressBottomSheetDraggable(
                   typeAdd: widget.typeAdd,
-                  fromController: controller,
+                  fromController: controllerBtmSheet,
                   panelController: panelController,
+                  onSearch: (sug) {
+                    panelController.animatePanelToPosition(
+                      0,
+                      curve: Curves.easeInOutQuint,
+                      duration: const Duration(
+                        milliseconds: 1000,
+                      ),
+                    );
+
+                    routeOrder.suggestions = sug;
+                    controller.text = routeOrder.suggestions.name;
+                  },
                 ),
                 onPanelClosed: () {},
                 onPanelOpened: () {},

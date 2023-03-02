@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:data_connection_checker_nulls/data_connection_checker_nulls.dart';
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
+import 'package:egorka/widget/disconnect_page.dart';
 import 'package:egorka/widget/bottom_sheet_history_orders.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/map.dart';
@@ -34,12 +37,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool initHeight = true;
   bool logoVisibleMove = false;
   bool logoMoveBackgroundScale = false;
+  double panelSize = 0;
+
+  late StreamSubscription<DataConnectionStatus> listener;
+
+  checkConnection(BuildContext context) async {
+    listener = DataConnectionChecker().onStatusChange.listen((status) {
+      switch (status) {
+        case DataConnectionStatus.connected:
+          break;
+        case DataConnectionStatus.disconnected:
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: ((context) {
+                return Disconnected();
+              }),
+              fullscreenDialog: true,
+            ),
+          );
+          break;
+      }
+    });
+    return await DataConnectionChecker().connectionStatus;
+  }
 
   @override
   void initState() {
     super.initState();
     funcInit();
-    BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
+    checkConnection(context);
   }
 
   void funcInit() async {
@@ -61,13 +87,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
 
       if (res != null) {
+        storage.setKey(res.result!.key);
         BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
         BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
+        BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
       }
     } else if (id != null) {
     } else {
       await Repository().UUIDCreate();
     }
+    BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
   }
 
   @override
@@ -94,8 +123,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.easeInOutQuint,
                       margin: EdgeInsets.only(
-                        bottom:
-                            snapshot is SearchAddressRoutePolilyne ? 100.h : 0,
+                        bottom: (snapshot is SearchAddressRoutePolilyne) ||
+                                (snapshot is EditPolilynesState)
+                            ? 100.h
+                            : 0,
                       ),
                       child: MapView(
                         callBack: () {
@@ -175,11 +206,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    if (!bloc.isPolilyne)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 100.h),
-                        child: CustomWidget.iconGPS(),
-                      ),
+                    // if (!bloc.isPolilyne)
+                    //   Padding(
+                    //     padding: EdgeInsets.only(bottom: 200.h),
+                    //     child: CustomWidget.iconGPS(),
+                    //   ),
                     const BottomSheetDraggable(),
                   ],
                 ),
@@ -211,10 +242,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       isDraggable: true,
                       collapsed: Container(),
                       panel: HistoryOrdersBottomSheetDraggable(
-                          panelController: panelController),
+                        panelController: panelController,
+                        panelSize: panelSize,
+                      ),
                       onPanelClosed: () {},
                       onPanelOpened: () {},
-                      onPanelSlide: (size) {},
+                      onPanelSlide: (size) {
+                        panelSize = size;
+                        setState(() {});
+                      },
                       maxHeight: 700.h,
                       minHeight: 0,
                       defaultPanelState: PanelState.CLOSED,

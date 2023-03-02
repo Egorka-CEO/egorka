@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/filter_invoice.dart';
+import 'package:egorka/ui/sidebar/deposit/add_deposit.dart';
 import 'package:egorka/ui/sidebar/deposit/item_traffic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +20,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
   }
 
   final tabBarController = StreamController<int>();
+  int currentView = 0;
 
   PageController pageController = PageController();
 
@@ -31,8 +33,8 @@ class _TrafficDepositState extends State<TrafficDeposit> {
         appBar: AppBar(
           elevation: 0.5,
           title: const Text(
-            'Движение по депозиту',
-            style: CustomTextStyle.black15w500,
+            'Депозит',
+            style: CustomTextStyle.black17w400,
           ),
           leading: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
@@ -65,9 +67,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                           child: GestureDetector(
                             onTap: () {
                               tabBarController.add(0);
-                              pageController.animateToPage(0,
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.ease);
+                              pageController.jumpToPage(0);
                             },
                             child: Container(
                               margin: EdgeInsets.all(6.w),
@@ -77,10 +77,12 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                                   borderRadius: BorderRadius.circular(10.r)),
                               child: Center(
                                 child: Text(
-                                  'Все счета',
+                                  'Пополнить',
                                   style: snapshot.data! == 0
                                       ? CustomTextStyle.white15w600
-                                      : null,
+                                          .copyWith(fontSize: 13.sp)
+                                      : CustomTextStyle.black17w400
+                                          .copyWith(fontSize: 13.sp),
                                 ),
                               ),
                             ),
@@ -90,22 +92,22 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                           child: GestureDetector(
                             onTap: () {
                               tabBarController.add(1);
-                              pageController.animateToPage(1,
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.ease);
+                              pageController.jumpToPage(1);
                             },
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                   color:
                                       snapshot.data! == 1 ? Colors.red : null,
-                                  borderRadius: BorderRadius.circular(10)),
+                                  borderRadius: BorderRadius.circular(10.r)),
                               child: Center(
                                 child: Text(
-                                  'Пополнения',
+                                  'Все счета',
                                   style: snapshot.data! == 1
                                       ? CustomTextStyle.white15w600
-                                      : null,
+                                          .copyWith(fontSize: 13.sp)
+                                      : CustomTextStyle.black17w400
+                                          .copyWith(fontSize: 13.sp),
                                 ),
                               ),
                             ),
@@ -115,9 +117,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                           child: GestureDetector(
                             onTap: () {
                               tabBarController.add(2);
-                              pageController.animateToPage(2,
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.ease);
+                              pageController.jumpToPage(2);
                             },
                             child: Container(
                               margin: EdgeInsets.all(6.w),
@@ -127,10 +127,37 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                                   borderRadius: BorderRadius.circular(10)),
                               child: Center(
                                 child: Text(
-                                  'Списания',
+                                  'Пополнения',
                                   style: snapshot.data! == 2
                                       ? CustomTextStyle.white15w600
-                                      : null,
+                                          .copyWith(fontSize: 13.sp)
+                                      : CustomTextStyle.black17w400
+                                          .copyWith(fontSize: 13.sp),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              tabBarController.add(3);
+                              pageController.jumpToPage(3);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                  color:
+                                      snapshot.data! == 3 ? Colors.red : null,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Text(
+                                  'Списания',
+                                  style: snapshot.data! == 3
+                                      ? CustomTextStyle.white15w600
+                                          .copyWith(fontSize: 13.sp)
+                                      : CustomTextStyle.black17w400
+                                          .copyWith(fontSize: 13.sp),
                                 ),
                               ),
                             ),
@@ -151,9 +178,19 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                     physics: const NeverScrollableScrollPhysics(),
                     controller: pageController,
                     children: [
-                      ItemTraffic(Filter(type: 'Invoice')),
-                      ItemTraffic(Filter(direction: 'Debet')),
-                      ItemTraffic(Filter(direction: 'Credit')),
+                      AddDeposit(0),
+                      ItemTraffic(
+                        Filter(type: 'Bill'),
+                        page: 1,
+                      ),
+                      ItemTraffic(
+                        Filter(direction: 'Debet'),
+                        page: 2,
+                      ),
+                      ItemTraffic(
+                        Filter(direction: 'Credit'),
+                        page: 3,
+                      ),
                     ],
                   ),
                 ),

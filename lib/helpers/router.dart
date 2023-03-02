@@ -4,6 +4,7 @@ import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
+import 'package:egorka/ui/auth/main_registration.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';
 import 'package:egorka/ui/newOrder/new_order.dart';
@@ -13,11 +14,13 @@ import 'package:egorka/ui/sidebar/book/book_page.dart';
 import 'package:egorka/ui/sidebar/current_order/current_order_page.dart';
 import 'package:egorka/ui/sidebar/deposit/add_deposit.dart';
 import 'package:egorka/ui/sidebar/deposit/traffic_deposit.dart';
+import 'package:egorka/ui/sidebar/employee/employee.dart';
 import 'package:egorka/ui/sidebar/history_orders/details_page.dart';
 import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_places.dart';
 import 'package:egorka/ui/sidebar/profile/profile_page.dart';
+import 'package:egorka/widget/select_adres_map.dart';
 import 'package:flutter/material.dart';
 
 class AppRoute {
@@ -36,11 +39,16 @@ class AppRoute {
   static const detailsOrder = '/detailsOrder';
   static const historyDetailsOrder = '/historyDetailsOrder';
   static const book = '/book';
+  static const selectPoint = '/selectPoint';
+  static const registration = '/registration';
+  static const employee = '/employee';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
       case home:
         return MaterialPageRoute(builder: (_) => const HomePage());
+      case employee:
+        return MaterialPageRoute(builder: (_) => EmployeePage());
       case currentOrder:
         final list = route.arguments as List<int?>;
         var number = list[0];
@@ -116,8 +124,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => MarketPlacesMap(value));
       case trafficDeposit:
         return MaterialPageRoute(builder: (_) => TrafficDeposit());
-      case addDeposit:
-        return MaterialPageRoute(builder: (_) => AddDeposit());
+      // case addDeposit:
+      //   return MaterialPageRoute(builder: (_) => AddDeposit());
       case detailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(
@@ -138,6 +146,11 @@ class AppRoute {
         );
       case book:
         return MaterialPageRoute(builder: (_) => BookPage());
+      case selectPoint:
+        return MaterialPageRoute(builder: (_) => SelectAdresMap());
+      case registration:
+        final flag = route.arguments as bool;
+        return MaterialPageRoute(builder: (_) => MainRegPage(flag: flag));
       default:
         return null;
     }

@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
-import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point.dart' as pointModel;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
@@ -15,13 +16,13 @@ import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/dialog.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart' as yandex_mapkit;
 
 class BottomSheetDraggable extends StatefulWidget {
   const BottomSheetDraggable({Key? key});
@@ -47,7 +48,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   bool _visible = false;
 
-  String? errorAddress;
+  String? errorAddress1;
+  String? errorAddress2;
 
   TypeAdd? typeAdd;
 
@@ -56,6 +58,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   CoastResponse? coastResponse;
   List<CoastResponse> coasts = [];
+
+  bool iconState = true;
+
+  yandex_mapkit.DrivingSessionResult? directions;
+  yandex_mapkit.BicycleSessionResult? directionsBicycle;
+  List<yandex_mapkit.PlacemarkMapObject> markers = [];
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(
@@ -72,12 +80,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     // DeliveryChocie(title: 'Грузовая', icon: 'assets/images/ic_track.png'),
   ];
 
-  bool showFront = true;
-  FlipCardController? _flipController;
   @override
   void initState() {
     super.initState();
-    _flipController = FlipCardController();
   }
 
   @override
@@ -93,11 +98,11 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
           buildWhen: (previous, current) {
         if (current is GetAddressSuccess) {
-          errorAddress = current.errorAddress;
+          errorAddress1 = current.errorAddress != null ? 'ошибка' : null;
           suggestionsStart = Suggestions(
             iD: null,
             name: current.address,
-            point: Point(
+            point: pointModel.Point(
               address: current.address,
               code: '${current.latitude},${current.longitude}',
               latitude: current.latitude,
@@ -106,10 +111,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           );
           fromController.text = current.address;
 
-          if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
-            coasts.clear();
-            BlocProvider.of<SearchAddressBloc>(context).add(
-                SearchAddressPolilyne([suggestionsStart], [suggestionsEnd]));
+          calc();
+
+          if (suggestionsStart != null &&
+              suggestionsEnd != null &&
+              errorAddress1 == null) {
+            iconState = false;
           }
         }
         return true;
@@ -118,6 +125,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         return SlidingUpPanel(
           controller: panelController,
           renderPanelSheet: false,
+          isDraggable: false,
           panel: _floatingPanel(context),
           onPanelClosed: () {
             focusFrom.unfocus();
@@ -134,17 +142,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             if (size.toStringAsFixed(1) == (0.5).toString()) {
               focusFrom.unfocus();
               focusTo.unfocus();
-              // if (_flipController!.state!.isFront) {
-              if (focusFrom.hasFocus || focusTo.hasFocus) {
-                _flipController!.toggleCard();
-              }
-              // }
             }
           },
           maxHeight: 735.h,
           minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
-              ? 370.h
-              : 215.h,
+              ? 400.h
+              : 250.h,
           defaultPanelState: PanelState.CLOSED,
         );
       }),
@@ -181,14 +184,45 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               right: ((MediaQuery.of(context).size.width * 47) / 100).w,
               bottom: 10.w,
             ),
-            child: Container(
-              height: 5.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.r),
-                color: Colors.grey[400],
-              ),
+            // child: Container(
+            //   height: 5.h,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(25.r),
+            //     color: Colors.grey[400],
+            // ),
+            // ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 35.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  width: iconState ? 25.w : 16.w,
+                  child: Image.asset(
+                    'assets/images/city.png',
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  width: iconState ? 10.w : 6.w,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  child: Text(
+                    'ОБЫЧНАЯ ДОСТАВКА',
+                    style: TextStyle(
+                      fontSize: iconState ? 14.sp : 10.sp,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+          SizedBox(height: 10.h),
           StreamBuilder<dynamic>(
             stream: stream.stream,
             builder: (context, snapshot) {
@@ -216,16 +250,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               child: CustomTextField(
                                 height: 45.h,
                                 onTap: () {
-                                  if (_flipController!.state!.isFront) {
-                                    _flipController!.toggleCard();
-                                  }
                                   typeAdd = TypeAdd.sender;
                                   panelController.open();
+                                  bloc.add(SearchAddressClear());
                                   Future.delayed(
                                       const Duration(milliseconds: 300), () {
                                     focusFrom.requestFocus();
                                   });
-                                  bloc.add(SearchAddressClear());
                                 },
                                 focusNode: focusFrom,
                                 fillColor: Colors.white.withOpacity(0),
@@ -241,43 +272,102 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            SizedBox(width: 10.w),
-                            FlipCard(
-                              controller: _flipController,
-                              back: GestureDetector(
-                                onTap: () {
-                                  bloc.add(DeletePolilyneEvent());
-                                  fromController.text = '';
-                                  stream.add('event');
-                                },
-                                child: Container(
-                                  height: 20.h,
-                                  width: 20.h,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey[500],
+                            fromController.text.isNotEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.only(right: 15.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        bloc.add(DeletePolilyneEvent());
+                                        fromController.text = '';
+                                        stream.add('event');
+                                        coasts.clear();
+                                        setState(() {
+                                          iconState = true;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 20.h,
+                                        width: 20.h,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[500],
+                                        ),
+                                        child: const Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.only(right: 5.w),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 0.h),
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            width: 1,
+                                            height: 40.h,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            // focusFrom.unfocus();
+                                            final res =
+                                                await Navigator.of(context)
+                                                    .pushNamed(
+                                                        AppRoute.selectPoint);
+                                            if (res != null &&
+                                                res is Suggestions) {
+                                              suggestionsStart = res;
+                                              fromController.text =
+                                                  suggestionsStart!.name;
+
+                                              errorAddress1 =
+                                                  res.houseNumber == null
+                                                      ? 'Укажите номер дома'
+                                                      : null;
+                                              calc();
+                                            }
+                                          },
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(10.r),
+                                                  topRight:
+                                                      Radius.circular(10.r),
+                                                ),
+                                              ),
+                                            ),
+                                            backgroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.transparent),
+                                            foregroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.white),
+                                            overlayColor:
+                                                MaterialStatePropertyAll(
+                                              Colors.grey[400],
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Карта',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.sp),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: const Icon(
-                                    Icons.clear,
-                                    color: Colors.white,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                              front: GestureDetector(
-                                onTap: () {
-                                  focusFrom.unfocus();
-                                  focusTo.unfocus();
-                                  // panelController.close();
-                                  bloc.add(GetAddressPosition());
-                                },
-                                child: const Icon(
-                                  Icons.gps_fixed,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 15.w),
                           ],
                         ),
                       ),
@@ -301,15 +391,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                               value: false,
                               fillColor: MaterialStateProperty.all(Colors.blue),
                               shape: const CircleBorder(),
-                              onChanged: ((value) {}),
+                              onChanged: (value) {},
                             ),
                             Expanded(
                               child: CustomTextField(
                                 height: 45.h,
                                 onTap: () {
-                                  if (!_flipController!.state!.isFront) {
-                                    _flipController!.toggleCard();
-                                  }
                                   typeAdd = TypeAdd.receiver;
                                   panelController.open();
                                   bloc.add(SearchAddressClear());
@@ -334,34 +421,103 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 },
                               ),
                             ),
-                            focusTo.hasFocus
-                                ? GestureDetector(
-                                    onTap: () {
-                                      bloc.add(DeletePolilyneEvent());
-                                      toController.text = '';
-                                      stream.add('event');
-                                      if (focusFrom.hasFocus) {
-                                        _flipController?.toggleCard();
-                                      }
-                                    },
-                                    child: Container(
-                                      height: 20.h,
-                                      width: 20.h,
-                                      margin: const EdgeInsets.only(
-                                          right: 5, left: 10),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.grey[500],
-                                      ),
-                                      child: const Icon(
-                                        Icons.clear,
-                                        color: Colors.white,
-                                        size: 15,
+                            SizedBox(width: 10.w),
+                            toController.text.isNotEmpty
+                                ? Padding(
+                                    padding: EdgeInsets.only(right: 15.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        bloc.add(DeletePolilyneEvent());
+                                        toController.text = '';
+                                        stream.add('event');
+                                        coasts.clear();
+                                        setState(() {
+                                          iconState = true;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 20.h,
+                                        width: 20.h,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[500],
+                                        ),
+                                        child: const Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
                                       ),
                                     ),
                                   )
-                                : const SizedBox(),
-                            const SizedBox(width: 10),
+                                : Padding(
+                                    padding: EdgeInsets.only(right: 5.w),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 0.h),
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            width: 1,
+                                            height: 40.h,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            focusFrom.unfocus();
+                                            final res =
+                                                await Navigator.of(context)
+                                                    .pushNamed(
+                                                        AppRoute.selectPoint);
+                                            if (res != null &&
+                                                res is Suggestions) {
+                                              suggestionsEnd = res;
+                                              toController.text =
+                                                  suggestionsEnd!.name;
+
+                                              errorAddress2 =
+                                                  res.houseNumber == null
+                                                      ? 'Укажите номер дома'
+                                                      : null;
+                                              calc();
+                                            }
+                                          },
+                                          style: ButtonStyle(
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(10.r),
+                                                  topRight:
+                                                      Radius.circular(10.r),
+                                                ),
+                                              ),
+                                            ),
+                                            backgroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.transparent),
+                                            foregroundColor:
+                                                const MaterialStatePropertyAll(
+                                                    Colors.white),
+                                            overlayColor:
+                                                MaterialStatePropertyAll(
+                                              Colors.grey[400],
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Карта',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.sp),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
@@ -394,12 +550,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
                   if (current is ChangeAddressSuccess) {
-                    errorAddress = current.errorAddress;
+                    errorAddress1 = current.errorAddress;
                     if (fromController.text != current.address) {
                       suggestionsStart = Suggestions(
                         iD: null,
                         name: current.address,
-                        point: Point(
+                        point: pointModel.Point(
                           address: current.address,
                           code: '${current.latitude},${current.longitude}',
                           latitude: current.latitude,
@@ -409,19 +565,28 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       fromController.text = current.address;
                     }
                   }
+                  if (current is SearchLoading) {
+                    setState(() {
+                      iconState = false;
+                    });
+                  }
                   if (current is SearchAddressRoutePolilyne) {
                     if (current.coasts.isNotEmpty) {
                       coasts.addAll(current.coasts);
                       coastResponse = current.coasts.first;
                       streamDelivery.add(0);
                     }
+                    setState(() {
+                      iconState = false;
+                    });
                   }
                   if (current is FindMeState) return false;
+                  if (current is EditPolilynesState) return false;
 
                   return true;
                 },
                 builder: (context, state) {
-                  var bloc = BlocProvider.of<SearchAddressBloc>(context);
+                  log('message $state');
                   if (state is SearchLoading) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -431,9 +596,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       ],
                     );
                   }
-                  if (state is SearchAddressStated) {
-                    return const SizedBox();
-                  } else if (state is SearchAddressLoading) {
+                  if (state is SearchAddressLoading) {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [CupertinoActivityIndicator()],
@@ -458,7 +621,17 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     } else {
                       return Container();
                     }
-                  } else if (state is SearchAddressRoutePolilyne) {
+                  } else if (state is SearchAddressRoutePolilyne ||
+                      state is EditPolilynesState ||
+                      state is SearchAddressStated) {
+                    if (state is SearchAddressStated && coasts.isEmpty) {
+                      return const SizedBox();
+                    }
+                    if (state is SearchAddressRoutePolilyne) {
+                      directions = state.directions;
+                      directionsBicycle = state.directionsBicycle;
+                      markers = state.markers;
+                    }
                     if (coasts.isEmpty) {
                       return Column(
                         children: [
@@ -471,14 +644,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             textAlign: TextAlign.center,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              if (toController.text.isNotEmpty &&
-                                  toController.text.isNotEmpty) {
-                                BlocProvider.of<SearchAddressBloc>(context).add(
-                                    SearchAddressPolilyne([suggestionsStart!],
-                                        [suggestionsEnd!]));
-                              }
-                            },
+                            onTap: () => calc(),
                             child: const Text(
                               'Повторите еще раз',
                               textAlign: TextAlign.center,
@@ -490,22 +656,35 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         ],
                       );
                     }
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: listChoice.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: index == 0 ? 20.w : 0,
-                            right: index == coasts.length - 1 ? 5.w : 0,
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              coastResponse = coasts[index];
-                              streamDelivery.add(index);
-                            },
-                            child: Opacity(
-                              opacity: snapshot.data! == index ? 1 : 0.3,
+
+                    log('message ssss ${state} ${coasts.isEmpty} ${listChoice}');
+
+                    return SizedBox(
+                      height: 100.h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: listChoice.length,
+                        // shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              left: index == 0 ? 20.w : 0,
+                              right: index == coasts.length - 1 ? 5.w : 0,
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                coastResponse = coasts[index];
+                                streamDelivery.add(index);
+                                if (index != snapshot.data) {
+                                  BlocProvider.of<SearchAddressBloc>(context)
+                                      .add(EditPolilynesEvent(
+                                    directions: index == 1 ? directions : null,
+                                    directionsBicycle:
+                                        index == 0 ? directionsBicycle : null,
+                                    markers: markers,
+                                  ));
+                                }
+                              },
                               child: Container(
                                 width: 80.w,
                                 decoration: BoxDecoration(
@@ -517,38 +696,48 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    SizedBox(
-                                      height: 45.h,
-                                      child: Image.asset(
-                                        listChoice[index].icon,
-                                        color: snapshot.data! == index
-                                            ? Colors.black
-                                            : Colors.black,
+                                    Opacity(
+                                      opacity:
+                                          snapshot.data! == index ? 1 : 0.3,
+                                      child: SizedBox(
+                                        height: 45.h,
+                                        child: Image.asset(
+                                          listChoice[index].icon,
+                                          color: snapshot.data! == index
+                                              ? Colors.black
+                                              : Colors.black,
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                      listChoice[index].title,
-                                      style: TextStyle(
-                                        color: snapshot.data! == index
-                                            ? Colors.black
-                                            : Colors.black,
+                                    Opacity(
+                                      opacity:
+                                          snapshot.data! == index ? 1 : 0.3,
+                                      child: Text(
+                                        listChoice[index].title,
+                                        style: TextStyle(
+                                            color: snapshot.data! == index
+                                                ? Colors.black
+                                                : Colors.black,
+                                            fontWeight: snapshot.data! == index
+                                                ? FontWeight.w600
+                                                : FontWeight.w400),
                                       ),
                                     ),
                                     Text(
                                       '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
                                       style: TextStyle(
-                                        color: snapshot.data! == index
-                                            ? Colors.grey
-                                            : Colors.black,
-                                      ),
+                                          color: snapshot.data! == index
+                                              ? Colors.black
+                                              : Colors.black,
+                                          fontWeight: FontWeight.w600),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     );
                   } else {
                     return const Text('');
@@ -569,7 +758,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     child: GestureDetector(
                       onTap: coasts.isNotEmpty
                           ? () {
-                              if (errorAddress != null) {
+                              print(
+                                  'object ${errorAddress1}---${errorAddress2}');
+                              if (errorAddress1 != null ||
+                                  errorAddress2 != null) {
                                 MessageDialogs()
                                     .showAlert('Ошибка', 'Укажите номер дома');
                               } else {
@@ -605,22 +797,43 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   void authShowDialog(int index) async {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
+    var bloc = BlocProvider.of<SearchAddressBloc>(context);
 
     if (user != null) {
-      Navigator.of(context).pushNamed(AppRoute.newOrder, arguments: [
-        coastResponse,
-        listChoice[index],
-        suggestionsStart ??
-            Suggestions(
+      final res = await Navigator.of(context).pushNamed(
+        AppRoute.newOrder,
+        arguments: [
+          coastResponse,
+          listChoice[index],
+          suggestionsStart ??
+              Suggestions(
                 iD: null,
                 name: coastResponse!.result!.locations!.first.point!.address!,
-                point: Point(
-                    latitude: coastResponse!
-                        .result!.locations!.first.point!.latitude!,
-                    longitude: coastResponse!
-                        .result!.locations!.first.point!.longitude!)),
-        suggestionsEnd,
-      ]);
+                point: pointModel.Point(
+                  latitude:
+                      coastResponse!.result!.locations!.first.point!.latitude!,
+                  longitude:
+                      coastResponse!.result!.locations!.first.point!.longitude!,
+                ),
+              ),
+          suggestionsEnd,
+        ],
+      );
+      print('object ');
+      if (res is bool) {
+        bloc.add(DeletePolilyneEvent());
+        fromController.text = '';
+        toController.text = '';
+
+        suggestionsStart = null;
+        suggestionsEnd = null;
+
+        coasts.clear();
+        setState(() {
+          iconState = true;
+        });
+        stream.add('event');
+      }
     } else {
       await showDialog(
         context: context,
@@ -629,17 +842,34 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
             message: 'Хотите авторизоваться?',
             buttons: [
               StandartButton(
-                label: 'Нет',
-                color: Colors.red.withOpacity(0.9),
-                onTap: () => Navigator.of(context)
-                  ..pop()
-                  ..pushNamed(AppRoute.newOrder, arguments: [
-                    coastResponse,
-                    listChoice[index],
-                    suggestionsStart,
-                    suggestionsEnd,
-                  ]),
-              ),
+                  label: 'Нет',
+                  color: Colors.red.withOpacity(0.9),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    final res = await Navigator.of(context).pushNamed(
+                      AppRoute.newOrder,
+                      arguments: [
+                        coastResponse,
+                        listChoice[index],
+                        suggestionsStart,
+                        suggestionsEnd,
+                      ],
+                    );
+                    if (res is bool) {
+                      bloc.add(DeletePolilyneEvent());
+                      fromController.text = '';
+                      toController.text = '';
+
+                      suggestionsStart = null;
+                      suggestionsEnd = null;
+
+                      coasts.clear();
+                      setState(() {
+                        iconState = true;
+                      });
+                      stream.add('event');
+                    }
+                  }),
               StandartButton(
                 label: 'Да',
                 color: Colors.green,
@@ -649,14 +879,30 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   if (result != null) {
                     BlocProvider.of<ProfileBloc>(context)
                         .add(ProfileEventUpdate(result as AuthUser));
-                    Navigator.of(context)
-                      ..pop()
-                      ..pushNamed(AppRoute.newOrder, arguments: [
+                    Navigator.of(context).pop();
+                    final res = await Navigator.of(context).pushNamed(
+                      AppRoute.newOrder,
+                      arguments: [
                         coastResponse,
                         listChoice[index],
                         suggestionsStart,
                         suggestionsEnd,
-                      ]);
+                      ],
+                    );
+                    if (res is bool) {
+                      bloc.add(DeletePolilyneEvent());
+                      fromController.text = '';
+                      toController.text = '';
+
+                      suggestionsStart = null;
+                      suggestionsEnd = null;
+
+                      coasts.clear();
+                      setState(() {
+                        iconState = true;
+                      });
+                      stream.add('event');
+                    }
                   }
                 },
               )
@@ -676,17 +922,15 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           height: 50.h,
           child: GestureDetector(
             onTap: () {
-              if (!_flipController!.state!.isFront) {
-                _flipController!.toggleCard();
-              }
               if (focusFrom.hasFocus) {
-                errorAddress = null;
+                errorAddress1 = null;
                 suggestionsStart = state.address!.result.suggestions![index];
                 fromController.text =
                     state.address!.result.suggestions![index].name;
                 // BlocProvider.of<SearchAddressBloc>(context)
                 //     .add(DeleteGeoDateEvent());
               } else if (focusTo.hasFocus) {
+                errorAddress2 = null;
                 suggestionsEnd = state.address!.result.suggestions![index];
                 toController.text =
                     state.address!.result.suggestions![index].name;
@@ -694,10 +938,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
               if (fromController.text.isNotEmpty &&
                   toController.text.isNotEmpty) {
-                coasts.clear();
-                BlocProvider.of<SearchAddressBloc>(context).add(
-                    SearchAddressPolilyne(
-                        [suggestionsStart], [suggestionsEnd]));
+                calc();
               } else {
                 BlocProvider.of<SearchAddressBloc>(context).add(
                   JumpToPointEvent(
@@ -745,5 +986,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         ),
       ],
     );
+  }
+
+  void calc() {
+    if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
+      coasts.clear();
+      BlocProvider.of<SearchAddressBloc>(context)
+          .add(SearchAddressPolilyne([suggestionsStart!], [suggestionsEnd!]));
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -15,11 +16,16 @@ import 'package:egorka/widget/bottom_sheet_add_adress.dart';
 import 'package:egorka/widget/calculate_circular.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/formatter_max_coast.dart';
+import 'package:egorka/widget/formatter_slider.dart';
 import 'package:egorka/widget/load_form.dart';
+import 'package:egorka/widget/tip_dialog.dart';
 import 'package:egorka/widget/total_price.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class NewOrderPage extends StatelessWidget {
@@ -87,6 +93,11 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   bool additional3 = false;
   bool additional4 = false;
 
+  DateTime? time;
+
+  double minSlider = 0;
+  double maxSlider = 200;
+
   List<PointDetails> routeOrderSender = [];
   List<PointDetails> routeOrderReceiver = [];
 
@@ -111,6 +122,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
 
   TextEditingController whereToSend = TextEditingController();
   TextEditingController whoToSend = TextEditingController();
+
+  TextEditingController startOrderController = TextEditingController();
 
   final weightControllerSlider = StreamController<int>();
   final additionalController = StreamController<bool>();
@@ -140,6 +153,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
   FocusNode whoDeparture2Focus = FocusNode();
   FocusNode numberDeparture2Focus = FocusNode();
   FocusNode contactDeparture2Focus = FocusNode();
+
+  GlobalKey iconDate = GlobalKey();
 
   @override
   void initState() {
@@ -195,7 +210,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           Align(
                             child: Text(
                               'Оформление заказа',
-                              style: CustomTextStyle.black15w500.copyWith(
+                              style: CustomTextStyle.black17w400.copyWith(
                                   fontSize: 17, fontWeight: FontWeight.w600),
                             ),
                           )
@@ -236,9 +251,12 @@ class _NewOrderPageState extends State<NewOrderPageState> {
               MessageDialogs()
                   .completeDialog(text: 'Заявка создана')
                   .then((value) {
-                // BlocProvider.of<HistoryOrdersBloc>(context)
-                //     .add(HistoryUpdateListEvent(current.createFormModel));
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                  ..pop(true)
+                  ..pushNamed(AppRoute.currentOrder, arguments: [
+                    current.createFormModel.result.RecordNumber!,
+                    current.createFormModel.result.RecordPIN!
+                  ]);
               });
             } else if (current is CreateFormFail) {
               String errors = '';
@@ -364,6 +382,56 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              SizedBox(width: 5.w),
+                              const Text(
+                                'Когда забрать?',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5.h),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: showDateTime,
+                                    child: CustomTextField(
+                                      height: 45.h,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
+                                      fillColor: Colors.grey[200],
+                                      hintText: '',
+                                      enabled: false,
+                                      textEditingController:
+                                          startOrderController,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                GestureDetector(
+                                  onTap: () => iconDateOrder(
+                                    context,
+                                    getWidgetPosition(iconDate),
+                                  ),
+                                  child: Icon(
+                                    Icons.help_outline_outlined,
+                                    key: iconDate,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -421,7 +489,19 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                   color: Colors.grey,
                                   fontWeight: FontWeight.w400,
                                 ),
+                                onChanged: (value) {
+                                  print('object $value');
+                                  int? coast = int.tryParse(value);
+                                  if (coast != null) {
+                                    if (coast > 100000)
+                                      MessageDialogs().errorDialog(
+                                          text: 'Ошибка',
+                                          error:
+                                              'Ценность груза не может быть больше 100000 ₽');
+                                  }
+                                },
                                 hintText: 'До 100000 ₽',
+                                formatters: [CustomInputFormatterMaxCoast()],
                                 textEditingController: coastController,
                                 textInputType: TextInputType.number,
                               ),
@@ -435,871 +515,15 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                               additional = snapshot.data!;
                               double height;
                               if (additional) {
-                                height = 1020.h;
-                                if (additional1) height += 170.h;
+                                height = 1080.h;
+                                if (additional1) height += 175.h;
                                 if (additional2) height += 150.h;
                                 if (additional3) height += 315.h;
                                 if (additional4) height += 315.h;
                               } else {
                                 height = 0.h;
                               }
-                              return Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 5.w),
-                                      const Text(
-                                        'Дополнительные услуги',
-                                        style: CustomTextStyle.grey15bold,
-                                      ),
-                                      const Spacer(),
-                                      GestureDetector(
-                                        onTap: () {
-                                          additionalController.add(!additional);
-                                          if (!additional) {
-                                            Future.delayed(
-                                                const Duration(
-                                                    milliseconds: 100), () {
-                                              scrollController.animateTo(350.h,
-                                                  duration: const Duration(
-                                                      milliseconds: 200),
-                                                  curve: Curves.linear);
-                                            });
-                                          }
-                                        },
-                                        child: Text(
-                                          additional
-                                              ? 'Свернуть'
-                                              : 'Развернуть',
-                                          style: CustomTextStyle.red15,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 100),
-                                    height: height,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(height: 10.h),
-                                          Row(
-                                            children: [
-                                              const Flexible(
-                                                child: Text(
-                                                  'Услуга помощи погрузки / разгрузки',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  additional1 = !additional1;
-                                                  additional1Controller
-                                                      .add(additional1);
-                                                  additionalController
-                                                      .add(additional);
-                                                },
-                                                icon: additional1
-                                                    ? const Icon(
-                                                        Icons.keyboard_arrow_up)
-                                                    : const Icon(Icons
-                                                        .keyboard_arrow_down),
-                                                splashRadius: 15,
-                                              )
-                                            ],
-                                          ),
-                                          const Text(
-                                            'Егорка поможет вам загрузить/разгрузить посылку. Если вес посылки превышает бесплатные нормы и Егорка физически не сможет загрузить/разгрузить один, то Егорка вправе попросить отправителя/получателя о помощи.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          StreamBuilder<bool>(
-                                            stream:
-                                                additional1Controller.stream,
-                                            initialData: false,
-                                            builder: (context, snapshot) {
-                                              additional1 = snapshot.data!;
-                                              return AnimatedContainer(
-                                                duration: const Duration(
-                                                    milliseconds: 100),
-                                                height:
-                                                    additional1 ? 170.h : 0.h,
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(height: 10.h),
-                                                    Row(
-                                                      children: const [
-                                                        Text(
-                                                          'Какой вес? (кг)',
-                                                          style: CustomTextStyle
-                                                              .grey15bold,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 10.h),
-                                                    StreamBuilder<int>(
-                                                      stream:
-                                                          weightControllerSlider
-                                                              .stream,
-                                                      initialData: 0,
-                                                      builder:
-                                                          (context, snapshot) {
-                                                        return Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child:
-                                                                  CustomTextField(
-                                                                focusNode:
-                                                                    weigthFocus,
-                                                                height: 45.h,
-                                                                contentPadding:
-                                                                    EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            10.w),
-                                                                fillColor:
-                                                                    Colors
-                                                                        .white,
-                                                                hintText: '0',
-                                                                onFieldSubmitted:
-                                                                    (value) =>
-                                                                        calc(),
-                                                                textInputType:
-                                                                    TextInputType
-                                                                        .number,
-                                                                textEditingController:
-                                                                    weigthController,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                                width: 10.w),
-                                                            Expanded(
-                                                              flex: 2,
-                                                              child: Slider(
-                                                                min: 0,
-                                                                max: 200,
-                                                                activeColor:
-                                                                    Colors.red,
-                                                                inactiveColor:
-                                                                    Colors.grey[
-                                                                        300],
-                                                                thumbColor:
-                                                                    Colors
-                                                                        .white,
-                                                                value: snapshot
-                                                                    .data!
-                                                                    .toDouble(),
-                                                                onChangeEnd:
-                                                                    (value) =>
-                                                                        calc(),
-                                                                onChanged:
-                                                                    (value) {
-                                                                  weightControllerSlider
-                                                                      .add(value
-                                                                          .toInt());
-                                                                  weigthController
-                                                                          .text =
-                                                                      value
-                                                                          .toInt()
-                                                                          .toString();
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    ),
-                                                    SizedBox(height: 10.h),
-                                                    Row(
-                                                      children: const [
-                                                        Text(
-                                                          'Какие размеры? (см)',
-                                                          style: CustomTextStyle
-                                                              .grey15bold,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 10.h),
-                                                    Row(
-                                                      children: [
-                                                        const Text('Ширина'),
-                                                        SizedBox(width: 4.w),
-                                                        Expanded(
-                                                          child:
-                                                              CustomTextField(
-                                                            onFieldSubmitted:
-                                                                (value) =>
-                                                                    calc(),
-                                                            focusNode:
-                                                                widthFocus,
-                                                            height: 45.h,
-                                                            contentPadding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10.w),
-                                                            fillColor:
-                                                                Colors.white,
-                                                            hintText: '0',
-                                                            textInputType:
-                                                                TextInputType
-                                                                    .number,
-                                                            textEditingController:
-                                                                widthController,
-                                                          ),
-                                                        ),
-                                                        const Text('Высота'),
-                                                        SizedBox(width: 8.w),
-                                                        Expanded(
-                                                          child:
-                                                              CustomTextField(
-                                                            onFieldSubmitted:
-                                                                (value) =>
-                                                                    calc(),
-                                                            focusNode:
-                                                                heightFocus,
-                                                            height: 45.h,
-                                                            contentPadding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10.w),
-                                                            fillColor:
-                                                                Colors.white,
-                                                            hintText: '0',
-                                                            textInputType:
-                                                                TextInputType
-                                                                    .number,
-                                                            textEditingController:
-                                                                heightController,
-                                                          ),
-                                                        ),
-                                                        const Text('Глубина'),
-                                                        SizedBox(width: 8.w),
-                                                        Expanded(
-                                                          child:
-                                                              CustomTextField(
-                                                            onFieldSubmitted:
-                                                                (value) =>
-                                                                    calc(),
-                                                            focusNode:
-                                                                depthFocus,
-                                                            height: 45.h,
-                                                            contentPadding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        10.w),
-                                                            fillColor:
-                                                                Colors.white,
-                                                            hintText: '0',
-                                                            textInputType:
-                                                                TextInputType
-                                                                    .number,
-                                                            textEditingController:
-                                                                depthController,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          SizedBox(height: 5.w),
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                'Отвезти посылку на почту',
-                                                style:
-                                                    CustomTextStyle.grey15bold,
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  additional2 = !additional2;
-                                                  additional2Controller
-                                                      .add(additional2);
-                                                  additionalController
-                                                      .add(additional);
-                                                },
-                                                icon: additional2
-                                                    ? const Icon(
-                                                        Icons.keyboard_arrow_up)
-                                                    : const Icon(Icons
-                                                        .keyboard_arrow_down),
-                                                splashRadius: 15,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: 5.w),
-                                          const Text(
-                                            'Егорка отвезет посылку на почту и отправит её по указанному ниже адресу. Если вы хотите получить оригинал квитанции, то укажите дополнительную точку в заказе. Дополнительные расходы за отправку спишутся с вашей банковской карты или депозита.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          SizedBox(height: 10.w),
-                                          AnimatedContainer(
-                                            duration: const Duration(
-                                                milliseconds: 100),
-                                            height: additional2 ? 150.h : 0.h,
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.w),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'На какой адрес отправить?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode: whereFocus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: аэропорт Шереметьево',
-                                                    textEditingController:
-                                                        whereToSend,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'На кого?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode: whoFocus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Иванов Иван Иванович',
-                                                    textEditingController:
-                                                        whoToSend,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.h),
-                                          Row(
-                                            children: [
-                                              const Flexible(
-                                                child: Text(
-                                                  'Отправить посылку поездом, автобусом или самолетом',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  additional3 = !additional3;
-                                                  additional3Controller
-                                                      .add(additional3);
-                                                  additionalController
-                                                      .add(additional);
-                                                },
-                                                icon: additional3
-                                                    ? const Icon(
-                                                        Icons.keyboard_arrow_up)
-                                                    : const Icon(Icons
-                                                        .keyboard_arrow_down),
-                                                splashRadius: 15,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: 15.w),
-                                          const Text(
-                                            'Егорка заранее приедет на вокзал, найдет ваш поезд/автобус, рейс и отправит строго по указанному вами поручению. Дополнительные расходы (за отправку, парковку и т.д.) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          AnimatedContainer(
-                                            duration: const Duration(
-                                                milliseconds: 100),
-                                            height: additional3 ? 315.h : 0.h,
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.w),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Откуда отправление?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        whereDeparture1Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: аэропорт Шереметьево',
-                                                    textEditingController:
-                                                        whereDeparture1,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Кому отдать?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        whoDeparture1Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: Стойка 16 авиакомпании',
-                                                    textEditingController:
-                                                        whoDeparture1,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Номер рейса/поезда/автобуса?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        numberDeparture1Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: аэропот Шереметьево',
-                                                    textEditingController:
-                                                        numberDeparture1,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Контакты представителя?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        contactDeparture1Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'В формате: +79998887766',
-                                                    textEditingController:
-                                                        contactDeparture1,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.h),
-                                          Row(
-                                            children: [
-                                              const Flexible(
-                                                child: Text(
-                                                  'Встретить посылку поездом, автобусом или самолетом',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  additional4 = !additional4;
-                                                  additional4Controller
-                                                      .add(additional4);
-                                                  additionalController
-                                                      .add(additional);
-                                                },
-                                                icon: additional4
-                                                    ? const Icon(
-                                                        Icons.keyboard_arrow_up)
-                                                    : const Icon(Icons
-                                                        .keyboard_arrow_down),
-                                                splashRadius: 15,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: 5.w),
-                                          const Text(
-                                            'Егорка заранее приедет на вокзал, встретит ваш поезд/автобус, рейс и заберет вашу посылку. После чего доставит на указанный вами адрес. Дополнительные расходы (к примеру, парковку) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          AnimatedContainer(
-                                            duration: const Duration(
-                                                milliseconds: 100),
-                                            height: additional4 ? 315.h : 0.h,
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.w),
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Куда прибывает?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        whereDeparture2Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: аэропорт Шереметьево',
-                                                    textEditingController:
-                                                        whereDeparture2,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'У кого забрать?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        whoDeparture2Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: Стойка 16 авиакомпании',
-                                                    textEditingController:
-                                                        whoDeparture2,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Номер рейса/поезда/автобуса?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        numberDeparture2Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'Например: аэропот Шереметьево',
-                                                    textEditingController:
-                                                        numberDeparture2,
-                                                  ),
-                                                  SizedBox(height: 10.w),
-                                                  Row(
-                                                    children: const [
-                                                      Text(
-                                                        'Контакты представителя?',
-                                                        style: CustomTextStyle
-                                                            .grey15bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5.w),
-                                                  CustomTextField(
-                                                    onFieldSubmitted: (value) =>
-                                                        calc(),
-                                                    focusNode:
-                                                        contactDeparture2Focus,
-                                                    height: 45.h,
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.w,
-                                                            vertical: 10.w),
-                                                    hintStyle: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    hintText:
-                                                        'В формате: +79998887766',
-                                                    textEditingController:
-                                                        contactDeparture2,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.h),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                attorney = !attorney;
-                                              });
-                                              calc();
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Checkbox(
-                                                  value: attorney,
-                                                  fillColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.red),
-                                                  shape: const CircleBorder(),
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      attorney = !attorney;
-                                                    });
-                                                    calc();
-                                                  },
-                                                ),
-                                                const Text(
-                                                  'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.w),
-                                          const Text(
-                                            'После оформления заказа, Егорка пришлет вам в СМС или WhatsApp паспортные данные (ФИО, серия и номер паспорта, дата выдачи, где и когда выдан) для составления доверенности. Если нужные дополнительные данные, то укажите их ниже в поручении для Егорки.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          SizedBox(height: 5.h),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                industrialZone =
-                                                    !industrialZone;
-                                              });
-                                              calc();
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Checkbox(
-                                                  value: industrialZone,
-                                                  fillColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.red),
-                                                  shape: const CircleBorder(),
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      industrialZone =
-                                                          !industrialZone;
-                                                    });
-                                                    calc();
-                                                  },
-                                                ),
-                                                const Text(
-                                                  'Промзона',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.w),
-                                          const Text(
-                                            'В том случае, если вы не сможете выдать пропуск Егорке для заезда на территорию промзоны. Егорка припаркует свой автомобиль за воротами и пешком доставит посылку получателю.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          SizedBox(height: 5.h),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                toDoor = !toDoor;
-                                              });
-                                              calc();
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Checkbox(
-                                                  value: toDoor,
-                                                  fillColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.red),
-                                                  shape: const CircleBorder(),
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      toDoor = !toDoor;
-                                                    });
-                                                    calc();
-                                                  },
-                                                ),
-                                                const Text(
-                                                  'Доставить до двери',
-                                                  style: CustomTextStyle
-                                                      .grey15bold,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(height: 5.w),
-                                          const Text(
-                                            'Егорка доставит вашу посылку до входной двери квартиры/офиса. Если данная услуга не активирована, Егорка встретит получателя возле подъезда.',
-                                            style: CustomTextStyle.grey14w400,
-                                            textAlign: TextAlign.justify,
-                                          ),
-                                          SizedBox(height: 5.h),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
+                              return additionalTab(height);
                             },
                           ),
                           keyBoardVisible
@@ -1313,40 +537,38 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                   ),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
-                    final auth =
-                        BlocProvider.of<ProfileBloc>(context).getUser();
-                    String? additionalCost;
-                    int temp = 0;
-                    for (var element in widget.order.result!.ancillaries!) {
-                      temp += (element.price! / 100).ceil();
-                    }
-                    additionalCost = temp.toString();
                     return TotalPriceWidget(
-                      title: widget.deliveryChocie.title,
-                      icon: widget.deliveryChocie.icon,
-                      deliveryCost:
-                          (((widget.order.result!.totalPrice!.base!).ceil()) /
-                                  100)
-                              .ceil()
-                              .toString(),
-                      additionalCost:
-                          (((widget.order.result!.totalPrice!.ancillary!)
-                                      .ceil()) /
-                                  100)
-                              .ceil()
-                              .toString(),
-                      comissionPaymentSystem: ((double.tryParse(widget
-                                          .order.result!.totalPrice!.total!)!
-                                      .ceil() *
-                                  2.69) /
-                              100)
-                          .ceil()
-                          .toString(),
-                      totalPrice:
-                          '${double.tryParse(widget.order.result!.totalPrice!.total!)!.ceil()}',
-                      onTap: () => BlocProvider.of<NewOrderPageBloc>(context)
-                          .add(CreateForm(widget.order.result!.id!)),
-                    );
+                        title: widget.deliveryChocie.title,
+                        icon: widget.deliveryChocie.icon,
+                        deliveryCost:
+                            (((widget.order.result!.totalPrice!.base!).ceil()) /
+                                    100)
+                                .ceil()
+                                .toString(),
+                        additionalCost:
+                            (((widget.order.result!.totalPrice!.ancillary!)
+                                        .ceil()) /
+                                    100)
+                                .ceil()
+                                .toString(),
+                        comissionPaymentSystem: ((double.tryParse(widget
+                                            .order.result!.totalPrice!.total!)!
+                                        .ceil() *
+                                    2.69) /
+                                100)
+                            .ceil()
+                            .toString(),
+                        totalPrice:
+                            '${double.tryParse(widget.order.result!.totalPrice!.total!)!.ceil()}',
+                        onTap: () {
+                          if (time == null) {
+                            MessageDialogs().showAlert(
+                                'Ошибка', 'Укажите дату когда нужно забрать');
+                          } else {
+                            BlocProvider.of<NewOrderPageBloc>(context)
+                                .add(CreateForm(widget.order.result!.id!));
+                          }
+                        });
                   }),
                   SlidingUpPanel(
                     controller: panelController,
@@ -1357,6 +579,27 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                       typeAdd: typeAdd,
                       fromController: fromController,
                       panelController: panelController,
+                      onSearch: (sug) {
+                        panelController.animatePanelToPosition(
+                          0,
+                          curve: Curves.easeInOutQuint,
+                          duration: const Duration(
+                            milliseconds: 1000,
+                          ),
+                        );
+
+                        btmSheet = false;
+                        if (typeAdd != null && typeAdd == TypeAdd.sender) {
+                          routeOrderSender.add(PointDetails(
+                              suggestions: sug, details: Details()));
+                          calc();
+                        } else if (typeAdd != null &&
+                            typeAdd == TypeAdd.receiver) {
+                          routeOrderReceiver.add(PointDetails(
+                              suggestions: sug, details: Details()));
+                          calc();
+                        }
+                      },
                     ),
                     onPanelClosed: () {
                       fromController.text = '';
@@ -1387,6 +630,682 @@ class _NewOrderPageState extends State<NewOrderPageState> {
           })
         ],
       ),
+    );
+  }
+
+  Widget additionalTab(double height) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            SizedBox(width: 5.w),
+            const Text(
+              'Дополнительные услуги',
+              style: CustomTextStyle.grey15bold,
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () {
+                additionalController.add(!additional);
+                if (!additional) {
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    scrollController.animateTo(350.h,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.linear);
+                  });
+                }
+              },
+              child: Text(
+                additional ? 'Свернуть' : 'Развернуть',
+                style: CustomTextStyle.red15,
+              ),
+            ),
+          ],
+        ),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          height: height,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Column(
+              children: [
+                SizedBox(height: 10.h),
+                Row(
+                  children: [
+                    const Flexible(
+                      child: Text(
+                        'Услуга помощи погрузки / разгрузки',
+                        style: CustomTextStyle.grey15bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        additional1 = !additional1;
+                        additional1Controller.add(additional1);
+                        additionalController.add(additional);
+                      },
+                      icon: additional1
+                          ? const Icon(Icons.keyboard_arrow_up)
+                          : const Icon(Icons.keyboard_arrow_down),
+                      splashRadius: 15,
+                    )
+                  ],
+                ),
+                const Text(
+                  'Егорка поможет вам загрузить/разгрузить посылку. Если вес посылки превышает бесплатные нормы и Егорка физически не сможет загрузить/разгрузить один, то Егорка вправе попросить отправителя/получателя о помощи.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                StreamBuilder<bool>(
+                  stream: additional1Controller.stream,
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    additional1 = snapshot.data!;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 100),
+                      height: additional1 ? 175.h : 0.h,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: const [
+                              Text(
+                                'Какой вес? (кг)',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.h),
+                          StreamBuilder<int>(
+                            stream: weightControllerSlider.stream,
+                            initialData: 0,
+                            builder: (context, snapshot) {
+                              return Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomTextField(
+                                      focusNode: weigthFocus,
+                                      height: 45.h,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
+                                      fillColor: Colors.white,
+                                      hintText: '0',
+                                      onFieldSubmitted: (value) => calc(),
+                                      onChanged: (value) {
+                                        int? res = int.tryParse(value);
+                                        if (res != null) {
+                                          weightControllerSlider.add(res);
+                                        } else {
+                                          weightControllerSlider.add(0);
+                                        }
+                                      },
+                                      formatters: [
+                                        CustomInputFormatterSlider(maxSlider)
+                                      ],
+                                      textInputType: TextInputType.number,
+                                      textEditingController: weigthController,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Slider(
+                                      min: minSlider,
+                                      max: maxSlider,
+                                      activeColor: Colors.red,
+                                      inactiveColor: Colors.grey[300],
+                                      thumbColor: Colors.white,
+                                      value: snapshot.data!.toDouble(),
+                                      onChangeEnd: (value) => calc(),
+                                      onChanged: (value) {
+                                        weightControllerSlider
+                                            .add(value.toInt());
+                                        weigthController.text =
+                                            value.toInt().toString();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: const [
+                              Text(
+                                'Какие размеры? (см)',
+                                style: CustomTextStyle.grey15bold,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              const Text('Ширина'),
+                              SizedBox(width: 4.w),
+                              Expanded(
+                                child: CustomTextField(
+                                  onFieldSubmitted: (value) => calc(),
+                                  focusNode: widthFocus,
+                                  height: 45.h,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10.w),
+                                  fillColor: Colors.white,
+                                  hintText: '0',
+                                  textInputType: TextInputType.number,
+                                  textEditingController: widthController,
+                                ),
+                              ),
+                              const Text('Высота'),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: CustomTextField(
+                                  onFieldSubmitted: (value) => calc(),
+                                  focusNode: heightFocus,
+                                  height: 45.h,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10.w),
+                                  fillColor: Colors.white,
+                                  hintText: '0',
+                                  textInputType: TextInputType.number,
+                                  textEditingController: heightController,
+                                ),
+                              ),
+                              const Text('Глубина'),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: CustomTextField(
+                                  onFieldSubmitted: (value) => calc(),
+                                  focusNode: depthFocus,
+                                  height: 45.h,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10.w),
+                                  fillColor: Colors.white,
+                                  hintText: '0',
+                                  textInputType: TextInputType.number,
+                                  textEditingController: depthController,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 5.w),
+                Row(
+                  children: [
+                    const Text(
+                      'Отвезти посылку на почту',
+                      style: CustomTextStyle.grey15bold,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        additional2 = !additional2;
+                        additional2Controller.add(additional2);
+                        additionalController.add(additional);
+                      },
+                      icon: additional2
+                          ? const Icon(Icons.keyboard_arrow_up)
+                          : const Icon(Icons.keyboard_arrow_down),
+                      splashRadius: 15,
+                    )
+                  ],
+                ),
+                SizedBox(height: 5.w),
+                const Text(
+                  'Егорка отвезет посылку на почту и отправит её по указанному ниже адресу. Если вы хотите получить оригинал квитанции, то укажите дополнительную точку в заказе. Дополнительные расходы за отправку спишутся с вашей банковской карты или депозита.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 10.w),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  height: additional2 ? 150.h : 0.h,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Text(
+                              'На какой адрес отправить?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: whereFocus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: аэропорт Шереметьево',
+                          textEditingController: whereToSend,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'На кого?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: whoFocus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Иванов Иван Иванович',
+                          textEditingController: whoToSend,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                Row(
+                  children: [
+                    const Flexible(
+                      child: Text(
+                        'Отправить посылку поездом, автобусом или самолетом',
+                        style: CustomTextStyle.grey15bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        additional3 = !additional3;
+                        additional3Controller.add(additional3);
+                        additionalController.add(additional);
+                      },
+                      icon: additional3
+                          ? const Icon(Icons.keyboard_arrow_up)
+                          : const Icon(Icons.keyboard_arrow_down),
+                      splashRadius: 15,
+                    )
+                  ],
+                ),
+                SizedBox(height: 15.w),
+                const Text(
+                  'Егорка заранее приедет на вокзал, найдет ваш поезд/автобус, рейс и отправит строго по указанному вами поручению. Дополнительные расходы (за отправку, парковку и т.д.) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  height: additional3 ? 315.h : 0.h,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Откуда отправление?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: whereDeparture1Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: аэропорт Шереметьево',
+                          textEditingController: whereDeparture1,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Кому отдать?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: whoDeparture1Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: Стойка 16 авиакомпании',
+                          textEditingController: whoDeparture1,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Номер рейса/поезда/автобуса?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: numberDeparture1Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: аэропот Шереметьево',
+                          textEditingController: numberDeparture1,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Контакты представителя?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: contactDeparture1Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'В формате: +79998887766',
+                          textEditingController: contactDeparture1,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                Row(
+                  children: [
+                    const Flexible(
+                      child: Text(
+                        'Встретить посылку поездом, автобусом или самолетом',
+                        style: CustomTextStyle.grey15bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        additional4 = !additional4;
+                        additional4Controller.add(additional4);
+                        additionalController.add(additional);
+                      },
+                      icon: additional4
+                          ? const Icon(Icons.keyboard_arrow_up)
+                          : const Icon(Icons.keyboard_arrow_down),
+                      splashRadius: 15,
+                    )
+                  ],
+                ),
+                SizedBox(height: 5.w),
+                const Text(
+                  'Егорка заранее приедет на вокзал, встретит ваш поезд/автобус, рейс и заберет вашу посылку. После чего доставит на указанный вами адрес. Дополнительные расходы (к примеру, парковку) спишутся с вашей банковской карты или депозита, только после согласования с оператором.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  height: additional4 ? 315.h : 0.h,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Куда прибывает?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: whereDeparture2Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: аэропорт Шереметьево',
+                          textEditingController: whereDeparture2,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'У кого забрать?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: whoDeparture2Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: Стойка 16 авиакомпании',
+                          textEditingController: whoDeparture2,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Номер рейса/поезда/автобуса?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: numberDeparture2Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Например: аэропот Шереметьево',
+                          textEditingController: numberDeparture2,
+                        ),
+                        SizedBox(height: 10.w),
+                        Row(
+                          children: const [
+                            Text(
+                              'Контакты представителя?',
+                              style: CustomTextStyle.grey15bold,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5.w),
+                        CustomTextField(
+                          onFieldSubmitted: (value) => calc(),
+                          focusNode: contactDeparture2Focus,
+                          height: 45.h,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.w),
+                          hintStyle: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'В формате: +79998887766',
+                          textEditingController: contactDeparture2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      attorney = !attorney;
+                    });
+                    calc();
+                  },
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: attorney,
+                        fillColor: MaterialStateProperty.all(Colors.red),
+                        shape: const CircleBorder(),
+                        onChanged: (value) {
+                          setState(() {
+                            attorney = !attorney;
+                          });
+                          calc();
+                        },
+                      ),
+                      const Text(
+                        'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
+                        style: CustomTextStyle.grey15bold,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5.w),
+                const Text(
+                  'После оформления заказа, Егорка пришлет вам в СМС или WhatsApp паспортные данные (ФИО, серия и номер паспорта, дата выдачи, где и когда выдан) для составления доверенности. Если нужные дополнительные данные, то укажите их ниже в поручении для Егорки.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 5.h),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      industrialZone = !industrialZone;
+                    });
+                    calc();
+                  },
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: industrialZone,
+                        fillColor: MaterialStateProperty.all(Colors.red),
+                        shape: const CircleBorder(),
+                        onChanged: (value) {
+                          setState(() {
+                            industrialZone = !industrialZone;
+                          });
+                          calc();
+                        },
+                      ),
+                      const Text(
+                        'Промзона',
+                        style: CustomTextStyle.grey15bold,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5.w),
+                const Text(
+                  'В том случае, если вы не сможете выдать пропуск Егорке для заезда на территорию промзоны. Егорка припаркует свой автомобиль за воротами и пешком доставит посылку получателю.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 5.h),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      toDoor = !toDoor;
+                    });
+                    calc();
+                  },
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: toDoor,
+                        fillColor: MaterialStateProperty.all(Colors.red),
+                        shape: const CircleBorder(),
+                        onChanged: (value) {
+                          setState(() {
+                            toDoor = !toDoor;
+                          });
+                          calc();
+                        },
+                      ),
+                      const Text(
+                        'Доставить до двери',
+                        style: CustomTextStyle.grey15bold,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5.w),
+                const Text(
+                  'Егорка доставит вашу посылку до входной двери квартиры/офиса. Если данная услуга не активирована, Егорка встретит получателя возле подъезда.',
+                  style: CustomTextStyle.grey14w400,
+                  textAlign: TextAlign.justify,
+                ),
+                SizedBox(height: 5.h),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1435,24 +1354,24 @@ class _NewOrderPageState extends State<NewOrderPageState> {
           borderRadius: BorderRadius.only(
             bottomLeft: points.length == 1
                 ? const Radius.circular(15)
-                : routeOrderSender.length - 1 == index
+                : index == points.length - 1
                     ? const Radius.circular(15)
                     : Radius.zero,
             bottomRight: points.length == 1
                 ? const Radius.circular(15)
-                : points.length - 1 == index
+                : index == points.length - 1
                     ? const Radius.circular(15)
                     : Radius.zero,
             topLeft: points.length == 1
                 ? const Radius.circular(15)
-                : points.length - 1 == index
+                : index == points.length - 1
                     ? Radius.zero
                     : index == 0
                         ? const Radius.circular(15)
                         : Radius.zero,
             topRight: points.length == 1
                 ? const Radius.circular(15)
-                : points.length - 1 == index
+                : index == points.length - 1
                     ? Radius.zero
                     : index == 0
                         ? const Radius.circular(15)
@@ -1473,7 +1392,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 Flexible(
                   child: Text(
                     points[index].suggestions.name,
-                    style: CustomTextStyle.black15w500.copyWith(fontSize: 16),
+                    style: CustomTextStyle.black17w400.copyWith(fontSize: 16),
                   ),
                 ),
               ],
@@ -1497,9 +1416,11 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                       points[index],
                     ]);
 
-                    points[index] = details!;
+                    if (details != null) {
+                      points[index] = details!;
 
-                    calc();
+                      calc();
+                    }
                   },
                   child: Text(
                     'Указать детали',
@@ -1611,9 +1532,118 @@ class _NewOrderPageState extends State<NewOrderPageState> {
     }
 
     BlocProvider.of<NewOrderPageBloc>(context).add(
-      CalculateCoastEvent(routeOrderSender, routeOrderReceiver,
-          widget.deliveryChocie.type, ancillaries, documentController.text),
+      CalculateCoastEvent(
+        time,
+        routeOrderSender,
+        routeOrderReceiver,
+        widget.deliveryChocie.type,
+        ancillaries,
+        documentController.text,
+        widget.order.result!.id,
+      ),
     );
+  }
+
+  void showDateTime() async {
+    time = null;
+
+    DateTime initialData =
+        DateTime.now().add(const Duration(hours: 2, minutes: 1));
+    if (Platform.isAndroid) {
+      final value = await showDialog(
+          context: context,
+          builder: (context) {
+            return DatePickerDialog(
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2010),
+              lastDate: DateTime(2030),
+            );
+          });
+      if (value != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(
+            hour: TimeOfDay.now().hour,
+            minute: TimeOfDay.now().minute,
+          ),
+        );
+        final DateTime temp = DateTime(
+          value.year,
+          value.month,
+          value.day,
+          timePicked != null ? timePicked.hour : 0,
+          timePicked != null ? timePicked.minute : 0,
+        );
+        startOrderController.text =
+            DateFormat('dd.MM.yyyy  HH:MM:ss').format(temp);
+        time = temp;
+      }
+    } else {
+      showDialog(
+        useSafeArea: false,
+        barrierColor: Colors.black.withOpacity(0.4),
+        context: context,
+        builder: (ctx) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[200],
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CupertinoButton(
+                            onPressed: () {
+                              if (time == null) {
+                                time = initialData;
+                                startOrderController.text =
+                                    DateFormat('dd.MM.yyyy  HH:mm')
+                                        .format(time!);
+                              }
+                              Navigator.of(ctx).pop();
+                              calc();
+                            },
+                            child: const Text(
+                              'Готово',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 200.h,
+                      color: Colors.grey[200],
+                      child: CupertinoDatePicker(
+                        minimumYear: DateTime.now().year,
+                        initialDateTime: initialData,
+                        minimumDate: initialData,
+                        mode: CupertinoDatePickerMode.dateAndTime,
+                        use24hFormat: true,
+                        onDateTimeChanged: (value) {
+                          startOrderController.text =
+                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                          time = value;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 
   void scrolling() {

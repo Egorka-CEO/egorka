@@ -1,18 +1,24 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/model/delivery_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
+import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
   PanelController panelController;
+  double panelSize;
   HistoryOrdersBottomSheetDraggable({
     Key? key,
     required this.panelController,
+    required this.panelSize,
   });
 
   @override
@@ -21,8 +27,17 @@ class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
 }
 
 class _BottomSheetDraggableState
-    extends State<HistoryOrdersBottomSheetDraggable> {
+    extends State<HistoryOrdersBottomSheetDraggable>
+    with TickerProviderStateMixin {
   List<CreateFormModel> coast = [];
+  late final AnimationController controller;
+  bool printText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    animationEmpty();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +87,7 @@ class _BottomSheetDraggableState
           SizedBox(height: 10.h),
           Expanded(
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: _searchList(),
             ),
           ),
@@ -80,31 +96,106 @@ class _BottomSheetDraggableState
     );
   }
 
+  void animationEmpty() async {
+    controller = AnimationController(vsync: this);
+    controller.addListener(() {
+      print('object 123');
+      if (controller.status == AnimationStatus.completed) {
+        setState(() {
+          printText = false;
+        });
+        controller.reset();
+        controller
+          ..duration = const Duration(seconds: 6)
+          ..forward();
+      } else if (controller.value >= 0.44 && controller.value <= 0.45) {
+        setState(() {
+          printText = true;
+        });
+        controller.animateBack(0.47);
+        controller.animateBack(0.46);
+        controller.animateTo(0.47);
+        controller.forward();
+      }
+    });
+    controller
+      ..duration = const Duration(seconds: 6)
+      ..forward();
+  }
+
   Widget _searchList() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
-          buildWhen: (previous, current) {
-        if (current is HistoryUpdateList) {
-          coast = current.coast;
-          return true;
+    return BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
+        buildWhen: (previous, current) {
+      if (current is HistoryOpenBtmSheetState && coast.isEmpty) {}
+      if (current is HistoryCloseBtmSheetState && coast.isEmpty) {}
+      if (current is HistoryUpdateList) {
+        coast = current.coast;
+        return true;
+      }
+      return false;
+    }, builder: (context, snapshot) {
+      if (coast.isEmpty) {
+        if (widget.panelSize > 0 && widget.panelSize < 0.1) {
+          controller
+            ..duration = const Duration(seconds: 6)
+            ..forward();
+        } else if (widget.panelSize == 0) {
+          printText = false;
+          controller.reset();
         }
-        return false;
-      }, builder: (context, snapshot) {
-        return ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: coast.length,
-          itemBuilder: (context, index) {
-            if (coast[index].result.locations.isEmpty) {
-              return const SizedBox();
-            }
-            return _pointCard(coast[index], index, context);
-          },
+      }
+      if (coast.isEmpty) {
+        return Column(
+          children: [
+            LottieBuilder.asset(
+              'assets/anim/empty_orders.json',
+              controller: controller,
+            ),
+            printText
+                ? Container(
+                    height: 100.h,
+                    padding: EdgeInsets.all(20.h),
+                    margin: EdgeInsets.all(20.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey[200]!),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TypewriterAnimatedText(
+                          'У вас еще не было\nзаказов!',
+                          cursor: '',
+                          textAlign: TextAlign.center,
+                          textStyle: TextStyle(
+                            fontSize: 25.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          speed: const Duration(milliseconds: 40),
+                        ),
+                      ],
+                      pause: const Duration(milliseconds: 8000),
+                      repeatForever: true,
+                    ),
+                  )
+                : const SizedBox(),
+          ],
         );
-      }),
-    );
+      }
+
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        itemCount: coast.length,
+        itemBuilder: (context, index) {
+          if (coast[index].result.locations.isEmpty) {
+            return const SizedBox();
+          }
+          return _pointCard(coast[index], index, context);
+        },
+      );
+    });
   }
 
   Container _pointCard(CreateFormModel state, int index, BuildContext context) {
@@ -143,16 +234,54 @@ class _BottomSheetDraggableState
 
     Color colorStatus = Colors.red;
     bool resPaid = state.result.StatusPay! == 'Paid' ? true : false;
-    String typeOrder = 'FBO';
+    Widget typeOrder = Text(
+      'FBO',
+      style: TextStyle(
+        color: Colors.grey[200],
+        fontSize: 24.sp,
+        fontWeight: FontWeight.w800,
+      ),
+    );
 
     if (state.result.Group == 'FBS') {
-      typeOrder = 'FBS';
+      typeOrder = Text(
+        'FBS',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     } else if (state.result.Group == 'FBO') {
-      typeOrder = 'FBO';
+      typeOrder = Text(
+        'FBO',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     } else if (state.result.Group == 'Express') {
-      typeOrder = 'Г';
+      if (state.result.Type! == 'Car') {
+        typeOrder = Image.asset(
+          listChoice[0].icon,
+          color: Colors.grey[200],
+        );
+      } else {
+        typeOrder = Image.asset(
+          listChoice[1].icon,
+          color: Colors.grey[200],
+        );
+      }
     } else if (state.result.Group == 'Marketplace') {
-      typeOrder = 'FBO';
+      typeOrder = Text(
+        'FBO',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     }
 
     if (state.result.Status == 'Drafted') {
@@ -190,163 +319,168 @@ class _BottomSheetDraggableState
                 height: 1,
               ),
             ),
-          Stack(
-            children: [
-              Container(
-                padding: EdgeInsets.all(20.w),
-                margin: EdgeInsets.only(top: 10.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.r),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    widget.panelController.close();
-                                    Navigator.of(context).pushNamed(
-                                        AppRoute.historyOrder,
-                                        arguments: coast[index]);
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
-                                        style: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/from.png',
-                                            height: 25.h,
-                                          ),
-                                          SizedBox(width: 10.h),
-                                          Flexible(
-                                            child: Text(
-                                              state.result.locations.first
-                                                  .point!.address!,
-                                              // state.result.locations.first.point!.address!,
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+          ScaleButton(
+            reverse: true,
+            bound: 0.03,
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    widget.panelController.close();
+                    Navigator.of(context).pushNamed(AppRoute.historyOrder,
+                        arguments: coast[index]);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(20.w),
+                    margin: EdgeInsets.only(top: 10.h),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.r),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
+                                          style: const TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/from.png',
+                                              height: 25.h,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 5.h),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/to.png',
-                                            height: 25.h,
-                                          ),
-                                          SizedBox(width: 10.h),
-                                          Flexible(
-                                            child: Text(
-                                              state.result.locations.last.point!
-                                                  .address!,
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                            SizedBox(width: 10.h),
+                                            Flexible(
+                                              child: Text(
+                                                state.result.locations.first
+                                                    .point!.address!,
+                                                // state.result.locations.first.point!.address!,
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      Text(
-                                        status,
-                                        style: TextStyle(
-                                            color: colorStatus,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/to.png',
+                                              height: 25.h,
+                                            ),
+                                            SizedBox(width: 10.h),
+                                            Flexible(
+                                              child: Text(
+                                                state.result.locations.last
+                                                    .point!.address!,
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Text(
+                                          status,
+                                          style: TextStyle(
+                                              color: colorStatus,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: ClipOval(
-                                    child: Material(
-                                      color: Colors.grey[200],
-                                      child: InkWell(
-                                        onTap: state.result.Group! ==
-                                                'Marketplace'
-                                            ? () => Navigator.of(context)
-                                                    .pushNamed(
-                                                        AppRoute.marketplaces,
-                                                        arguments: [
-                                                      state.result.RecordNumber,
-                                                      state.result.RecordPIN
-                                                    ])
-                                            : () => Navigator.of(context)
-                                                    .pushNamed(
-                                                        AppRoute.repeatOrder,
-                                                        arguments: [
-                                                      state.result.RecordNumber,
-                                                      state.result.RecordPIN
-                                                    ]),
-                                        child: SizedBox(
-                                          width: 43.h,
-                                          height: 43.h,
-                                          child: const Icon(Icons.refresh),
+                              ),
+                              Expanded(
+                                child: Stack(
+                                  children: [
+                                    Center(
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: Colors.grey[200],
+                                          child: InkWell(
+                                            onTap: state.result.Group ==
+                                                    'Marketplace'
+                                                ? () =>
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            AppRoute
+                                                                .marketplaces,
+                                                            arguments: [
+                                                          state.result
+                                                              .RecordNumber,
+                                                          state.result.RecordPIN
+                                                        ])
+                                                : () =>
+                                                    Navigator.of(
+                                                            context)
+                                                        .pushNamed(
+                                                            AppRoute
+                                                                .repeatOrder,
+                                                            arguments: [
+                                                          state.result
+                                                              .RecordNumber,
+                                                          state.result.RecordPIN
+                                                        ]),
+                                            child: SizedBox(
+                                              width: 43.h,
+                                              height: 43.h,
+                                              child: const Icon(Icons.refresh),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: SizedBox(
-                    width: 55.w,
-                    child: Center(
-                      child: Text(
-                        typeOrder,
-                        style: TextStyle(
-                          color: Colors.grey[200],
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w800,
+                              )
+                            ],
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.all(20.w),
+                    child: SizedBox(
+                      width: 55.w,
+                      child: Center(
+                        child: typeOrder,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

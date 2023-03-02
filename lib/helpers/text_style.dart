@@ -27,7 +27,7 @@ class CustomTextStyle {
     fontWeight: FontWeight.w400,
   );
 
-  static const AppTextStyle black15w500 = AppTextStyle(
+  static const AppTextStyle black17w400 = AppTextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w400,
     color: Colors.black,

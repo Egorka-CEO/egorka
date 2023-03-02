@@ -28,6 +28,7 @@ class AuthUser {
       json['Errors'].forEach((v) {
         errors!.add(Errors.fromJson(v));
       });
+      this.errors = errors;
     }
   }
 

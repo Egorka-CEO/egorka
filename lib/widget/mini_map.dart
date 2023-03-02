@@ -1,19 +1,23 @@
+import 'dart:developer';
+
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
-import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MiniMapView extends StatefulWidget {
   List<Location> locations;
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(56.159646, 35.469827),
-    zoom: 4,
-  );
-  MiniMapView({Key? key, required this.locations}) : super(key: key);
+  String type;
+  int pointSentCount;
+
+  MiniMapView({
+    Key? key,
+    required this.locations,
+    required this.type,
+    required this.pointSentCount,
+  }) : super(key: key);
 
   @override
   State<MiniMapView> createState() => _MiniMapViewState();
@@ -21,13 +25,10 @@ class MiniMapView extends StatefulWidget {
 
 class _MiniMapViewState extends State<MiniMapView> {
   late CameraPosition pos;
-  Marker? firstMarker;
-  Marker? secondMarker;
   Position? position;
-  GoogleMapController? mapController;
-
-  Directions? routes;
-  Set<Marker> marker = {};
+  YandexMapController? mapController;
+  final List<MapObject> mapObjects = [];
+  final MapObjectId mapObjectId = const MapObjectId('polyline');
 
   @override
   void initState() {
@@ -43,40 +44,181 @@ class _MiniMapViewState extends State<MiniMapView> {
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
           buildWhen: (previous, current) {
         if (current is HistoryOrderRoutePolilyne) {
-          routes = current.routes;
-          marker = current.markers;
-          mapController!.animateCamera(
-            CameraUpdate.newLatLngBounds(routes!.bounds, 20.w),
-          );
-          return true;
+          if (widget.type == 'Walk') {
+            List<Point> points = [];
+            for (var a in current.bicycleSessionResult) {
+              for (var b in a.routes!.first.geometry) {
+                points.add(Point(latitude: b.latitude, longitude: b.longitude));
+              }
+            }
+            mapObjects.clear();
+            final mapObject = PolylineMapObject(
+              mapId: mapObjectId,
+              polyline: Polyline(points: points),
+              strokeColor: Colors.red,
+              strokeWidth: 5,
+              outlineColor: Colors.white,
+              outlineWidth: 1,
+              turnRadius: 10.0,
+              arcApproximationStep: 1.0,
+              gradientLength: 1.0,
+              isInnerOutlineEnabled: true,
+            );
+            mapObjects.add(mapObject);
+
+            mapObjects.add(
+              PlacemarkMapObject(
+                mapId: const MapObjectId('mapIdStart'),
+                point: Point(
+                  latitude: current.bicycleSessionResult.first.routes!.first
+                      .geometry.first.latitude,
+                  longitude: current.bicycleSessionResult.first.routes!.first
+                      .geometry.first.longitude,
+                ),
+                opacity: 1,
+                icon: current.startMarker,
+              ),
+            );
+
+            for (int i = 0; i < current.bicycleSessionResult.length; i++) {
+              if (i < widget.pointSentCount - 1) {
+                mapObjects.add(
+                  PlacemarkMapObject(
+                    mapId: MapObjectId('mapId$i'),
+                    point: Point(
+                      latitude: current.bicycleSessionResult[i].routes!.first
+                          .geometry.last.latitude,
+                      longitude: current.bicycleSessionResult[i].routes!.first
+                          .geometry.last.longitude,
+                    ),
+                    opacity: 1,
+                    icon: current.startMarker,
+                  ),
+                );
+              } else {
+                mapObjects.add(
+                  PlacemarkMapObject(
+                    mapId: MapObjectId('mapId$i'),
+                    point: Point(
+                      latitude: current.bicycleSessionResult[i].routes!.first
+                          .geometry.last.latitude,
+                      longitude: current.bicycleSessionResult[i].routes!.first
+                          .geometry.last.longitude,
+                    ),
+                    opacity: 1,
+                    icon: current.endMarker,
+                  ),
+                );
+              }
+            }
+
+            mapController!.moveCamera(
+              CameraUpdate.newBounds(
+                BoundingBox(
+                  northEast: points.first,
+                  southWest: points.last,
+                ),
+              ),
+            );
+
+            mapController!.getCameraPosition().then((value) {
+              mapController!.moveCamera(
+                CameraUpdate.zoomTo(value.zoom - widget.pointSentCount),
+              );
+            });
+          } else {
+            List<Point> points = [];
+            for (var a in current.routes) {
+              for (var b in a.routes!.first.geometry) {
+                points.add(Point(latitude: b.latitude, longitude: b.longitude));
+              }
+            }
+            mapObjects.clear();
+            final mapObject = PolylineMapObject(
+              mapId: mapObjectId,
+              polyline: Polyline(points: points),
+              strokeColor: Colors.red,
+              strokeWidth: 5,
+              outlineColor: Colors.white,
+              outlineWidth: 1,
+              turnRadius: 10.0,
+              arcApproximationStep: 1.0,
+              gradientLength: 1.0,
+              isInnerOutlineEnabled: true,
+            );
+            mapObjects.add(mapObject);
+
+            mapObjects.add(
+              PlacemarkMapObject(
+                mapId: const MapObjectId('mapIdStart'),
+                point: Point(
+                  latitude: current
+                      .routes.first.routes!.first.geometry.first.latitude,
+                  longitude: current
+                      .routes.first.routes!.first.geometry.first.longitude,
+                ),
+                opacity: 1,
+                icon: current.startMarker,
+              ),
+            );
+
+            for (int i = 0; i < current.routes.length; i++) {
+              if (i < widget.pointSentCount - 1) {
+                mapObjects.add(
+                  PlacemarkMapObject(
+                    mapId: MapObjectId('mapId$i'),
+                    point: Point(
+                      latitude: current
+                          .routes[i].routes!.first.geometry.last.latitude,
+                      longitude: current
+                          .routes[i].routes!.first.geometry.last.longitude,
+                    ),
+                    opacity: 1,
+                    icon: current.startMarker,
+                  ),
+                );
+              } else {
+                mapObjects.add(
+                  PlacemarkMapObject(
+                    mapId: MapObjectId('mapId$i'),
+                    point: Point(
+                      latitude: current
+                          .routes[i].routes!.first.geometry.last.latitude,
+                      longitude: current
+                          .routes[i].routes!.first.geometry.last.longitude,
+                    ),
+                    opacity: 1,
+                    icon: current.endMarker,
+                  ),
+                );
+              }
+            }
+
+            mapController!.moveCamera(
+              CameraUpdate.newBounds(
+                BoundingBox(
+                  northEast: points.first,
+                  southWest: points.last,
+                ),
+              ),
+            );
+
+            mapController!.getCameraPosition().then((value) {
+              mapController!.moveCamera(
+                CameraUpdate.zoomTo(value.zoom - widget.pointSentCount),
+              );
+            });
+          }
         }
         return true;
       }, builder: (context, snapshot) {
-        return GoogleMap(
-          markers: marker,
-          polylines: {
-            if (routes != null)
-              Polyline(
-                polylineId: const PolylineId('route'),
-                visible: true,
-                width: 5,
-                points: routes != null
-                    ? routes!.polylinePoints
-                        .map((e) => LatLng(e.latitude, e.longitude))
-                        .toList()
-                    : [],
-                color: Colors.red,
-              )
-          },
-          padding: EdgeInsets.zero,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          onCameraMove: (position) {
-            pos = position;
-          },
-          initialCameraPosition: MiniMapView._kGooglePlex,
-          mapType: MapType.normal,
-          onMapCreated: (GoogleMapController controller) {
+        return YandexMap(
+          // tiltGesturesEnabled: false,
+          // rotateGesturesEnabled: false,
+          // scrollGesturesEnabled: false,
+          // zoomGesturesEnabled: false,
+          mapObjects: mapObjects,
+          onMapCreated: (controller) {
             mapController = controller;
           },
         );

@@ -34,6 +34,8 @@ class MarketPlacesState extends MarketPlaceState {
 
 class MarketPlaceFailed extends MarketPlaceState {}
 
+class FindMarketPlacesSuccess extends MarketPlaceState {}
+
 class MarketPlacesSuccessState extends MarketPlaceState {
   CoastResponse? coastResponse;
 

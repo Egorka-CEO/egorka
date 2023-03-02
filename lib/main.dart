@@ -1,3 +1,4 @@
+import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -23,11 +24,20 @@ void main() async {
   await Firebase.initializeApp();
   await FirebaseMessaging.instance.requestPermission();
 
-  runApp(const MyApp());
+  FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    print("message from push ${event.notification!.body}");
+  });
+
+  String? token = await FirebaseMessaging.instance.getToken();
+
+  print('fcm token ${token}');
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -43,17 +53,21 @@ class MyApp extends StatelessWidget {
         BlocProvider<DepositBloc>(
           create: (context) => DepositBloc(),
         ),
+        BlocProvider<BookBloc>(
+          create: (context) => BookBloc(),
+        ),
       ],
       child: ScreenUtilInit(
-          designSize: const Size(428, 926),
-          builder: (context, child) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              initialRoute: AppRoute.home,
-              onGenerateRoute: AppRoute.onGenerateRoute,
-              builder: FlutterSmartDialog.init(),
-            );
-          }),
+        designSize: const Size(428, 926),
+        builder: (context, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            initialRoute: AppRoute.home,
+            onGenerateRoute: AppRoute.onGenerateRoute,
+            builder: FlutterSmartDialog.init(),
+          );
+        },
+      ),
     );
   }
 }

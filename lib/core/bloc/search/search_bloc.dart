@@ -94,8 +94,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           errorAddress,
         ),
       );
-
-      print('object res $house');
     }
   }
 
@@ -126,8 +124,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       if (house == null) {
         errorAddress = 'Ошибка';
       }
-
-      print('object ${errorAddress}');
 
       emit(
         GetAddressSuccess(
@@ -270,7 +266,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         );
       } catch (e) {
         isPolilyne = false;
-        print('object error $e');
       }
     } else {
       isPolilyne = false;

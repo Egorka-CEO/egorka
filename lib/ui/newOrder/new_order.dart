@@ -490,7 +490,6 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 onChanged: (value) {
-                                  print('object $value');
                                   int? coast = int.tryParse(value);
                                   if (coast != null) {
                                     if (coast > 100000)

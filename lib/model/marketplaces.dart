@@ -34,7 +34,6 @@ class Result {
   Result.fromJson(Map<String, dynamic> json) {
     cached = json['Cached'];
     for (var element in json['Points']) {
-      // PointMarketPlace.fromJson(element);
       points.add(PointMarketPlace.fromJson(element));
     }
   }

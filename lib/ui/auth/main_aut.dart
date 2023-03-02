@@ -87,7 +87,6 @@ class _MainAuthPageState extends State<MainAuthPage> {
             ),
             Expanded(
               child: SizedBox(
-                // height: 400.h,
                 child: PageView(
                   controller: pageController,
                   scrollDirection: Axis.vertical,

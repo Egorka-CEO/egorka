@@ -280,7 +280,6 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                             ),
                             houseNumber: value.room,
                           );
-                          // controllerName.text = value.contact?.name ?? '';
                           controllerPhone.text =
                               value.contact?.phoneMobile ?? '';
                           controller.text = value.address ?? '';

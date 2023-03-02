@@ -28,7 +28,6 @@ class _PaymentWebViewState extends State<PaymentWebView> {
         NavigationDelegate(
           onProgress: (int progress) {},
           onPageStarted: (String url) {
-            print('object ${url}');
             if (url.contains('Success')) {
               Navigator.pop(context, true);
             } else if (url.contains('Fail')) {

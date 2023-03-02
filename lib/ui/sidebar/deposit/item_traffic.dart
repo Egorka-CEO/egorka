@@ -216,10 +216,7 @@ class _ItemTrafficState extends State<ItemTraffic> {
                           );
                         }
                         return GestureDetector(
-                          onTap: () {
-                            print(
-                                'object ${list[index - 1].iD} ${list[index - 1].pIN}');
-                          },
+                          onTap: () {},
                           child: Container(
                             height: 50.h,
                             color: index % 2 == 0

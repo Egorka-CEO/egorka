@@ -34,7 +34,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
-import 'package:geocoding/geocoding.dart' as geo;
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -197,8 +196,6 @@ class _MarketPageState extends State<MarketPages>
     final house = value.items!.first.toponymMetadata?.address
         .addressComponents[SearchComponentKind.house];
 
-    print('object ${house}');
-
     if (house == null) {
       errorAddress = 'Ошибка: Укажите номер дома';
     } else {
@@ -258,7 +255,6 @@ class _MarketPageState extends State<MarketPages>
                               ),
                               Align(
                                 child: Row(
-                                  // mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(width: 15.w),
                                     GestureDetector(
@@ -320,8 +316,6 @@ class _MarketPageState extends State<MarketPages>
                           MessageDialogs()
                               .completeDialog(text: 'Заявка создана')
                               .then((value) {
-                            print(
-                                'object ${current.createFormModel.result.RecordNumber} - ${current.createFormModel.result.RecordPIN!}');
                             Navigator.of(context)
                               ..pop()
                               ..pushNamed(AppRoute.currentOrder, arguments: [

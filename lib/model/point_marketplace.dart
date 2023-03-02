@@ -29,11 +29,6 @@ class PointMarketPlace {
         name!.add(Name.fromJson(v));
       });
     }
-    // if (json['Address'] != null) {
-    //   json['Address'].forEach((v) {
-    //     address!.add(Address.fromJson(v));
-    //   });
-    // }
   }
 }
 

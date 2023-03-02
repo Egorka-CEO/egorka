@@ -24,13 +24,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final FocusNode password3Focus = FocusNode();
 
-  // TextEditingController currrentPassword = TextEditingController();
-
   TextEditingController newPassword1 = TextEditingController();
 
   TextEditingController newPassword2 = TextEditingController();
 
-  // bool currrentPasswordVisible = true;
   bool newPassword1PasswordVisible = true;
   bool newPassword2PasswordVisible = true;
 
@@ -38,8 +35,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
     BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
-
-    print('object ${user!.result!.user!.name}');
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -69,39 +64,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
                   children: [
-                    // SizedBox(height: 20.h),
-                    // Padding(
-                    //   padding: EdgeInsets.symmetric(horizontal: 15.w),
-                    //   child: Column(
-                    //     children: [
-                    //       Row(
-                    //         children: [
-                    //           // ClipRRect(
-                    //           //   borderRadius: BorderRadius.circular(100.r),
-                    //           //   child: Image.asset(
-                    //           //     'assets/images/company.jpg',
-                    //           //     height: 80.w,
-                    //           //     width: 80.w,
-                    //           //     fit: BoxFit.cover,
-                    //           //   ),
-                    //           // ),
-                    //           // SizedBox(width: 20.w),
-                    //           Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Text(
-                    //                 user!.result!.user!.name ?? '-',
-                    //                 style: CustomTextStyle.black15w700,
-                    //               ),
-                    //             ],
-                    //           )
-                    //         ],
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
                     SizedBox(height: 20.h),
-                    if (user.result!.agent != null)
+                    if (user!.result!.agent != null)
                       BlocBuilder<ProfileBloc, ProfileState>(
                           builder: (context, snapshot) {
                         final auth =
@@ -354,64 +318,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: [
-                            //     Text(
-                            //       'Текущий пароль: ',
-                            //       style: CustomTextStyle.black15w700.copyWith(
-                            //         color: Colors.grey[700],
-                            //       ),
-                            //     ),
-                            //     SizedBox(height: 5.h),
-                            //     SizedBox(
-                            //       height: 45.h,
-                            //       child: Stack(
-                            //         children: [
-                            //           CustomTextField(
-                            //             height: 45.h,
-                            //             obscureText: currrentPasswordVisible,
-                            //             focusNode: password1Focus,
-                            //             hintText: '',
-                            //             onChanged: (value) {
-                            //               setState(() {});
-                            //             },
-                            //             fillColor: backgroundColor,
-                            //             textEditingController: currrentPassword,
-                            //           ),
-                            //           Padding(
-                            //             padding: EdgeInsets.only(right: 15.w),
-                            //             child: Align(
-                            //                 alignment: Alignment.centerRight,
-                            //                 child: GestureDetector(
-                            //                   onTap: () {
-                            //                     setState(() {
-                            //                       currrentPasswordVisible =
-                            //                           !currrentPasswordVisible;
-                            //                     });
-                            //                   },
-                            //                   child: Row(
-                            //                     mainAxisAlignment:
-                            //                         MainAxisAlignment.end,
-                            //                     children: [
-                            //                       !currrentPasswordVisible
-                            //                           ? Icon(Icons.visibility,
-                            //                               color:
-                            //                                   Colors.grey[500])
-                            //                           : Icon(
-                            //                               Icons.visibility_off,
-                            //                               color:
-                            //                                   Colors.grey[500]),
-                            //                     ],
-                            //                   ),
-                            //                 )),
-                            //           )
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                            // SizedBox(height: 15.h),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

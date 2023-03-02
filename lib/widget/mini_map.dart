@@ -80,8 +80,6 @@ class _MiniMapViewState extends State<MiniMapView> {
               ),
             );
 
-            log('message ${widget.pointSentCount - 1}---${current.routes.length}');
-
             for (int i = 0; i < current.bicycleSessionResult.length; i++) {
               if (i < widget.pointSentCount - 1) {
                 mapObjects.add(
@@ -164,8 +162,6 @@ class _MiniMapViewState extends State<MiniMapView> {
               ),
             );
 
-            log('message ${widget.pointSentCount - 1}---${current.routes.length}');
-
             for (int i = 0; i < current.routes.length; i++) {
               if (i < widget.pointSentCount - 1) {
                 mapObjects.add(
@@ -217,10 +213,10 @@ class _MiniMapViewState extends State<MiniMapView> {
         return true;
       }, builder: (context, snapshot) {
         return YandexMap(
-          // tiltGesturesEnabled: false,
-          // rotateGesturesEnabled: false,
-          // scrollGesturesEnabled: false,
-          // zoomGesturesEnabled: false,
+          tiltGesturesEnabled: false,
+          rotateGesturesEnabled: false,
+          scrollGesturesEnabled: false,
+          zoomGesturesEnabled: false,
           mapObjects: mapObjects,
           onMapCreated: (controller) {
             mapController = controller;

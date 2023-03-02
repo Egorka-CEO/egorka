@@ -25,7 +25,6 @@ class Payments {
       this.status});
 
   Payments.fromJson(Map<String, dynamic> json) {
-    log('object $json');
     date = json['Date'];
     dateStamp = json['DateStamp'];
     dateActual = json['DateActual'];

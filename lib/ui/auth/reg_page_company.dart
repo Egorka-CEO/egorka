@@ -69,7 +69,6 @@ class _RegPageCompanyState extends State<RegPageCompany> {
       state = focusNode3.hasFocus;
       setState(() {});
     });
-    // focusNode1.requestFocus();
   }
 
   @override

@@ -47,16 +47,4 @@ class Employee {
       status: status,
     );
   }
-
-  // Map<String, dynamic> toJson() {
-  //   Map<String, dynamic> data = {};
-  //   data['Name'] = name;
-  //   data['Surname'] = surname;
-  //   data['Patronymic'] = patronimic;
-  //   data['Mobile'] = phone;
-  //   data['Email'] = email;
-  //   data['Username'] = username;
-  //   data['Password'] = password;
-  //   return data;
-  // }
 }

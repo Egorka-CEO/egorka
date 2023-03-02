@@ -1345,7 +1345,6 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                         value: toDoor,
                         fillColor: MaterialStateProperty.all(Colors.red),
                         shape: const CircleBorder(),
-                        // onChanged: (value) {},
                         onChanged: (value) {
                           setState(() {
                             toDoor = !toDoor;

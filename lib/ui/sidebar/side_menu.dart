@@ -93,7 +93,6 @@ class _NavBarState extends State<NavBar> {
                       ),
                     );
                   }),
-                  // SizedBox(height: 30.h),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
                     final auth =
@@ -119,15 +118,6 @@ class _NavBarState extends State<NavBar> {
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
-                              // const Spacer(),
-                              // GestureDetector(
-                              //   onTap: () => Navigator.pushNamed(
-                              //       context, AppRoute.addDeposit),
-                              //   child: Icon(
-                              //     Icons.add,
-                              //     color: Colors.red.withOpacity(0.6),
-                              //   ),
-                              // )
                             ],
                           ),
                         ),

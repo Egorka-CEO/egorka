@@ -99,7 +99,6 @@ class _BottomSheetDraggableState
   void animationEmpty() async {
     controller = AnimationController(vsync: this);
     controller.addListener(() {
-      print('object 123');
       if (controller.status == AnimationStatus.completed) {
         setState(() {
           printText = false;
@@ -369,7 +368,6 @@ class _BottomSheetDraggableState
                                               child: Text(
                                                 state.result.locations.first
                                                     .point!.address!,
-                                                // state.result.locations.first.point!.address!,
                                                 style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:

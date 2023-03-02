@@ -52,7 +52,6 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
       state = focusNode3.hasFocus;
       setState(() {});
     });
-    // focusNode1.requestFocus();
   }
 
   @override

@@ -123,7 +123,6 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
         pickDate =
             '$pickDay, ${parseDate!.day} ${DateMonth().monthDate(parseDate!)} ${parseDate!.year} ${timePick ?? ''}';
       }
-      //  с ${parseDate!.hour}:${parseDate!.minute} до ${parseDate!.hour == 23 ? parseDate!.hour : parseDate!.hour + 1}:${parseDate!.minute}';
       day = DateFormat('dd').format(
           DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000));
       checkOrder();
@@ -1013,7 +1012,6 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
 
                         String coast = '0';
 
-                        // if (auth != null && auth.result!.agent != null) {
                         for (var element
                             in formOrder!.result!.invoices!.first.options) {
                           if (element.logic == 'Account') {

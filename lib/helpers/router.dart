@@ -124,8 +124,6 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => MarketPlacesMap(value));
       case trafficDeposit:
         return MaterialPageRoute(builder: (_) => TrafficDeposit());
-      // case addDeposit:
-      //   return MaterialPageRoute(builder: (_) => AddDeposit());
       case detailsOrder:
         final list = route.arguments as List<dynamic>;
         return MaterialPageRoute(

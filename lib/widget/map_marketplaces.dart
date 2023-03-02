@@ -132,9 +132,7 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
             mapObjects: mapObjects,
             onMapCreated: (controller) async {
               mapController = controller;
-              // Future.delayed(Duration(seconds: 1), () {
               initMarkers();
-              // });
             },
           ),
         ],

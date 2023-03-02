@@ -197,6 +197,7 @@ class _MapViewState extends State<MapView> {
               onMapCreated: (controller) {
                 mapController = controller;
                 _getPosition();
+                _findMe();
               },
               onCameraPositionChanged: (cameraPosition, reason, finished) {},
             ),

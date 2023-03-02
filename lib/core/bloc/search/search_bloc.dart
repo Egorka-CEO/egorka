@@ -133,7 +133,6 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           errorAddress,
         ),
       );
-      emit(SearchAddressStated());
     }
   }
 

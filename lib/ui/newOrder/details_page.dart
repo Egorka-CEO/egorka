@@ -469,6 +469,10 @@ class _DetailsPageState extends State<DetailsPageTemp> {
               } else if (current is NewOrderStatedOpenBtmSheet) {
                 btmSheet = true;
               } else if (current is NewOrderStateCloseBtmSheet) {
+                print('object hehehe');
+                controllerEntrance.text = '';
+                controllerFloor.text = '';
+                controllerRoom.text = '';
                 btmSheet = false;
                 routeOrder.suggestions = current.value!;
                 controller.text = routeOrder.suggestions.name;

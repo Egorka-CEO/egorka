@@ -1200,7 +1200,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                             MessageDialogs()
                                                                 .completeDialog(
                                                                     text:
-                                                                        'Олачено');
+                                                                        'Оплачено');
                                                             getForm();
                                                           } else {
                                                             MessageDialogs()

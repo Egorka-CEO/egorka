@@ -38,6 +38,22 @@ class _MapViewState extends State<MapView> {
           longitude: position.longitude,
         ),
       );
+    } else {
+      if (mapController != null) {
+        await mapController!.moveCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: Point(
+                latitude: 55.755864,
+                longitude: 37.617698,
+              ),
+              zoom: 10,
+              tilt: 0,
+            ),
+          ),
+        );
+      }
+      widget.callBack();
     }
   }
 
@@ -62,9 +78,9 @@ class _MapViewState extends State<MapView> {
             ),
           ),
         );
-        widget.callBack();
       }
     }
+    widget.callBack();
   }
 
   @override
@@ -199,7 +215,17 @@ class _MapViewState extends State<MapView> {
                 _getPosition();
                 _findMe();
               },
-              onCameraPositionChanged: (cameraPosition, reason, finished) {},
+              onCameraPositionChanged: (cameraPosition, reason, finished) {
+                pos = cameraPosition;
+                if (pos != null && finished) {
+                  BlocProvider.of<SearchAddressBloc>(context).add(
+                    ChangeMapPosition(
+                      pos!.target.latitude,
+                      pos!.target.longitude,
+                    ),
+                  );
+                }
+              },
             ),
           );
         },

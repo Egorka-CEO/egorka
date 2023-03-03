@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/employee.dart';
@@ -74,6 +76,11 @@ class _EmployeePageState extends State<EmployeePage> {
                 child: ScaleButton(
                   bound: 0.02,
                   onTap: () {
+                    nameController.text = '';
+                    phoneController.text = '';
+                    emailController.text = '';
+                    loginController.text = '';
+                    passwordController.text = '';
                     addEmloyee(context);
                   },
                   child: Container(
@@ -96,7 +103,6 @@ class _EmployeePageState extends State<EmployeePage> {
               );
             }
             if (employee[index].username == 'Admin') return SizedBox();
-            ++countEmployee;
             return itemEmployee(employee[index], index);
           },
         ),
@@ -136,7 +142,7 @@ class _EmployeePageState extends State<EmployeePage> {
                     child: SizedBox(
                       height: 130.h,
                       child: Text(
-                        (countEmployee).toString(),
+                        index > 0 ? index.toString() : '1',
                         style: TextStyle(
                           fontSize: 140.sp,
                           fontWeight: FontWeight.w900,
@@ -327,6 +333,7 @@ class _EmployeePageState extends State<EmployeePage> {
                                   loginController.text,
                                   passwordController.text,
                                 );
+                                log('message $res');
                                 if (res == null) {
                                   getEmployee();
                                   nameController.text = '';
@@ -348,6 +355,13 @@ class _EmployeePageState extends State<EmployeePage> {
                                   } else if (res == 'Wrong Username') {
                                     MessageDialogs().showAlert(
                                         'Ошибка', 'Укажите правильный Логин');
+                                  } else if (res ==
+                                      'Mobile already registered') {
+                                    MessageDialogs().showAlert('Ошибка',
+                                        'Пользователь с таким телефоном уже зарегистрирован');
+                                  } else if (res == 'User password is wrong') {
+                                    MessageDialogs().showAlert('Ошибка',
+                                        'Пароль слишком короткий или содержит запрещенные символы');
                                   }
                                 }
                               } else {
@@ -427,7 +441,7 @@ class _EmployeePageState extends State<EmployeePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Text(
-                            'Укажите данные нового сотрудника',
+                            'Редактирование данных о сотруднике',
                             style: CustomTextStyle.black17w400,
                           ),
                         ],

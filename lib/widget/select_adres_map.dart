@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:geocoding/geocoding.dart' as geo;
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class SelectAdresMap extends StatefulWidget {
@@ -43,7 +42,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
   void _getPosition() async {
     if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+          desiredAccuracy: LocationAccuracy.best);
       if (mapController != null) {
         houseNumber = null;
         await mapController!.moveCamera(
@@ -61,8 +60,8 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
 
         SearchResultWithSession adress = YandexSearch.searchByPoint(
           point: Point(
-            latitude: pos!.target.latitude,
-            longitude: pos!.target.longitude,
+            latitude: position.latitude,
+            longitude: position.longitude,
           ),
           searchOptions: const SearchOptions(),
         );
@@ -105,28 +104,62 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
     );
 
     final value = await adress.result;
+  }
 
-    final house = value.items!.first.toponymMetadata?.address
-        .addressComponents[SearchComponentKind.house];
+  void getA() {
+    Future.delayed(const Duration(seconds: 1), () async {
+      if (await LocationGeo().checkPermission()) {
+        var position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.best);
+        if (mapController != null) {
+          houseNumber = null;
+          await mapController!.moveCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: Point(
+                  latitude: position.latitude,
+                  longitude: position.longitude,
+                ),
+                zoom: 20,
+                tilt: 0,
+              ),
+            ),
+          );
 
-    if (house != null) {
-      houseNumber = house;
-    }
+          SearchResultWithSession adress = YandexSearch.searchByPoint(
+            point: Point(
+              latitude: position.latitude,
+              longitude: position.longitude,
+            ),
+            searchOptions: const SearchOptions(),
+          );
 
-    address = value.items!.first.name;
+          final value = await adress.result;
 
-    suggestions = Suggestions(
-      iD: '',
-      name: address,
-      point: pointModel.Point(
-        address: address,
-        latitude: pos!.target.latitude,
-        longitude: pos!.target.longitude,
-      ),
-      houseNumber: houseNumber,
-    );
+          final house = value.items!.first.toponymMetadata?.address
+              .addressComponents[SearchComponentKind.house];
 
-    addressController.add(true);
+          if (house != null) {
+            houseNumber = house;
+          }
+
+          address = value.items!.first.name;
+
+          suggestions = Suggestions(
+            iD: '',
+            name: address,
+            point: pointModel.Point(
+              address: address,
+              latitude: pos!.target.latitude,
+              longitude: pos!.target.longitude,
+            ),
+            houseNumber: houseNumber,
+          );
+
+          addressController.add(true);
+        }
+      }
+    });
   }
 
   @override
@@ -178,6 +211,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                         onMapCreated: (controller) {
                           mapController = controller;
                           _getPosition();
+                          getA();
                         },
                         onCameraPositionChanged:
                             (cameraPosition, reason, finished) {

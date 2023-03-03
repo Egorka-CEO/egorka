@@ -1173,7 +1173,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                           MessageDialogs()
                                                               .completeDialog(
                                                                   text:
-                                                                      'Олачено');
+                                                                      'Оплачено');
                                                           getForm();
                                                         } else {
                                                           MessageDialogs()

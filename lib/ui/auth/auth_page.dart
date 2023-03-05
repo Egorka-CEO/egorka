@@ -201,7 +201,7 @@ class _AuthPageState extends State<AuthPage> {
                               onPressed: _signIn,
                               color: Colors.red,
                               child: const Text(
-                                'Авторизация',
+                                'Войти',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

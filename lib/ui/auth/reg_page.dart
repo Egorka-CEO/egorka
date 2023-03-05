@@ -258,7 +258,7 @@ class _RegPageState extends State<RegPage> {
                           onPressed: _signIn,
                           color: Colors.red,
                           child: const Text(
-                            'Авторизация',
+                            'Зарегистрироваться',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

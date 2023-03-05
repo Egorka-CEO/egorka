@@ -148,6 +148,8 @@ class _MiniMapViewState extends State<MiniMapView> {
             );
             mapObjects.add(mapObject);
 
+            // BoundingBoxHelper.getBounds(Polyline geometry).
+
             mapObjects.add(
               PlacemarkMapObject(
                 mapId: const MapObjectId('mapIdStart'),

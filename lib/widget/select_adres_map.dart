@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/point.dart' as pointModel;
@@ -93,71 +94,43 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
     }
   }
 
-  void _getAddress() async {
-    houseNumber = null;
-    SearchResultWithSession adress = YandexSearch.searchByPoint(
-      point: Point(
-        latitude: pos!.target.latitude,
-        longitude: pos!.target.longitude,
-      ),
-      searchOptions: const SearchOptions(),
-    );
-
-    final value = await adress.result;
-  }
-
-  void getA() {
-    Future.delayed(const Duration(seconds: 1), () async {
+  void _getAddress(int millisecondsDuaration) {
+    log('message 1');
+    Future.delayed(Duration(milliseconds: millisecondsDuaration), () async {
       if (await LocationGeo().checkPermission()) {
-        var position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.best);
-        if (mapController != null) {
-          houseNumber = null;
-          await mapController!.moveCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: Point(
-                  latitude: position.latitude,
-                  longitude: position.longitude,
-                ),
-                zoom: 20,
-                tilt: 0,
-              ),
-            ),
-          );
+        SearchResultWithSession adress = YandexSearch.searchByPoint(
+          point: Point(
+            latitude: pos!.target.latitude,
+            longitude: pos!.target.longitude,
+          ),
+          searchOptions: const SearchOptions(),
+        );
 
-          SearchResultWithSession adress = YandexSearch.searchByPoint(
-            point: Point(
-              latitude: position.latitude,
-              longitude: position.longitude,
-            ),
-            searchOptions: const SearchOptions(),
-          );
+        final value = await adress.result;
 
-          final value = await adress.result;
+        final house = value.items!.first.toponymMetadata?.address
+            .addressComponents[SearchComponentKind.house];
 
-          final house = value.items!.first.toponymMetadata?.address
-              .addressComponents[SearchComponentKind.house];
-
-          if (house != null) {
-            houseNumber = house;
-          }
-
-          address = value.items!.first.name;
-
-          suggestions = Suggestions(
-            iD: '',
-            name: address,
-            point: pointModel.Point(
-              address: address,
-              latitude: pos!.target.latitude,
-              longitude: pos!.target.longitude,
-            ),
-            houseNumber: houseNumber,
-          );
-
-          addressController.add(true);
+        if (house != null) {
+          houseNumber = house;
         }
+
+        address = value.items!.first.name;
+
+        log('message 2 $address');
+
+        suggestions = Suggestions(
+          iD: '',
+          name: address,
+          point: pointModel.Point(
+            address: address,
+            latitude: pos!.target.latitude,
+            longitude: pos!.target.longitude,
+          ),
+          houseNumber: houseNumber,
+        );
+
+        addressController.add(true);
       }
     });
   }
@@ -211,13 +184,14 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                         onMapCreated: (controller) {
                           mapController = controller;
                           _getPosition();
-                          getA();
+                          _getAddress(1000);
                         },
                         onCameraPositionChanged:
                             (cameraPosition, reason, finished) {
+                          log('message 0');
                           pos = cameraPosition;
                           if (pos != null && finished) {
-                            _getAddress();
+                            _getAddress(0);
                           }
                         },
                       ),

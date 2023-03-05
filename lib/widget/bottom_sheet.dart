@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
@@ -123,6 +122,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           controller: panelController,
           renderPanelSheet: false,
           isDraggable: false,
+          panelSnapping: false,
+          backdropEnabled: true,
+          parallaxEnabled: true,
           panel: _floatingPanel(context),
           onPanelClosed: () {
             focusFrom.unfocus();
@@ -132,7 +134,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           onPanelOpened: () {
             _visible = true;
             if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-              panelController.close();
+              // panelController.close();
             }
           },
           onPanelSlide: (size) {
@@ -239,14 +241,16 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 height: 45.h,
-                                onTap: () {
+                                onTap: () async {
                                   typeAdd = TypeAdd.sender;
-                                  panelController.open();
+                                  await panelController.animatePanelToPosition(
+                                    1,
+                                    duration: Duration(milliseconds: 200),
+                                  );
                                   bloc.add(SearchAddressClear());
-                                  Future.delayed(
-                                      const Duration(milliseconds: 300), () {
+                                  if (!focusFrom.hasFocus) {
                                     focusFrom.requestFocus();
-                                  });
+                                  }
                                 },
                                 focusNode: focusFrom,
                                 fillColor: Colors.white.withOpacity(0),
@@ -385,14 +389,16 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 height: 45.h,
-                                onTap: () {
+                                onTap: () async {
                                   typeAdd = TypeAdd.receiver;
-                                  panelController.open();
+                                  await panelController.animatePanelToPosition(
+                                    1,
+                                    duration: Duration(milliseconds: 200),
+                                  );
                                   bloc.add(SearchAddressClear());
-                                  Future.delayed(
-                                      const Duration(milliseconds: 300), () {
+                                  if (!focusTo.hasFocus) {
                                     focusTo.requestFocus();
-                                  });
+                                  }
                                 },
                                 onFieldSubmitted: (text) {
                                   panelController.close();

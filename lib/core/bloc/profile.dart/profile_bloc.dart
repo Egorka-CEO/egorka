@@ -31,11 +31,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     storage.setLogin(null);
     storage.setPassword(null);
     storage.setCompany(null);
-    // storage.setID(null);
     storage.setKey(null);
     storage.setTypeAuth(null);
     storage.setSecure(null);
-    // storage.se(null);
     emit(ExitStated());
   }
 

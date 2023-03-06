@@ -148,6 +148,8 @@ class _MiniMapViewState extends State<MiniMapView> {
             );
             mapObjects.add(mapObject);
 
+            // BoundingBoxHelper.getBounds(Polyline geometry).
+
             mapObjects.add(
               PlacemarkMapObject(
                 mapId: const MapObjectId('mapIdStart'),
@@ -213,10 +215,10 @@ class _MiniMapViewState extends State<MiniMapView> {
         return true;
       }, builder: (context, snapshot) {
         return YandexMap(
-          // tiltGesturesEnabled: false,
-          // rotateGesturesEnabled: false,
-          // scrollGesturesEnabled: false,
-          // zoomGesturesEnabled: false,
+          tiltGesturesEnabled: false,
+          rotateGesturesEnabled: false,
+          scrollGesturesEnabled: false,
+          zoomGesturesEnabled: false,
           mapObjects: mapObjects,
           onMapCreated: (controller) {
             mapController = controller;

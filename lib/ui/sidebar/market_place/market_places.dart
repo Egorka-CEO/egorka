@@ -145,29 +145,9 @@ class MarketPlacesMap extends StatelessWidget {
                       fromController: TextEditingController(),
                       panelController: panelController,
                     ),
-                    onPanelClosed: () {
-                      // if (typeAdd == TypeAdd.sender) {
-                      //   fromController.text = controller.text;
-                      // } else if (typeAdd == TypeAdd.receiver) {
-                      //   toController.text = controller.text;
-                      // }
-                      // controller.text = '';
-                      // focusFrom.unfocus();
-                      // focusTo.unfocus();
-                      // _visible = false;
-                    },
-                    onPanelOpened: () {
-                      // _visible = true;
-                      // if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-                      //   panelController.close();
-                      // }
-                    },
-                    onPanelSlide: (size) {
-                      // if (size.toStringAsFixed(1) == (0.5).toString()) {
-                      //   focusFrom.unfocus();
-                      //   focusTo.unfocus();
-                      // }
-                    },
+                    onPanelClosed: () {},
+                    onPanelOpened: () {},
+                    onPanelSlide: (size) {},
                     maxHeight: 200.h,
                     minHeight: 100.h,
                     defaultPanelState: PanelState.CLOSED,

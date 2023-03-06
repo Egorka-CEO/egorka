@@ -41,7 +41,6 @@ class Repository {
       "UserUUID": id,
     };
     if (key.isNotEmpty) data['Session'] = key;
-    print('object ${data}');
 
     return data;
   }
@@ -154,8 +153,6 @@ class Repository {
         "Params": params()
       },
     );
-    log('object ${response.data['Errors']}');
-    log('object ${response.data['Result']}');
 
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
@@ -219,7 +216,6 @@ class Repository {
       },
       "Params": {"Language": "RU"}
     };
-    print('object authData ${authData}');
     final response = await dio.post(
       '$server/service/delivery/',
       options: header(),
@@ -311,9 +307,6 @@ class Repository {
       data: data,
     );
 
-    print('object1 ${data}');
-    print('object2 ${response.data}');
-
     if (response.data['Errors'] == null) {
       return null;
     } else {
@@ -339,9 +332,6 @@ class Repository {
         "Params": params()
       },
     );
-    print('object ${authData} ${data}');
-
-    print('object ${response.data}');
 
     if (response.data['Result'] != null) {
       PaymentCard? res = PaymentCard.fromJson(response.data['Result']);
@@ -353,8 +343,6 @@ class Repository {
   Future<bool> UUIDCreate() async {
     var authData = await auth();
     await getIP();
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -379,8 +367,6 @@ class Repository {
 
   Future<void> UUIDRegister(String value) async {
     var authData = await auth();
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -398,8 +384,6 @@ class Repository {
 
   Future<AuthUser?> loginUsernameUser(String login, String password) async {
     var authData = await auth(sessionKey: true);
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -415,8 +399,6 @@ class Repository {
       },
     );
 
-    print('object ${response.data}');
-
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
@@ -427,8 +409,6 @@ class Repository {
 
   Future<AuthUser?> loginEmailUser(String login, String password) async {
     var authData = await auth();
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -454,8 +434,6 @@ class Repository {
 
   Future<AuthUser?> loginPhoneUser(String login, String password) async {
     var authData = await auth();
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/user/',
@@ -475,12 +453,10 @@ class Repository {
     return user;
   }
 
-  //Авторизация Субагент или Корпорат
+  // Авторизация Субагент или Корпорат
   Future<AuthUser?> loginUsernameAgent(
       String login, String password, String company) async {
     var authData = await auth(sessionKey: true);
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -498,24 +474,17 @@ class Repository {
       },
     );
 
-    print('object user ${response.data}');
-
     if (response.data['Errors'] == null) {
       final user = AuthUser.fromJson(response.data);
       return user;
     } else {
       return null;
     }
-
-    // final user = AuthUser.fromJson(response.data);
-    // return user;
   }
 
   Future<AuthUser?> loginEmailAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -544,8 +513,6 @@ class Repository {
   Future<AuthUser?> loginPhoneAgent(
       String login, String password, String company) async {
     var authData = await auth();
-    // authData['UserIP'] = IP;
-    // authData['UserUUID'] = '';
 
     final response = await dio.post(
       '$server/service/auth/agent/',
@@ -636,10 +603,6 @@ class Repository {
       },
     );
 
-    print('object invoice ${fltr}');
-
-    // print('object invoice ${response.data['Result']}');
-
     if (response.data['Result'] != null) {
       List<Invoice> list = [];
       for (var element in response.data['Result']['Invoices']) {
@@ -652,7 +615,6 @@ class Repository {
   }
 
   Future<String?> getPDF(int id, int pin) async {
-    print('object ${id}${pin}');
     try {
       String savePath = await getFilePath('$id$pin.pdf');
       final response = await dio.get(
@@ -739,8 +701,6 @@ class Repository {
       },
     );
 
-    print('object ${response.data}');
-
     if (response.data['Errors'] != null) {
       return response.data['Errors'][0]['Code'];
     } else {
@@ -761,10 +721,6 @@ class Repository {
       options: header(),
       data: data,
     );
-
-    print('object ${data}');
-
-    print('object ${response.data}');
 
     if (response.data['Errors'] != null) {
       return response.data['Errors'][0]['Code'];
@@ -788,8 +744,6 @@ class Repository {
       },
     );
 
-    print('object111 ${response.data}');
-
     if (response.data['Result'] == null) {
       return {};
     } else {
@@ -811,8 +765,6 @@ class Repository {
         }
       },
     );
-
-    print('object ${response.data}');
 
     if (response.data == '') {
       return null;
@@ -844,8 +796,6 @@ class Repository {
       },
     );
 
-    print('object ${response.data}');
-
     if (response.data['Errors'] != null) {
       return false;
     } else {
@@ -855,7 +805,6 @@ class Repository {
 
   Future<bool> addAddress(BookAdresses bookAdresses) async {
     var authData = await auth(sessionKey: true);
-    print('object ${bookAdresses.toJson()}');
     final response = await dio.post(
       '$server/service/delivery/address/',
       options: header(),
@@ -868,10 +817,6 @@ class Repository {
         }
       },
     );
-
-    print('jjhbjbhjh ${bookAdresses.toJson()}');
-
-    print('jjhbjbhjh ${response.data}');
 
     if (response.data['Errors'] != null) {
       return false;
@@ -892,8 +837,6 @@ class Repository {
         "Params": {},
       },
     );
-
-    print('object employee ${response.data}');
 
     if (response.data['Errors'] == null) {
       List<Employee> employee = [];
@@ -971,8 +914,6 @@ class Repository {
       data: data,
     );
 
-    log('message ${response.data}');
-
     if (response.data['Errors'] == null) {
       return true;
     } else {
@@ -996,8 +937,6 @@ class Repository {
       options: header(),
       data: data,
     );
-    print('object ${data}');
-    print('object ${response.data}');
 
     if (response.data['Errors'] == null) {
       return true;
@@ -1022,9 +961,6 @@ class Repository {
       options: header(),
       data: data,
     );
-
-    print('object1 ${data}');
-    print('object1 ${response.data}');
 
     if (response.data['Errors'] == null) {
       return true;

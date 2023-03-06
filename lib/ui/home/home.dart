@@ -206,11 +206,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    // if (!bloc.isPolilyne)
-                    //   Padding(
-                    //     padding: EdgeInsets.only(bottom: 200.h),
-                    //     child: CustomWidget.iconGPS(),
-                    //   ),
+                    if (!bloc.isPolilyne)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 200.h),
+                        child: CustomWidget.iconGPS(),
+                      ),
                     const BottomSheetDraggable(),
                   ],
                 ),

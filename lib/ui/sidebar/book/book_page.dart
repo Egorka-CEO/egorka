@@ -126,12 +126,10 @@ class _BookPageState extends State<BookPage> {
                   SizedBox(height: 20.h),
                   BlocBuilder<BookBloc, BookState>(
                     builder: (context, snapshot) {
-                      log('message $snapshot');
                       if (snapshot is UpdateBook) {
                         bookAdresses.clear();
                         final books = context.read<BookBloc>().books;
                         List<BookAdresses> bookAdressesTemp = [];
-                        log('message $books');
                         for (var element in books) {
                           if (element.name!.toLowerCase().contains(
                                   searchController.text.toLowerCase()) ||
@@ -253,7 +251,6 @@ class _BookPageState extends State<BookPage> {
                                 ),
                               ),
                               confirmDismiss: (direction) async {
-                                print('object here');
                                 bool resDelete = await Repository()
                                     .deleteAddress(bookAdresses[index - 1].id!);
 
@@ -284,7 +281,6 @@ class _BookPageState extends State<BookPage> {
                                             .copyWith(fontSize: 14.sp),
                                       ),
                                     ),
-                                    // Spacer(),
                                     Expanded(
                                       flex: 2,
                                       child: Text(
@@ -579,7 +575,6 @@ class _BookPageState extends State<BookPage> {
                       onPanelSlide: (value) {
                         if (value == 0) {
                           BlocProvider.of<BookBloc>(context).emit(BookStated());
-                          // btmController.text = '';
                         }
                       },
                       panel: Container(

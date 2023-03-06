@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
@@ -43,7 +41,6 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   bool resPaid = false;
   bool paidBtmSheet = false;
   DateTime? parseDate;
-  // DateTime? dateTime;
   String day = '';
   String pickDay = '';
   String pickDate = '';
@@ -101,8 +98,6 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   }
 
   void getForm() async {
-    print(
-        'object ${widget.coast.result.RecordNumber.toString()} ${widget.coast.result.RecordPIN.toString()}');
     formOrder = await Repository().infoForm(
         widget.coast.result.RecordNumber.toString(),
         widget.coast.result.RecordPIN.toString());
@@ -112,12 +107,9 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
       }
     }
 
-    print('object12 ${formOrder?.result?.group}');
-
     if (formOrder!.result!.locations!.first.date != null) {
       parseDate = DateTime.fromMillisecondsSinceEpoch(
           formOrder!.result!.locations!.first.date! * 1000);
-      print('object12 ${parseDate}');
 
       pickDay = DateFormat.EEEE('ru').format(parseDate!);
       String? timePick;
@@ -1041,7 +1033,6 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
 
                           String coast = '0';
 
-                          // if (auth != null && auth.result!.agent != null) {
                           for (var element
                               in formOrder!.result!.invoices!.first.options) {
                             if (element.logic == 'Account') {
@@ -1209,7 +1200,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                             MessageDialogs()
                                                                 .completeDialog(
                                                                     text:
-                                                                        'Олачено');
+                                                                        'Оплачено');
                                                             getForm();
                                                           } else {
                                                             MessageDialogs()

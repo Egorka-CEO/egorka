@@ -5,7 +5,6 @@ import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/auth_error.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
@@ -52,7 +51,6 @@ class _AuthPageState extends State<AuthPage> {
       state = focusNode3.hasFocus;
       setState(() {});
     });
-    // focusNode1.requestFocus();
   }
 
   @override
@@ -203,7 +201,7 @@ class _AuthPageState extends State<AuthPage> {
                               onPressed: _signIn,
                               color: Colors.red,
                               child: const Text(
-                                'Авторизация',
+                                'Войти',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

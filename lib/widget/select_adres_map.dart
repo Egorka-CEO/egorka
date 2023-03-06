@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/point.dart' as pointModel;
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:geocoding/geocoding.dart' as geo;
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class SelectAdresMap extends StatefulWidget {
@@ -43,7 +43,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
   void _getPosition() async {
     if (await LocationGeo().checkPermission()) {
       var position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+          desiredAccuracy: LocationAccuracy.best);
       if (mapController != null) {
         houseNumber = null;
         await mapController!.moveCamera(
@@ -61,8 +61,8 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
 
         SearchResultWithSession adress = YandexSearch.searchByPoint(
           point: Point(
-            latitude: pos!.target.latitude,
-            longitude: pos!.target.longitude,
+            latitude: position.latitude,
+            longitude: position.longitude,
           ),
           searchOptions: const SearchOptions(),
         );
@@ -94,39 +94,45 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
     }
   }
 
-  void _getAddress() async {
-    houseNumber = null;
-    SearchResultWithSession adress = YandexSearch.searchByPoint(
-      point: Point(
-        latitude: pos!.target.latitude,
-        longitude: pos!.target.longitude,
-      ),
-      searchOptions: const SearchOptions(),
-    );
+  void _getAddress(int millisecondsDuaration) {
+    log('message 1');
+    Future.delayed(Duration(milliseconds: millisecondsDuaration), () async {
+      if (await LocationGeo().checkPermission()) {
+        SearchResultWithSession adress = YandexSearch.searchByPoint(
+          point: Point(
+            latitude: pos!.target.latitude,
+            longitude: pos!.target.longitude,
+          ),
+          searchOptions: const SearchOptions(),
+        );
 
-    final value = await adress.result;
+        final value = await adress.result;
 
-    final house = value.items!.first.toponymMetadata?.address
-        .addressComponents[SearchComponentKind.house];
+        final house = value.items!.first.toponymMetadata?.address
+            .addressComponents[SearchComponentKind.house];
 
-    if (house != null) {
-      houseNumber = house;
-    }
+        if (house != null) {
+          houseNumber = house;
+        }
 
-    address = value.items!.first.name;
+        address = value.items!.first.name;
 
-    suggestions = Suggestions(
-      iD: '',
-      name: address,
-      point: pointModel.Point(
-        address: address,
-        latitude: pos!.target.latitude,
-        longitude: pos!.target.longitude,
-      ),
-      houseNumber: houseNumber,
-    );
+        log('message 2 $address');
 
-    addressController.add(true);
+        suggestions = Suggestions(
+          iD: '',
+          name: address,
+          point: pointModel.Point(
+            address: address,
+            latitude: pos!.target.latitude,
+            longitude: pos!.target.longitude,
+          ),
+          houseNumber: houseNumber,
+        );
+
+        addressController.add(true);
+      }
+    });
   }
 
   @override
@@ -178,12 +184,14 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                         onMapCreated: (controller) {
                           mapController = controller;
                           _getPosition();
+                          _getAddress(1000);
                         },
                         onCameraPositionChanged:
                             (cameraPosition, reason, finished) {
+                          log('message 0');
                           pos = cameraPosition;
                           if (pos != null && finished) {
-                            _getAddress();
+                            _getAddress(0);
                           }
                         },
                       ),

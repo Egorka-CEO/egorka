@@ -76,6 +76,11 @@ class _EmployeePageState extends State<EmployeePage> {
                 child: ScaleButton(
                   bound: 0.02,
                   onTap: () {
+                    nameController.text = '';
+                    phoneController.text = '';
+                    emailController.text = '';
+                    loginController.text = '';
+                    passwordController.text = '';
                     addEmloyee(context);
                   },
                   child: Container(
@@ -98,7 +103,6 @@ class _EmployeePageState extends State<EmployeePage> {
               );
             }
             if (employee[index].username == 'Admin') return SizedBox();
-            ++countEmployee;
             return itemEmployee(employee[index], index);
           },
         ),
@@ -138,7 +142,7 @@ class _EmployeePageState extends State<EmployeePage> {
                     child: SizedBox(
                       height: 130.h,
                       child: Text(
-                        (countEmployee).toString(),
+                        index > 0 ? index.toString() : '1',
                         style: TextStyle(
                           fontSize: 140.sp,
                           fontWeight: FontWeight.w900,
@@ -159,7 +163,6 @@ class _EmployeePageState extends State<EmployeePage> {
                         ),
                         Text(
                             '${employee.name ?? ''} ${employee.surname ?? ''}'),
-                        // Text(employee.surname ?? ''),
                       ],
                     ),
                     SizedBox(height: 5.h),
@@ -330,7 +333,7 @@ class _EmployeePageState extends State<EmployeePage> {
                                   loginController.text,
                                   passwordController.text,
                                 );
-                                log('$res');
+                                log('message $res');
                                 if (res == null) {
                                   getEmployee();
                                   nameController.text = '';
@@ -352,9 +355,14 @@ class _EmployeePageState extends State<EmployeePage> {
                                   } else if (res == 'Wrong Username') {
                                     MessageDialogs().showAlert(
                                         'Ошибка', 'Укажите правильный Логин');
+                                  } else if (res ==
+                                      'Mobile already registered') {
+                                    MessageDialogs().showAlert('Ошибка',
+                                        'Пользователь с таким телефоном уже зарегистрирован');
+                                  } else if (res == 'User password is wrong') {
+                                    MessageDialogs().showAlert('Ошибка',
+                                        'Пароль слишком короткий или содержит запрещенные символы');
                                   }
-                                  // MessageDialogs().showAlert('Ошибка',
-                                  //     'Пользватель с таким email или телефоном уже зарегистрирован');
                                 }
                               } else {
                                 String error = '';
@@ -390,9 +398,6 @@ class _EmployeePageState extends State<EmployeePage> {
                             ),
                           ),
                         ),
-                        // SizedBox(
-                        //   height: MediaQuery.of(context).viewInsets.bottom / 5,
-                        // )
                       ],
                     )),
               );
@@ -416,172 +421,170 @@ class _EmployeePageState extends State<EmployeePage> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 content: Container(
-                    width: MediaQuery.of(context).size.width - 30.w,
-                    height: 600.h,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.1),
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(15.r),
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              'Укажите данные нового сотрудника',
-                              style: CustomTextStyle.black17w400,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20.h),
-                        Expanded(
-                          child: SizedBox(
-                            child: ListView(
-                              shrinkWrap: true,
-                              physics: const ClampingScrollPhysics(),
-                              padding: EdgeInsets.all(24.w),
-                              children: [
-                                const Text('Имя'),
-                                GestureDetector(
-                                  child: CustomTextField(
-                                    focusNode: focusNode1,
-                                    hintText: 'Иван',
-                                    textEditingController: nameController,
-                                    fillColor: Colors.grey[100],
-                                    height: 45.h,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 15.w),
-                                  ),
-                                ),
-                                SizedBox(height: 10.h),
-                                const Text('Телефон'),
-                                CustomTextField(
-                                  focusNode: focusNode4,
-                                  textEditingController: phoneController,
-                                  fillColor: Colors.grey[100],
-                                  hintText: '+7 999-888-7766',
-                                  formatters: [
-                                    MaskTextInputFormatter(
-                                      initialText: '+7 ',
-                                      mask: '+7 ###-###-####',
-                                      filter: {"#": RegExp(r'[0-9]')},
-                                    )
-                                  ],
-                                  height: 45.h,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 15.w),
-                                ),
-                                SizedBox(height: 10.h),
-                                const Text('Email'),
-                                CustomTextField(
-                                  focusNode: focusNode5,
-                                  hintText: 'test@mail.ru',
-                                  textEditingController: emailController,
+                  width: MediaQuery.of(context).size.width - 30.w,
+                  height: 600.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.1),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      )
+                    ],
+                    borderRadius: BorderRadius.circular(15.r),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Редактирование данных о сотруднике',
+                            style: CustomTextStyle.black17w400,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20.h),
+                      Expanded(
+                        child: SizedBox(
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: const ClampingScrollPhysics(),
+                            padding: EdgeInsets.all(24.w),
+                            children: [
+                              const Text('Имя'),
+                              GestureDetector(
+                                child: CustomTextField(
+                                  focusNode: focusNode1,
+                                  hintText: 'Иван',
+                                  textEditingController: nameController,
                                   fillColor: Colors.grey[100],
                                   height: 45.h,
                                   contentPadding:
                                       EdgeInsets.symmetric(horizontal: 15.w),
                                 ),
-                                SizedBox(height: 10.h),
-                                const Text('Логин'),
-                                CustomTextField(
-                                  focusNode: focusNode6,
-                                  hintText: 'Petrov',
-                                  textEditingController: loginController,
-                                  fillColor: Colors.grey[100],
-                                  height: 45.h,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 15.w),
-                                ),
-                                SizedBox(height: 10.h),
-                                const Text('Пароль'),
-                                CustomTextField(
-                                  focusNode: focusNode7,
-                                  hintText: '**********',
-                                  textEditingController: passwordController,
-                                  fillColor: Colors.grey[100],
-                                  height: 45.h,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 15.w),
-                                ),
-                                SizedBox(height: 20.h),
-                              ],
-                            ),
+                              ),
+                              SizedBox(height: 10.h),
+                              const Text('Телефон'),
+                              CustomTextField(
+                                focusNode: focusNode4,
+                                textEditingController: phoneController,
+                                fillColor: Colors.grey[100],
+                                hintText: '+7 999-888-7766',
+                                formatters: [
+                                  MaskTextInputFormatter(
+                                    initialText: '+7 ',
+                                    mask: '+7 ###-###-####',
+                                    filter: {"#": RegExp(r'[0-9]')},
+                                  )
+                                ],
+                                height: 45.h,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 15.w),
+                              ),
+                              SizedBox(height: 10.h),
+                              const Text('Email'),
+                              CustomTextField(
+                                focusNode: focusNode5,
+                                hintText: 'test@mail.ru',
+                                textEditingController: emailController,
+                                fillColor: Colors.grey[100],
+                                height: 45.h,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 15.w),
+                              ),
+                              SizedBox(height: 10.h),
+                              const Text('Логин'),
+                              CustomTextField(
+                                focusNode: focusNode6,
+                                hintText: 'Petrov',
+                                textEditingController: loginController,
+                                fillColor: Colors.grey[100],
+                                height: 45.h,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 15.w),
+                              ),
+                              SizedBox(height: 10.h),
+                              const Text('Пароль'),
+                              CustomTextField(
+                                focusNode: focusNode7,
+                                hintText: '**********',
+                                textEditingController: passwordController,
+                                fillColor: Colors.grey[100],
+                                height: 45.h,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 15.w),
+                              ),
+                              SizedBox(height: 20.h),
+                            ],
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.all(24.w),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (nameController.text.isNotEmpty &&
-                                  phoneController.text.isNotEmpty &&
-                                  emailController.text.isNotEmpty &&
-                                  loginController.text.isNotEmpty &&
-                                  passwordController.text.isNotEmpty) {
-                                bool res = await Repository().editEmployee(
-                                  nameController.text,
-                                  phoneController.text,
-                                  emailController.text,
-                                  loginController.text,
-                                  passwordController.text,
-                                  employee.id!,
-                                );
-                                if (res) {
-                                  getEmployee();
-                                  nameController.text = '';
-                                  phoneController.text = '';
-                                  emailController.text = '';
-                                  loginController.text = '';
-                                  passwordController.text = '';
-                                  Navigator.of(context).pop();
-                                }
-                              } else {
-                                String error = '';
-                                if (nameController.text.isEmpty) {
-                                  error = 'Укажите Имя';
-                                } else if (phoneController.text.isEmpty) {
-                                  error = 'Укажите Номер телефона';
-                                } else if (emailController.text.isEmpty) {
-                                  error = 'Укажите Почту';
-                                } else if (loginController.text.isEmpty) {
-                                  error = 'Укажите Логин';
-                                } else if (passwordController.text.isEmpty) {
-                                  error = 'Укажите Пароль';
-                                }
-                                MessageDialogs().showAlert('Ошибка', error);
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(24.w),
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (nameController.text.isNotEmpty &&
+                                phoneController.text.isNotEmpty &&
+                                emailController.text.isNotEmpty &&
+                                loginController.text.isNotEmpty &&
+                                passwordController.text.isNotEmpty) {
+                              bool res = await Repository().editEmployee(
+                                nameController.text,
+                                phoneController.text,
+                                emailController.text,
+                                loginController.text,
+                                passwordController.text,
+                                employee.id!,
+                              );
+                              if (res) {
+                                getEmployee();
+                                nameController.text = '';
+                                phoneController.text = '';
+                                emailController.text = '';
+                                loginController.text = '';
+                                passwordController.text = '';
+                                Navigator.of(context).pop();
                               }
-                            },
-                            child: Container(
-                              height: 50.h,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Изменить',
-                                  style: CustomTextStyle.white15w600.copyWith(
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                            } else {
+                              String error = '';
+                              if (nameController.text.isEmpty) {
+                                error = 'Укажите Имя';
+                              } else if (phoneController.text.isEmpty) {
+                                error = 'Укажите Номер телефона';
+                              } else if (emailController.text.isEmpty) {
+                                error = 'Укажите Почту';
+                              } else if (loginController.text.isEmpty) {
+                                error = 'Укажите Логин';
+                              } else if (passwordController.text.isEmpty) {
+                                error = 'Укажите Пароль';
+                              }
+                              MessageDialogs().showAlert('Ошибка', error);
+                            }
+                          },
+                          child: Container(
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Изменить',
+                                style: CustomTextStyle.white15w600.copyWith(
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        // SizedBox(
-                        //   height: MediaQuery.of(context).viewInsets.bottom / 5,
-                        // )
-                      ],
-                    )),
+                      ),
+                    ],
+                  ),
+                ),
               );
             }),
           );

@@ -59,7 +59,6 @@ class _RegPageState extends State<RegPage> {
       state = focusNode3.hasFocus;
       setState(() {});
     });
-    // focusNode1.requestFocus();
   }
 
   @override
@@ -259,7 +258,7 @@ class _RegPageState extends State<RegPage> {
                           onPressed: _signIn,
                           color: Colors.red,
                           child: const Text(
-                            'Авторизация',
+                            'Зарегистрироваться',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

@@ -52,7 +52,6 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
       state = focusNode3.hasFocus;
       setState(() {});
     });
-    // focusNode1.requestFocus();
   }
 
   @override
@@ -221,7 +220,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               onPressed: _signIn,
                               color: Colors.red,
                               child: const Text(
-                                'Авторизация',
+                                'Войти',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

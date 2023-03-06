@@ -5,6 +5,7 @@ import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
+import 'package:egorka/widget/dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +26,10 @@ void main() async {
   await FirebaseMessaging.instance.requestPermission();
 
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-    print("message from push ${event.notification!.body}");
+    MessageDialogs().showMessage('Уведомление', event.data.toString());
   });
 
   String? token = await FirebaseMessaging.instance.getToken();
-
-  print('fcm token ${token}');
 
   runApp(MyApp());
 }

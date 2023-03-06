@@ -114,6 +114,7 @@ class _MarketPageState extends State<MarketPages>
   final detailsController = StreamController<bool>();
   final bucketCountLess15kg = StreamController<int>();
   final bucketCountMore15kg = StreamController<int>();
+  final additionalPalletCount = StreamController<int>();
   final additionalController = StreamController<bool>();
   final additional1Controller = StreamController<bool>();
   final additional2Controller = StreamController<bool>();
@@ -839,85 +840,95 @@ class _MarketPageState extends State<MarketPages>
                                               style: CustomTextStyle.grey15bold,
                                             ),
                                             const Spacer(),
-                                            BlocBuilder<ProfileBloc,
-                                                    ProfileState>(
-                                                builder: (context, snapshot) {
-                                              final auth =
-                                                  BlocProvider.of<ProfileBloc>(
-                                                          context)
-                                                      .getUser();
-                                              if (auth == null) {
-                                                return const SizedBox();
-                                              }
-                                              return GestureDetector(
-                                                onTap: () => showBooksAddress(
-                                                    context,
-                                                    BlocProvider.of<BookBloc>(
-                                                            context)
-                                                        .books, (value) {
-                                                  suggestion = Suggestions(
-                                                    iD: value.id,
-                                                    name: value.name ?? '',
-                                                    point: pointModel.Point(
-                                                      latitude: value.latitude,
-                                                      longitude:
-                                                          value.longitude,
-                                                    ),
-                                                    houseNumber: value.room,
-                                                  );
-                                                  fromController.text =
-                                                      value.address ?? '';
-                                                  nameController.text =
-                                                      value.contact?.name ?? '';
-                                                  phoneController.text = value
-                                                          .contact
-                                                          ?.phoneMobile ??
-                                                      '';
-                                                  calcOrder();
-                                                }),
-                                                child: Row(
-                                                  children: [
-                                                    const Text(
-                                                      'Из книжки',
-                                                      style:
-                                                          CustomTextStyle.red15,
-                                                    ),
-                                                    SizedBox(width: 5.w),
-                                                    const Icon(
-                                                      Icons.menu_book,
-                                                      color: Colors.red,
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            })
                                           ],
                                         ),
                                         SizedBox(height: 5.h),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: CustomTextField(
-                                                onFieldSubmitted: (value) =>
-                                                    calcOrder(),
-                                                maxLines: 1,
-                                                height: 45.h,
-                                                focusNode: contactFocus,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10.w),
-                                                fillColor: Colors.white,
-                                                hintText: 'Имя',
-                                                formatters: [
-                                                  CustomInputFormatterUpperCase()
-                                                ],
-                                                hintStyle: CustomTextStyle
-                                                    .textHintStyle,
-                                                textEditingController:
-                                                    nameController,
+                                        Container(
+                                          height: 45.h,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.r),
+                                            color: Colors.white,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomTextField(
+                                                  onFieldSubmitted: (value) =>
+                                                      calcOrder(),
+                                                  maxLines: 1,
+                                                  height: 45.h,
+                                                  focusNode: contactFocus,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10.w),
+                                                  fillColor: Colors.white,
+                                                  hintText: 'Имя',
+                                                  formatters: [
+                                                    CustomInputFormatterUpperCase()
+                                                  ],
+                                                  hintStyle: CustomTextStyle
+                                                      .textHintStyle,
+                                                  textEditingController:
+                                                      nameController,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                              BlocBuilder<ProfileBloc,
+                                                      ProfileState>(
+                                                  builder: (context, snapshot) {
+                                                final auth = BlocProvider.of<
+                                                        ProfileBloc>(context)
+                                                    .getUser();
+                                                if (auth == null) {
+                                                  return const SizedBox();
+                                                }
+                                                return GestureDetector(
+                                                  onTap: () => showBooksAddress(
+                                                      context,
+                                                      BlocProvider.of<BookBloc>(
+                                                              context)
+                                                          .books, (value) {
+                                                    suggestion = Suggestions(
+                                                      iD: value.id,
+                                                      name: value.name ?? '',
+                                                      point: pointModel.Point(
+                                                        latitude:
+                                                            value.latitude,
+                                                        longitude:
+                                                            value.longitude,
+                                                      ),
+                                                      houseNumber: value.room,
+                                                    );
+                                                    fromController.text =
+                                                        value.address ?? '';
+                                                    nameController.text =
+                                                        value.contact?.name ??
+                                                            '';
+                                                    phoneController.text = value
+                                                            .contact
+                                                            ?.phoneMobile ??
+                                                        '';
+                                                    calcOrder();
+                                                  }),
+                                                  child: Row(
+                                                    children: [
+                                                      const Text(
+                                                        'Из книжки',
+                                                        style: CustomTextStyle
+                                                            .red15,
+                                                      ),
+                                                      SizedBox(width: 5.w),
+                                                      const Icon(
+                                                        Icons.menu_book,
+                                                        color: Colors.red,
+                                                      ),
+                                                      SizedBox(width: 10.w),
+                                                    ],
+                                                  ),
+                                                );
+                                              })
+                                            ],
+                                          ),
                                         ),
                                         SizedBox(height: 10.h),
                                         Row(
@@ -1170,7 +1181,7 @@ class _MarketPageState extends State<MarketPages>
                                             if (additional) {
                                               height = 385.h;
                                               if (additional1) height += 170.h;
-                                              if (additional2) height += 90.h;
+                                              if (additional2) height += 280.h;
                                             } else {
                                               height = 0.h;
                                             }
@@ -1608,7 +1619,7 @@ class _MarketPageState extends State<MarketPages>
                                   SizedBox(height: 5.w),
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 100),
-                                    height: snapshot.data! ? 90.h : 0.h,
+                                    height: snapshot.data! ? 92.h : 0.h,
                                     child: Column(
                                       children: [
                                         SizedBox(height: 15.w),
@@ -1618,29 +1629,85 @@ class _MarketPageState extends State<MarketPages>
                                           ],
                                         ),
                                         SizedBox(height: 5.h),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: CustomTextField(
-                                                onTap: () => scrolling(),
-                                                onFieldSubmitted: (value) =>
-                                                    calcOrder(),
-                                                focusNode:
-                                                    palletFocusAdditional,
-                                                height: 45.h,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 10.w),
-                                                fillColor: Colors.white,
-                                                hintText: '0',
-                                                textInputType:
-                                                    TextInputType.number,
-                                                textEditingController:
-                                                    countPalletControllerMore,
-                                              ),
-                                            ),
-                                          ],
-                                        )
+                                        StreamBuilder<int>(
+                                          stream: additionalPalletCount.stream,
+                                          initialData: 0,
+                                          builder: (context, snapshot) {
+                                            return Row(
+                                              children: [
+                                                Expanded(
+                                                  child: CustomTextField(
+                                                    onTap: () => scrolling(),
+                                                    onFieldSubmitted: (value) =>
+                                                        calcOrder(),
+                                                    onChanged: (value) {
+                                                      int? res =
+                                                          int.tryParse(value);
+                                                      if (res != null) {
+                                                        additionalPalletCount
+                                                            .add(res);
+                                                      } else {
+                                                        additionalPalletCount
+                                                            .add(0);
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    focusNode:
+                                                        palletFocusAdditional,
+                                                    height: 45.h,
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10.w),
+                                                    fillColor: Colors.white,
+                                                    hintText: '0',
+                                                    textInputType:
+                                                        TextInputType.number,
+                                                    formatters: [
+                                                      CustomInputFormatterSlider(
+                                                        (double.tryParse(
+                                                                countPalletController
+                                                                    .text) ??
+                                                            0),
+                                                      ),
+                                                    ],
+                                                    textEditingController:
+                                                        countPalletControllerMore,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10.w),
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Slider(
+                                                    min: 0,
+                                                    max: (double.tryParse(
+                                                            countPalletController
+                                                                .text) ??
+                                                        0),
+                                                    activeColor: Colors.red,
+                                                    inactiveColor:
+                                                        Colors.grey[300],
+                                                    thumbColor: Colors.white,
+                                                    value: snapshot.data!
+                                                        .toDouble(),
+                                                    onChangeEnd: (value) {
+                                                      setState(() {});
+                                                      calcOrder();
+                                                    },
+                                                    onChanged: (value) {
+                                                      additionalPalletCount
+                                                          .add(value.toInt());
+                                                      countPalletControllerMore
+                                                              .text =
+                                                          value
+                                                              .toInt()
+                                                              .toString();
+                                                    },
+                                                  ),
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        ),
                                       ],
                                     ),
                                   )

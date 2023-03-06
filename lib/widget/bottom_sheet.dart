@@ -241,20 +241,25 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                             Expanded(
                               child: CustomTextField(
                                 height: 45.h,
-                                onTap: () async {
-                                  typeAdd = TypeAdd.sender;
-                                  await panelController.animatePanelToPosition(
-                                    1,
-                                    duration: Duration(milliseconds: 200),
-                                  );
-                                  bloc.add(SearchAddressClear());
-                                  if (!focusFrom.hasFocus) {
-                                    focusFrom.requestFocus();
-                                  }
-                                },
                                 focusNode: focusFrom,
                                 fillColor: Colors.white.withOpacity(0),
                                 hintText: 'Откуда забрать?',
+                                onTap: () async {
+                                  typeAdd = TypeAdd.sender;
+                                  focusFrom.unfocus();
+
+                                  await panelController.animatePanelToPosition(
+                                    1,
+                                    duration: Duration(milliseconds: 250),
+                                  );
+                                  bloc.add(SearchAddressClear());
+                                  Future.delayed(Duration(milliseconds: 50),
+                                      () {
+                                    if (!focusFrom.hasFocus) {
+                                      focusFrom.requestFocus();
+                                    }
+                                  });
+                                },
                                 onFieldSubmitted: (text) {
                                   panelController.close();
                                   focusFrom.unfocus();
@@ -391,14 +396,19 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 height: 45.h,
                                 onTap: () async {
                                   typeAdd = TypeAdd.receiver;
+                                  focusTo.unfocus();
+
                                   await panelController.animatePanelToPosition(
                                     1,
-                                    duration: Duration(milliseconds: 200),
+                                    duration: Duration(milliseconds: 250),
                                   );
                                   bloc.add(SearchAddressClear());
-                                  if (!focusTo.hasFocus) {
-                                    focusTo.requestFocus();
-                                  }
+                                  Future.delayed(Duration(milliseconds: 50),
+                                      () {
+                                    if (!focusTo.hasFocus) {
+                                      focusTo.requestFocus();
+                                    }
+                                  });
                                 },
                                 onFieldSubmitted: (text) {
                                   panelController.close();

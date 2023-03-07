@@ -492,9 +492,9 @@ class _BookPageState extends State<BookPage> {
                                 onTap: () async {
                                   if (selectAddress != null &&
                                       nameController.text.isNotEmpty &&
-                                      entranceController.text.isNotEmpty &&
-                                      floorController.text.isNotEmpty &&
-                                      roomController.text.isNotEmpty &&
+                                      // entranceController.text.isNotEmpty &&
+                                      // floorController.text.isNotEmpty &&
+                                      // roomController.text.isNotEmpty &&
                                       fioController.text.isNotEmpty &&
                                       phoneController.text.isNotEmpty &&
                                       addressController.text.isNotEmpty) {

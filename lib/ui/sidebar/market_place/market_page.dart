@@ -1107,6 +1107,13 @@ class _MarketPageState extends State<MarketPages>
                                                       } else {
                                                         countPallet.add(0);
                                                       }
+
+                                                      countPalletControllerMore
+                                                          .text = '';
+                                                      additionalPalletCount
+                                                          .add(0);
+
+                                                      setState(() {});
                                                     },
                                                     maxLines: 1,
                                                     focusNode: palletFocus,
@@ -1163,6 +1170,13 @@ class _MarketPageState extends State<MarketPages>
                                                           value
                                                               .toInt()
                                                               .toString();
+
+                                                      countPalletControllerMore
+                                                          .text = '';
+                                                      additionalPalletCount
+                                                          .add(0);
+
+                                                      setState(() {});
                                                     },
                                                   ),
                                                 )

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
@@ -128,7 +130,11 @@ class _NavBarState extends State<NavBar> {
                       builder: (context, snapshot) {
                     final auth =
                         BlocProvider.of<ProfileBloc>(context).getUser();
-                    if (auth == null || auth.result!.agent == null) {
+
+                    if (auth == null ||
+                        auth.result!.agent == null ||
+                        auth.result!.user == null ||
+                        auth.result!.user!.username != 'Admin') {
                       return const SizedBox();
                     }
                     return Padding(

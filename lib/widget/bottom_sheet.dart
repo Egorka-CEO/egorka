@@ -19,6 +19,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart' as yandex_mapkit;
 
@@ -62,6 +64,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   yandex_mapkit.DrivingSessionResult? directions;
   yandex_mapkit.BicycleSessionResult? directionsBicycle;
   List<yandex_mapkit.PlacemarkMapObject> markers = [];
+
+  double maxHeightPanel = 735.h;
 
   List<DeliveryChocie> listChoice = [
     DeliveryChocie(
@@ -143,10 +147,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               focusTo.unfocus();
             }
           },
-          maxHeight: 735.h,
+          maxHeight: maxHeightPanel,
           minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
               ? 400.h
-              : 250.h,
+              : 290.h,
           defaultPanelState: PanelState.CLOSED,
         );
       }),
@@ -155,385 +159,440 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
 
   Widget _floatingPanel(BuildContext context) {
     var bloc = BlocProvider.of<SearchAddressBloc>(context);
-    return Container(
-      margin: MediaQuery.of(context).viewInsets + EdgeInsets.only(top: 15.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25.r),
-          topRight: Radius.circular(25.r),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        suggestionsStart == null ||
+                (suggestionsEnd != null && suggestionsStart == null)
+            ? ScaleButton(
+                onTap: () {
+                  BlocProvider.of<SearchAddressBloc>(context)
+                      .add(GetAddressPosition());
+                },
+                bound: 0.05,
+                child: Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  height: 50.h,
+                  width: 50.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(1000),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 1.r,
+                        offset: const Offset(1, 1),
+                      )
+                    ],
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/icons/cursor.svg',
+                      height: 25.h,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              )
+            : SizedBox(height: 50.h),
+        Container(
+          height: maxHeightPanel - 50.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25.r),
+              topRight: Radius.circular(25.r),
+            ),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 10,
+                spreadRadius: 1,
+                color: Colors.black12,
+              ),
+            ],
+            color: backgroundColor,
+          ),
+          child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.all(0),
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10.w,
+                  left: ((MediaQuery.of(context).size.width * 47) / 100).w,
+                  right: ((MediaQuery.of(context).size.width * 47) / 100).w,
+                  bottom: 10.w,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 35.w),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      width: iconState ? 25.w : 16.w,
+                      child: Image.asset(
+                        'assets/images/city.png',
+                      ),
+                    ),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      width: iconState ? 10.w : 6.w,
+                    ),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      child: Text(
+                        'ОБЫЧНАЯ ДОСТАВКА',
+                        style: TextStyle(
+                          fontSize: iconState ? 14.sp : 10.sp,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10.h),
+              StreamBuilder<dynamic>(
+                stream: stream.stream,
+                builder: (context, snapshot) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Container(
+                          height: 55.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.r),
+                            color: Colors.white,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: false,
+                                  fillColor:
+                                      MaterialStateProperty.all(Colors.red),
+                                  shape: const CircleBorder(),
+                                  onChanged: ((value) {}),
+                                ),
+                                Expanded(
+                                  child: CustomTextField(
+                                    height: 45.h,
+                                    focusNode: focusFrom,
+                                    fillColor: Colors.white.withOpacity(0),
+                                    hintText: 'Откуда забрать?',
+                                    onTap: () async {
+                                      typeAdd = TypeAdd.sender;
+                                      focusFrom.unfocus();
+
+                                      await panelController
+                                          .animatePanelToPosition(
+                                        1,
+                                        duration:
+                                            const Duration(milliseconds: 250),
+                                      );
+                                      bloc.add(SearchAddressClear());
+                                      Future.delayed(
+                                          const Duration(milliseconds: 50), () {
+                                        if (!focusFrom.hasFocus) {
+                                          focusFrom.requestFocus();
+                                        }
+                                      });
+                                    },
+                                    onFieldSubmitted: (text) {
+                                      panelController.close();
+                                      focusFrom.unfocus();
+                                    },
+                                    contentPadding:
+                                        EdgeInsets.only(right: 10.w),
+                                    textEditingController: fromController,
+                                    onChanged: (value) {
+                                      bloc.add(SearchAddress(value));
+                                    },
+                                  ),
+                                ),
+                                fromController.text.isNotEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(right: 15.w),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            bloc.add(DeletePolilyneEvent());
+                                            fromController.text = '';
+                                            suggestionsStart = null;
+                                            stream.add('event');
+                                            coasts.clear();
+                                            setState(() {
+                                              iconState = true;
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 20.h,
+                                            width: 20.h,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey[500],
+                                            ),
+                                            child: const Icon(
+                                              Icons.clear,
+                                              color: Colors.white,
+                                              size: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: EdgeInsets.only(right: 5.w),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 0.h),
+                                              child: Container(
+                                                color: Colors.grey[300],
+                                                width: 1,
+                                                height: 40.h,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                final res = await Navigator.of(
+                                                        context)
+                                                    .pushNamed(
+                                                        AppRoute.selectPoint);
+                                                if (res != null &&
+                                                    res is Suggestions) {
+                                                  suggestionsStart = res;
+                                                  fromController.text =
+                                                      suggestionsStart!.name;
+
+                                                  errorAddress1 =
+                                                      res.houseNumber == null
+                                                          ? 'Укажите номер дома'
+                                                          : null;
+                                                  setState(() {});
+                                                  calc();
+                                                }
+                                              },
+                                              style: ButtonStyle(
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomRight:
+                                                          Radius.circular(10.r),
+                                                      topRight:
+                                                          Radius.circular(10.r),
+                                                    ),
+                                                  ),
+                                                ),
+                                                backgroundColor:
+                                                    const MaterialStatePropertyAll(
+                                                        Colors.transparent),
+                                                foregroundColor:
+                                                    const MaterialStatePropertyAll(
+                                                        Colors.white),
+                                                overlayColor:
+                                                    MaterialStatePropertyAll(
+                                                  Colors.grey[400],
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  'Карта',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 13.sp),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Container(
+                          height: 55.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.r),
+                            color: Colors.white,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Checkbox(
+                                  value: false,
+                                  fillColor:
+                                      MaterialStateProperty.all(Colors.blue),
+                                  shape: const CircleBorder(),
+                                  onChanged: (value) {},
+                                ),
+                                Expanded(
+                                  child: CustomTextField(
+                                    height: 45.h,
+                                    onTap: () async {
+                                      typeAdd = TypeAdd.receiver;
+                                      focusTo.unfocus();
+
+                                      await panelController
+                                          .animatePanelToPosition(
+                                        1,
+                                        duration:
+                                            const Duration(milliseconds: 250),
+                                      );
+                                      bloc.add(SearchAddressClear());
+                                      Future.delayed(
+                                          const Duration(milliseconds: 50), () {
+                                        if (!focusTo.hasFocus) {
+                                          focusTo.requestFocus();
+                                        }
+                                      });
+                                    },
+                                    onFieldSubmitted: (text) {
+                                      panelController.close();
+                                      focusTo.unfocus();
+                                    },
+                                    contentPadding:
+                                        EdgeInsets.only(right: 10.w),
+                                    focusNode: focusTo,
+                                    fillColor: Colors.white.withOpacity(0),
+                                    hintText: 'Куда отвезти?',
+                                    textEditingController: toController,
+                                    onChanged: (value) {
+                                      stream.add('event');
+                                      bloc.add(SearchAddress(value));
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                toController.text.isNotEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(right: 15.w),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            bloc.add(DeletePolilyneEvent());
+                                            toController.text = '';
+                                            suggestionsEnd = null;
+                                            stream.add('event');
+                                            coasts.clear();
+                                            setState(() {
+                                              iconState = true;
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 20.h,
+                                            width: 20.h,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey[500],
+                                            ),
+                                            child: const Icon(
+                                              Icons.clear,
+                                              color: Colors.white,
+                                              size: 15,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: EdgeInsets.only(right: 5.w),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 0.h),
+                                              child: Container(
+                                                color: Colors.grey[300],
+                                                width: 1,
+                                                height: 40.h,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                focusFrom.unfocus();
+                                                final res = await Navigator.of(
+                                                        context)
+                                                    .pushNamed(
+                                                        AppRoute.selectPoint);
+                                                if (res != null &&
+                                                    res is Suggestions) {
+                                                  suggestionsEnd = res;
+                                                  toController.text =
+                                                      suggestionsEnd!.name;
+
+                                                  errorAddress2 =
+                                                      res.houseNumber == null
+                                                          ? 'Укажите номер дома'
+                                                          : null;
+                                                  setState(() {});
+                                                  calc();
+                                                }
+                                              },
+                                              style: ButtonStyle(
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      bottomRight:
+                                                          Radius.circular(10.r),
+                                                      topRight:
+                                                          Radius.circular(10.r),
+                                                    ),
+                                                  ),
+                                                ),
+                                                backgroundColor:
+                                                    const MaterialStatePropertyAll(
+                                                        Colors.transparent),
+                                                foregroundColor:
+                                                    const MaterialStatePropertyAll(
+                                                        Colors.white),
+                                                overlayColor:
+                                                    MaterialStatePropertyAll(
+                                                  Colors.grey[400],
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  'Карта',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 13.sp),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      _searchList(),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 10,
-            spreadRadius: 1,
-            color: Colors.black12,
-          ),
-        ],
-        color: backgroundColor.withOpacity(1),
-      ),
-      child: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(0),
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              top: 10.w,
-              left: ((MediaQuery.of(context).size.width * 47) / 100).w,
-              right: ((MediaQuery.of(context).size.width * 47) / 100).w,
-              bottom: 10.w,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 35.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  width: iconState ? 25.w : 16.w,
-                  child: Image.asset(
-                    'assets/images/city.png',
-                  ),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  width: iconState ? 10.w : 6.w,
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  child: Text(
-                    'ОБЫЧНАЯ ДОСТАВКА',
-                    style: TextStyle(
-                      fontSize: iconState ? 14.sp : 10.sp,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10.h),
-          StreamBuilder<dynamic>(
-            stream: stream.stream,
-            builder: (context, snapshot) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Container(
-                      height: 55.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        color: Colors.white,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              value: false,
-                              fillColor: MaterialStateProperty.all(Colors.red),
-                              shape: const CircleBorder(),
-                              onChanged: ((value) {}),
-                            ),
-                            Expanded(
-                              child: CustomTextField(
-                                height: 45.h,
-                                focusNode: focusFrom,
-                                fillColor: Colors.white.withOpacity(0),
-                                hintText: 'Откуда забрать?',
-                                onTap: () async {
-                                  typeAdd = TypeAdd.sender;
-                                  focusFrom.unfocus();
-
-                                  await panelController.animatePanelToPosition(
-                                    1,
-                                    duration: Duration(milliseconds: 250),
-                                  );
-                                  bloc.add(SearchAddressClear());
-                                  Future.delayed(Duration(milliseconds: 50),
-                                      () {
-                                    if (!focusFrom.hasFocus) {
-                                      focusFrom.requestFocus();
-                                    }
-                                  });
-                                },
-                                onFieldSubmitted: (text) {
-                                  panelController.close();
-                                  focusFrom.unfocus();
-                                },
-                                contentPadding: EdgeInsets.only(right: 10.w),
-                                textEditingController: fromController,
-                                onChanged: (value) {
-                                  bloc.add(SearchAddress(value));
-                                },
-                              ),
-                            ),
-                            fromController.text.isNotEmpty
-                                ? Padding(
-                                    padding: EdgeInsets.only(right: 15.w),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        bloc.add(DeletePolilyneEvent());
-                                        fromController.text = '';
-                                        stream.add('event');
-                                        coasts.clear();
-                                        setState(() {
-                                          iconState = true;
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 20.h,
-                                        width: 20.h,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.grey[500],
-                                        ),
-                                        child: const Icon(
-                                          Icons.clear,
-                                          color: Colors.white,
-                                          size: 15,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: EdgeInsets.only(right: 5.w),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 0.h),
-                                          child: Container(
-                                            color: Colors.grey[300],
-                                            width: 1,
-                                            height: 40.h,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            final res =
-                                                await Navigator.of(context)
-                                                    .pushNamed(
-                                                        AppRoute.selectPoint);
-                                            if (res != null &&
-                                                res is Suggestions) {
-                                              suggestionsStart = res;
-                                              fromController.text =
-                                                  suggestionsStart!.name;
-
-                                              errorAddress1 =
-                                                  res.houseNumber == null
-                                                      ? 'Укажите номер дома'
-                                                      : null;
-                                              calc();
-                                            }
-                                          },
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomRight:
-                                                      Radius.circular(10.r),
-                                                  topRight:
-                                                      Radius.circular(10.r),
-                                                ),
-                                              ),
-                                            ),
-                                            backgroundColor:
-                                                const MaterialStatePropertyAll(
-                                                    Colors.transparent),
-                                            foregroundColor:
-                                                const MaterialStatePropertyAll(
-                                                    Colors.white),
-                                            overlayColor:
-                                                MaterialStatePropertyAll(
-                                              Colors.grey[400],
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'Карта',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13.sp),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Container(
-                      height: 55.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        color: Colors.white,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Checkbox(
-                              value: false,
-                              fillColor: MaterialStateProperty.all(Colors.blue),
-                              shape: const CircleBorder(),
-                              onChanged: (value) {},
-                            ),
-                            Expanded(
-                              child: CustomTextField(
-                                height: 45.h,
-                                onTap: () async {
-                                  typeAdd = TypeAdd.receiver;
-                                  focusTo.unfocus();
-
-                                  await panelController.animatePanelToPosition(
-                                    1,
-                                    duration: Duration(milliseconds: 250),
-                                  );
-                                  bloc.add(SearchAddressClear());
-                                  Future.delayed(Duration(milliseconds: 50),
-                                      () {
-                                    if (!focusTo.hasFocus) {
-                                      focusTo.requestFocus();
-                                    }
-                                  });
-                                },
-                                onFieldSubmitted: (text) {
-                                  panelController.close();
-                                  focusTo.unfocus();
-                                },
-                                contentPadding: EdgeInsets.only(right: 10.w),
-                                focusNode: focusTo,
-                                fillColor: Colors.white.withOpacity(0),
-                                hintText: 'Куда отвезти?',
-                                textEditingController: toController,
-                                onChanged: (value) {
-                                  stream.add('event');
-                                  bloc.add(SearchAddress(value));
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            toController.text.isNotEmpty
-                                ? Padding(
-                                    padding: EdgeInsets.only(right: 15.w),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        bloc.add(DeletePolilyneEvent());
-                                        toController.text = '';
-                                        stream.add('event');
-                                        coasts.clear();
-                                        setState(() {
-                                          iconState = true;
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 20.h,
-                                        width: 20.h,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.grey[500],
-                                        ),
-                                        child: const Icon(
-                                          Icons.clear,
-                                          color: Colors.white,
-                                          size: 15,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: EdgeInsets.only(right: 5.w),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 0.h),
-                                          child: Container(
-                                            color: Colors.grey[300],
-                                            width: 1,
-                                            height: 40.h,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            focusFrom.unfocus();
-                                            final res =
-                                                await Navigator.of(context)
-                                                    .pushNamed(
-                                                        AppRoute.selectPoint);
-                                            if (res != null &&
-                                                res is Suggestions) {
-                                              suggestionsEnd = res;
-                                              toController.text =
-                                                  suggestionsEnd!.name;
-
-                                              errorAddress2 =
-                                                  res.houseNumber == null
-                                                      ? 'Укажите номер дома'
-                                                      : null;
-                                              calc();
-                                            }
-                                          },
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomRight:
-                                                      Radius.circular(10.r),
-                                                  topRight:
-                                                      Radius.circular(10.r),
-                                                ),
-                                              ),
-                                            ),
-                                            backgroundColor:
-                                                const MaterialStatePropertyAll(
-                                                    Colors.transparent),
-                                            foregroundColor:
-                                                const MaterialStatePropertyAll(
-                                                    Colors.white),
-                                            overlayColor:
-                                                MaterialStatePropertyAll(
-                                              Colors.grey[400],
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'Карта',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13.sp),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  _searchList(),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
+      ],
     );
   }
 

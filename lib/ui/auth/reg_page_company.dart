@@ -4,6 +4,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_company.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:egorka/widget/policy_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -357,8 +358,26 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                             .copyWith(fontSize: 13.sp),
                                       ),
                                       TextSpan(
-                                        text:
-                                            'и Политикой конфиденциальности ООО «Егорка»',
+                                        text: 'и ',
+                                        style: CustomTextStyle.black17w400
+                                            .copyWith(fontSize: 13.sp),
+                                      ),
+                                      TextSpan(
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap =
+                                              () => Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: ((context) {
+                                                        return PolicyView();
+                                                      }),
+                                                    ),
+                                                  ),
+                                        text: 'Политикой конфиденциальности',
+                                        style: CustomTextStyle.red15
+                                            .copyWith(fontSize: 13.sp),
+                                      ),
+                                      TextSpan(
+                                        text: ' ООО «Егорка»',
                                         style: CustomTextStyle.black17w400
                                             .copyWith(fontSize: 13.sp),
                                       ),

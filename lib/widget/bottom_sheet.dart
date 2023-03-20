@@ -247,7 +247,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                         'ОБЫЧНАЯ ДОСТАВКА',
                         style: TextStyle(
                           fontSize: iconState ? 14.sp : 10.sp,
-                          fontWeight: FontWeight.w900,
+                          // fontWeight: FontWeight.w500,
                           color: Colors.grey[500],
                         ),
                       ),

@@ -287,8 +287,8 @@ class _BottomSheetDraggableState
       colorStatus = Colors.orange;
       status = 'Черновик';
     } else if (state.result.Status == 'Booked') {
-      colorStatus = resPaid ? Colors.green : Colors.orange;
-      status = resPaid ? 'Оплачено' : 'Активно';
+      colorStatus = Colors.green;
+      status = 'В работе';
     } else if (state.result.Status == 'Completed') {
       colorStatus = Colors.green;
       status = 'Выполнено';

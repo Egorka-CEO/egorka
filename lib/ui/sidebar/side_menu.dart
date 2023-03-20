@@ -6,6 +6,8 @@ import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
+import 'package:egorka/widget/policy_view.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -65,36 +67,37 @@ class _NavBarState extends State<NavBar> {
                   ),
                   SizedBox(height: 30.h),
                   BlocBuilder<ProfileBloc, ProfileState>(
-                      builder: (context, snapshot) {
-                    final auth =
-                        BlocProvider.of<ProfileBloc>(context).getUser();
-                    if (auth != null) return const SizedBox();
-                    return SizedBox(
-                      width: 270.w,
-                      height: 50.h,
-                      child: TextButton(
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed(AppRoute.auth),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0),
+                    builder: (context, snapshot) {
+                      final auth =
+                          BlocProvider.of<ProfileBloc>(context).getUser();
+                      if (auth != null) return const SizedBox();
+                      return SizedBox(
+                        width: 270.w,
+                        height: 50.h,
+                        child: TextButton(
+                          onPressed: () =>
+                              Navigator.of(context).pushNamed(AppRoute.auth),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0),
+                                ),
                               ),
-                            ),
-                            alignment: Alignment.centerLeft,
-                            padding: const MaterialStatePropertyAll(
-                                EdgeInsets.only(left: 18)),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.red),
-                            foregroundColor:
-                                const MaterialStatePropertyAll(Colors.white),
-                            overlayColor:
-                                MaterialStatePropertyAll(Colors.red[700])),
-                        child: const Text('Входите, и начём'),
-                      ),
-                    );
-                  }),
+                              alignment: Alignment.centerLeft,
+                              padding: const MaterialStatePropertyAll(
+                                  EdgeInsets.only(left: 18)),
+                              backgroundColor:
+                                  const MaterialStatePropertyAll(Colors.red),
+                              foregroundColor:
+                                  const MaterialStatePropertyAll(Colors.white),
+                              overlayColor:
+                                  MaterialStatePropertyAll(Colors.red[700])),
+                          child: const Text('Входите, и начём'),
+                        ),
+                      );
+                    },
+                  ),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
                     final auth =
@@ -318,6 +321,88 @@ class _NavBarState extends State<NavBar> {
                         ),
                       ),
                     ),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 30.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            launch(
+                              'https://egorka.delivery/egorka_rules.pdf',
+                            );
+                          },
+                          child: Text(
+                            'Договор оферты',
+                            style:
+                                CustomTextStyle.grey14w400.copyWith(fontSize: 13.sp),
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: ((context) {
+                                  return PolicyView();
+                                }),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Политика конфиденциальности',
+                            style:
+                                CustomTextStyle.grey14w400.copyWith(fontSize: 13.sp),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // child: RichText(
+                    //   // textAlign: TextAlign.justify,
+                    //   text: TextSpan(
+                    //     children: [
+                    //       // TextSpan(
+                    //       //   text:
+                    //       //       'Нажимаю кнопку «Начать работать» Вы соглашаетесь с ',
+                    //       //   style: CustomTextStyle.black17w400
+                    //       //       .copyWith(fontSize: 13.sp),
+                    //       // ),
+                    //       TextSpan(
+                    //         recognizer: TapGestureRecognizer()
+                    //           ..onTap = () => launch(
+                    //               'https://egorka.delivery/egorka_rules.pdf'),
+                    //         text: 'Договор оферты',
+                    //         style:
+                    //             CustomTextStyle.red15.copyWith(fontSize: 13.sp),
+                    //       ),
+                    // TextSpan(
+                    //   text: 'и ',
+                    //   style: CustomTextStyle.black17w400
+                    //       .copyWith(fontSize: 13.sp),
+                    // ),
+                    // TextSpan(
+                    //   recognizer: TapGestureRecognizer()
+                    //     ..onTap = () => Navigator.of(context).push(
+                    //           MaterialPageRoute(
+                    //             builder: ((context) {
+                    //               return PolicyView();
+                    //             }),
+                    //           ),
+                    //         ),
+                    //   text: '\nПолитика конфиденциальности',
+                    //   style:
+                    //       CustomTextStyle.red15.copyWith(fontSize: 13.sp),
+                    // ),
+                    // TextSpan(
+                    //   text: ' ООО «Егорка»',
+                    //   style: CustomTextStyle.black17w400
+                    //       .copyWith(fontSize: 13.sp),
+                    // ),
+                    // ],
+                    // ),
+                    // ),
                   ),
                 ],
               ),

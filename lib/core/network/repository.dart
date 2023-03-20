@@ -175,6 +175,8 @@ class Repository {
       },
     );
 
+    log('message ${response.data['Result']}');
+
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
       return coast;

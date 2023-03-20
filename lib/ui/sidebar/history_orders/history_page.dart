@@ -129,13 +129,13 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   void checkOrder() {
     if (formOrder!.result!.status == 'Drafted') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-      colorStatus = resPaid ? Colors.green : Colors.orange;
+      colorStatus = Colors.orange;
       status = 'Черновик';
       paidBtmSheet = resPaid;
     } else if (formOrder!.result!.status == 'Booked') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-      colorStatus = resPaid ? Colors.green : Colors.orange;
-      status = resPaid ? 'Оплачено' : 'Активно';
+      colorStatus = Colors.green;
+      status = 'В работе';
       paidBtmSheet = !resPaid;
     } else if (formOrder!.result!.status == 'Completed') {
       paidBtmSheet = false;
@@ -992,26 +992,26 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                   ],
                                                 ),
                                               ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                panelController.open();
-                                              },
-                                              child: Column(
-                                                children: [
-                                                  Icon(
-                                                    Icons.send,
-                                                    color: Colors.red,
-                                                    size: 50.h,
-                                                  ),
-                                                  const Text(
-                                                    'Написать в\nподдержку',
-                                                    textAlign: TextAlign.center,
-                                                    style: CustomTextStyle
-                                                        .black15w700,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                                            // GestureDetector(
+                                            //   onTap: () {
+                                            //     panelController.open();
+                                            //   },
+                                            //   child: Column(
+                                            //     children: [
+                                            //       Icon(
+                                            //         Icons.send,
+                                            //         color: Colors.red,
+                                            //         size: 50.h,
+                                            //       ),
+                                            //       const Text(
+                                            //         'Написать в\nподдержку',
+                                            //         textAlign: TextAlign.center,
+                                            //         style: CustomTextStyle
+                                            //             .black15w700,
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                         SizedBox(height: 140.h)

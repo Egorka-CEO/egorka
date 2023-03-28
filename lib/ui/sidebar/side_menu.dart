@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
@@ -7,7 +5,6 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/widget/policy_view.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -189,32 +186,33 @@ class _NavBarState extends State<NavBar> {
                       ),
                     );
                   }),
-                  if (createFormModel != null)
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.w),
-                      child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoute.currentOrder,
-                          arguments: [
-                            createFormModel!.result.RecordNumber,
-                            createFormModel.result.RecordPIN
-                          ],
-                        ),
-                        child: Container(
-                          color: Colors.transparent,
-                          height: 50.h,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Текущий заказ',
-                              style: CustomTextStyle.black17w400
-                                  .copyWith(color: Colors.black),
-                            ),
+                  // if (createFormModel != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoute.mixFBS,
+                        arguments: [
+                          null, null,
+                          // createFormModel!.result.RecordNumber,
+                          // createFormModel.result.RecordPIN
+                        ],
+                      ),
+                      child: Container(
+                        color: Colors.transparent,
+                        height: 50.h,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Сборный груз',
+                            style: CustomTextStyle.black17w400
+                                .copyWith(color: Colors.black),
                           ),
                         ),
                       ),
                     ),
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
                     child: GestureDetector(
@@ -324,7 +322,8 @@ class _NavBarState extends State<NavBar> {
                   ),
                   Spacer(),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 30.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 18.w, vertical: 30.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -336,8 +335,8 @@ class _NavBarState extends State<NavBar> {
                           },
                           child: Text(
                             'Договор оферты',
-                            style:
-                                CustomTextStyle.grey14w400.copyWith(fontSize: 13.sp),
+                            style: CustomTextStyle.grey14w400
+                                .copyWith(fontSize: 13.sp),
                           ),
                         ),
                         SizedBox(height: 10.h),
@@ -353,8 +352,8 @@ class _NavBarState extends State<NavBar> {
                           },
                           child: Text(
                             'Политика конфиденциальности',
-                            style:
-                                CustomTextStyle.grey14w400.copyWith(fontSize: 13.sp),
+                            style: CustomTextStyle.grey14w400
+                                .copyWith(fontSize: 13.sp),
                           ),
                         ),
                       ],

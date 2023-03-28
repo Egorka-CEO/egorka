@@ -21,6 +21,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
 
   MarketPlacePageBloc() : super(MarketPlaceStated()) {
     on<MarketPlace>(_searchAddress);
+    on<MixFbsCalcEvent>(_calculateOrderMixFbs);
     on<MarketPlaceOpenBtmSheet>(_openBtmSheet);
     on<MarketPlaceStatedCloseBtmSheet>(_closeBtmSheet);
     on<MarketPlaceCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
@@ -29,6 +30,44 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     on<CalcOrderMarketplace>(_calculateOrderMarketplace);
     on<CreateForm>(_createForm);
     on<MarketUpdateState>(_updateState);
+  }
+
+  void _calculateOrderMixFbs(
+      MixFbsCalcEvent event, Emitter<MarketPlaceState> emit) async {
+    emit(CalcLoading());
+    var result = await Repository().getCoastMarketPlace(
+      CoastMarketPlace(
+        iD: event.id,
+        type: "Truck",
+        group: event.group,
+        locations: [
+          Location(
+            id: '',
+            date: event.time != null
+                ? DateFormat('yyyy-MM-dd HH:mm:ss').format(event.time!)
+                : null,
+            point: Point(
+              id: 'EGORKA_SC',
+              code: '',
+              entrance: '',
+              floor: '',
+              room: '',
+            ),
+            contact: Contact(name: event.name, phoneMobile: event.phone),
+          ),
+          Location(
+            point: Point(
+              id: 'Egorka_SBOR_FBS',
+              code: '',
+            ),
+            contact: Contact(name: event.name, phoneMobile: event.phone),
+          )
+        ],
+        ancillaries: event.ancillaries,
+        cargos: event.cargos,
+      ),
+    );
+    emit(MarketPlacesSuccessState(result));
   }
 
   void _calculateOrderMarketplace(

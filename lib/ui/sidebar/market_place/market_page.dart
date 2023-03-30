@@ -263,7 +263,9 @@ class _MarketPageState extends State<MarketPages>
                                         context,
                                         getWidgetPosition(iconBtn),
                                         (index) {
-                                          Navigator.pop(context);
+                                          Navigator.of(context)
+                                            ..pop()
+                                            ..pop();
                                         },
                                       ),
                                       child: Row(

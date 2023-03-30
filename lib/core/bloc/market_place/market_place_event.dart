@@ -6,10 +6,8 @@ class MarketPlaceOpenBtmSheet extends MarketPlaceEvent {}
 
 class MixFbsCalcEvent extends MarketPlaceEvent {
   String? id;
-  Suggestions? suggestion;
   DateTime? time;
   String group;
-  PointMarketPlace? points;
   List<Ancillaries>? ancillaries;
   String? name;
   String? phone;
@@ -21,8 +19,6 @@ class MixFbsCalcEvent extends MarketPlaceEvent {
 
   MixFbsCalcEvent(
     this.id,
-    this.suggestion,
-    this.points,
     this.ancillaries,
     this.time,
     this.group,

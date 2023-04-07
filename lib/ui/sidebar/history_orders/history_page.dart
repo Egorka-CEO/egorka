@@ -12,11 +12,13 @@ import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/payment_card.dart';
 import 'package:egorka/model/status_order.dart';
 import 'package:egorka/model/type_add.dart';
+import 'package:egorka/ui/sidebar/history_orders/widget/app_bar.dart';
 import 'package:egorka/widget/bottom_sheet_support.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/mini_map.dart';
 import 'package:egorka/widget/payment_webview.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,6 +61,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
   PanelController panelController = PanelController();
 
   bool cardTap = true;
+
+  Uint8List? photoCourier;
 
   @override
   void initState() {
@@ -106,6 +110,15 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
         declaredCost = (element.params?.first.value / 100).ceil().toString();
       }
     }
+
+    Repository()
+        .getPhotoCourier(formOrder?.result?.courier?.dSID ?? '')
+        .then((value) {
+      if (value != null) {
+        photoCourier = value;
+        setState(() {});
+      }
+    });
 
     if (formOrder!.result!.locations!.first.date != null) {
       parseDate = DateTime.fromMillisecondsSinceEpoch(
@@ -214,6 +227,19 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     setState(() {});
   }
 
+  String title(String value) {
+    if (value == 'Express') {
+      return 'Сводная информация';
+    } else if (value == 'FBS') {
+      return 'Доставка FBS';
+    } else if (value == 'Marketplace') {
+      return 'Доставка FBO';
+    } else if (value == 'MixFBS') {
+      return 'Сборный груз FBS';
+    }
+    return 'Сводная информация';
+  }
+
   @override
   Widget build(BuildContext context) {
     pointSentCount = 0;
@@ -241,106 +267,27 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                   children: [
                     Column(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.all(20.w),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Stack(
-                                  alignment: Alignment.centerLeft,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () => Navigator.of(context).pop(),
-                                      child: const Icon(
-                                        Icons.arrow_back_ios,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                    const Align(
-                                      child: Text(
-                                        'История',
-                                        style: CustomTextStyle.black17w400,
-                                      ),
-                                    ),
-                                    if (status != 'Выполнено' &&
-                                        status != 'Отменено' &&
-                                        status != 'Отказано' &&
-                                        status != 'Оплачено' &&
-                                        status != 'Ошибка')
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return CupertinoAlertDialog(
-                                                    title: const Text(
-                                                        'Подтвердить?'),
-                                                    content: const Text(
-                                                        'Текущая заявка будет отменена'),
-                                                    actions: [
-                                                      CupertinoDialogAction(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          textStyle:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .red),
-                                                          isDefaultAction: true,
-                                                          child: const Text(
-                                                              "Отменить")),
-                                                      CupertinoDialogAction(
-                                                          onPressed: () async {
-                                                            MessageDialogs()
-                                                                .showLoadDialog(
-                                                                    'Отмена заявки');
-                                                            bool res = await Repository()
-                                                                .cancelForm(
-                                                                    '${formOrder!.result!.recordNumber}',
-                                                                    '${formOrder!.result!.recordPIN}');
-                                                            SmartDialog
-                                                                .dismiss();
-                                                            BlocProvider.of<
-                                                                        HistoryOrdersBloc>(
-                                                                    context)
-                                                                .add(
-                                                                    GetListOrdersEvent());
-                                                            res
-                                                                ? MessageDialogs()
-                                                                    .completeDialog(
-                                                                        text:
-                                                                            'Заявка отменена')
-                                                                : MessageDialogs()
-                                                                    .errorDialog(
-                                                                        text:
-                                                                            'Ошибка отмены');
-                                                            resPaid = res;
-                                                            Navigator.pop(
-                                                                context);
-                                                            getForm();
-                                                            setState(() {});
-                                                          },
-                                                          isDefaultAction: true,
-                                                          child: const Text(
-                                                              "Подтвердить"))
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          child: const Text(
-                                            'Отмена',
-                                            style: CustomTextStyle.red15,
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        historyAppBar(
+                          context,
+                          status,
+                          () async {
+                            MessageDialogs().showLoadDialog('Отмена заявки');
+                            bool res = await Repository().cancelForm(
+                                '${formOrder!.result!.recordNumber}',
+                                '${formOrder!.result!.recordPIN}');
+                            SmartDialog.dismiss();
+                            BlocProvider.of<HistoryOrdersBloc>(context)
+                                .add(GetListOrdersEvent());
+                            res
+                                ? MessageDialogs()
+                                    .completeDialog(text: 'Заявка отменена')
+                                : MessageDialogs()
+                                    .errorDialog(text: 'Ошибка отмены');
+                            resPaid = res;
+                            Navigator.pop(context);
+                            getForm();
+                            setState(() {});
+                          },
                         ),
                         Container(
                           height: 1,
@@ -378,7 +325,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         ),
                                         SizedBox(height: 10.h),
                                         Text(
-                                          '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
+                                          '№${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
                                           style: CustomTextStyle.black17w400,
                                         ),
                                         SizedBox(height: 10.h),
@@ -389,10 +336,11 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                               Radius.circular(20.r),
                                             ),
                                             child: MiniMapView(
-                                                pointSentCount: pickUpPoint,
-                                                type: formOrder!.result!.type!,
-                                                locations: widget
-                                                    .coast.result.locations),
+                                              pointSentCount: pickUpPoint,
+                                              type: formOrder!.result!.type!,
+                                              locations:
+                                                  widget.coast.result.locations,
+                                            ),
                                           ),
                                         ),
                                         SizedBox(height: 10.h),
@@ -673,11 +621,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                               BorderRadius
                                                                   .circular(
                                                                       100.r),
-                                                          child: formOrder!
-                                                                  .result!
-                                                                  .courier!
-                                                                  .photo!
-                                                                  .isEmpty
+                                                          child: photoCourier ==
+                                                                  null
                                                               ? Icon(
                                                                   Icons.person,
                                                                   size: 40.h,
@@ -685,8 +630,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                                                           .grey[
                                                                       700],
                                                                 )
-                                                              : Image.asset(
-                                                                  'assets/images/deliver.jpeg',
+                                                              : Image.memory(
+                                                                  photoCourier!,
                                                                   height: 80.h,
                                                                 ),
                                                         ),
@@ -784,9 +729,13 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                               ),
                                         SizedBox(height: 30.h),
                                         Row(
-                                          children: const [
+                                          children: [
                                             Text(
-                                              'Сводная информация',
+                                              formOrder?.result?.group != null
+                                                  ? title(formOrder
+                                                          ?.result?.group ??
+                                                      '')
+                                                  : 'Сводная информация',
                                               style: CustomTextStyle.grey15bold,
                                             ),
                                           ],

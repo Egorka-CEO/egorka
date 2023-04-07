@@ -18,7 +18,6 @@ import 'package:egorka/ui/sidebar/history_orders/details_page.dart';
 import 'package:egorka/ui/sidebar/history_orders/history_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_page.dart';
 import 'package:egorka/ui/sidebar/market_place/market_places.dart';
-import 'package:egorka/ui/sidebar/market_place/mix_fbs.dart';
 import 'package:egorka/ui/sidebar/profile/profile_page.dart';
 import 'package:egorka/widget/select_adres_map.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,6 @@ import 'package:flutter/material.dart';
 class AppRoute {
   static const home = '/';
   static const currentOrder = '/currentOrder';
-  static const mixFBS = '/mixFBS';
   static const marketplaces = '/marketplaces';
   static const marketplacesMap = '/marketplacesMap';
   static const about = '/about';
@@ -50,16 +48,6 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const HomePage());
       case employee:
         return MaterialPageRoute(builder: (_) => EmployeePage());
-      case mixFBS:
-        final list = route.arguments as List<int?>;
-        var number = list[0];
-        var pin = list[1];
-        return MaterialPageRoute(
-          builder: (_) => MixFbsPage(
-            recorNumber: number,
-            recordPIN: pin,
-          ),
-        );
       case currentOrder:
         final list = route.arguments as List<int?>;
         var number = list[0];

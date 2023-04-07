@@ -217,6 +217,19 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
     setState(() {});
   }
 
+  String title(String value) {
+    if (value == 'Express') {
+      return 'Сводная информация';
+    } else if (value == 'FBS') {
+      return 'Доставка FBS';
+    } else if (value == 'Marketplace') {
+      return 'Доставка FBO';
+    } else if (value == 'MixFBS') {
+      return 'Сборный груз FBS';
+    }
+    return 'Сводная информация';
+  }
+
   @override
   Widget build(BuildContext context) {
     pointSentCount = 0;
@@ -370,7 +383,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ),
                                         SizedBox(height: 20.h),
                                         Text(
-                                          '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
+                                          '№${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
                                           style: CustomTextStyle.black17w400,
                                         ),
                                         SizedBox(height: 10.h),
@@ -768,9 +781,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                               ),
                                         SizedBox(height: 30.h),
                                         Row(
-                                          children: const [
+                                          children: [
                                             Text(
-                                              'Сводная информация',
+                                              formOrder?.result?.group != null
+                                                  ? title(formOrder
+                                                          ?.result?.group ??
+                                                      '')
+                                                  : 'Сводная информация',
                                               style: CustomTextStyle.grey15bold,
                                             ),
                                           ],

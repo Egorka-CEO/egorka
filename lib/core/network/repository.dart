@@ -21,6 +21,7 @@ import 'package:egorka/model/register_company.dart';
 import 'package:egorka/model/register_user.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -154,7 +155,7 @@ class Repository {
       },
     );
 
-    log('message ${authData}');
+    log('message ${response.data}');
 
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
@@ -973,5 +974,24 @@ class Repository {
     } else {
       return false;
     }
+  }
+
+  Future<Uint8List?> getPhotoCourier(String id) async {
+    try {
+      final response = await dio.get(
+        '$server/export/delivery/courier/photo/?ID=$id',
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
+
+      List<int> listBytes = response.data;
+
+      if (response.statusCode == 200 && listBytes.isNotEmpty) {
+        return Uint8List.fromList(response.data);
+      }
+    } catch (e) {}
+    return null;
   }
 }

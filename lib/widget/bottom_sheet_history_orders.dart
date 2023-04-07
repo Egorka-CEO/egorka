@@ -251,6 +251,15 @@ class _BottomSheetDraggableState
           fontWeight: FontWeight.w800,
         ),
       );
+    } else if (state.result.Group == 'MixFBS') {
+      typeOrder = Text(
+        'FBS',
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: 24.sp,
+          fontWeight: FontWeight.w800,
+        ),
+      );
     } else if (state.result.Group == 'FBO') {
       typeOrder = Text(
         'FBO',

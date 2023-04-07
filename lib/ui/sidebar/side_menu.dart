@@ -187,32 +187,32 @@ class _NavBarState extends State<NavBar> {
                     );
                   }),
                   // if (createFormModel != null)
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18.w),
-                    child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoute.mixFBS,
-                        arguments: [
-                          null, null,
-                          // createFormModel!.result.RecordNumber,
-                          // createFormModel.result.RecordPIN
-                        ],
-                      ),
-                      child: Container(
-                        color: Colors.transparent,
-                        height: 50.h,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Сборный груз',
-                            style: CustomTextStyle.black17w400
-                                .copyWith(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  //   child: GestureDetector(
+                  //     onTap: () => Navigator.pushNamed(
+                  //       context,
+                  //       AppRoute.mixFBS,
+                  //       arguments: [
+                  //         null, null,
+                  //         // createFormModel!.result.RecordNumber,
+                  //         // createFormModel.result.RecordPIN
+                  //       ],
+                  //     ),
+                  //     child: Container(
+                  //       color: Colors.transparent,
+                  //       height: 50.h,
+                  //       child: Align(
+                  //         alignment: Alignment.centerLeft,
+                  //         child: Text(
+                  //           'Сборный груз',
+                  //           style: CustomTextStyle.black17w400
+                  //               .copyWith(color: Colors.black),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.w),
                     child: GestureDetector(

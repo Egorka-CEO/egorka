@@ -5,6 +5,7 @@ abstract class MarketPlaceEvent {}
 class MarketPlaceOpenBtmSheet extends MarketPlaceEvent {}
 
 class MixFbsCalcEvent extends MarketPlaceEvent {
+  bool loadingAnimation;
   String? id;
   DateTime? time;
   String group;
@@ -18,6 +19,7 @@ class MixFbsCalcEvent extends MarketPlaceEvent {
   String? room;
 
   MixFbsCalcEvent(
+    this.loadingAnimation,
     this.id,
     this.ancillaries,
     this.time,
@@ -43,6 +45,7 @@ class MarketPlace extends MarketPlaceEvent {
 }
 
 class CalcOrderMarketplace extends MarketPlaceEvent {
+  bool loadingAnimation;
   String? id;
   Suggestions? suggestion;
   DateTime? time;
@@ -58,6 +61,7 @@ class CalcOrderMarketplace extends MarketPlaceEvent {
   String? room;
 
   CalcOrderMarketplace(
+    this.loadingAnimation,
     this.id,
     this.suggestion,
     this.points,

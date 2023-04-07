@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/model/ancillary.dart';
 import 'package:egorka/model/calculation.dart';
 import 'package:egorka/model/courier.dart';
@@ -86,6 +88,7 @@ class Result {
       this.description});
 
   Result.fromJson(Map<String, dynamic> json) {
+    log('message ${json['Courier']}');
     iD = json['ID'];
     date = json['Date'];
     dateUpdate = json['DateUpdate'];

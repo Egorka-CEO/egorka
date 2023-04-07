@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/ancillaries.dart';
@@ -34,7 +36,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
 
   void _calculateOrderMixFbs(
       MixFbsCalcEvent event, Emitter<MarketPlaceState> emit) async {
-    emit(CalcLoading());
+    if (event.loadingAnimation) emit(CalcLoading());
     var result = await Repository().getCoastMarketPlace(
       CoastMarketPlace(
         iD: event.id,
@@ -72,7 +74,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
 
   void _calculateOrderMarketplace(
       CalcOrderMarketplace event, Emitter<MarketPlaceState> emit) async {
-    emit(CalcLoading());
+    if (event.loadingAnimation) emit(CalcLoading());
     var result = await Repository().getCoastMarketPlace(
       CoastMarketPlace(
         iD: event.id,

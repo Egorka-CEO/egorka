@@ -1,20 +1,26 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/coast_marketplace.dart';
+import 'package:egorka/model/locations.dart';
+import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/point.dart' as pointModel;
+import 'package:egorka/model/point.dart';
+import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
+import 'package:egorka/model/type_group.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
-import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,25 +37,17 @@ class BottomSheetDraggable extends StatefulWidget {
   State<BottomSheetDraggable> createState() => _BottomSheetDraggableState();
 }
 
-class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
+class _BottomSheetDraggableState extends State<BottomSheetDraggable>
+    with TickerProviderStateMixin {
   final TextEditingController fromController = TextEditingController();
-
   final TextEditingController toController = TextEditingController();
 
   FocusNode focusFrom = FocusNode();
-
   FocusNode focusTo = FocusNode();
 
   PanelController panelController = PanelController();
 
-  final stream = StreamController();
-
   final streamDelivery = StreamController<int>();
-
-  bool _visible = false;
-
-  String? errorAddress1;
-  String? errorAddress2;
 
   TypeAdd? typeAdd;
 
@@ -59,36 +57,22 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
   CoastResponse? coastResponse;
   List<CoastResponse> coasts = [];
 
-  bool iconState = true;
-
-  yandex_mapkit.DrivingSessionResult? directions;
+  yandex_mapkit.DrivingSessionResult? directionsCar;
   yandex_mapkit.BicycleSessionResult? directionsBicycle;
   List<yandex_mapkit.PlacemarkMapObject> markers = [];
 
   double maxHeightPanel = 735.h;
 
-  List<DeliveryChocie> listChoice = [
-    DeliveryChocie(
-      title: 'Пешком',
-      icon: 'assets/images/ic_leg.png',
-      type: 'Walk',
-    ),
-    DeliveryChocie(
-      title: 'Легковая',
-      icon: 'assets/images/ic_car.png',
-      type: 'Car',
-    ),
-  ];
+  late TabController controller;
+
+  TypeGroup typeGroup = TypeGroup.express;
+
+  List<DeliveryChocie> listChoice = [];
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    stream.close();
-    super.dispose();
+    controller = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -98,7 +82,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
           buildWhen: (previous, current) {
         if (current is GetAddressSuccess) {
-          errorAddress1 = current.errorAddress != null ? 'ошибка' : null;
           suggestionsStart = Suggestions(
             iD: null,
             name: current.address,
@@ -112,12 +95,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           fromController.text = current.address;
 
           calc();
-
-          if (suggestionsStart != null &&
-              suggestionsEnd != null &&
-              errorAddress1 == null) {
-            iconState = false;
-          }
         }
         return true;
       }, builder: (context, snapshot) {
@@ -133,13 +110,9 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           onPanelClosed: () {
             focusFrom.unfocus();
             focusTo.unfocus();
-            _visible = false;
           },
           onPanelOpened: () {
-            _visible = true;
-            if (!focusFrom.hasFocus && !focusTo.hasFocus) {
-              // panelController.close();
-            }
+            if (!focusFrom.hasFocus && !focusTo.hasFocus) {}
           },
           onPanelSlide: (size) {
             if (size.toStringAsFixed(1) == (0.5).toString()) {
@@ -226,29 +199,175 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 35.w),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      width: iconState ? 25.w : 16.w,
-                      child: Image.asset(
-                        'assets/images/city.png',
+                    GestureDetector(
+                      onTap: () {
+                        typeGroup = TypeGroup.express;
+                        suggestionsStart = null;
+                        suggestionsEnd = null;
+                        coasts.clear();
+                        focusFrom.unfocus();
+                        focusTo.unfocus();
+                        panelController.close();
+                        fromController.text = '';
+                        toController.clear();
+                        bloc.add(DeletePolilyneEvent());
+                        setState(() {});
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: typeGroup == TypeGroup.express
+                              ? Colors.red
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(100.r),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
+                          child: Text(
+                            'Город',
+                            style: TextStyle(
+                              color: typeGroup == TypeGroup.express
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      width: iconState ? 10.w : 6.w,
+                    SizedBox(width: 5.w),
+                    GestureDetector(
+                      onTap: () {
+                        typeGroup = TypeGroup.fbo;
+                        suggestionsStart = null;
+                        suggestionsEnd = null;
+                        coasts.clear();
+                        focusFrom.unfocus();
+                        focusTo.unfocus();
+                        panelController.close();
+                        fromController.text = '';
+                        toController.clear();
+                        bloc.add(DeletePolilyneEvent());
+                        setState(() {});
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: typeGroup == TypeGroup.fbo
+                              ? Colors.red
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(100.r),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
+                          child: Text(
+                            'FBO',
+                            style: TextStyle(
+                              color: typeGroup == TypeGroup.fbo
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      child: Text(
-                        'ОБЫЧНАЯ ДОСТАВКА',
-                        style: TextStyle(
-                          fontSize: iconState ? 14.sp : 10.sp,
-                          // fontWeight: FontWeight.w500,
-                          color: Colors.grey[500],
+                    SizedBox(width: 5.w),
+                    GestureDetector(
+                      onTap: () {
+                        typeGroup = TypeGroup.fbs;
+                        suggestionsStart = null;
+                        suggestionsEnd = null;
+                        coasts.clear();
+                        focusFrom.unfocus();
+                        focusTo.unfocus();
+                        panelController.close();
+                        fromController.text = '';
+                        toController.clear();
+                        bloc.add(DeletePolilyneEvent());
+                        setState(() {});
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: typeGroup == TypeGroup.fbs
+                              ? Colors.red
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(100.r),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
+                          child: Text(
+                            'FBS',
+                            style: TextStyle(
+                              color: typeGroup == TypeGroup.fbs
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+                    GestureDetector(
+                      onTap: () {
+                        final marketplaces =
+                            BlocProvider.of<SearchAddressBloc>(context)
+                                .marketPlaces;
+                        typeGroup = TypeGroup.mixfbs;
+                        suggestionsStart = Suggestions(
+                          iD: null,
+                          name:
+                              marketplaces?.result.points[1].name?.first.name ??
+                                  'Egorka: СЦ Чертановский',
+                          point: pointModel.Point(
+                            latitude: marketplaces?.result.points[1].latitude,
+                            longitude: marketplaces?.result.points[1].longitude,
+                          ),
+                        );
+                        suggestionsEnd = Suggestions(
+                          iD: null,
+                          name:
+                              marketplaces?.result.points[0].name?.first.name ??
+                                  'Egorka: Сборный груз FBS',
+                          point: pointModel.Point(
+                            latitude: marketplaces?.result.points[0].latitude,
+                            longitude: marketplaces?.result.points[0].longitude,
+                          ),
+                        );
+                        coasts.clear();
+                        focusFrom.unfocus();
+                        focusTo.unfocus();
+                        panelController.close();
+                        fromController.text = suggestionsStart?.name ?? '';
+                        toController.text = suggestionsEnd?.name ?? '';
+                        bloc.add(DeletePolilyneEvent());
+                        calc();
+                        setState(() {});
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: typeGroup == TypeGroup.mixfbs
+                              ? Colors.red
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(100.r),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
+                          child: Text(
+                            'Сборный FBS',
+                            style: TextStyle(
+                              color: typeGroup == TypeGroup.mixfbs
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 12.sp,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -256,343 +375,386 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 ),
               ),
               SizedBox(height: 10.h),
-              StreamBuilder<dynamic>(
-                stream: stream.stream,
-                builder: (context, snapshot) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Container(
-                          height: 55.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.r),
-                            color: Colors.white,
-                          ),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                Checkbox(
-                                  value: false,
-                                  fillColor:
-                                      MaterialStateProperty.all(Colors.red),
-                                  shape: const CircleBorder(),
-                                  onChanged: ((value) {}),
-                                ),
-                                Expanded(
-                                  child: CustomTextField(
-                                    height: 45.h,
-                                    focusNode: focusFrom,
-                                    fillColor: Colors.white.withOpacity(0),
-                                    hintText: 'Откуда забрать?',
-                                    onTap: () async {
-                                      typeAdd = TypeAdd.sender;
-                                      focusFrom.unfocus();
+              Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Container(
+                      height: 55.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.r),
+                        color: Colors.white,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: false,
+                              fillColor: MaterialStateProperty.all(Colors.red),
+                              shape: const CircleBorder(),
+                              onChanged: ((value) {}),
+                            ),
+                            Expanded(
+                              child: CustomTextField(
+                                height: 45.h,
+                                focusNode: focusFrom,
+                                fillColor: Colors.white.withOpacity(0),
+                                hintText: 'Откуда забрать?',
+                                enabled: typeGroup != TypeGroup.mixfbs,
+                                onTap: () async {
+                                  typeAdd = TypeAdd.sender;
+                                  focusFrom.unfocus();
 
-                                      await panelController
-                                          .animatePanelToPosition(
-                                        1,
-                                        duration:
-                                            const Duration(milliseconds: 250),
-                                      );
-                                      bloc.add(SearchAddressClear());
-                                      Future.delayed(
-                                          const Duration(milliseconds: 50), () {
-                                        if (!focusFrom.hasFocus) {
-                                          focusFrom.requestFocus();
-                                        }
-                                      });
-                                    },
-                                    onFieldSubmitted: (text) {
-                                      panelController.close();
-                                      focusFrom.unfocus();
-                                    },
-                                    contentPadding:
-                                        EdgeInsets.only(right: 10.w),
-                                    textEditingController: fromController,
-                                    onChanged: (value) {
-                                      bloc.add(SearchAddress(value));
-                                    },
-                                  ),
-                                ),
-                                fromController.text.isNotEmpty
-                                    ? Padding(
-                                        padding: EdgeInsets.only(right: 15.w),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            bloc.add(DeletePolilyneEvent());
-                                            fromController.text = '';
-                                            suggestionsStart = null;
-                                            stream.add('event');
-                                            coasts.clear();
-                                            setState(() {
-                                              iconState = true;
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 20.h,
-                                            width: 20.h,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.grey[500],
-                                            ),
-                                            child: const Icon(
-                                              Icons.clear,
-                                              color: Colors.white,
-                                              size: 15,
-                                            ),
+                                  await panelController.animatePanelToPosition(
+                                    1,
+                                    duration: const Duration(milliseconds: 250),
+                                  );
+                                  bloc.add(SearchAddressClear());
+                                  Future.delayed(
+                                      const Duration(milliseconds: 50), () {
+                                    if (!focusFrom.hasFocus) {
+                                      focusFrom.requestFocus();
+                                    }
+                                  });
+                                },
+                                onFieldSubmitted: (text) {
+                                  panelController.close();
+                                  focusFrom.unfocus();
+                                },
+                                contentPadding: EdgeInsets.only(right: 10.w),
+                                textEditingController: fromController,
+                                onChanged: (value) {
+                                  bloc.add(SearchAddress(value));
+                                },
+                              ),
+                            ),
+                            if (typeGroup != TypeGroup.mixfbs)
+                              fromController.text.isNotEmpty
+                                  ? Padding(
+                                      padding: EdgeInsets.only(right: 15.w),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          bloc.add(DeletePolilyneEvent());
+                                          fromController.text = '';
+                                          suggestionsStart = null;
+                                          coasts.clear();
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          height: 20.h,
+                                          width: 20.h,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey[500],
+                                          ),
+                                          child: const Icon(
+                                            Icons.clear,
+                                            color: Colors.white,
+                                            size: 15,
                                           ),
                                         ),
-                                      )
-                                    : Padding(
-                                        padding: EdgeInsets.only(right: 5.w),
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 0.h),
-                                              child: Container(
-                                                color: Colors.grey[300],
-                                                width: 1,
-                                                height: 40.h,
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () async {
-                                                final res = await Navigator.of(
-                                                        context)
-                                                    .pushNamed(
-                                                        AppRoute.selectPoint);
-                                                if (res != null &&
-                                                    res is Suggestions) {
-                                                  suggestionsStart = res;
-                                                  fromController.text =
-                                                      suggestionsStart!.name;
-
-                                                  errorAddress1 =
-                                                      res.houseNumber == null
-                                                          ? 'Укажите номер дома'
-                                                          : null;
-                                                  setState(() {});
-                                                  calc();
-                                                }
-                                              },
-                                              style: ButtonStyle(
-                                                shape:
-                                                    MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomRight:
-                                                          Radius.circular(10.r),
-                                                      topRight:
-                                                          Radius.circular(10.r),
-                                                    ),
-                                                  ),
-                                                ),
-                                                backgroundColor:
-                                                    const MaterialStatePropertyAll(
-                                                        Colors.transparent),
-                                                foregroundColor:
-                                                    const MaterialStatePropertyAll(
-                                                        Colors.white),
-                                                overlayColor:
-                                                    MaterialStatePropertyAll(
-                                                  Colors.grey[400],
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  'Карта',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 13.sp),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Container(
-                          height: 55.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.r),
-                            color: Colors.white,
-                          ),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Checkbox(
-                                  value: false,
-                                  fillColor:
-                                      MaterialStateProperty.all(Colors.blue),
-                                  shape: const CircleBorder(),
-                                  onChanged: (value) {},
-                                ),
-                                Expanded(
-                                  child: CustomTextField(
-                                    height: 45.h,
-                                    onTap: () async {
-                                      typeAdd = TypeAdd.receiver;
-                                      focusTo.unfocus();
-
-                                      await panelController
-                                          .animatePanelToPosition(
-                                        1,
-                                        duration:
-                                            const Duration(milliseconds: 250),
-                                      );
-                                      bloc.add(SearchAddressClear());
-                                      Future.delayed(
-                                          const Duration(milliseconds: 50), () {
-                                        if (!focusTo.hasFocus) {
-                                          focusTo.requestFocus();
-                                        }
-                                      });
-                                    },
-                                    onFieldSubmitted: (text) {
-                                      panelController.close();
-                                      focusTo.unfocus();
-                                    },
-                                    contentPadding:
-                                        EdgeInsets.only(right: 10.w),
-                                    focusNode: focusTo,
-                                    fillColor: Colors.white.withOpacity(0),
-                                    hintText: 'Куда отвезти?',
-                                    textEditingController: toController,
-                                    onChanged: (value) {
-                                      stream.add('event');
-                                      bloc.add(SearchAddress(value));
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                                toController.text.isNotEmpty
-                                    ? Padding(
-                                        padding: EdgeInsets.only(right: 15.w),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            bloc.add(DeletePolilyneEvent());
-                                            toController.text = '';
-                                            suggestionsEnd = null;
-                                            stream.add('event');
-                                            coasts.clear();
-                                            setState(() {
-                                              iconState = true;
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 20.h,
-                                            width: 20.h,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.grey[500],
-                                            ),
-                                            child: const Icon(
-                                              Icons.clear,
-                                              color: Colors.white,
-                                              size: 15,
+                                    )
+                                  : Padding(
+                                      padding: EdgeInsets.only(right: 5.w),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 0.h),
+                                            child: Container(
+                                              color: Colors.grey[300],
+                                              width: 1,
+                                              height: 40.h,
                                             ),
                                           ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: EdgeInsets.only(right: 5.w),
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 0.h),
-                                              child: Container(
-                                                color: Colors.grey[300],
-                                                width: 1,
-                                                height: 40.h,
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () async {
-                                                focusFrom.unfocus();
-                                                final res = await Navigator.of(
-                                                        context)
-                                                    .pushNamed(
-                                                        AppRoute.selectPoint);
-                                                if (res != null &&
-                                                    res is Suggestions) {
-                                                  suggestionsEnd = res;
-                                                  toController.text =
-                                                      suggestionsEnd!.name;
+                                          TextButton(
+                                            onPressed: () async {
+                                              final res =
+                                                  await Navigator.of(context)
+                                                      .pushNamed(
+                                                          AppRoute.selectPoint);
+                                              if (res != null &&
+                                                  res is Suggestions) {
+                                                suggestionsStart = res;
+                                                fromController.text =
+                                                    suggestionsStart!.name;
 
-                                                  errorAddress2 =
-                                                      res.houseNumber == null
-                                                          ? 'Укажите номер дома'
-                                                          : null;
-                                                  setState(() {});
-                                                  calc();
-                                                }
-                                              },
-                                              style: ButtonStyle(
-                                                shape:
-                                                    MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      bottomRight:
-                                                          Radius.circular(10.r),
-                                                      topRight:
-                                                          Radius.circular(10.r),
-                                                    ),
+                                                setState(() {});
+                                                calc();
+                                              }
+                                            },
+                                            style: ButtonStyle(
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    bottomRight:
+                                                        Radius.circular(10.r),
+                                                    topRight:
+                                                        Radius.circular(10.r),
                                                   ),
                                                 ),
-                                                backgroundColor:
-                                                    const MaterialStatePropertyAll(
-                                                        Colors.transparent),
-                                                foregroundColor:
-                                                    const MaterialStatePropertyAll(
-                                                        Colors.white),
-                                                overlayColor:
-                                                    MaterialStatePropertyAll(
-                                                  Colors.grey[400],
-                                                ),
                                               ),
-                                              child: Center(
-                                                child: Text(
-                                                  'Карта',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 13.sp),
-                                                ),
+                                              backgroundColor:
+                                                  const MaterialStatePropertyAll(
+                                                      Colors.transparent),
+                                              foregroundColor:
+                                                  const MaterialStatePropertyAll(
+                                                      Colors.white),
+                                              overlayColor:
+                                                  MaterialStatePropertyAll(
+                                                Colors.grey[400],
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                            child: Center(
+                                              child: Text(
+                                                'Карта',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 13.sp),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                              ],
-                            ),
-                          ),
+                                    ),
+                          ],
                         ),
                       ),
-                      _searchList(),
-                    ],
-                  );
-                },
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Builder(
+                      builder: (context) {
+                        if (typeGroup == TypeGroup.express) {
+                          return toFieldExpress();
+                        }
+                        return toFieldMarketPage();
+                      },
+                    ),
+                  ),
+                  _searchList(),
+                ],
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget toFieldMarketPage() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Row(
+        children: [
+          Checkbox(
+            value: false,
+            fillColor: MaterialStateProperty.all(Colors.blue),
+            shape: const CircleBorder(),
+            onChanged: (value) {},
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                if (typeGroup != TypeGroup.mixfbs) {
+                  final marketplaces =
+                      BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
+                  if (marketplaces != null) {
+                    toController.text =
+                        marketplaces.result.points.first.name!.first.name!;
+                    showMarketPlaces(marketplaces);
+                  }
+                }
+              },
+              child: CustomTextField(
+                contentPadding: const EdgeInsets.all(0),
+                height: 45.h,
+                fillColor: Colors.white,
+                enabled: false,
+                hintText: 'Куда отвезти?',
+                textEditingController: toController,
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          if (typeGroup != TypeGroup.mixfbs)
+            GestureDetector(
+              onTap: () async {
+                final marketplaces =
+                    BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
+                if (marketplaces != null) {
+                  final result = await Navigator.of(context).pushNamed(
+                      AppRoute.marketplacesMap,
+                      arguments: marketplaces);
+                  if (result != null) {
+                    final pointsRes = result as PointMarketPlace;
+                    toController.text = pointsRes.name?.first.name ?? '';
+                    suggestionsEnd = Suggestions(
+                      iD: null,
+                      name: pointsRes.name?.first.name ?? '',
+                      point: Point(
+                        latitude: pointsRes.latitude,
+                        longitude: pointsRes.longitude,
+                      ),
+                    );
+                    calc();
+                  }
+                }
+              },
+              child: const Icon(
+                Icons.map_outlined,
+                color: Colors.red,
+              ),
+            ),
+          SizedBox(width: 10.w),
+        ],
+      ),
+    );
+  }
+
+  Widget toFieldExpress() {
+    var bloc = BlocProvider.of<SearchAddressBloc>(context);
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.r),
+        color: Colors.white,
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+              value: false,
+              fillColor: MaterialStateProperty.all(Colors.blue),
+              shape: const CircleBorder(),
+              onChanged: (value) {},
+            ),
+            Expanded(
+              child: CustomTextField(
+                height: 45.h,
+                onTap: () async {
+                  typeAdd = TypeAdd.receiver;
+                  focusTo.unfocus();
+
+                  await panelController.animatePanelToPosition(
+                    1,
+                    duration: const Duration(milliseconds: 250),
+                  );
+                  bloc.add(SearchAddressClear());
+                  Future.delayed(const Duration(milliseconds: 50), () {
+                    if (!focusTo.hasFocus) {
+                      focusTo.requestFocus();
+                    }
+                  });
+                },
+                onFieldSubmitted: (text) {
+                  panelController.close();
+                  focusTo.unfocus();
+                },
+                contentPadding: EdgeInsets.only(right: 10.w),
+                focusNode: focusTo,
+                fillColor: Colors.white.withOpacity(0),
+                hintText: 'Куда отвезти?',
+                textEditingController: toController,
+                onChanged: (value) {
+                  bloc.add(SearchAddress(value));
+                },
+              ),
+            ),
+            SizedBox(width: 10.w),
+            if (typeGroup != TypeGroup.mixfbs)
+              toController.text.isNotEmpty
+                  ? Padding(
+                      padding: EdgeInsets.only(right: 15.w),
+                      child: GestureDetector(
+                        onTap: () {
+                          bloc.add(DeletePolilyneEvent());
+                          toController.text = '';
+                          suggestionsEnd = null;
+                          coasts.clear();
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 20.h,
+                          width: 20.h,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[500],
+                          ),
+                          child: const Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                            size: 15,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(right: 5.w),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 0.h),
+                            child: Container(
+                              color: Colors.grey[300],
+                              width: 1,
+                              height: 40.h,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              focusFrom.unfocus();
+                              final res = await Navigator.of(context)
+                                  .pushNamed(AppRoute.selectPoint);
+                              if (res != null && res is Suggestions) {
+                                suggestionsEnd = res;
+                                toController.text = suggestionsEnd!.name;
+                                setState(() {});
+                                calc();
+                              }
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(10.r),
+                                    topRight: Radius.circular(10.r),
+                                  ),
+                                ),
+                              ),
+                              backgroundColor: const MaterialStatePropertyAll(
+                                  Colors.transparent),
+                              foregroundColor:
+                                  const MaterialStatePropertyAll(Colors.white),
+                              overlayColor: MaterialStatePropertyAll(
+                                Colors.grey[400],
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Карта',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 13.sp),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -613,7 +775,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
                   if (current is ChangeAddressSuccess) {
-                    errorAddress1 = current.errorAddress;
                     if (fromController.text != current.address) {
                       suggestionsStart = Suggestions(
                         iD: null,
@@ -629,19 +790,16 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     }
                   }
                   if (current is SearchLoading) {
-                    setState(() {
-                      iconState = false;
-                    });
+                    setState(() {});
                   }
                   if (current is SearchAddressRoutePolilyne) {
                     if (current.coasts.isNotEmpty) {
+                      coasts.clear();
                       coasts.addAll(current.coasts);
-                      coastResponse = current.coasts.first;
+                      coastResponse = coasts.first;
                       streamDelivery.add(0);
                     }
-                    setState(() {
-                      iconState = false;
-                    });
+                    setState(() {});
                   }
                   if (current is FindMeState) return false;
                   if (current is EditPolilynesState) return false;
@@ -664,25 +822,20 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       children: const [CupertinoActivityIndicator()],
                     );
                   } else if (state is SearchAddressSuccess) {
-                    if (_visible) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: SizedBox(
-                          height: 300.h,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount:
-                                state.address!.result.suggestions!.length,
-                            itemBuilder: (context, index) {
-                              return _pointCard(state, index, context);
-                            },
-                          ),
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: SizedBox(
+                        height: 300.h,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.address!.result.suggestions!.length,
+                          itemBuilder: (context, index) {
+                            return _pointCard(state, index, context);
+                          },
                         ),
-                      );
-                    } else {
-                      return Container();
-                    }
+                      ),
+                    );
                   } else if (state is SearchAddressRoutePolilyne ||
                       state is EditPolilynesState ||
                       state is SearchAddressStated) {
@@ -690,7 +843,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       return const SizedBox();
                     }
                     if (state is SearchAddressRoutePolilyne) {
-                      directions = state.directions;
+                      directionsCar = state.directions;
                       directionsBicycle = state.directionsBicycle;
                       markers = state.markers;
                     }
@@ -719,11 +872,32 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       );
                     }
 
+                    listChoice = typeGroup == TypeGroup.express
+                        ? [
+                            DeliveryChocie(
+                              title: 'Пешком',
+                              icon: 'assets/images/ic_leg.png',
+                              type: 'Walk',
+                            ),
+                            DeliveryChocie(
+                              title: 'Легковая',
+                              icon: 'assets/images/ic_car.png',
+                              type: 'Car',
+                            )
+                          ]
+                        : [
+                            DeliveryChocie(
+                              title: 'Грузовая',
+                              icon: 'assets/images/ic_track.png',
+                              type: 'Track',
+                            )
+                          ];
+
                     return SizedBox(
                       height: 100.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: listChoice.length,
+                        itemCount: coasts.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: EdgeInsets.only(
@@ -737,7 +911,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                                 if (index != snapshot.data) {
                                   BlocProvider.of<SearchAddressBloc>(context)
                                       .add(EditPolilynesEvent(
-                                    directions: index == 1 ? directions : null,
+                                    directions:
+                                        index == 1 ? directionsCar : null,
                                     directionsBicycle:
                                         index == 0 ? directionsBicycle : null,
                                     markers: markers,
@@ -810,20 +985,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                 builder: (context, state) {
                   var bloc = BlocProvider.of<SearchAddressBloc>(context);
                   if (state is SearchAddressRoutePolilyne) {
+                    coasts.clear();
                     coasts.addAll(state.coasts);
+                    coastResponse = coasts.first;
                   }
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: GestureDetector(
                       onTap: coasts.isNotEmpty
                           ? () {
-                              if (errorAddress1 != null ||
-                                  errorAddress2 != null) {
-                                MessageDialogs()
-                                    .showAlert('Ошибка', 'Укажите номер дома');
-                              } else {
-                                authShowDialog(snapshot.data!);
-                              }
+                              // MessageDialogs()
+                              //     .showAlert('Ошибка', 'Укажите номер дома');
+                              authShowDialog(snapshot.data!);
                             }
                           : null,
                       child: Container(
@@ -857,25 +1030,31 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     var bloc = BlocProvider.of<SearchAddressBloc>(context);
 
     if (user != null) {
-      final res = await Navigator.of(context).pushNamed(
-        AppRoute.newOrder,
-        arguments: [
-          coastResponse,
-          listChoice[index],
-          suggestionsStart ??
-              Suggestions(
-                iD: null,
-                name: coastResponse!.result!.locations!.first.point!.address!,
-                point: pointModel.Point(
-                  latitude:
-                      coastResponse!.result!.locations!.first.point!.latitude!,
-                  longitude:
-                      coastResponse!.result!.locations!.first.point!.longitude!,
-                ),
-              ),
-          suggestionsEnd,
-        ],
-      );
+      final res;
+      if (typeGroup != TypeGroup.express) {
+        res = await Navigator.of(context).pushNamed(
+          AppRoute.marketplaces,
+          arguments: [
+            null,
+            null,
+            coastResponse,
+            listChoice[index],
+            suggestionsStart,
+            suggestionsEnd,
+            typeGroup,
+          ],
+        );
+      } else {
+        res = await Navigator.of(context).pushNamed(
+          AppRoute.newOrder,
+          arguments: [
+            coastResponse,
+            listChoice[index],
+            suggestionsStart,
+            suggestionsEnd,
+          ],
+        );
+      }
       if (res is bool) {
         bloc.add(DeletePolilyneEvent());
         fromController.text = '';
@@ -885,10 +1064,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
         suggestionsEnd = null;
 
         coasts.clear();
-        setState(() {
-          iconState = true;
-        });
-        stream.add('event');
+        setState(() {});
       }
     } else {
       await showDialog(
@@ -902,15 +1078,29 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                   color: Colors.red.withOpacity(0.9),
                   onTap: () async {
                     Navigator.of(context).pop();
-                    final res = await Navigator.of(context).pushNamed(
-                      AppRoute.newOrder,
-                      arguments: [
-                        coastResponse,
-                        listChoice[index],
-                        suggestionsStart,
-                        suggestionsEnd,
-                      ],
-                    );
+                    final res;
+                    if (typeGroup != TypeGroup.express) {
+                      res = await Navigator.of(context).pushNamed(
+                        AppRoute.marketplaces,
+                        arguments: [
+                          coastResponse,
+                          listChoice[index],
+                          suggestionsStart,
+                          suggestionsEnd,
+                        ],
+                      );
+                    } else {
+                      res = await Navigator.of(context).pushNamed(
+                        AppRoute.newOrder,
+                        arguments: [
+                          coastResponse,
+                          listChoice[index],
+                          suggestionsStart,
+                          suggestionsEnd,
+                        ],
+                      );
+                    }
+
                     if (res is bool) {
                       bloc.add(DeletePolilyneEvent());
                       fromController.text = '';
@@ -920,10 +1110,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       suggestionsEnd = null;
 
                       coasts.clear();
-                      setState(() {
-                        iconState = true;
-                      });
-                      stream.add('event');
+                      setState(() {});
                     }
                   }),
               StandartButton(
@@ -936,15 +1123,28 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                     BlocProvider.of<ProfileBloc>(context)
                         .add(ProfileEventUpdate(result as AuthUser));
                     Navigator.of(context).pop();
-                    final res = await Navigator.of(context).pushNamed(
-                      AppRoute.newOrder,
-                      arguments: [
-                        coastResponse,
-                        listChoice[index],
-                        suggestionsStart,
-                        suggestionsEnd,
-                      ],
-                    );
+                    final res;
+                    if (typeGroup != TypeGroup.express) {
+                      res = await Navigator.of(context).pushNamed(
+                        AppRoute.marketplaces,
+                        arguments: [
+                          coastResponse,
+                          listChoice[index],
+                          suggestionsStart,
+                          suggestionsEnd,
+                        ],
+                      );
+                    } else {
+                      res = await Navigator.of(context).pushNamed(
+                        AppRoute.newOrder,
+                        arguments: [
+                          coastResponse,
+                          listChoice[index],
+                          suggestionsStart,
+                          suggestionsEnd,
+                        ],
+                      );
+                    }
                     if (res is bool) {
                       bloc.add(DeletePolilyneEvent());
                       fromController.text = '';
@@ -954,10 +1154,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
                       suggestionsEnd = null;
 
                       coasts.clear();
-                      setState(() {
-                        iconState = true;
-                      });
-                      stream.add('event');
+                      setState(() {});
                     }
                   }
                 },
@@ -979,19 +1176,16 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
           child: GestureDetector(
             onTap: () {
               if (focusFrom.hasFocus) {
-                errorAddress1 = null;
                 suggestionsStart = state.address!.result.suggestions![index];
                 fromController.text =
                     state.address!.result.suggestions![index].name;
               } else if (focusTo.hasFocus) {
-                errorAddress2 = null;
                 suggestionsEnd = state.address!.result.suggestions![index];
                 toController.text =
                     state.address!.result.suggestions![index].name;
               }
 
-              if (fromController.text.isNotEmpty &&
-                  toController.text.isNotEmpty) {
+              if (suggestionsStart != null && suggestionsEnd != null) {
                 calc();
               } else {
                 BlocProvider.of<SearchAddressBloc>(context).add(
@@ -1004,8 +1198,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
               focusFrom.unfocus();
               focusTo.unfocus();
               panelController.close();
-
-              stream.add('event');
             },
             child: Row(
               children: [
@@ -1042,11 +1234,148 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable> {
     );
   }
 
+  void showMarketPlaces(MarketPlaces marketplaces) {
+    showCupertinoModalPopup<String>(
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierDismissible: false,
+      context: context,
+      builder: (ctx) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.grey[200],
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        CupertinoButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                            calc();
+                          },
+                          child: const Text(
+                            'Готово',
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 200.h,
+                    child: CupertinoPicker(
+                      backgroundColor: Colors.grey[200],
+                      onSelectedItemChanged: (value) {
+                        suggestionsEnd = Suggestions(
+                          iD: marketplaces.result.points[value].iD,
+                          name: marketplaces
+                                  .result.points[value].name?.first.name ??
+                              '',
+                          point: Point(
+                            latitude:
+                                marketplaces.result.points[value].latitude,
+                            longitude:
+                                marketplaces.result.points[value].longitude,
+                          ),
+                        );
+                        toController.text = marketplaces
+                                .result.points[value].name?.first.name ??
+                            '';
+                      },
+                      itemExtent: 32.0,
+                      children: marketplaces.result.points
+                          .map((e) => Text(e.name!.first.name!))
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void calc() {
-    if (fromController.text.isNotEmpty && toController.text.isNotEmpty) {
-      coasts.clear();
-      BlocProvider.of<SearchAddressBloc>(context)
-          .add(SearchAddressPolilyne([suggestionsStart!], [suggestionsEnd!]));
+    coasts.clear();
+    if (suggestionsStart != null && suggestionsEnd != null) {
+      switch (typeGroup) {
+        case TypeGroup.express:
+          BlocProvider.of<SearchAddressBloc>(context).add(
+            SearchAddressPolilyne(
+              [suggestionsStart],
+              [suggestionsEnd],
+            ),
+          );
+          break;
+        case TypeGroup.mixfbs:
+          final marketplaces =
+              BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
+          BlocProvider.of<SearchAddressBloc>(context).add(
+            MarketPlaceCalcEvent(
+              false,
+              CoastMarketPlace(
+                type: "Truck",
+                group: 'MixFBS',
+                locations: [
+                  Location(
+                    id: '',
+                    point: Point(
+                      id: 'EGORKA_SC',
+                      code:
+                          '${marketplaces?.result.points[1].latitude},${marketplaces?.result.points[1].longitude}',
+                    ),
+                  ),
+                  Location(
+                    point: Point(
+                      id: 'Egorka_SBOR_FBS',
+                      code:
+                          '${marketplaces?.result.points[0].latitude},${marketplaces?.result.points[0].longitude}',
+                    ),
+                  )
+                ],
+              ),
+              [suggestionsStart],
+              [suggestionsEnd],
+            ),
+          );
+          break;
+        default:
+          BlocProvider.of<SearchAddressBloc>(context).add(
+            MarketPlaceCalcEvent(
+              false,
+              CoastMarketPlace(
+                type: "Truck",
+                group: typeGroup == TypeGroup.fbo ? 'Marketplace' : 'FBS',
+                locations: [
+                  Location(
+                    point: Point(
+                      code:
+                          '${suggestionsStart!.point!.latitude},${suggestionsStart!.point!.longitude}',
+                    ),
+                  ),
+                  Location(
+                    point: Point(
+                        code:
+                            '${suggestionsEnd!.point!.latitude},${suggestionsEnd!.point!.longitude}'),
+                  )
+                ],
+              ),
+              [suggestionsStart],
+              [suggestionsEnd],
+            ),
+          );
+      }
     }
   }
 }

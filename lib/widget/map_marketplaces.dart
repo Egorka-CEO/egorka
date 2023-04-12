@@ -46,27 +46,32 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
   Widget cstMrk(BuildContext context, String label, GlobalKey key) {
     return RepaintBoundary(
       key: key,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/icons/marker.svg',
-            height: 120.h,
-            color: Colors.red,
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 5.h),
-            child: Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 40.sp,
-                  color: Colors.white,
+      child: SizedBox(
+        height: 120.h,
+        width: 100.h,
+        // color: Colors.amber,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/icons/marker.svg',
+              height: 120.h,
+              color: Colors.red,
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 5.h),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 40.sp,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -83,6 +88,7 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
             latitude: element.latitude!,
             longitude: element.longitude!,
           ),
+          consumeTapEvents: true,
           opacity: 1,
           icon: PlacemarkIcon.single(
             PlacemarkIconStyle(image: fromIcon),

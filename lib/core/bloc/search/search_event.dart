@@ -8,6 +8,21 @@ class SearchAddress extends SearchAddressEvent {
   SearchAddress(this.value);
 }
 
+class MarketPlaceCalcEvent extends SearchAddressEvent {
+  bool loadingAnimation;
+  CoastMarketPlace coast;
+
+  List<Suggestions?> suggestionsStart;
+  List<Suggestions?> suggestionsEnd;
+
+  MarketPlaceCalcEvent(
+    this.loadingAnimation,
+    this.coast,
+    this.suggestionsStart,
+    this.suggestionsEnd,
+  );
+}
+
 class ChangeMapPosition extends SearchAddressEvent {
   double lat;
   double lon;
@@ -40,7 +55,12 @@ class SearchAddressPolilyne extends SearchAddressEvent {
   List<Suggestions?> suggestionsStart;
   List<Suggestions?> suggestionsEnd;
 
-  SearchAddressPolilyne(this.suggestionsStart, this.suggestionsEnd);
+  SearchAddressPolilyne(
+    this.suggestionsStart,
+    this.suggestionsEnd,
+  );
 }
 
 class DeletePolilyneEvent extends SearchAddressEvent {}
+
+class GetMarketPlaces extends SearchAddressEvent {}

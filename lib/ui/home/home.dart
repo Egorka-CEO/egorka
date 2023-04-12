@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     funcInit();
     checkConnection(context);
+    BlocProvider.of<SearchAddressBloc>(context).add(GetMarketPlaces());
   }
 
   void funcInit() async {

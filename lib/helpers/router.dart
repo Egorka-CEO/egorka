@@ -3,6 +3,7 @@ import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
+import 'package:egorka/model/type_group.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
 import 'package:egorka/ui/auth/main_registration.dart';
 import 'package:egorka/ui/home/home.dart';
@@ -61,15 +62,32 @@ class AppRoute {
       case marketplaces:
         var number;
         var pin;
+        var order;
+        var delivery;
+        var start;
+        var end;
+        var typeGroup;
+
         if (route.arguments != null) {
-          final list = route.arguments as List<int?>;
-          number = list[0];
-          pin = list[1];
+          final arg = route.arguments as List;
+          number = arg[0];
+          pin = arg[1];
+
+          order = arg[2] as CoastResponse?;
+          delivery = arg[3] as DeliveryChocie?;
+          start = arg[4] as Suggestions?;
+          end = arg[5] as Suggestions?;
+          typeGroup = arg[6] as TypeGroup?;
         }
         return MaterialPageRoute(
           builder: (_) => MarketPage(
             recorNumber: number,
             recordPIN: pin,
+            order: order,
+            deliveryChocie: delivery,
+            start: start,
+            end: end,
+            typeGroup: typeGroup,
           ),
         );
       case about:

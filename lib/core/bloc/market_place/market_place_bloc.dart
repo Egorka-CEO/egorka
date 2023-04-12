@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/ancillaries.dart';
@@ -37,38 +35,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
   void _calculateOrderMixFbs(
       MixFbsCalcEvent event, Emitter<MarketPlaceState> emit) async {
     if (event.loadingAnimation) emit(CalcLoading());
-    var result = await Repository().getCoastMarketPlace(
-      CoastMarketPlace(
-        iD: event.id,
-        type: "Truck",
-        group: event.group,
-        locations: [
-          Location(
-            id: '',
-            date: event.time != null
-                ? DateFormat('yyyy-MM-dd HH:mm:ss').format(event.time!)
-                : null,
-            point: Point(
-              id: 'EGORKA_SC',
-              code: '',
-              entrance: '',
-              floor: '',
-              room: '',
-            ),
-            contact: Contact(name: event.name, phoneMobile: event.phone),
-          ),
-          Location(
-            point: Point(
-              id: 'Egorka_SBOR_FBS',
-              code: '',
-            ),
-            contact: Contact(name: event.name, phoneMobile: event.phone),
-          )
-        ],
-        ancillaries: event.ancillaries,
-        cargos: event.cargos,
-      ),
-    );
+    var result = await Repository().getCoastMarketPlace(event.coast);
     emit(MarketPlacesSuccessState(result));
   }
 
@@ -87,7 +54,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
                 : null,
             point: Point(
               code:
-                  '${event.suggestion!.point!.latitude},${event.suggestion!.point!.longitude}',
+                  '${event.suggestionStart!.point!.latitude},${event.suggestionStart!.point!.longitude}',
               entrance: event.entrance,
               floor: event.floor,
               room: event.room,
@@ -95,7 +62,9 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
             contact: Contact(name: event.name, phoneMobile: event.phone),
           ),
           Location(
-            point: Point(code: '${event.points!.code}'),
+            point: Point(
+                code:
+                    '${event.suggestionsEnd!.point!.latitude},${event.suggestionsEnd!.point!.longitude}'),
             contact: Contact(name: event.name, phoneMobile: event.phone),
           )
         ],

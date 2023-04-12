@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/location.dart';
@@ -9,15 +9,19 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/cargos.dart';
+import 'package:egorka/model/choice_delivery.dart';
+import 'package:egorka/model/coast_marketplace.dart';
+import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/info_form.dart';
+import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/point.dart' as pointModel;
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
+import 'package:egorka/model/type_group.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/app_bar.dart';
-import 'package:egorka/ui/sidebar/market_place/widget/bucket_pallet.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/details_items.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/how_it_work.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/personal_data.dart';
@@ -41,22 +45,36 @@ import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-enum TypeGroup { fbo, fbs, mixfbs }
-
 class MarketPage extends StatelessWidget {
   int? recordPIN, recorNumber;
-  MarketPage({super.key, this.recordPIN, this.recorNumber});
+  CoastResponse? order;
+  DeliveryChocie? deliveryChocie;
+  Suggestions? start;
+  Suggestions? end;
+  TypeGroup? typeGroup;
+
+  MarketPage({
+    super.key,
+    this.recordPIN,
+    this.recorNumber,
+    this.order,
+    this.deliveryChocie,
+    this.start,
+    this.end,
+    this.typeGroup,
+  });
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<MarketPlacePageBloc>(
-            create: (context) => MarketPlacePageBloc(),
-          ),
-        ],
-        child: MarketPages(recorNumber: recorNumber, recordPIN: recordPIN),
+      child: MarketPages(
+        recorNumber: recorNumber,
+        recordPIN: recordPIN,
+        order: order,
+        deliveryChocie: deliveryChocie,
+        start: start,
+        end: end,
+        typeGroup: typeGroup,
       ),
     );
   }
@@ -64,7 +82,21 @@ class MarketPage extends StatelessWidget {
 
 class MarketPages extends StatefulWidget {
   int? recordPIN, recorNumber;
-  MarketPages({super.key, this.recordPIN, this.recorNumber});
+  CoastResponse? order;
+  DeliveryChocie? deliveryChocie;
+  Suggestions? start;
+  Suggestions? end;
+  TypeGroup? typeGroup;
+  MarketPages({
+    super.key,
+    this.recordPIN,
+    this.recorNumber,
+    this.order,
+    this.deliveryChocie,
+    this.start,
+    this.end,
+    this.typeGroup,
+  });
 
   @override
   State<MarketPages> createState() => _MarketPageState();
@@ -83,8 +115,8 @@ class _MarketPageState extends State<MarketPages>
   bool additional1 = false;
   bool additional2 = false;
   TypeAdd? typeAdd;
-  Suggestions? suggestion;
-  PointMarketPlace? points;
+  Suggestions? suggestionStart;
+  Suggestions? suggestionEnd;
   CoastResponse? coast;
   DateTime? time;
   InfoForm? formOrder;
@@ -136,7 +168,7 @@ class _MarketPageState extends State<MarketPages>
   final FocusNode palletFocusAdditional = FocusNode();
   late TabController tabController;
 
-  TypeGroup typeGroup = TypeGroup.fbo;
+  late TypeGroup typeGroup;
 
   @override
   void dispose() {
@@ -152,10 +184,31 @@ class _MarketPageState extends State<MarketPages>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(vsync: this, length: 3);
+    typeGroup = widget.typeGroup ?? TypeGroup.fbo;
+
+    if (widget.typeGroup == TypeGroup.fbo) {
+      indexTab = 0;
+    } else if (widget.typeGroup == TypeGroup.fbs) {
+      indexTab = 1;
+    } else {
+      indexTab = 2;
+    }
+    tabController =
+        TabController(vsync: this, length: 3, initialIndex: indexTab);
     if (widget.recorNumber != null && widget.recordPIN != null) {
       loadOrder = true;
       getForm();
+    }
+    if (widget.order != null) {
+      coast = widget.order;
+      typeGroup = widget.typeGroup ?? TypeGroup.fbo;
+      suggestionStart = widget.start;
+      suggestionEnd = widget.end;
+
+      // tabController =
+      //     TabController(vsync: this, length: 3, initialIndex: indexTab);
+      fromController.text = widget.start?.name ?? '';
+      toController.text = widget.end?.name ?? '';
     }
 
     phoneFocus.addListener(() {
@@ -168,7 +221,7 @@ class _MarketPageState extends State<MarketPages>
   void getForm() async {
     formOrder = await Repository()
         .infoForm(widget.recorNumber.toString(), widget.recordPIN.toString());
-    suggestion = Suggestions(
+    suggestionStart = Suggestions(
         iD: '', name: '', point: formOrder!.result!.locations!.first.point);
     fromController.text = formOrder!.result!.locations!.first.point!.address!;
     toController.text = formOrder!.result!.locations!.last.point!.address!;
@@ -177,8 +230,14 @@ class _MarketPageState extends State<MarketPages>
     phoneController.text =
         formOrder!.result!.locations!.first.contact!.phoneMobile!;
 
-    points =
-        PointMarketPlace(code: formOrder!.result!.locations!.last.point!.code);
+    suggestionEnd = Suggestions(
+      iD: null,
+      name: formOrder!.result!.locations!.last.point?.address ?? '',
+      point: pointModel.Point(
+        latitude: formOrder?.result?.locations?.last.point?.latitude,
+        longitude: formOrder?.result?.locations?.last.point?.longitude,
+      ),
+    );
 
     calcOrder();
 
@@ -220,7 +279,7 @@ class _MarketPageState extends State<MarketPages>
 
     fromController.text = address;
 
-    suggestion = Suggestions(
+    suggestionStart = Suggestions(
       iD: '',
       name: address,
       point: pointModel.Point(
@@ -239,7 +298,7 @@ class _MarketPageState extends State<MarketPages>
     bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
     return Builder(
       builder: (context) {
-        BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
+        // BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
         return Scaffold(
           backgroundColor: backgroundColor,
           resizeToAvoidBottomInset: false,
@@ -251,13 +310,13 @@ class _MarketPageState extends State<MarketPages>
                     BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
                       buildWhen: (previous, current) {
                         if (current is MarketPlaceStateCloseBtmSheet) {
-                          suggestion = current.address;
+                          suggestionStart = current.address;
                           errorAddress = null;
                           if (typeAdd != null && typeAdd == TypeAdd.sender) {
-                            fromController.text = suggestion!.name;
+                            fromController.text = suggestionStart!.name;
                           } else if (typeAdd != null &&
                               typeAdd == TypeAdd.receiver) {
-                            toController.text = suggestion!.name;
+                            toController.text = suggestionStart!.name;
                           }
                           calcOrder();
                         } else if (current is MarketPlacesSuccessState) {
@@ -318,9 +377,12 @@ class _MarketPageState extends State<MarketPages>
                                           indexTab,
                                           typeGroup,
                                           (value) {
+                                            coast = null;
                                             if (indexTab == 2) {
                                               fromController.text = '';
                                               toController.text = '';
+                                              suggestionStart = null;
+                                              suggestionEnd = null;
                                             }
                                             indexTab = value;
                                             if (value == 0) {
@@ -328,11 +390,27 @@ class _MarketPageState extends State<MarketPages>
                                             } else if (value == 1) {
                                               typeGroup = TypeGroup.fbs;
                                             } else if (value == 2) {
-                                              suggestion = null;
-                                              points = null;
-                                              fromController.text = 'EGORKA_SC';
-                                              toController.text =
-                                                  'Egorka_SBOR_FBS';
+                                              var bloc = BlocProvider.of<
+                                                          SearchAddressBloc>(
+                                                      context)
+                                                  .marketPlaces;
+                                              suggestionStart = null;
+                                              suggestionEnd = null;
+                                              fromController.text = bloc
+                                                      ?.result
+                                                      .points[1]
+                                                      .name
+                                                      ?.first
+                                                      .name ??
+                                                  '';
+                                              toController.text = bloc
+                                                      ?.result
+                                                      .points[0]
+                                                      .name
+                                                      ?.first
+                                                      .name ??
+                                                  '';
+
                                               typeGroup = TypeGroup.mixfbs;
                                               detailsController.add(false);
                                             }
@@ -420,13 +498,14 @@ class _MarketPageState extends State<MarketPages>
                                                 ),
                                               ),
                                               SizedBox(width: 10.w),
-                                              GestureDetector(
-                                                onTap: _findMe,
-                                                child: const Icon(
-                                                  Icons.gps_fixed,
-                                                  color: Colors.red,
+                                              if (typeGroup != TypeGroup.mixfbs)
+                                                GestureDetector(
+                                                  onTap: _findMe,
+                                                  child: const Icon(
+                                                    Icons.gps_fixed,
+                                                    color: Colors.red,
+                                                  ),
                                                 ),
-                                              ),
                                               SizedBox(width: 10.w),
                                             ],
                                           ),
@@ -497,7 +576,7 @@ class _MarketPageState extends State<MarketPages>
                                                         TypeGroup.mixfbs) {
                                                       final marketplaces =
                                                           BlocProvider.of<
-                                                                      MarketPlacePageBloc>(
+                                                                      SearchAddressBloc>(
                                                                   context)
                                                               .marketPlaces;
                                                       if (marketplaces !=
@@ -510,8 +589,31 @@ class _MarketPageState extends State<MarketPages>
                                                                 .name!
                                                                 .first
                                                                 .name!;
-                                                        points = marketplaces
-                                                            .result.points[0];
+
+                                                        suggestionEnd =
+                                                            Suggestions(
+                                                          iD: null,
+                                                          name: marketplaces
+                                                                  .result
+                                                                  .points[0]
+                                                                  .name
+                                                                  ?.first
+                                                                  .name ??
+                                                              '',
+                                                          point:
+                                                              pointModel.Point(
+                                                            latitude:
+                                                                marketplaces
+                                                                    .result
+                                                                    .points[0]
+                                                                    .latitude,
+                                                            longitude:
+                                                                marketplaces
+                                                                    .result
+                                                                    .points[0]
+                                                                    .latitude,
+                                                          ),
+                                                        );
                                                         showMarketPlaces(
                                                             marketplaces);
                                                       }
@@ -530,38 +632,58 @@ class _MarketPageState extends State<MarketPages>
                                                 ),
                                               ),
                                               SizedBox(width: 10.w),
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  final marketplaces = BlocProvider
-                                                          .of<MarketPlacePageBloc>(
-                                                              context)
-                                                      .marketPlaces;
-                                                  if (marketplaces != null) {
-                                                    final result = await Navigator
-                                                            .of(context)
-                                                        .pushNamed(
-                                                            AppRoute
-                                                                .marketplacesMap,
-                                                            arguments:
-                                                                marketplaces);
-                                                    if (result != null) {
-                                                      final pointsRes = result
-                                                          as PointMarketPlace;
-                                                      toController.text =
-                                                          pointsRes.name!.first
-                                                              .name!;
+                                              if (typeGroup != TypeGroup.mixfbs)
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    final marketplaces =
+                                                        BlocProvider.of<
+                                                                    MarketPlacePageBloc>(
+                                                                context)
+                                                            .marketPlaces;
+                                                    if (marketplaces != null) {
+                                                      final result = await Navigator
+                                                              .of(context)
+                                                          .pushNamed(
+                                                              AppRoute
+                                                                  .marketplacesMap,
+                                                              arguments:
+                                                                  marketplaces);
+                                                      if (result != null) {
+                                                        final pointsRes = result
+                                                            as PointMarketPlace;
+                                                        toController.text =
+                                                            pointsRes.name!
+                                                                .first.name!;
 
-                                                      points = pointsRes;
+                                                        suggestionEnd =
+                                                            suggestionEnd =
+                                                                Suggestions(
+                                                          iD: null,
+                                                          name: formOrder!
+                                                                  .result!
+                                                                  .locations!
+                                                                  .last
+                                                                  .point
+                                                                  ?.address ??
+                                                              '',
+                                                          point:
+                                                              pointModel.Point(
+                                                            latitude: pointsRes
+                                                                .latitude,
+                                                            longitude: pointsRes
+                                                                .latitude,
+                                                          ),
+                                                        );
 
-                                                      calcOrder();
+                                                        calcOrder();
+                                                      }
                                                     }
-                                                  }
-                                                },
-                                                child: const Icon(
-                                                  Icons.map_outlined,
-                                                  color: Colors.red,
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.map_outlined,
+                                                    color: Colors.red,
+                                                  ),
                                                 ),
-                                              ),
                                               SizedBox(width: 10.w),
                                             ],
                                           ),
@@ -583,7 +705,6 @@ class _MarketPageState extends State<MarketPages>
                                           startOrderController,
                                           time,
                                           (value) {
-                                            log('message time $time');
                                             time = value;
                                             calcOrder();
                                           },
@@ -620,7 +741,7 @@ class _MarketPageState extends State<MarketPages>
                                           contactFocus,
                                           phoneFocus,
                                           (value) {
-                                            suggestion = Suggestions(
+                                            suggestionStart = Suggestions(
                                               iD: value.id,
                                               name: value.name ?? '',
                                               point: pointModel.Point(
@@ -919,7 +1040,6 @@ class _MarketPageState extends State<MarketPages>
                                   totalPrice:
                                       '${double.tryParse(coast!.result!.totalPrice!.total!)!.ceil()}',
                                   onTap: () {
-                                    log('message json ${time}');
                                     if (errorAddress != null) {
                                       MessageDialogs().showAlert(
                                           'Ошибка', 'Укажите номер дома');
@@ -951,14 +1071,14 @@ class _MarketPageState extends State<MarketPages>
                                       ),
                                     );
 
-                                    suggestion = sug;
+                                    suggestionStart = sug;
 
                                     errorAddress =
-                                        suggestion!.houseNumber != null
+                                        suggestionStart!.houseNumber != null
                                             ? null
                                             : 'Укажите номер дома';
                                     fromController.text =
-                                        suggestion!.point!.address!;
+                                        suggestionStart!.point!.address!;
 
                                     setState(() {});
 
@@ -1486,13 +1606,13 @@ class _MarketPageState extends State<MarketPages>
     }
 
     if (typeGroup != TypeGroup.mixfbs) {
-      if (suggestion != null && points != null) {
+      if (suggestionStart != null && suggestionEnd != null) {
         BlocProvider.of<MarketPlacePageBloc>(context).add(
           CalcOrderMarketplace(
             loadingAnimation,
             coast != null ? coast!.result!.id : null,
-            suggestion,
-            points,
+            suggestionStart,
+            suggestionEnd,
             ancillaries,
             time,
             group,
@@ -1505,16 +1625,42 @@ class _MarketPageState extends State<MarketPages>
         coast = null;
       }
     } else {
+      final marketplaces =
+          BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
       BlocProvider.of<MarketPlacePageBloc>(context).add(
         MixFbsCalcEvent(
           loadingAnimation,
-          coast != null ? coast!.result!.id : null,
-          ancillaries,
-          time,
-          'MixFBS',
-          nameController.text,
-          phoneController.text,
-          cargos,
+          CoastMarketPlace(
+            type: "Truck",
+            group: 'MixFBS',
+            locations: [
+              Location(
+                date: time != null
+                    ? DateFormat('yyyy-MM-dd HH:mm:ss').format(time!)
+                    : null,
+                contact: Contact(
+                    name: nameController.text,
+                    phoneMobile: phoneController.text),
+                point: pointModel.Point(
+                  id: 'EGORKA_SC',
+                  code:
+                      '${marketplaces?.result.points[1].latitude},${marketplaces?.result.points[1].longitude}',
+                ),
+              ),
+              Location(
+                contact: Contact(
+                    name: nameController.text,
+                    phoneMobile: phoneController.text),
+                point: pointModel.Point(
+                  id: 'Egorka_SBOR_FBS',
+                  code:
+                      '${marketplaces?.result.points[0].latitude},${marketplaces?.result.points[0].longitude}',
+                ),
+              )
+            ],
+            ancillaries: ancillaries,
+            cargos: cargos,
+          ),
         ),
       );
     }
@@ -1562,7 +1708,20 @@ class _MarketPageState extends State<MarketPages>
                       onSelectedItemChanged: (value) {
                         toController.text =
                             marketplaces.result.points[value].name!.first.name!;
-                        points = marketplaces.result.points[value];
+                        // points = marketplaces.result.points[value];
+
+                        suggestionEnd = Suggestions(
+                          iD: null,
+                          name: formOrder!
+                                  .result!.locations!.last.point?.address ??
+                              '',
+                          point: pointModel.Point(
+                            latitude:
+                                marketplaces.result.points[value].latitude,
+                            longitude:
+                                marketplaces.result.points[value].latitude,
+                          ),
+                        );
                       },
                       itemExtent: 32.0,
                       children: marketplaces.result.points

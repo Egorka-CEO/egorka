@@ -1,5 +1,5 @@
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/ui/sidebar/market_place/market_page.dart';
+import 'package:egorka/model/type_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,7 +21,6 @@ Widget tabGroup(
         color: Colors.red,
       ),
       onTap: (value) {
-        
         function(value);
       },
       splashBorderRadius: BorderRadius.circular(20),

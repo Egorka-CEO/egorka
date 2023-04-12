@@ -155,8 +155,6 @@ class Repository {
       },
     );
 
-    log('message ${response.data}');
-
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
       return coast;
@@ -177,8 +175,6 @@ class Repository {
         "Params": params()
       },
     );
-
-    log('message ${response.data['Result']}');
 
     if (response.data['Result'] != null) {
       final coast = CoastResponse.fromJson(response.data);
@@ -822,8 +818,6 @@ class Repository {
         }
       },
     );
-
-    log('message ${response.data}');
 
     if (response.data['Errors'] != null) {
       return false;

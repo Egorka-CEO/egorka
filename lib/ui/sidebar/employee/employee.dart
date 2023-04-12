@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/employee.dart';
@@ -333,7 +331,6 @@ class _EmployeePageState extends State<EmployeePage> {
                                   loginController.text,
                                   passwordController.text,
                                 );
-                                log('message $res');
                                 if (res == null) {
                                   getEmployee();
                                   nameController.text = '';

@@ -4,6 +4,7 @@ import 'package:egorka/helpers/constant.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/delivery_type.dart';
+import 'package:egorka/model/type_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -432,17 +433,31 @@ class _BottomSheetDraggableState
                                         child: Material(
                                           color: Colors.grey[200],
                                           child: InkWell(
-                                            onTap: state.result.Group ==
-                                                    'Marketplace'
-                                                ? () =>
-                                                    Navigator.of(context)
+                                            onTap: state.result.Group !=
+                                                    'Express'
+                                                ? () => Navigator.of(context)
                                                         .pushNamed(
                                                             AppRoute
                                                                 .marketplaces,
                                                             arguments: [
                                                           state.result
                                                               .RecordNumber,
-                                                          state.result.RecordPIN
+                                                          state
+                                                              .result.RecordPIN,
+                                                          null,
+                                                          null,
+                                                          null,
+                                                          null,
+                                                          state.result.Group ==
+                                                                  'Marketplace'
+                                                              ? TypeGroup.fbo
+                                                              : state.result
+                                                                          .Group ==
+                                                                      'FBS'
+                                                                  ? TypeGroup
+                                                                      .fbs
+                                                                  : TypeGroup
+                                                                      .mixfbs,
                                                         ])
                                                 : () =>
                                                     Navigator.of(

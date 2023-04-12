@@ -1,6 +1,7 @@
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
+import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/location.dart';
@@ -54,6 +55,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<BookBloc>(
           create: (context) => BookBloc(),
+        ),
+        BlocProvider<MarketPlacePageBloc>(
+          create: (context) => MarketPlacePageBloc(),
         ),
       ],
       child: ScreenUtilInit(

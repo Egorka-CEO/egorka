@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/constant.dart';
@@ -61,7 +60,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
   yandex_mapkit.BicycleSessionResult? directionsBicycle;
   List<yandex_mapkit.PlacemarkMapObject> markers = [];
 
-  double maxHeightPanel = 735.h;
+  double maxHeightPanel = 745.h;
 
   late TabController controller;
 
@@ -80,53 +79,60 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
-          buildWhen: (previous, current) {
-        if (current is GetAddressSuccess) {
-          suggestionsStart = Suggestions(
-            iD: null,
-            name: current.address,
-            point: pointModel.Point(
-              address: current.address,
-              code: '${current.latitude},${current.longitude}',
-              latitude: current.latitude,
-              longitude: current.longitude,
-            ),
-          );
-          fromController.text = current.address;
+        buildWhen: (previous, current) {
+          if (current is GetAddressSuccess) {
+            suggestionsStart = Suggestions(
+              iD: null,
+              name: current.address,
+              point: pointModel.Point(
+                address: current.address,
+                code: '${current.latitude},${current.longitude}',
+                latitude: current.latitude,
+                longitude: current.longitude,
+              ),
+            );
+            fromController.text = current.address;
 
-          calc();
-        }
-        return true;
-      }, builder: (context, snapshot) {
-        var bloc = BlocProvider.of<SearchAddressBloc>(context);
-        return SlidingUpPanel(
-          controller: panelController,
-          renderPanelSheet: false,
-          isDraggable: false,
-          panelSnapping: false,
-          backdropEnabled: true,
-          parallaxEnabled: true,
-          panel: _floatingPanel(context),
-          onPanelClosed: () {
-            focusFrom.unfocus();
-            focusTo.unfocus();
-          },
-          onPanelOpened: () {
-            if (!focusFrom.hasFocus && !focusTo.hasFocus) {}
-          },
-          onPanelSlide: (size) {
-            if (size.toStringAsFixed(1) == (0.5).toString()) {
+            calc();
+          } else if (current is DeletePolilyneState) {
+            panelController.animatePanelToPosition(
+              0,
+              duration: const Duration(milliseconds: 400),
+            );
+          }
+          return true;
+        },
+        builder: (context, snapshot) {
+          var bloc = BlocProvider.of<SearchAddressBloc>(context);
+          return SlidingUpPanel(
+            controller: panelController,
+            renderPanelSheet: false,
+            isDraggable: false,
+            panelSnapping: false,
+            // backdropEnabled: true,
+            parallaxEnabled: true,
+            panel: _floatingPanel(context),
+            onPanelClosed: () {
               focusFrom.unfocus();
               focusTo.unfocus();
-            }
-          },
-          maxHeight: maxHeightPanel,
-          minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
-              ? 400.h
-              : 290.h,
-          defaultPanelState: PanelState.CLOSED,
-        );
-      }),
+            },
+            onPanelOpened: () {
+              if (!focusFrom.hasFocus && !focusTo.hasFocus) {}
+            },
+            onPanelSlide: (size) {
+              if (size.toStringAsFixed(1) == (0.5).toString()) {
+                focusFrom.unfocus();
+                focusTo.unfocus();
+              }
+            },
+            maxHeight: maxHeightPanel,
+            // minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
+            minHeight: 310.h,
+            // : 310.h,
+            defaultPanelState: PanelState.CLOSED,
+          );
+        },
+      ),
     );
   }
 
@@ -210,7 +216,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         coasts.clear();
                         focusFrom.unfocus();
                         focusTo.unfocus();
-                        panelController.close();
+                        panelController.animatePanelToPosition(
+                          0,
+                          duration: const Duration(milliseconds: 400),
+                        );
                         fromController.text = '';
                         toController.clear();
                         bloc.add(DeletePolilyneEvent());
@@ -225,14 +234,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 10.w, vertical: 5.h),
+                              horizontal: 15.w, vertical: 10.h),
                           child: Text(
                             'Город',
                             style: TextStyle(
                               color: typeGroup == TypeGroup.express
                                   ? Colors.white
-                                  : Colors.black,
-                              fontSize: 12.sp,
+                                  : Colors.black.withOpacity(0.5),
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
@@ -247,7 +256,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         coasts.clear();
                         focusFrom.unfocus();
                         focusTo.unfocus();
-                        panelController.close();
+                        panelController.animatePanelToPosition(
+                          0,
+                          duration: const Duration(milliseconds: 400),
+                        );
                         fromController.text = '';
                         toController.clear();
                         bloc.add(DeletePolilyneEvent());
@@ -262,14 +274,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 10.w, vertical: 5.h),
+                              horizontal: 15.w, vertical: 10.h),
                           child: Text(
                             'FBO',
                             style: TextStyle(
                               color: typeGroup == TypeGroup.fbo
                                   ? Colors.white
-                                  : Colors.black,
-                              fontSize: 12.sp,
+                                  : Colors.black.withOpacity(0.5),
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
@@ -284,7 +296,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         coasts.clear();
                         focusFrom.unfocus();
                         focusTo.unfocus();
-                        panelController.close();
+                        panelController.animatePanelToPosition(
+                          0,
+                          duration: const Duration(milliseconds: 400),
+                        );
                         fromController.text = '';
                         toController.clear();
                         bloc.add(DeletePolilyneEvent());
@@ -299,14 +314,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 10.w, vertical: 5.h),
+                              horizontal: 15.w, vertical: 10.h),
                           child: Text(
                             'FBS',
                             style: TextStyle(
                               color: typeGroup == TypeGroup.fbs
                                   ? Colors.white
-                                  : Colors.black,
-                              fontSize: 12.sp,
+                                  : Colors.black.withOpacity(0.5),
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
@@ -342,10 +357,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         coasts.clear();
                         focusFrom.unfocus();
                         focusTo.unfocus();
-                        panelController.close();
+                        panelController.animatePanelToPosition(
+                          0.3,
+                          duration: const Duration(milliseconds: 400),
+                        );
                         fromController.text = suggestionsStart?.name ?? '';
                         toController.text = suggestionsEnd?.name ?? '';
-                        bloc.add(DeletePolilyneEvent());
+                        // bloc.add(DeletePolilyneEvent());
                         calc();
                         setState(() {});
                       },
@@ -358,14 +376,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 10.w, vertical: 5.h),
+                              horizontal: 15.w, vertical: 10.h),
                           child: Text(
                             'Сборный FBS',
                             style: TextStyle(
                               color: typeGroup == TypeGroup.mixfbs
                                   ? Colors.white
-                                  : Colors.black,
-                              fontSize: 12.sp,
+                                  : Colors.black.withOpacity(0.5),
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
@@ -419,7 +437,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                                   });
                                 },
                                 onFieldSubmitted: (text) {
-                                  panelController.close();
+                                  panelController.animatePanelToPosition(
+                                    0,
+                                    duration: const Duration(milliseconds: 400),
+                                  );
                                   focusFrom.unfocus();
                                 },
                                 contentPadding: EdgeInsets.only(right: 10.w),
@@ -658,7 +679,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                   });
                 },
                 onFieldSubmitted: (text) {
-                  panelController.close();
+                  panelController.animatePanelToPosition(
+                    0,
+                    duration: const Duration(milliseconds: 400),
+                  );
                   focusTo.unfocus();
                 },
                 contentPadding: EdgeInsets.only(right: 10.w),
@@ -1083,10 +1107,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       res = await Navigator.of(context).pushNamed(
                         AppRoute.marketplaces,
                         arguments: [
+                          null,
+                          null,
                           coastResponse,
                           listChoice[index],
                           suggestionsStart,
                           suggestionsEnd,
+                          typeGroup,
                         ],
                       );
                     } else {
@@ -1128,10 +1155,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       res = await Navigator.of(context).pushNamed(
                         AppRoute.marketplaces,
                         arguments: [
+                          null,
+                          null,
                           coastResponse,
                           listChoice[index],
                           suggestionsStart,
                           suggestionsEnd,
+                          typeGroup,
                         ],
                       );
                     } else {
@@ -1188,6 +1218,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
               if (suggestionsStart != null && suggestionsEnd != null) {
                 calc();
               } else {
+                panelController.animatePanelToPosition(
+                  0,
+                  duration: const Duration(milliseconds: 400),
+                );
                 BlocProvider.of<SearchAddressBloc>(context).add(
                   JumpToPointEvent(
                     state.address!.result.suggestions![index].point!,
@@ -1197,7 +1231,6 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
 
               focusFrom.unfocus();
               focusTo.unfocus();
-              panelController.close();
             },
             child: Row(
               children: [
@@ -1309,6 +1342,10 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
   void calc() {
     coasts.clear();
     if (suggestionsStart != null && suggestionsEnd != null) {
+      panelController.animatePanelToPosition(
+        0.3,
+        duration: const Duration(milliseconds: 400),
+      );
       switch (typeGroup) {
         case TypeGroup.express:
           BlocProvider.of<SearchAddressBloc>(context).add(

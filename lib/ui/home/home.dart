@@ -111,6 +111,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
         builder: (context, snapshot) {
           var bloc = BlocProvider.of<SearchAddressBloc>(context);
+
           return Stack(
             children: [
               Scaffold(
@@ -120,10 +121,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 drawerScrimColor: Colors.transparent,
                 body: Stack(
                   children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.easeInOutQuint,
-                      margin: EdgeInsets.only(
+                    Container(color: Colors.white),
+                    Padding(
+                      padding: EdgeInsets.only(
                         bottom: (snapshot is SearchAddressRoutePolilyne) ||
                                 (snapshot is EditPolilynesState)
                             ? 100.h

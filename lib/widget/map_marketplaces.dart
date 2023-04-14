@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/point_marketplace.dart';
@@ -26,6 +28,7 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
   Directions? routes;
   final List<MapObject> mapObjects = [];
   List<GlobalKey> globalKey = [];
+  List<BitmapDescriptor> listIcon = [];
 
   bool initMarks = false;
 
@@ -43,13 +46,17 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
     super.initState();
   }
 
+  List<String> filterMarketplace = [];
+  String selectFilter = '';
+
   Widget cstMrk(BuildContext context, String label, GlobalKey key) {
+    if (!filterMarketplace.contains(label)) filterMarketplace.add(label);
+
     return RepaintBoundary(
       key: key,
       child: SizedBox(
         height: 120.h,
         width: 100.h,
-        // color: Colors.amber,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -76,11 +83,55 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
     );
   }
 
+  void updateFilter() {
+    for (int i = 0; i < widget.points.length; i++) {
+      if (selectFilter == widget.points[i].name!.first.name![0] ||
+          selectFilter == '') {
+        mapObjects.add(
+          PlacemarkMapObject(
+            mapId: MapObjectId('placemark_start${widget.points[i].iD}'),
+            point: Point(
+              latitude: widget.points[i].latitude!,
+              longitude: widget.points[i].longitude!,
+            ),
+            consumeTapEvents: true,
+            opacity: 1,
+            icon: PlacemarkIcon.single(
+              PlacemarkIconStyle(image: listIcon[i]),
+            ),
+            onTap: (mapObject, point) {
+              BlocProvider.of<MarketPlacePageBloc>(context)
+                  .add(SelectMarketPlaces(widget.points[i]));
+            },
+          ),
+        );
+      }
+    }
+
+    setState(() {});
+    mapController?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        const CameraPosition(
+          target: Point(
+            latitude: 55.750104,
+            longitude: 37.622895,
+          ),
+          zoom: 9,
+        ),
+      ),
+      animation: const MapAnimation(
+        type: MapAnimationType.linear,
+        duration: 1,
+      ),
+    );
+  }
+
   void initMarkers() async {
     int i = 0;
     for (var element in widget.points) {
       final fromIcon =
           BitmapDescriptor.fromBytes(await getBytesFromAsset(globalKey[i]));
+      listIcon.add(fromIcon);
       mapObjects.add(
         PlacemarkMapObject(
           mapId: MapObjectId('placemark_start${element.iD}'),
@@ -106,19 +157,20 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
         .emit(FindMarketPlacesSuccess());
     setState(() {});
     mapController?.moveCamera(
-        CameraUpdate.newCameraPosition(
-          const CameraPosition(
-            target: Point(
-              latitude: 55.750104,
-              longitude: 37.622895,
-            ),
-            zoom: 9,
+      CameraUpdate.newCameraPosition(
+        const CameraPosition(
+          target: Point(
+            latitude: 55.750104,
+            longitude: 37.622895,
           ),
+          zoom: 9,
         ),
-        animation: const MapAnimation(
-          type: MapAnimationType.linear,
-          duration: 1,
-        ));
+      ),
+      animation: const MapAnimation(
+        type: MapAnimationType.linear,
+        duration: 1,
+      ),
+    );
   }
 
   @override
@@ -140,6 +192,58 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
               mapController = controller;
               initMarkers();
             },
+          ),
+          Padding(
+            padding: EdgeInsets.all(20.h),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                width: 40.w,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.r),
+                  ),
+                  color: Colors.white,
+                ),
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: filterMarketplace.length,
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        if (selectFilter == filterMarketplace[index]) {
+                          selectFilter = '';
+                        } else {
+                          selectFilter = filterMarketplace[index];
+                        }
+                        mapObjects.clear();
+                        setState(() {});
+                        updateFilter();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10.h),
+                        color: selectFilter == filterMarketplace[index]
+                            ? Colors.red
+                            : Colors.white,
+                        child: Center(
+                          child: Text(
+                            filterMarketplace[index],
+                            style: TextStyle(
+                              color: selectFilter == filterMarketplace[index]
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
         ],
       ),

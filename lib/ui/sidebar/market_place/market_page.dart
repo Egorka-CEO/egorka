@@ -637,7 +637,7 @@ class _MarketPageState extends State<MarketPages>
                                                   onTap: () async {
                                                     final marketplaces =
                                                         BlocProvider.of<
-                                                                    MarketPlacePageBloc>(
+                                                                    SearchAddressBloc>(
                                                                 context)
                                                             .marketPlaces;
                                                     if (marketplaces != null) {

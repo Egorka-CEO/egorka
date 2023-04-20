@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:egorka/core/database/secure_storage.dart';
@@ -21,6 +20,7 @@ import 'package:egorka/model/register_company.dart';
 import 'package:egorka/model/register_user.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/user.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:path_provider/path_provider.dart';
@@ -37,9 +37,11 @@ class Repository {
     id = await MySecureStorage().getID() ?? '';
     key = await MySecureStorage().getKey() ?? '';
     String typeDevice = Platform.isAndroid ? 'Android' : 'Apple';
+    String? token = await FirebaseMessaging.instance.getToken();
     Map<String, dynamic> data = {
       "Type": typeDevice,
       "UserUUID": id,
+      "Push": token ?? ''
     };
     if (key.isNotEmpty) data['Session'] = key;
 

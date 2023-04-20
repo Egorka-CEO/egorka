@@ -30,8 +30,6 @@ void main() async {
     MessageDialogs().showMessage('Уведомление', event.data.toString());
   });
 
-  String? token = await FirebaseMessaging.instance.getToken();
-
   runApp(MyApp());
 }
 

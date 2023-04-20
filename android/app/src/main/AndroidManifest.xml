@@ -20,6 +20,11 @@
         </intent>
     </queries>
 
+    <application
+           android:name=".App"
+           >
+       </application>
+
    <application
         android:label="Egorka Delivery"
         android:name="${applicationName}"

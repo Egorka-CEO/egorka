@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
@@ -6,6 +8,7 @@ import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -508,8 +511,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: SizedBox(
                         height: 60.h,
                         child: ElevatedButton(
-                          onPressed: () => BlocProvider.of<ProfileBloc>(context)
-                              .add(ExitAccountEvent()),
+                          onPressed: () async {
+                            await FirebaseMessaging.instance.deleteToken();
+
+                            BlocProvider.of<ProfileBloc>(context)
+                                .add(ExitAccountEvent());
+                          },
                           style: ButtonStyle(
                             backgroundColor:
                                 const MaterialStatePropertyAll(Colors.red),

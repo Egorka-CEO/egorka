@@ -8,6 +8,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -226,6 +227,7 @@ class _AuthPageState extends State<AuthPage> {
         .loginUsernameUser(_phoneController.text, _passwordController.text);
 
     if (res != null) {
+      await FirebaseMessaging.instance.deleteToken();
       _btnController.success();
       MySecureStorage storage = MySecureStorage();
       storage.setTypeUser('0');

@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   
+  flutter_pdfview: ^1.2.7
   yandex_mapkit: ^3.2.0
   mask_text_input_formatter: ^2.4.0
   flutter_svg: ^1.0.3
@@ -61,3 +62,4 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/anim/
+    - assets/files/

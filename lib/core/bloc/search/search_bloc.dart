@@ -2,7 +2,9 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/coast_advanced.dart';
+import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/locations.dart';
+import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +19,8 @@ part 'search_state.dart';
 
 class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
   bool isPolilyne = false;
+  MarketPlaces? marketPlaces;
+
   SearchAddressBloc() : super(SearchAddressStated()) {
     on<SearchAddress>(_searchAddress);
     on<SearchAddressClear>((event, emit) => _clearAddress());
@@ -26,7 +30,107 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
     on<JumpToPointEvent>((event, emit) => emit(JumpToPointState(event.point)));
     on<SearchAddressPolilyne>(_getPoliline);
     on<GetAddressPosition>(_getAddress);
+    on<GetMarketPlaces>(_getMarketPlaces);
     on<EditPolilynesEvent>(_editPolilynes);
+    on<MarketPlaceCalcEvent>(_calculateOrderMarketPlace);
+  }
+
+  void _calculateOrderMarketPlace(
+      MarketPlaceCalcEvent event, Emitter<SearchAddressState> emit) async {
+    emit(SearchLoading());
+    isPolilyne = true;
+
+    final fromIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/from.png', 90));
+    final toIcon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/images/to.png', 90));
+
+    DrivingSessionResult? drivingSessionResult;
+    BicycleSessionResult? bicycleResultWithSession;
+    try {
+      DrivingResultWithSession? requestRoutes = YandexDriving.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsStart.last!.point!.latitude,
+                longitude: event.suggestionsStart.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsEnd.last!.point!.latitude,
+                longitude: event.suggestionsEnd.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        drivingOptions: const DrivingOptions(),
+      );
+      BicycleResultWithSession? requestRoutesBicycle =
+          YandexBicycle.requestRoutes(
+        points: [
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsStart.last!.point!.latitude,
+                longitude: event.suggestionsStart.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+          RequestPoint(
+              point: Point(
+                latitude: event.suggestionsEnd.last!.point!.latitude,
+                longitude: event.suggestionsEnd.last!.point!.longitude,
+              ),
+              requestPointType: RequestPointType.wayPoint),
+        ],
+        bicycleVehicleType: BicycleVehicleType.bicycle,
+      );
+
+      drivingSessionResult = await requestRoutes.result;
+      bicycleResultWithSession = await requestRoutesBicycle.result;
+    } catch (e) {}
+    if (drivingSessionResult != null) {
+      var result = await Repository().getCoastMarketPlace(event.coast);
+      emit(
+        SearchAddressRoutePolilyne(
+          drivingSessionResult,
+          bicycleResultWithSession,
+          [
+            PlacemarkMapObject(
+              mapId: const MapObjectId('placemark_start'),
+              point: Point(
+                latitude:
+                    drivingSessionResult.routes!.first.geometry.first.latitude,
+                longitude:
+                    drivingSessionResult.routes!.first.geometry.first.longitude,
+              ),
+              opacity: 1,
+              icon: PlacemarkIcon.single(PlacemarkIconStyle(image: fromIcon)),
+            ),
+            PlacemarkMapObject(
+              mapId: const MapObjectId('placemark_end'),
+              point: Point(
+                latitude:
+                    drivingSessionResult.routes!.first.geometry.last.latitude,
+                longitude:
+                    drivingSessionResult.routes!.first.geometry.last.longitude,
+              ),
+              opacity: 1,
+              icon: PlacemarkIcon.single(
+                PlacemarkIconStyle(image: toIcon),
+              ),
+            ),
+          ],
+          result == null ? [] : [result],
+        ),
+      );
+    }
+  }
+
+  void _getMarketPlaces(
+      GetMarketPlaces event, Emitter<SearchAddressState> emit) async {
+    var result = await Repository().getMarketplaces();
+    if (result != null) {
+      marketPlaces = result;
+    }
   }
 
   void _editPolilynes(
@@ -77,7 +181,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       );
       final value = await adress.result;
 
-      address = value.items!.first.name;
+      address = value.items?.first.name ?? '';
 
       final house = value.items!.first.toponymMetadata?.address
           .addressComponents[SearchComponentKind.house];
@@ -116,9 +220,9 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
       );
       final value = await adress.result;
 
-      address = value.items!.first.name;
+      address = value.items?.first.name ?? '';
 
-      final house = value.items!.first.toponymMetadata?.address
+      final house = value.items?.first.toponymMetadata?.address
           .addressComponents[SearchComponentKind.house];
 
       if (house == null) {

@@ -50,9 +50,9 @@ class CoastMarketPlace {
     data['Group'] = group;
     data['Description'] = description;
     data['Message'] = message;
-    data['Locations'] = locations!.map((e) => e.toJson()).toList();
-    data['Ancillaries'] = ancillaries!.map((e) => e.toJson()).toList();
-    data['Cargos'] = cargos!.map((e) => e.toJson()).toList();
+    data['Locations'] = locations?.map((e) => e.toJson()).toList();
+    data['Ancillaries'] = ancillaries?.map((e) => e.toJson()).toList();
+    data['Cargos'] = cargos?.map((e) => e.toJson()).toList();
     return data;
   }
 }

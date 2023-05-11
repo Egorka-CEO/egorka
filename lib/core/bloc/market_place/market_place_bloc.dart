@@ -21,6 +21,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
 
   MarketPlacePageBloc() : super(MarketPlaceStated()) {
     on<MarketPlace>(_searchAddress);
+    on<MixFbsCalcEvent>(_calculateOrderMixFbs);
     on<MarketPlaceOpenBtmSheet>(_openBtmSheet);
     on<MarketPlaceStatedCloseBtmSheet>(_closeBtmSheet);
     on<MarketPlaceCloseBtmSheetEvent>(_closeBtmSheetWithoutSearch);
@@ -31,9 +32,16 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
     on<MarketUpdateState>(_updateState);
   }
 
+  void _calculateOrderMixFbs(
+      MixFbsCalcEvent event, Emitter<MarketPlaceState> emit) async {
+    if (event.loadingAnimation) emit(CalcLoading());
+    var result = await Repository().getCoastMarketPlace(event.coast);
+    emit(MarketPlacesSuccessState(result));
+  }
+
   void _calculateOrderMarketplace(
       CalcOrderMarketplace event, Emitter<MarketPlaceState> emit) async {
-    emit(CalcLoading());
+    if (event.loadingAnimation) emit(CalcLoading());
     var result = await Repository().getCoastMarketPlace(
       CoastMarketPlace(
         iD: event.id,
@@ -46,7 +54,7 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
                 : null,
             point: Point(
               code:
-                  '${event.suggestion!.point!.latitude},${event.suggestion!.point!.longitude}',
+                  '${event.suggestionStart!.point!.latitude},${event.suggestionStart!.point!.longitude}',
               entrance: event.entrance,
               floor: event.floor,
               room: event.room,
@@ -54,7 +62,9 @@ class MarketPlacePageBloc extends Bloc<MarketPlaceEvent, MarketPlaceState> {
             contact: Contact(name: event.name, phoneMobile: event.phone),
           ),
           Location(
-            point: Point(code: '${event.points!.code}'),
+            point: Point(
+                code:
+                    '${event.suggestionsEnd!.point!.latitude},${event.suggestionsEnd!.point!.longitude}'),
             contact: Contact(name: event.name, phoneMobile: event.phone),
           )
         ],

@@ -3,6 +3,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/invoice.dart';
+import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -79,10 +80,12 @@ class _AddDepositState extends State<AddDeposit> {
                         final res = await Repository().createInvoice(
                             (double.parse(controllerAmount.text) * 100)
                                 .round());
+                        SmartDialog.dismiss();
                         if (res != null) {
                           loadDeposit();
+                          MessageDialogs()
+                              .showAlert('Успешно', 'Счет сформирован');
                         }
-                        SmartDialog.dismiss();
                       }
                     },
                     child: Center(

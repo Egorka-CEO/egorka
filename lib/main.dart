@@ -1,6 +1,7 @@
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
+import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/location.dart';
@@ -29,8 +30,6 @@ void main() async {
     MessageDialogs().showMessage('Уведомление', event.data.toString());
   });
 
-  String? token = await FirebaseMessaging.instance.getToken();
-
   runApp(MyApp());
 }
 
@@ -54,6 +53,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<BookBloc>(
           create: (context) => BookBloc(),
+        ),
+        BlocProvider<MarketPlacePageBloc>(
+          create: (context) => MarketPlacePageBloc(),
         ),
       ],
       child: ScreenUtilInit(

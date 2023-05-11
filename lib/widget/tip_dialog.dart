@@ -378,15 +378,13 @@ void iconSelectModal(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: AlertDialog(
             insetPadding:
-                EdgeInsets.only(top: offset.dy + 50.h, left: offset.dx - 30.w),
+                EdgeInsets.only(top: offset.dy + 50.h),
             alignment: Alignment.topCenter,
             contentPadding: EdgeInsets.zero,
             backgroundColor: Colors.transparent,
             elevation: 0,
             content: GestureDetector(
-              onTap: () => Navigator.of(context)
-                ..pop()
-                ..pop(),
+              onTap: () => onTap(1),
               child: Container(
                 width: MediaQuery.of(context).size.width - 30.w,
                 height: 50.h,
@@ -437,8 +435,7 @@ void iconDateOrder(
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: AlertDialog(
-            insetPadding:
-                EdgeInsets.only(top: offset.dy + 40.h),
+            insetPadding: EdgeInsets.only(top: offset.dy + 40.h),
             alignment: Alignment.topCenter,
             contentPadding: EdgeInsets.zero,
             backgroundColor: Colors.transparent,

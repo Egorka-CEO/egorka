@@ -42,7 +42,7 @@ class _MapViewState extends State<MapView> {
       if (mapController != null) {
         await mapController!.moveCamera(
           CameraUpdate.newCameraPosition(
-            CameraPosition(
+            const CameraPosition(
               target: Point(
                 latitude: 55.755864,
                 longitude: 37.617698,

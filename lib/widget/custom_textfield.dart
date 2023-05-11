@@ -105,7 +105,7 @@ class CustomTextField extends StatelessWidget {
             actions: [
               KeyboardActionsItem(
                 focusNode: focusNode ?? FocusNode(),
-                onTapAction: () => focusNode,
+                onTapAction: () => onFieldSubmitted,
               ),
             ],
           ),

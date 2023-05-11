@@ -132,13 +132,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   void checkOrder() {
     if (formOrder!.result!.status == 'Drafted') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-      colorStatus = resPaid ? Colors.green : Colors.orange;
+      colorStatus = Colors.orange;
       status = 'Черновик';
       paidBtmSheet = resPaid;
     } else if (formOrder!.result!.status == 'Booked') {
       resPaid = formOrder!.result!.payStatus! == 'Paid' ? true : false;
-      colorStatus = resPaid ? Colors.green : Colors.orange;
-      status = resPaid ? 'Оплачено' : 'Активно';
+      colorStatus = Colors.green;
+      status = 'В работе';
       paidBtmSheet = !resPaid;
     } else if (formOrder!.result!.status == 'Completed') {
       paidBtmSheet = false;
@@ -215,6 +215,19 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
     }
 
     setState(() {});
+  }
+
+  String title(String value) {
+    if (value == 'Express') {
+      return 'Сводная информация';
+    } else if (value == 'FBS') {
+      return 'Доставка FBS';
+    } else if (value == 'Marketplace') {
+      return 'Доставка FBO';
+    } else if (value == 'MixFBS') {
+      return 'Сборный груз FBS';
+    }
+    return 'Сводная информация';
   }
 
   @override
@@ -370,7 +383,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ),
                                         SizedBox(height: 20.h),
                                         Text(
-                                          '${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
+                                          '№${formOrder!.result?.recordNumber}${formOrder!.result?.recordPIN} / ${formOrder!.result!.date != null ? '$day ' + DateMonth().monthDate(DateTime.fromMillisecondsSinceEpoch(formOrder!.result!.date! * 1000)) : '-'}',
                                           style: CustomTextStyle.black17w400,
                                         ),
                                         SizedBox(height: 10.h),
@@ -768,9 +781,13 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                               ),
                                         SizedBox(height: 30.h),
                                         Row(
-                                          children: const [
+                                          children: [
                                             Text(
-                                              'Сводная информация',
+                                              formOrder?.result?.group != null
+                                                  ? title(formOrder
+                                                          ?.result?.group ??
+                                                      '')
+                                                  : 'Сводная информация',
                                               style: CustomTextStyle.grey15bold,
                                             ),
                                           ],
@@ -976,21 +993,21 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                                   ],
                                                 ),
                                               ),
-                                            Column(
-                                              children: [
-                                                Icon(
-                                                  Icons.send,
-                                                  color: Colors.red,
-                                                  size: 50.h,
-                                                ),
-                                                const Text(
-                                                  'Написать в\nподдержку',
-                                                  textAlign: TextAlign.center,
-                                                  style: CustomTextStyle
-                                                      .black15w700,
-                                                ),
-                                              ],
-                                            ),
+                                            // Column(
+                                            //   children: [
+                                            //     Icon(
+                                            //       Icons.send,
+                                            //       color: Colors.red,
+                                            //       size: 50.h,
+                                            //     ),
+                                            //     const Text(
+                                            //       'Написать в\nподдержку',
+                                            //       textAlign: TextAlign.center,
+                                            //       style: CustomTextStyle
+                                            //           .black15w700,
+                                            //     ),
+                                            //   ],
+                                            // ),
                                           ],
                                         ),
                                         SizedBox(height: 140.h),

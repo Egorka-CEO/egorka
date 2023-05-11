@@ -44,6 +44,10 @@ class _MiniMapViewState extends State<MiniMapView> {
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
           buildWhen: (previous, current) {
         if (current is HistoryOrderRoutePolilyne) {
+          double minX = 1000;
+          double minY = 1000;
+          double maxX = 0;
+          double maxY = 0;
           if (widget.type == 'Walk') {
             List<Point> points = [];
             for (var a in current.bicycleSessionResult) {
@@ -65,6 +69,22 @@ class _MiniMapViewState extends State<MiniMapView> {
               isInnerOutlineEnabled: true,
             );
             mapObjects.add(mapObject);
+
+            for (var element in points) {
+              if (element.latitude > maxX) {
+                maxX = element.latitude;
+              }
+              if (element.latitude < minX) {
+                minX = element.latitude;
+              }
+
+              if (element.longitude > maxY) {
+                maxY = element.longitude;
+              }
+              if (element.longitude < minY) {
+                minY = element.longitude;
+              }
+            }
 
             mapObjects.add(
               PlacemarkMapObject(
@@ -111,21 +131,6 @@ class _MiniMapViewState extends State<MiniMapView> {
                 );
               }
             }
-
-            mapController!.moveCamera(
-              CameraUpdate.newBounds(
-                BoundingBox(
-                  northEast: points.first,
-                  southWest: points.last,
-                ),
-              ),
-            );
-
-            mapController!.getCameraPosition().then((value) {
-              mapController!.moveCamera(
-                CameraUpdate.zoomTo(value.zoom - widget.pointSentCount),
-              );
-            });
           } else {
             List<Point> points = [];
             for (var a in current.routes) {
@@ -148,7 +153,21 @@ class _MiniMapViewState extends State<MiniMapView> {
             );
             mapObjects.add(mapObject);
 
-            // BoundingBoxHelper.getBounds(Polyline geometry).
+            for (var element in points) {
+              if (element.latitude > maxX) {
+                maxX = element.latitude;
+              }
+              if (element.latitude < minX) {
+                minX = element.latitude;
+              }
+
+              if (element.longitude > maxY) {
+                maxY = element.longitude;
+              }
+              if (element.longitude < minY) {
+                minY = element.longitude;
+              }
+            }
 
             mapObjects.add(
               PlacemarkMapObject(
@@ -195,22 +214,19 @@ class _MiniMapViewState extends State<MiniMapView> {
                 );
               }
             }
-
-            mapController!.moveCamera(
-              CameraUpdate.newBounds(
-                BoundingBox(
-                  northEast: points.first,
-                  southWest: points.last,
-                ),
-              ),
-            );
-
-            mapController!.getCameraPosition().then((value) {
-              mapController!.moveCamera(
-                CameraUpdate.zoomTo(value.zoom - widget.pointSentCount),
-              );
-            });
           }
+          mapController!.moveCamera(
+            CameraUpdate.newBounds(
+              BoundingBox(
+                northEast: Point(latitude: maxX, longitude: maxY),
+                southWest: Point(latitude: minX, longitude: minY),
+              ),
+            ),
+          );
+
+          mapController!.getCameraPosition().then((value) {
+            mapController!.moveCamera(CameraUpdate.zoomTo(value.zoom - 0.6));
+          });
         }
         return true;
       }, builder: (context, snapshot) {

@@ -95,7 +95,6 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
   }
 
   void _getAddress(int millisecondsDuaration) {
-    log('message 1');
     Future.delayed(Duration(milliseconds: millisecondsDuaration), () async {
       if (await LocationGeo().checkPermission()) {
         SearchResultWithSession adress = YandexSearch.searchByPoint(
@@ -116,8 +115,6 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
         }
 
         address = value.items!.first.name;
-
-        log('message 2 $address');
 
         suggestions = Suggestions(
           iD: '',
@@ -188,7 +185,6 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
                         },
                         onCameraPositionChanged:
                             (cameraPosition, reason, finished) {
-                          log('message 0');
                           pos = cameraPosition;
                           if (pos != null && finished) {
                             _getAddress(0);

@@ -1,4 +1,5 @@
 class Courier {
+  String? ID;
   int? date;
   int? dateUpdate;
   String? dSID;
@@ -19,6 +20,7 @@ class Courier {
   String? status;
 
   Courier({
+    this.ID,
     this.date,
     this.dateUpdate,
     this.dSID,
@@ -40,6 +42,7 @@ class Courier {
   });
 
   factory Courier.fromJson(Map<String, dynamic> json) {
+    String? ID = json['ID'];
     int? date = json['Date'];
     int? dateUpdate = json['DateUpdate'];
     String? dSID = json['DSID'];
@@ -70,6 +73,7 @@ class Courier {
     }
     String? status = json['Status'];
     return Courier(
+      ID: ID,
       date: date,
       dateUpdate: dateUpdate,
       dSID: dSID,

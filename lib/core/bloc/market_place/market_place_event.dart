@@ -4,6 +4,17 @@ abstract class MarketPlaceEvent {}
 
 class MarketPlaceOpenBtmSheet extends MarketPlaceEvent {}
 
+class MixFbsCalcEvent extends MarketPlaceEvent {
+  bool loadingAnimation;
+
+  CoastMarketPlace coast;
+
+  MixFbsCalcEvent(
+    this.loadingAnimation,
+    this.coast,
+  );
+}
+
 class MarketPlaceCloseBtmSheetEvent extends MarketPlaceEvent {}
 
 class MarketPlaceStatedCloseBtmSheet extends MarketPlaceEvent {
@@ -19,11 +30,12 @@ class MarketPlace extends MarketPlaceEvent {
 }
 
 class CalcOrderMarketplace extends MarketPlaceEvent {
+  bool loadingAnimation;
   String? id;
-  Suggestions? suggestion;
+  Suggestions? suggestionStart;
   DateTime? time;
   String group;
-  PointMarketPlace? points;
+  Suggestions? suggestionsEnd;
   List<Ancillaries>? ancillaries;
   String? name;
   String? phone;
@@ -34,9 +46,10 @@ class CalcOrderMarketplace extends MarketPlaceEvent {
   String? room;
 
   CalcOrderMarketplace(
+    this.loadingAnimation,
     this.id,
-    this.suggestion,
-    this.points,
+    this.suggestionStart,
+    this.suggestionsEnd,
     this.ancillaries,
     this.time,
     this.group,

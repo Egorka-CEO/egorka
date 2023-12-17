@@ -2,6 +2,7 @@ import 'package:egorka/helpers/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -94,13 +95,13 @@ class CustomTextField extends StatelessWidget {
                   onFieldSubmitted!(textEditingController.text);
                 }
               },
-              child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                child: Text(
-                  'Готово',
-                  style: TextStyle(fontSize: 14.sp),
-                ),
-              ),
+              // child: MediaQuery(
+              //   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              //   child: Text(
+              //     'Готово',
+              //     style: TextStyle(fontSize: 14.sp),
+              //   ),
+              // ),
             ),
             actions: [
               KeyboardActionsItem(
@@ -124,8 +125,11 @@ class CustomTextField extends StatelessWidget {
             minLines: 1,
             inputFormatters: formatters,
             keyboardType: textInputType,
-            style: const TextStyle(
-                color: Colors.black, overflow: TextOverflow.ellipsis),
+            style: GoogleFonts.manrope(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 17.sp,
+            ),
             decoration: InputDecoration(
               fillColor: fillColor,
               icon: icon,

@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart' as yandex_mapkit;
@@ -60,7 +61,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
   yandex_mapkit.BicycleSessionResult? directionsBicycle;
   List<yandex_mapkit.PlacemarkMapObject> markers = [];
 
-  double maxHeightPanel = 745.h;
+  double maxHeightPanel = 840.h;
 
   late TabController controller;
 
@@ -127,7 +128,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
             },
             maxHeight: maxHeightPanel,
             // minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
-            minHeight: 310.h,
+            minHeight: 350.h,
             // : 310.h,
             defaultPanelState: PanelState.CLOSED,
           );
@@ -179,8 +180,8 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
           height: maxHeightPanel - 50.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25.r),
-              topRight: Radius.circular(25.r),
+              topLeft: Radius.circular(32.r),
+              topRight: Radius.circular(32.r),
             ),
             boxShadow: const [
               BoxShadow(
@@ -189,7 +190,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 color: Colors.black12,
               ),
             ],
-            color: backgroundColor,
+            color: Colors.white,
           ),
           child: ListView(
             shrinkWrap: true,
@@ -226,28 +227,30 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         setState(() {});
                       },
                       child: Container(
+                        height: 42.h,
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.express
-                              ? Colors.red
-                              : Colors.grey[200],
+                              ? const Color.fromRGBO(255, 102, 102, 1)
+                              : const Color.fromRGBO(245, 245, 245, 1),
                           borderRadius: BorderRadius.circular(100.r),
                         ),
+                        alignment: Alignment.center,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 15.w, vertical: 10.h),
+                          padding: EdgeInsets.symmetric(horizontal: 19.w),
                           child: Text(
                             'Город',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: typeGroup == TypeGroup.express
                                   ? Colors.white
                                   : Colors.black.withOpacity(0.5),
-                              fontSize: 13.sp,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 5.w),
+                    SizedBox(width: 4.w),
                     GestureDetector(
                       onTap: () {
                         typeGroup = TypeGroup.fbo;
@@ -266,28 +269,30 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         setState(() {});
                       },
                       child: Container(
+                        height: 42.h,
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.fbo
-                              ? Colors.red
-                              : Colors.grey[200],
+                              ? const Color.fromRGBO(255, 102, 102, 1)
+                              : const Color.fromRGBO(245, 245, 245, 1),
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 15.w, vertical: 10.h),
+                              horizontal: 19.w, vertical: 10.h),
                           child: Text(
                             'FBO',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: typeGroup == TypeGroup.fbo
                                   ? Colors.white
                                   : Colors.black.withOpacity(0.5),
-                              fontSize: 13.sp,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 5.w),
+                    SizedBox(width: 4.w),
                     GestureDetector(
                       onTap: () {
                         typeGroup = TypeGroup.fbs;
@@ -306,28 +311,30 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         setState(() {});
                       },
                       child: Container(
+                        height: 42.h,
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.fbs
-                              ? Colors.red
-                              : Colors.grey[200],
+                              ? const Color.fromRGBO(255, 102, 102, 1)
+                              : const Color.fromRGBO(245, 245, 245, 1),
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 15.w, vertical: 10.h),
+                              horizontal: 19.w, vertical: 10.h),
                           child: Text(
                             'FBS',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: typeGroup == TypeGroup.fbs
                                   ? Colors.white
                                   : Colors.black.withOpacity(0.5),
-                              fontSize: 13.sp,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 5.w),
+                    SizedBox(width: 4.w),
                     GestureDetector(
                       onTap: () {
                         final marketplaces =
@@ -368,22 +375,24 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         setState(() {});
                       },
                       child: Container(
+                        height: 42.h,
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.mixfbs
-                              ? Colors.red
-                              : Colors.grey[200],
+                              ? const Color.fromRGBO(255, 102, 102, 1)
+                              : const Color.fromRGBO(245, 245, 245, 1),
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 15.w, vertical: 10.h),
+                              horizontal: 20.w, vertical: 10.h),
                           child: Text(
                             'Сборный FBS',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: typeGroup == TypeGroup.mixfbs
                                   ? Colors.white
                                   : Colors.black.withOpacity(0.5),
-                              fontSize: 13.sp,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -392,176 +401,249 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                   ],
                 ),
               ),
-              SizedBox(height: 10.h),
-              Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Container(
-                      height: 55.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        color: Colors.white,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              value: false,
-                              fillColor: MaterialStateProperty.all(Colors.red),
-                              shape: const CircleBorder(),
-                              onChanged: ((value) {}),
+              // SizedBox(height: 10.h),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20.w).add(
+                  EdgeInsets.only(top: 24.h),
+                ),
+                height: 148.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24.r),
+                  border: Border.all(
+                    width: 1.w,
+                    color: const Color.fromRGBO(220, 220, 220, 1),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 60.w, top: 16.h),
+                          child: Text(
+                            'Откуда',
+                            style: GoogleFonts.manrope(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: const Color.fromRGBO(177, 177, 177, 1),
                             ),
-                            Expanded(
-                              child: CustomTextField(
-                                height: 45.h,
-                                focusNode: focusFrom,
-                                fillColor: Colors.white.withOpacity(0),
-                                hintText: 'Откуда забрать?',
-                                enabled: typeGroup != TypeGroup.mixfbs,
-                                onTap: () async {
-                                  typeAdd = TypeAdd.sender;
-                                  focusFrom.unfocus();
-
-                                  await panelController.animatePanelToPosition(
-                                    1,
-                                    duration: const Duration(milliseconds: 250),
-                                  );
-                                  bloc.add(SearchAddressClear());
-                                  Future.delayed(
-                                      const Duration(milliseconds: 50), () {
-                                    if (!focusFrom.hasFocus) {
-                                      focusFrom.requestFocus();
-                                    }
-                                  });
-                                },
-                                onFieldSubmitted: (text) {
-                                  panelController.animatePanelToPosition(
-                                    0,
-                                    duration: const Duration(milliseconds: 400),
-                                  );
-                                  focusFrom.unfocus();
-                                },
-                                contentPadding: EdgeInsets.only(right: 10.w),
-                                textEditingController: fromController,
-                                onChanged: (value) {
-                                  bloc.add(SearchAddress(value));
-                                },
-                              ),
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Container(
+                            height: 23.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.r),
+                              color: Colors.white,
                             ),
-                            if (typeGroup != TypeGroup.mixfbs)
-                              fromController.text.isNotEmpty
-                                  ? Padding(
-                                      padding: EdgeInsets.only(right: 15.w),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          bloc.add(DeletePolilyneEvent());
-                                          fromController.text = '';
-                                          suggestionsStart = null;
-                                          coasts.clear();
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          height: 20.h,
-                                          width: 20.h,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.grey[500],
-                                          ),
-                                          child: const Icon(
-                                            Icons.clear,
-                                            color: Colors.white,
-                                            size: 15,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: EdgeInsets.only(right: 5.w),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 0.h),
-                                            child: Container(
-                                              color: Colors.grey[300],
-                                              width: 1,
-                                              height: 40.h,
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              final res =
-                                                  await Navigator.of(context)
-                                                      .pushNamed(
-                                                          AppRoute.selectPoint);
-                                              if (res != null &&
-                                                  res is Suggestions) {
-                                                suggestionsStart = res;
-                                                fromController.text =
-                                                    suggestionsStart!.name;
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 40.w),
+                                  // Checkbox(
+                                  //   value: false,
+                                  //   fillColor:
+                                  //       MaterialStateProperty.all(Colors.red),
+                                  //   shape: const CircleBorder(),
+                                  //   onChanged: ((value) {}),
+                                  // ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      height: 45.h,
+                                      focusNode: focusFrom,
+                                      fillColor: Colors.white.withOpacity(0),
+                                      hintText: 'Введите адрес',
+                                      enabled: typeGroup != TypeGroup.mixfbs,
+                                      onTap: () async {
+                                        typeAdd = TypeAdd.sender;
+                                        focusFrom.unfocus();
 
+                                        await panelController
+                                            .animatePanelToPosition(
+                                          1,
+                                          duration:
+                                              const Duration(milliseconds: 250),
+                                        );
+                                        bloc.add(SearchAddressClear());
+                                        Future.delayed(
+                                            const Duration(milliseconds: 50),
+                                            () {
+                                          if (!focusFrom.hasFocus) {
+                                            focusFrom.requestFocus();
+                                          }
+                                        });
+                                      },
+                                      onFieldSubmitted: (text) {
+                                        panelController.animatePanelToPosition(
+                                          0,
+                                          duration:
+                                              const Duration(milliseconds: 400),
+                                        );
+                                        focusFrom.unfocus();
+                                      },
+                                      contentPadding:
+                                          EdgeInsets.only(right: 10.w),
+                                      textEditingController: fromController,
+                                      onChanged: (value) {
+                                        bloc.add(SearchAddress(value));
+                                      },
+                                    ),
+                                  ),
+                                  if (typeGroup != TypeGroup.mixfbs)
+                                    fromController.text.isNotEmpty
+                                        ? Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 88.w),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                bloc.add(DeletePolilyneEvent());
+                                                fromController.text = '';
+                                                suggestionsStart = null;
+                                                coasts.clear();
                                                 setState(() {});
-                                                calc();
-                                              }
-                                            },
-                                            style: ButtonStyle(
-                                              shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    bottomRight:
-                                                        Radius.circular(10.r),
-                                                    topRight:
-                                                        Radius.circular(10.r),
-                                                  ),
+                                              },
+                                              child: Container(
+                                                height: 20.h,
+                                                width: 20.h,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.grey[300],
+                                                ),
+                                                child: const Icon(
+                                                  Icons.clear,
+                                                  color: Colors.white,
+                                                  size: 15,
                                                 ),
                                               ),
-                                              backgroundColor:
-                                                  const MaterialStatePropertyAll(
-                                                      Colors.transparent),
-                                              foregroundColor:
-                                                  const MaterialStatePropertyAll(
-                                                      Colors.white),
-                                              overlayColor:
-                                                  MaterialStatePropertyAll(
-                                                Colors.grey[400],
-                                              ),
                                             ),
-                                            child: Center(
-                                              child: Text(
-                                                'Карта',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 13.sp),
-                                              ),
+                                          )
+                                        : Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 5.w),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 0.h),
+                                                  child: Container(
+                                                    color: Colors.grey[300],
+                                                    width: 1,
+                                                    height: 40.h,
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    final res =
+                                                        await Navigator.of(
+                                                                context)
+                                                            .pushNamed(AppRoute
+                                                                .selectPoint);
+                                                    if (res != null &&
+                                                        res is Suggestions) {
+                                                      suggestionsStart = res;
+                                                      fromController.text =
+                                                          suggestionsStart!
+                                                              .name;
+
+                                                      setState(() {});
+                                                      calc();
+                                                    }
+                                                  },
+                                                  style: ButtonStyle(
+                                                    shape: MaterialStateProperty
+                                                        .all<
+                                                            RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  10.r),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10.r),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        const MaterialStatePropertyAll(
+                                                            Colors.transparent),
+                                                    foregroundColor:
+                                                        const MaterialStatePropertyAll(
+                                                            Colors.white),
+                                                    overlayColor:
+                                                        MaterialStatePropertyAll(
+                                                      Colors.grey[400],
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Карта',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 13.sp),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                          ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        Container(
+                          height: 1.h,
+                          margin: EdgeInsets.only(left: 60.w, right: 88.w),
+                          width: double.infinity,
+                          color: const Color.fromRGBO(220, 220, 220, 1),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 60.w, top: 12.h),
+                          child: Text(
+                            'Куда',
+                            style: GoogleFonts.manrope(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: const Color.fromRGBO(177, 177, 177, 1),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Builder(
+                            builder: (context) {
+                              if (typeGroup == TypeGroup.express) {
+                                return toFieldExpress();
+                              }
+                              return toFieldMarketPage();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20.w),
+                        child: Image.asset(
+                          'assets/images/from_a_to_b.png',
+                          width: 20.w,
+                          height: 82.h,
                         ),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 15.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Builder(
-                      builder: (context) {
-                        if (typeGroup == TypeGroup.express) {
-                          return toFieldExpress();
-                        }
-                        return toFieldMarketPage();
-                      },
-                    ),
-                  ),
-                  _searchList(),
-                ],
+                    )
+                  ],
+                ),
               ),
+              _searchList(),
             ],
           ),
         ),
@@ -645,6 +727,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
   Widget toFieldExpress() {
     var bloc = BlocProvider.of<SearchAddressBloc>(context);
     return Container(
+      height: 23.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.r),
         color: Colors.white,
@@ -654,128 +737,132 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Checkbox(
-              value: false,
-              fillColor: MaterialStateProperty.all(Colors.blue),
-              shape: const CircleBorder(),
-              onChanged: (value) {},
-            ),
+            SizedBox(width: 40.w),
+            // Checkbox(
+            //   value: false,
+            //   fillColor: MaterialStateProperty.all(Colors.blue),
+            //   shape: const CircleBorder(),
+            //   onChanged: (value) {},
+            // ),
             Expanded(
-              child: CustomTextField(
-                height: 45.h,
-                onTap: () async {
-                  typeAdd = TypeAdd.receiver;
-                  focusTo.unfocus();
+              child: SizedBox(
+                height: 23.h,
+                child: CustomTextField(
+                  height: 23.h,
+                  onTap: () async {
+                    typeAdd = TypeAdd.receiver;
+                    focusTo.unfocus();
 
-                  await panelController.animatePanelToPosition(
-                    1,
-                    duration: const Duration(milliseconds: 250),
-                  );
-                  bloc.add(SearchAddressClear());
-                  Future.delayed(const Duration(milliseconds: 50), () {
-                    if (!focusTo.hasFocus) {
-                      focusTo.requestFocus();
-                    }
-                  });
-                },
-                onFieldSubmitted: (text) {
-                  panelController.animatePanelToPosition(
-                    0,
-                    duration: const Duration(milliseconds: 400),
-                  );
-                  focusTo.unfocus();
-                },
-                contentPadding: EdgeInsets.only(right: 10.w),
-                focusNode: focusTo,
-                fillColor: Colors.white.withOpacity(0),
-                hintText: 'Куда отвезти?',
-                textEditingController: toController,
-                onChanged: (value) {
-                  bloc.add(SearchAddress(value));
-                },
+                    await panelController.animatePanelToPosition(
+                      1,
+                      duration: const Duration(milliseconds: 250),
+                    );
+                    bloc.add(SearchAddressClear());
+                    Future.delayed(const Duration(milliseconds: 50), () {
+                      if (!focusTo.hasFocus) {
+                        focusTo.requestFocus();
+                      }
+                    });
+                  },
+                  onFieldSubmitted: (text) {
+                    panelController.animatePanelToPosition(
+                      0,
+                      duration: const Duration(milliseconds: 400),
+                    );
+                    focusTo.unfocus();
+                  },
+                  contentPadding: EdgeInsets.only(right: 10.w),
+                  focusNode: focusTo,
+                  fillColor: Colors.white.withOpacity(0),
+                  hintText: 'Введите адрес',
+                  textEditingController: toController,
+                  onChanged: (value) {
+                    bloc.add(SearchAddress(value));
+                  },
+                ),
               ),
             ),
-            SizedBox(width: 10.w),
-            if (typeGroup != TypeGroup.mixfbs)
-              toController.text.isNotEmpty
-                  ? Padding(
-                      padding: EdgeInsets.only(right: 15.w),
-                      child: GestureDetector(
-                        onTap: () {
-                          bloc.add(DeletePolilyneEvent());
-                          toController.text = '';
-                          suggestionsEnd = null;
-                          coasts.clear();
-                          setState(() {});
-                        },
-                        child: Container(
-                          height: 20.h,
-                          width: 20.h,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[500],
-                          ),
-                          child: const Icon(
-                            Icons.clear,
-                            color: Colors.white,
-                            size: 15,
-                          ),
-                        ),
-                      ),
-                    )
-                  : Padding(
-                      padding: EdgeInsets.only(right: 5.w),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 0.h),
-                            child: Container(
-                              color: Colors.grey[300],
-                              width: 1,
-                              height: 40.h,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              focusFrom.unfocus();
-                              final res = await Navigator.of(context)
-                                  .pushNamed(AppRoute.selectPoint);
-                              if (res != null && res is Suggestions) {
-                                suggestionsEnd = res;
-                                toController.text = suggestionsEnd!.name;
-                                setState(() {});
-                                calc();
-                              }
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(10.r),
-                                    topRight: Radius.circular(10.r),
-                                  ),
-                                ),
-                              ),
-                              backgroundColor: const MaterialStatePropertyAll(
-                                  Colors.transparent),
-                              foregroundColor:
-                                  const MaterialStatePropertyAll(Colors.white),
-                              overlayColor: MaterialStatePropertyAll(
-                                Colors.grey[400],
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Карта',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 13.sp),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+            // SizedBox(width: 10.w),
+            // if (typeGroup != TypeGroup.mixfbs)
+            //   toController.text.isNotEmpty
+            //       ? Padding(
+            //           padding: EdgeInsets.only(right: 15.w),
+            //           child: GestureDetector(
+            //             onTap: () {
+            //               bloc.add(DeletePolilyneEvent());
+            //               toController.text = '';
+            //               suggestionsEnd = null;
+            //               coasts.clear();
+            //               setState(() {});
+            //             },
+            //             child: Container(
+            //               height: 20.h,
+            //               width: 20.h,
+            //               decoration: BoxDecoration(
+            //                 shape: BoxShape.circle,
+            //                 color: Colors.grey[500],
+            //               ),
+            //               child: const Icon(
+            //                 Icons.clear,
+            //                 color: Colors.white,
+            //                 size: 15,
+            //               ),
+            //             ),
+            //           ),
+            //         )
+            //       : Padding(
+            //           padding: EdgeInsets.only(right: 5.w),
+            //           child: Row(
+            //             children: [
+            //               Padding(
+            //                 padding: EdgeInsets.symmetric(vertical: 0.h),
+            //                 child: Container(
+            //                   color: Colors.grey[300],
+            //                   width: 1,
+            //                   height: 23.h,
+            //                 ),
+            //               ),
+            //               TextButton(
+            //                 onPressed: () async {
+            //                   focusFrom.unfocus();
+            //                   final res = await Navigator.of(context)
+            //                       .pushNamed(AppRoute.selectPoint);
+            //                   if (res != null && res is Suggestions) {
+            //                     suggestionsEnd = res;
+            //                     toController.text = suggestionsEnd!.name;
+            //                     setState(() {});
+            //                     calc();
+            //                   }
+            //                 },
+            //                 style: ButtonStyle(
+            //                   shape: MaterialStateProperty.all<
+            //                       RoundedRectangleBorder>(
+            //                     RoundedRectangleBorder(
+            //                       borderRadius: BorderRadius.only(
+            //                         bottomRight: Radius.circular(10.r),
+            //                         topRight: Radius.circular(10.r),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   backgroundColor: const MaterialStatePropertyAll(
+            //                       Colors.transparent),
+            //                   foregroundColor:
+            //                       const MaterialStatePropertyAll(Colors.white),
+            //                   overlayColor: MaterialStatePropertyAll(
+            //                     Colors.grey[400],
+            //                   ),
+            //                 ),
+            //                 child: Center(
+            //                   child: Text(
+            //                     'Карта',
+            //                     style: TextStyle(
+            //                         color: Colors.black, fontSize: 13.sp),
+            //                   ),
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
           ],
         ),
       ),
@@ -846,18 +933,28 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       children: const [CupertinoActivityIndicator()],
                     );
                   } else if (state is SearchAddressSuccess) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: SizedBox(
-                        height: 300.h,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: state.address!.result.suggestions!.length,
-                          itemBuilder: (context, index) {
-                            return _pointCard(state, index, context);
-                          },
-                        ),
+                    return Container(
+                      margin: EdgeInsets.only(top: 20.h),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(36.r),
+                            topRight: Radius.circular(36.r),
+                          ),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 24.r,
+                              color: Color.fromRGBO(0, 0, 0, 0.12),
+                            ),
+                          ]),
+                      // height: 300.h,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: state.address!.result.suggestions!.length,
+                        itemBuilder: (context, index) {
+                          return _pointCard(state, index, context);
+                        },
                       ),
                     );
                   } else if (state is SearchAddressRoutePolilyne ||

@@ -7,6 +7,7 @@ import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -213,8 +214,8 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
       SearchResultWithSession adress = YandexSearch.searchByPoint(
         point: Point(
-          latitude: position.latitude,
-          longitude: position.longitude,
+          latitude: kDebugMode ? 55.7522200 : position.latitude,
+          longitude: kDebugMode ? 37.6155600 : position.longitude,
         ),
         searchOptions: const SearchOptions(),
       );

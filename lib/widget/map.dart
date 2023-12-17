@@ -1,5 +1,6 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/helpers/location.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,8 +35,8 @@ class _MapViewState extends State<MapView> {
           desiredAccuracy: LocationAccuracy.high);
       _jumpToPoint(
         pointModel.Point(
-          latitude: position.latitude,
-          longitude: position.longitude,
+          latitude: kDebugMode ? 55.7522200 : position.latitude,
+          longitude: kDebugMode ? 37.6155600 : position.longitude,
         ),
       );
     } else {
@@ -70,8 +71,8 @@ class _MapViewState extends State<MapView> {
           CameraUpdate.newCameraPosition(
             CameraPosition(
               target: Point(
-                latitude: point.latitude,
-                longitude: point.longitude,
+                latitude: kDebugMode ? 55.7522200 : point.latitude,
+                longitude: kDebugMode ? 37.6155600 : point.longitude,
               ),
               zoom: 15,
               tilt: 0,

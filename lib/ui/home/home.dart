@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomePage extends StatefulWidget {
@@ -141,65 +142,100 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         },
                       ),
                     ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(top: 60.w, left: 20.w, right: 20.w),
+                    Container(
+                      height: 42.h,
+                      margin:
+                          EdgeInsets.only(top: 75.h, left: 20.w, right: 20.w),
                       child: Row(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 5.w),
-                            child: SizedBox(
-                              height: 35.h,
-                              child: Builder(
-                                builder: (context) {
-                                  return GestureDetector(
-                                    onTap: () =>
-                                        Scaffold.of(context).openDrawer(),
-                                    child: Image.asset(
-                                      'assets/images/logo.png',
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: AnimatedOpacity(
-                              duration: const Duration(seconds: 0),
-                              opacity: logoVisibleMove ? 1 : 0,
-                              child: SizedBox(
-                                height: 50.h,
+                          // Padding(
+                          //   padding: EdgeInsets.only(top: 5.w),
+                          //   child: SizedBox(
+                          //     height: 35.h,
+                          //     child: Builder(
+                          //       builder: (context) {
+                          //         return GestureDetector(
+                          //           onTap: () =>
+                          //               Scaffold.of(context).openDrawer(),
+                          //           child: Image.asset(
+                          //             'assets/images/logo.png',
+                          //           ),
+                          //         );
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
+                          Builder(builder: (context) {
+                            return GestureDetector(
+                              onTap: () => Scaffold.of(context).openDrawer(),
+                              child: Container(
+                                height: 42.h,
+                                width: 42.w,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(0, 4),
+                                      blurRadius: 16.r,
+                                      color:
+                                          const Color.fromRGBO(0, 0, 0, 0.12),
+                                    )
+                                  ],
+                                ),
+                                alignment: Alignment.center,
                                 child: SvgPicture.asset(
-                                  'assets/icons/logo_egorka.svg',
-                                  width: 100.w,
-                                  height: 30.w,
+                                  'assets/icons/more.svg',
+                                  width: 21.w,
+                                  height: 21.h,
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
+                          // const SizedBox(width: 10),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(top: 10),
+                          //   child: AnimatedOpacity(
+                          //     duration: const Duration(seconds: 0),
+                          //     opacity: logoVisibleMove ? 1 : 0,
+                          //     child: SizedBox(
+                          //       height: 50.h,
+                          //       child: SvgPicture.asset(
+                          //         'assets/icons/logo_egorka.svg',
+                          //         width: 100.w,
+                          //         height: 30.w,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           const Spacer(),
                           GestureDetector(
                             onTap: () => markerPlace(context),
                             child: Container(
-                              margin: EdgeInsets.only(top: 10.h),
-                              decoration: const BoxDecoration(
+                              width: 163.w,
+                              height: 42.h,
+                              // margin: EdgeInsets.only(top: 10.h),
+                              decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                gradient: LinearGradient(
+                                    BorderRadius.all(Radius.circular(32.r)),
+                                gradient: const LinearGradient(
                                   colors: [
-                                    Color.fromRGBO(255, 0, 96, 1),
-                                    Color.fromRGBO(216, 0, 255, 1)
+                                    Color.fromRGBO(255, 102, 102, 1),
+                                    Color.fromRGBO(255, 102, 102, 1)
                                   ],
                                 ),
                               ),
+                              alignment: Alignment.center,
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 8.w, vertical: 5.h),
-                                child: const Text(
+                                child: Text(
                                   'Маркетплейсы',
-                                  style: CustomTextStyle.white15w600,
+                                  style: GoogleFonts.manrope(
+                                    fontSize: 17.h,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -210,7 +246,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     if (!bloc.isPolilyne)
                       Padding(
                         padding: EdgeInsets.only(bottom: 200.h),
-                        child: CustomWidget.iconGPS(),
+                        child: Center(
+                          child: SizedBox(
+                            width: 32.w,
+                            height: 57.h,
+                            child: IgnorePointer(
+                              child: SvgPicture.asset('assets/icons/pin.svg'),
+                            ),
+                          ),
+                        ),
                       ),
                     const BottomSheetDraggable(),
                   ],

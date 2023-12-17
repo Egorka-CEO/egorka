@@ -24,7 +24,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await Firebase.initializeApp();
-  await FirebaseMessaging.instance.requestPermission();
+  // await FirebaseMessaging.instance.requestPermission();
 
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
     MessageDialogs().showMessage('Уведомление', event.data.toString());

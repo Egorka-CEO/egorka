@@ -72,8 +72,8 @@ class _NavBarState extends State<NavBar> {
                         width: 270.w,
                         height: 50.h,
                         child: TextButton(
-                          onPressed: () =>
-                              Navigator.of(context).pushNamed(AppRoute.auth),
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(AppRoute.mainAuth),
                           style: ButtonStyle(
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(

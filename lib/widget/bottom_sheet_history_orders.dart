@@ -315,6 +315,7 @@ class _BottomSheetDraggableState
 
     return Container(
       margin: EdgeInsets.only(top: 5.h, bottom: 15.h),
+      height: 350.h,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

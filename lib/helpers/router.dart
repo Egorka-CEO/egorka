@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/custom_page_route.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/marketplaces.dart' as mrkt;
@@ -5,6 +6,7 @@ import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_group.dart';
 import 'package:egorka/ui/auth/main_aut.dart';
+import 'package:egorka/ui/auth/main_auth.dart';
 import 'package:egorka/ui/auth/main_registration.dart';
 import 'package:egorka/ui/home/home.dart';
 import 'package:egorka/ui/newOrder/details_page.dart';
@@ -30,6 +32,7 @@ class AppRoute {
   static const marketplacesMap = '/marketplacesMap';
   static const about = '/about';
   static const auth = '/auth';
+  static const mainAuth = '/mainAuth';
   static const newOrder = '/newOrder';
   static const repeatOrder = '/repeatOrder';
   static const historyOrder = '/history';
@@ -94,6 +97,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const AboutPage());
       case auth:
         return MaterialPageRoute(builder: (_) => const MainAuthPage());
+      case mainAuth:
+        return createRoute(const MainAuthView());
       case newOrder:
         var order;
         var delivery;

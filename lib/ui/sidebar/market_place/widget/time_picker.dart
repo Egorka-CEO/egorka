@@ -5,6 +5,7 @@ import 'package:egorka/widget/tip_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 Widget timePicker(
@@ -15,12 +16,18 @@ Widget timePicker(
   Function(DateTime?) onDone,
 ) {
   return Container(
+    height: 64.h,
     decoration: BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(15.w),
+      borderRadius: BorderRadius.circular(20.r),
+      border: Border.all(
+        width: 1,
+        color: Color.fromRGBO(220, 220, 220, 1),
+      ),
     ),
     child: Row(
       children: [
+        SizedBox(width: 10.w),
         Expanded(
           child: GestureDetector(
             onTap: () => showDateTime(
@@ -33,7 +40,7 @@ Widget timePicker(
               height: 45.h,
               contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
               fillColor: Colors.white,
-              hintText: '',
+              hintText: '...',
               enabled: false,
               textEditingController: startOrderController,
             ),
@@ -41,20 +48,18 @@ Widget timePicker(
         ),
         SizedBox(width: 10.w),
         GestureDetector(
-          onTap: () => showTipWhenTake(
-            context,
-            getWidgetPosition(whenTakeKey),
-            (index) {
-              Navigator.pop(context);
-            },
-          ),
-          child: Icon(
-            Icons.help_outline_outlined,
-            key: whenTakeKey,
-            color: Colors.red,
-          ),
-        ),
-        SizedBox(width: 10.w),
+            onTap: () => showTipWhenTake(
+                  context,
+                  getWidgetPosition(whenTakeKey),
+                  (index) {
+                    Navigator.pop(context);
+                  },
+                ),
+            child: SvgPicture.asset(
+              key: whenTakeKey,
+              'assets/icons/calendar.svg',
+            )),
+        SizedBox(width: 20.w),
       ],
     ),
   );

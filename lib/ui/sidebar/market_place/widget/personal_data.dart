@@ -8,6 +8,8 @@ import 'package:egorka/widget/list_books_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 Widget personalData(
@@ -21,11 +23,16 @@ Widget personalData(
   return Column(
     children: [
       Container(
-        height: 45.h,
+        height: 64.h,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.r),
           color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            width: 1,
+            color: Color.fromRGBO(220, 220, 220, 1),
+          ),
         ),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Row(
           children: [
             Expanded(
@@ -36,7 +43,7 @@ Widget personalData(
                 focusNode: contactFocus,
                 contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
                 fillColor: Colors.white,
-                hintText: 'Имя',
+                hintText: 'Имя Фамилия',
                 formatters: [CustomInputFormatterUpperCase()],
                 hintStyle: CustomTextStyle.textHintStyle,
                 textEditingController: nameController,
@@ -56,15 +63,16 @@ Widget personalData(
                 ),
                 child: Row(
                   children: [
-                    const Text(
+                    Text(
                       'Из книжки',
-                      style: CustomTextStyle.red15,
+                      style: GoogleFonts.manrope(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(177, 177, 177, 1),
+                      ),
                     ),
                     SizedBox(width: 5.w),
-                    const Icon(
-                      Icons.menu_book,
-                      color: Colors.red,
-                    ),
+                    SvgPicture.asset('assets/icons/archive-book.svg'),
                     SizedBox(width: 10.w),
                   ],
                 ),
@@ -74,39 +82,52 @@ Widget personalData(
         ),
       ),
       SizedBox(height: 10.h),
-      Row(
-        children: [
-          Expanded(
-            child: CustomTextField(
-              onFieldSubmitted: (value) {
-                if (phoneController.text == '+7 (') {
-                  phoneController.text = '';
-                }
-                onSubmitted();
-              },
-              focusNode: phoneFocus,
-              height: 45.h,
-              contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
-              fillColor: Colors.white,
-              hintText: '+7 (999) 888-77-66',
-              textInputType: TextInputType.number,
-              textEditingController: phoneController,
-              onTap: () {
-                if (phoneController.text.isEmpty) {
-                  phoneController.text = '+7 (';
-                }
-              },
-              formatters: [
-                MaskTextInputFormatter(
-                  type: MaskAutoCompletionType.eager,
-                  initialText: '+7 (',
-                  mask: '+7 (###) ###-##-##',
-                  filter: {"#": RegExp(r'[0-9]')},
-                )
-              ],
-            ),
+      Container(
+        height: 64.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            width: 1,
+            color: Color.fromRGBO(220, 220, 220, 1),
           ),
-        ],
+        ),
+        child: Row(
+          children: [
+            SizedBox(width: 20.w),
+            SvgPicture.asset('assets/icons/call.svg'),
+            Expanded(
+              child: CustomTextField(
+                onFieldSubmitted: (value) {
+                  if (phoneController.text == '+7 (') {
+                    phoneController.text = '';
+                  }
+                  onSubmitted();
+                },
+                focusNode: phoneFocus,
+                height: 45.h,
+                contentPadding: EdgeInsets.symmetric(horizontal: 10.w),
+                fillColor: Colors.white,
+                hintText: '+7 (999) 888-77-66',
+                textInputType: TextInputType.number,
+                textEditingController: phoneController,
+                onTap: () {
+                  if (phoneController.text.isEmpty) {
+                    phoneController.text = '+7 (';
+                  }
+                },
+                formatters: [
+                  MaskTextInputFormatter(
+                    type: MaskAutoCompletionType.eager,
+                    initialText: '+7 (',
+                    mask: '+7 (###) ###-##-##',
+                    filter: {"#": RegExp(r'[0-9]')},
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     ],
   );

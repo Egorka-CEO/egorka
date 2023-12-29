@@ -405,12 +405,12 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                           children: [
                                             formOrder?.result?.group ==
                                                     'Express'
-                                                ? const Text(
+                                                ? Text(
                                                     'Дата и время забора',
                                                     style: CustomTextStyle
                                                         .grey15bold,
                                                   )
-                                                : const Text(
+                                                : Text(
                                                     'Дата забора',
                                                     style: CustomTextStyle
                                                         .grey15bold,
@@ -444,7 +444,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         ),
                                         SizedBox(height: 15.h),
                                         Row(
-                                          children: const [
+                                          children: [
                                             Text(
                                               'Маршрут',
                                               style: CustomTextStyle.grey15bold,
@@ -619,7 +619,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                             status != 'Ошибка' &&
                                             status != 'Отменено')
                                           Row(
-                                            children: const [
+                                            children: [
                                               Text(
                                                 'Кто везёт',
                                                 style:
@@ -799,7 +799,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                           Row(
                                             children: [
                                               SizedBox(width: 10.w),
-                                              const Text(
+                                              Text(
                                                 'Объявленная ценность',
                                                 style:
                                                     CustomTextStyle.grey15bold,
@@ -823,7 +823,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                           Row(
                                             children: [
                                               SizedBox(width: 10.w),
-                                              const Text(
+                                              Text(
                                                 'Что везем',
                                                 style:
                                                     CustomTextStyle.grey15bold,
@@ -843,7 +843,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Стоимость доставки',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -860,7 +860,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Дополнительные услуги',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -879,7 +879,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                           Row(
                                             children: [
                                               SizedBox(width: 10.w),
-                                              const Text(
+                                              Text(
                                                 'Способ оплаты',
                                                 style:
                                                     CustomTextStyle.grey15bold,
@@ -905,7 +905,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Номер заказа',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -922,7 +922,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Статус оплаты',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -952,7 +952,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Итого',
                                               style: CustomTextStyle.grey15bold,
                                             ),

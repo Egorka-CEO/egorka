@@ -18,7 +18,7 @@ Widget tabGroup(
       unselectedLabelColor: Colors.black,
       indicator: BoxDecoration(
         borderRadius: BorderRadius.circular(15.r),
-        color: Colors.red,
+        color: const Color.fromRGBO(255, 102, 102, 1),
       ),
       onTap: (value) {
         function(value);

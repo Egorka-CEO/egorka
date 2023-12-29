@@ -1,5 +1,7 @@
 import 'package:egorka/helpers/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyle extends TextStyle {
   const AppTextStyle({
@@ -45,9 +47,9 @@ class CustomTextStyle {
     color: Colors.grey,
   );
 
-  static const AppTextStyle grey15bold = AppTextStyle(
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
+  static TextStyle grey15bold = GoogleFonts.manrope(
+    fontSize: 17,
+    fontWeight: FontWeight.w700,
     color: helperTextColor,
   );
 

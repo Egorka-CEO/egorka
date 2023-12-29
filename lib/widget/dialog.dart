@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class MessageDialogs {
-  final color = Colors.grey[300];
+  final color = Colors.white;
 
   void showMessage(String? from, String message) {
     SmartDialog.showToast(
       '',
       displayTime: const Duration(seconds: 3),
       builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 70.h, left: 20, right: 20),
         child: MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: Container(
@@ -34,12 +35,24 @@ class MessageDialogs {
               color: color,
               child: ListTile(
                 minLeadingWidth: 10,
-                leading: const Icon(
-                  Icons.warning,
-                  color: Colors.red,
+                // leading: const Icon(
+                //   Icons.warning,
+                //   color: Colors.red,
+                // ),
+                title: Text(
+                  from!,
+                  style: GoogleFonts.manrope(
+                    fontSize: 17.h,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                title: Text(from!),
-                subtitle: Text(message),
+                subtitle: Text(
+                  message,
+                  style: GoogleFonts.manrope(
+                    fontSize: 15.h,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),
@@ -55,7 +68,7 @@ class MessageDialogs {
       '',
       displayTime: const Duration(seconds: 3),
       builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 70.h, left: 20, right: 20),
         child: MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: Container(
@@ -77,13 +90,25 @@ class MessageDialogs {
               color: color,
               child: ListTile(
                 minLeadingWidth: 10,
-                leading: const Icon(
-                  MaterialCommunityIcons.information,
-                  color: Colors.black,
-                  size: 30,
+                // leading: const Icon(
+                //   MaterialCommunityIcons.information,
+                //   color: Colors.black,
+                //   size: 30,
+                // ),
+                title: Text(
+                  from!,
+                  style: GoogleFonts.manrope(
+                    fontSize: 17.h,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                title: Text(from!),
-                subtitle: Text(message),
+                subtitle: Text(
+                  message,
+                  style: GoogleFonts.manrope(
+                    fontSize: 15.h,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),

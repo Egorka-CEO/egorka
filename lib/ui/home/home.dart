@@ -132,8 +132,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       child: MapView(
                         callBack: () {
-                          Future.delayed(const Duration(milliseconds: 800), () {
-                            visible = false;
+                          Future.delayed(const Duration(milliseconds: 1200),
+                              () {
+                            setState(() {
+                              visible = false;
+                            });
                             streamController.add(2);
                           });
                           logoMoveBackgroundScale = true;
@@ -303,63 +306,77 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   },
                 ),
               ),
-              StreamBuilder<int>(
-                  stream: streamController.stream,
-                  initialData: 1,
-                  builder: (context, snapshot) {
-                    if (visible) {
-                      return AnimatedOpacity(
-                        duration: const Duration(milliseconds: 800),
-                        opacity: snapshot.data == 2 ? 0 : 1,
-                        child: Container(color: Colors.white),
-                      );
-                    }
-                    return const SizedBox();
-                  }),
-              Positioned.fill(
-                child: Stack(
-                  children: [
-                    AnimatedPadding(
-                      onEnd: () {
-                        logoVisibleMove = true;
-                        setState(() {});
-                      },
-                      curve: Curves.linear,
-                      duration: Duration(milliseconds: duration),
-                      padding: EdgeInsets.only(
-                        top: logoMoveBackgroundScale ? 65.w : 0,
-                        left: logoMoveBackgroundScale ? 65.w : 0,
-                      ),
-                      child: AnimatedAlign(
-                        curve: Curves.linear,
-                        alignment: logoMoveBackgroundScale
-                            ? Alignment.topLeft
-                            : Alignment.center,
-                        duration: Duration(milliseconds: duration),
-                        child: AnimatedOpacity(
-                          duration: const Duration(seconds: 0),
-                          opacity: logoVisibleMove ? 0 : 1,
-                          child: AnimatedScale(
-                            scale: logoMoveBackgroundScale ? 1 : 3.6,
-                            duration: Duration(milliseconds: duration),
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 5.w, bottom: 5.w),
-                              child: SizedBox(
-                                height: 50.h,
-                                child: SvgPicture.asset(
-                                  'assets/icons/logo_egorka.svg',
-                                  width: 100.w,
-                                  height: 30.w,
-                                ),
-                              ),
-                            ),
-                          ),
+              // StreamBuilder<int>(
+              //     stream: streamController.stream,
+              //     initialData: 1,
+              //     builder: (context, snapshot) {
+              // if (visible)
+              IgnorePointer(
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 800),
+                  opacity: visible ? 1 : 0,
+                  child: Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: SizedBox(
+                        child: Image.asset(
+                          'assets/images/egorka_man.png',
+                          // width: 100.w,
+                          height: 150.w,
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
+              //   }
+              //   return const SizedBox();
+              // }),
+              // Positioned.fill(
+              //   child: Stack(
+              //     children: [
+              //       // AnimatedPadding(
+              //       //   onEnd: () {
+              //       //     logoVisibleMove = true;
+              //       //     setState(() {});
+              //       //   },
+              //       //   curve: Curves.linear,
+              //       //   duration: Duration(milliseconds: duration),
+              //       // padding: EdgeInsets.only(
+              //       //   top: logoMoveBackgroundScale ? 65.w : 0,
+              //       //   left: logoMoveBackgroundScale ? 65.w : 0,
+              //       // ),
+              //       // child: AnimatedAlign(
+              //       //   curve: Curves.linear,
+              //       //   alignment: logoMoveBackgroundScale
+              //       //       ? Alignment.topLeft
+              //       //       : Alignment.center,
+              //       //   duration: Duration(milliseconds: duration),
+              //       //   child:
+              //       AnimatedOpacity(
+              //         duration: const Duration(seconds: 0),
+              //         opacity: logoVisibleMove ? 0 : 1,
+              //         //     child: AnimatedScale(
+              //         //       scale: logoMoveBackgroundScale ? 1 : 3.6,
+              //         //       duration: Duration(milliseconds: duration),
+              //         //       child: Padding(
+              //         //         padding: EdgeInsets.only(top: 5.w, bottom: 5.w),
+              //         child: SizedBox(
+              //           height: 50.h,
+              //           child: Image.asset(
+              //             'assets/images/egorka_man.png',
+              //             width: 100.w,
+              //             height: 30.w,
+              //           ),
+              //         ),
+              //       ),
+              //       //       ),
+              //       //     ),
+              //       //   ),
+              //       // ),
+              //     ],
+              //   ),
+              // ),
             ],
           );
         },

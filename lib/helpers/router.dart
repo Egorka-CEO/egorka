@@ -49,15 +49,15 @@ class AppRoute {
   static Route<dynamic>? onGenerateRoute(RouteSettings route) {
     switch (route.name) {
       case home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return createRoute(const HomePage());
       case employee:
-        return MaterialPageRoute(builder: (_) => EmployeePage());
+        return createRoute(EmployeePage());
       case currentOrder:
         final list = route.arguments as List<int?>;
         var number = list[0];
         var pin = list[1];
-        return MaterialPageRoute(
-          builder: (_) => CurrentOrderPage(
+        return createRoute(
+          CurrentOrderPage(
             recorNumber: number,
             recordPIN: pin,
           ),
@@ -69,7 +69,7 @@ class AppRoute {
         var delivery;
         var start;
         var end;
-        var typeGroup;
+        TypeGroup? typeGroup = TypeGroup.fbo;
 
         if (route.arguments != null) {
           final arg = route.arguments as List;
@@ -82,8 +82,8 @@ class AppRoute {
           end = arg[5] as Suggestions?;
           typeGroup = arg[6] as TypeGroup?;
         }
-        return MaterialPageRoute(
-          builder: (_) => MarketPage(
+        return createRoute(
+          MarketPage(
             recorNumber: number,
             recordPIN: pin,
             order: order,
@@ -94,9 +94,9 @@ class AppRoute {
           ),
         );
       case about:
-        return MaterialPageRoute(builder: (_) => const AboutPage());
+        return createRoute(const AboutPage());
       case auth:
-        return MaterialPageRoute(builder: (_) => const MainAuthPage());
+        return createRoute(const MainAuthPage());
       case mainAuth:
         return createRoute(const MainAuthView());
       case newOrder:
@@ -129,27 +129,26 @@ class AppRoute {
         final arg = route.arguments as List;
         number = arg[0];
         pin = arg[1];
-        return MaterialPageRoute(
-          builder: (_) => RepeatOrderPage(
+        return createRoute(
+          RepeatOrderPage(
             recordNumber: number,
             recordPIN: pin,
           ),
         );
       case historyOrder:
         final list = route.arguments as CreateFormModel;
-        return MaterialPageRoute(
-            builder: (_) => HistoryOrdersPage(coast: list));
+        return createRoute(HistoryOrdersPage(coast: list));
       case profile:
-        return MaterialPageRoute(builder: (_) => ProfilePage());
+        return createRoute(ProfilePage());
       case marketplacesMap:
         final value = route.arguments as mrkt.MarketPlaces;
-        return MaterialPageRoute(builder: (_) => MarketPlacesMap(value));
+        return createRoute(MarketPlacesMap(value));
       case trafficDeposit:
-        return MaterialPageRoute(builder: (_) => TrafficDeposit());
+        return createRoute(TrafficDeposit());
       case detailsOrder:
         final list = route.arguments as List<dynamic>;
-        return MaterialPageRoute(
-          builder: (_) => DetailsPage(
+        return createRoute(
+          DetailsPage(
             typeAdd: list[0],
             index: list[1],
             routeOrder: list[2],
@@ -157,20 +156,20 @@ class AppRoute {
         );
       case historyDetailsOrder:
         final list = route.arguments as List<dynamic>;
-        return MaterialPageRoute(
-          builder: (_) => HistoryDetailsPage(
+        return createRoute(
+          HistoryDetailsPage(
             typeAdd: list[0],
             index: list[1],
             locations: list[2],
           ),
         );
       case book:
-        return MaterialPageRoute(builder: (_) => BookPage());
+        return createRoute(BookPage());
       case selectPoint:
-        return MaterialPageRoute(builder: (_) => SelectAdresMap());
+        return createRoute(SelectAdresMap());
       case registration:
         final flag = route.arguments as bool;
-        return MaterialPageRoute(builder: (_) => MainRegPage(flag: flag));
+        return createRoute(MainRegPage(flag: flag));
       default:
         return null;
     }

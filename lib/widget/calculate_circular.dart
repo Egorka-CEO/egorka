@@ -18,7 +18,7 @@ class CalculateLoadingDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Colors.grey.withOpacity(0.1),
                     spreadRadius: 5,
                     blurRadius: 7,
                     offset: const Offset(0, 3),
@@ -30,19 +30,19 @@ class CalculateLoadingDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const CupertinoActivityIndicator(),
-                  const SizedBox(height: 10),
+                  // const SizedBox(height: 10),
                   Column(
                     children: const [
-                      Text(
-                        'Егорке нужно все посчитать',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                        '🙃',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 20),
-                      ),
+                      // Text(
+                      //   'Егорке нужно все посчитать',
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(fontSize: 15),
+                      // ),
+                      // Text(
+                      //   '🙃',
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(fontSize: 20),
+                      // ),
                     ],
                   )
                 ],

@@ -4,6 +4,7 @@ import 'package:egorka/ui/auth/reg_page_company.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainRegPage extends StatefulWidget {
   final bool flag;
@@ -16,6 +17,8 @@ class MainRegPage extends StatefulWidget {
 class _MainRegPageState extends State<MainRegPage> {
   late PageController pageController;
   final streamController = StreamController<int>();
+  bool openKeyboardFirst = false;
+  bool openKeyboardSecond = false;
 
   @override
   void dispose() {
@@ -26,112 +29,199 @@ class _MainRegPageState extends State<MainRegPage> {
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: widget.flag ? 0 : 1);
+    pageController = PageController(initialPage: 0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Colors.black,
+    print(MediaQuery.of(context).viewInsets);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      // resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        flexibleSpace: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            margin: EdgeInsets.only(top: 76.h),
+            child: Row(
+              children: [
+                SizedBox(width: 20.w),
+                SvgPicture.asset(
+                  'assets/icons/arrow-left.svg',
+                  width: 30.w,
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Назад',
+                  style: GoogleFonts.manrope(
+                    fontSize: 17.h,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )
+              ],
             ),
           ),
         ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: SvgPicture.asset(
-                    'assets/icons/logo_egorka.svg',
-                    height: 40.h,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Егорка готов к сотрудничеству!\nОстается пройти быструю регистрацию',
-                  style: TextStyle(fontSize: 19.sp),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-            SizedBox(height: 20.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: StreamBuilder<int>(
-                  stream: streamController.stream,
-                  initialData: widget.flag ? 0 : 1,
-                  builder: (context, snapshot) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+      ),
+      body: StreamBuilder<int>(
+          stream: streamController.stream,
+          initialData: 0,
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: SvgPicture.asset(
+                  //         'assets/icons/logo_egorka.svg',
+                  //         height: 40.h,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 20.h),
+                  SizedBox(
+                    height: 150.h,
+                    child: Column(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            streamController.add(0);
-                            pageController.jumpToPage(0);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(10.w),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.r),
-                              color:
-                                  snapshot.data == 0 ? Colors.grey[300] : null,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(width: 20.w),
+                            Text(
+                              'Кем вы являетесь?',
+                              style: GoogleFonts.manrope(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 36.h,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            child: Icon(Icons.person, size: 40.w),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    streamController.add(0);
+                                    pageController.animateToPage(
+                                      0,
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.easeInOutQuint,
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 60.h,
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10.w),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20.r),
+                                      color: snapshot.data == 0
+                                          ? Color.fromRGBO(255, 102, 102, 1)
+                                          : const Color.fromRGBO(
+                                              245, 245, 245, 1),
+                                    ),
+                                    child: Text(
+                                      'Физ. Лицо',
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 17.h,
+                                        color: snapshot.data == 0
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 30.w),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    streamController.add(1);
+                                    pageController.animateToPage(
+                                      1,
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.easeInOutQuint,
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 60.h,
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10.w),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20.r),
+                                      color: snapshot.data == 1
+                                          ? Color.fromRGBO(255, 102, 102, 1)
+                                          : const Color.fromRGBO(
+                                              245, 245, 245, 1),
+                                    ),
+                                    child: Text(
+                                      'ИП или ООО',
+                                      style: GoogleFonts.manrope(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 17.h,
+                                        color: snapshot.data == 1
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: 30.w),
-                        GestureDetector(
-                          onTap: () {
-                            streamController.add(1);
-                            pageController.jumpToPage(1);
+                        SizedBox(height: 10.h),
+                      ],
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    height: snapshot.data! == 0
+                        ? openKeyboardFirst
+                            ? 1140.h
+                            : 820.h
+                        : openKeyboardSecond
+                            ? 1630.h
+                            : 1310.h,
+                    child: PageView(
+                      controller: pageController,
+                      scrollDirection: Axis.horizontal,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        RegPage(
+                          openKeyboard: (p0) {
+                            setState(() {
+                              openKeyboardFirst = p0;
+                            });
                           },
-                          child: Container(
-                            padding: EdgeInsets.all(10.w),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.r),
-                              color:
-                                  snapshot.data == 1 ? Colors.grey[300] : null,
-                            ),
-                            child: Icon(Icons.card_travel_sharp, size: 40.w),
-                          ),
+                        ),
+                        RegPageCompany(
+                          openKeyboard: (p0) {
+                            setState(() {
+                              openKeyboardSecond = p0;
+                            });
+                          },
                         ),
                       ],
-                    );
-                  }),
-            ),
-            SizedBox(height: 10.h),
-            Expanded(
-              child: SizedBox(
-                child: PageView(
-                  controller: pageController,
-                  scrollDirection: Axis.vertical,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    RegPage(),
-                    RegPageCompany(),
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 }

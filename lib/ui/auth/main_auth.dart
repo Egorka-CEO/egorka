@@ -1,6 +1,8 @@
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainAuthView extends StatelessWidget {
@@ -52,11 +54,73 @@ class MainAuthView extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 36.h),
-                  CustomButton(title: 'Регистрация', onTap: () {}),
+                  CustomButton(
+                    title: 'Регистрация',
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        AppRoute.registration,
+                        arguments: false,
+                      );
+                    },
+                  ),
+                  SizedBox(height: 36.h),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoute.auth);
+                      },
+                      child: RichText(
+                        textAlign: TextAlign.justify,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Уже есть аккаунт? ',
+                              style: GoogleFonts.manrope(
+                                fontSize: 17.h,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Войти',
+                              style: GoogleFonts.manrope(
+                                fontSize: 17.h,
+                                color: const Color.fromRGBO(122, 150, 249, 1),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          )
+          ),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              margin: EdgeInsets.only(top: 76.h),
+              child: Row(
+                children: [
+                  SizedBox(width: 20.w),
+                  SvgPicture.asset(
+                    'assets/icons/arrow-left.svg',
+                    width: 30.w,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Назад',
+                    style: GoogleFonts.manrope(
+                      fontSize: 17.h,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

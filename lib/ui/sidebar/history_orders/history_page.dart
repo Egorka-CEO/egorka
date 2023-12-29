@@ -353,12 +353,12 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             children: [
                                               formOrder?.result?.group ==
                                                       'Express'
-                                                  ? const Text(
+                                                  ? Text(
                                                       'Дата и время забора',
                                                       style: CustomTextStyle
                                                           .grey15bold,
                                                     )
-                                                  : const Text(
+                                                  : Text(
                                                       'Дата забора',
                                                       style: CustomTextStyle
                                                           .grey15bold,
@@ -397,7 +397,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         ),
                                         SizedBox(height: 15.h),
                                         Row(
-                                          children: const [
+                                          children: [
                                             Text(
                                               'Маршрут',
                                               style: CustomTextStyle.grey15bold,
@@ -572,7 +572,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                             status != 'Ошибка' &&
                                             status != 'Отменено')
                                           Row(
-                                            children: const [
+                                            children: [
                                               Text(
                                                 'Кто везёт',
                                                 style:
@@ -749,7 +749,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                           Row(
                                             children: [
                                               SizedBox(width: 10.w),
-                                              const Text(
+                                              Text(
                                                 'Объявленная ценность',
                                                 style:
                                                     CustomTextStyle.grey15bold,
@@ -773,7 +773,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                           Row(
                                             children: [
                                               SizedBox(width: 10.w),
-                                              const Text(
+                                              Text(
                                                 'Что везем',
                                                 style:
                                                     CustomTextStyle.grey15bold,
@@ -793,7 +793,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Стоимость доставки',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -810,7 +810,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Дополнительные услуги',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -829,7 +829,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                           Row(
                                             children: [
                                               SizedBox(width: 10.w),
-                                              const Text(
+                                              Text(
                                                 'Способ оплаты',
                                                 style:
                                                     CustomTextStyle.grey15bold,
@@ -855,7 +855,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Номер заказа',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -872,7 +872,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Статус оплаты',
                                               style: CustomTextStyle.grey15bold,
                                             ),
@@ -902,7 +902,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                                         Row(
                                           children: [
                                             SizedBox(width: 10.w),
-                                            const Text(
+                                            Text(
                                               'Итого',
                                               style: CustomTextStyle.grey15bold,
                                             ),

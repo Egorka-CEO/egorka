@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NavBar extends StatefulWidget {
@@ -42,7 +43,7 @@ class _NavBarState extends State<NavBar> {
             break;
           }
         }
-
+        final auth = BlocProvider.of<ProfileBloc>(context).getUser();
         return SizedBox(
           width: 270.w,
           height: MediaQuery.of(context).size.height,
@@ -52,16 +53,67 @@ class _NavBarState extends State<NavBar> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 50.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18.w),
-                    child: SvgPicture.asset(
-                      'assets/icons/logo_egorka.svg',
-                      alignment: Alignment.center,
-                      width: 100.w,
-                      height: 40.w,
-                    ),
-                  ),
+                  SizedBox(height: 71.h),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 18.w),
+                  //   child: SvgPicture.asset(
+                  //     'assets/icons/logo_egorka.svg',
+                  //     alignment: Alignment.center,
+                  //     width: 100.w,
+                  //     height: 40.w,
+                  //   ),
+                  // ),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, snapshot) {
+                    final auth =
+                        BlocProvider.of<ProfileBloc>(context).getUser();
+                    if (auth == null) return const SizedBox();
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoute.profile);
+                            },
+                            child: Container(
+                              height: 72.h,
+                              width: 72.h,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[100],
+                              ),
+                              alignment: Alignment.center,
+                              child: Image.asset(
+                                'assets/images/egorka_man.png',
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                  context, AppRoute.profile),
+                              child: Container(
+                                color: Colors.transparent,
+                                height: 64.h,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    (auth.result?.agent!.Title) ?? '',
+                                    style: GoogleFonts.manrope(
+                                      fontSize: 17.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
                   SizedBox(height: 30.h),
                   BlocBuilder<ProfileBloc, ProfileState>(
                     builder: (context, snapshot) {
@@ -75,21 +127,24 @@ class _NavBarState extends State<NavBar> {
                           onPressed: () => Navigator.of(context)
                               .pushNamed(AppRoute.mainAuth),
                           style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0),
-                                ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(0),
                               ),
-                              alignment: Alignment.centerLeft,
-                              padding: const MaterialStatePropertyAll(
-                                  EdgeInsets.only(left: 18)),
-                              backgroundColor:
-                                  const MaterialStatePropertyAll(Colors.red),
-                              foregroundColor:
-                                  const MaterialStatePropertyAll(Colors.white),
-                              overlayColor:
-                                  MaterialStatePropertyAll(Colors.red[700])),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            padding: const MaterialStatePropertyAll(
+                                EdgeInsets.only(left: 18)),
+                            backgroundColor: const MaterialStatePropertyAll(
+                              Color.fromRGBO(255, 102, 102, 1),
+                            ),
+                            foregroundColor:
+                                const MaterialStatePropertyAll(Colors.white),
+                            overlayColor: MaterialStatePropertyAll(
+                              Color.fromRGBO(255, 102, 102, 1),
+                            ),
+                          ),
                           child: const Text('Входите, и начём'),
                         ),
                       );
@@ -106,7 +161,7 @@ class _NavBarState extends State<NavBar> {
                       padding: EdgeInsets.symmetric(horizontal: 18.w),
                       child: Container(
                         color: Colors.transparent,
-                        height: 50.h,
+                        height: 64.h,
                         child: Align(
                           alignment: Alignment.center,
                           child: Row(
@@ -116,8 +171,10 @@ class _NavBarState extends State<NavBar> {
                                     context, AppRoute.trafficDeposit),
                                 child: Text(
                                   'Депозит',
-                                  style: CustomTextStyle.black17w400
-                                      .copyWith(color: Colors.black),
+                                  style: GoogleFonts.manrope(
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ],
@@ -141,7 +198,7 @@ class _NavBarState extends State<NavBar> {
                       padding: EdgeInsets.symmetric(horizontal: 18.w),
                       child: Container(
                         color: Colors.transparent,
-                        height: 50.h,
+                        height: 64.h,
                         child: Align(
                           alignment: Alignment.center,
                           child: Row(
@@ -151,8 +208,10 @@ class _NavBarState extends State<NavBar> {
                                     context, AppRoute.employee),
                                 child: Text(
                                   'Мои сотрудники',
-                                  style: CustomTextStyle.black17w400
-                                      .copyWith(color: Colors.black),
+                                  style: GoogleFonts.manrope(
+                                    fontSize: 17.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ],
@@ -163,8 +222,6 @@ class _NavBarState extends State<NavBar> {
                   }),
                   BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, snapshot) {
-                    final auth =
-                        BlocProvider.of<ProfileBloc>(context).getUser();
                     if (auth == null) return const SizedBox();
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.w),
@@ -173,13 +230,15 @@ class _NavBarState extends State<NavBar> {
                             Navigator.pushNamed(context, AppRoute.profile),
                         child: Container(
                           color: Colors.transparent,
-                          height: 50.h,
+                          height: 64.h,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Профиль',
-                              style: CustomTextStyle.black17w400
-                                  .copyWith(color: Colors.black),
+                              style: GoogleFonts.manrope(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -222,13 +281,15 @@ class _NavBarState extends State<NavBar> {
                       },
                       child: Container(
                         color: Colors.transparent,
-                        height: 50.h,
+                        height: 64.h,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'История заказов',
-                            style: CustomTextStyle.black17w400
-                                .copyWith(color: Colors.black),
+                            style: GoogleFonts.manrope(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -243,13 +304,15 @@ class _NavBarState extends State<NavBar> {
                       },
                       child: Container(
                         color: Colors.transparent,
-                        height: 50.h,
+                        height: 64.h,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Маркетплейсы',
-                            style: CustomTextStyle.black17w400
-                                .copyWith(color: Colors.black),
+                            style: GoogleFonts.manrope(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -269,13 +332,15 @@ class _NavBarState extends State<NavBar> {
                             Navigator.pushNamed(context, AppRoute.book),
                         child: Container(
                           color: Colors.transparent,
-                          height: 50.h,
+                          height: 64.h,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Записная книжка',
-                              style: CustomTextStyle.black17w400
-                                  .copyWith(color: Colors.black),
+                              style: GoogleFonts.manrope(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -289,13 +354,15 @@ class _NavBarState extends State<NavBar> {
                           launch('https://marketplace.egorka.delivery'),
                       child: Container(
                         color: Colors.transparent,
-                        height: 50.h,
+                        height: 64.h,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Тарифы',
-                            style: CustomTextStyle.black17w400
-                                .copyWith(color: Colors.black),
+                            style: GoogleFonts.manrope(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -307,14 +374,16 @@ class _NavBarState extends State<NavBar> {
                       onTap: () => Navigator.pushNamed(context, AppRoute.about),
                       child: Container(
                         color: Colors.transparent,
-                        height: 50.h,
+                        height: 64.h,
                         width: double.infinity,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'О приложении',
-                            style: CustomTextStyle.black17w400
-                                .copyWith(color: Colors.black),
+                            style: GoogleFonts.manrope(
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -335,11 +404,13 @@ class _NavBarState extends State<NavBar> {
                           },
                           child: Text(
                             'Договор оферты',
-                            style: CustomTextStyle.grey14w400
-                                .copyWith(fontSize: 13.sp),
+                            style: GoogleFonts.manrope(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 20.h),
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
@@ -352,10 +423,13 @@ class _NavBarState extends State<NavBar> {
                           },
                           child: Text(
                             'Политика конфиденциальности',
-                            style: CustomTextStyle.grey14w400
-                                .copyWith(fontSize: 13.sp),
+                            style: GoogleFonts.manrope(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
+                        SizedBox(height: 10.h),
                       ],
                     ),
                     // child: RichText(

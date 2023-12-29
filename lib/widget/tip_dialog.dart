@@ -1,6 +1,8 @@
 import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Offset getWidgetPosition(GlobalKey key) {
@@ -122,7 +124,7 @@ void showTipBucket(
                 borderRadius: BorderRadius.circular(15.r),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -132,33 +134,24 @@ void showTipBucket(
                         children: [
                           TextSpan(
                             text: text,
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: Colors.black,
                               fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
                       ),
                     ),
                     SizedBox(height: 15.h),
-                    GestureDetector(
-                      onTap: () =>
-                          launch('https://marketplace.egorka.delivery'),
-                      child: Container(
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(15.r),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Перейти на сайт',
-                            style: CustomTextStyle.white15w600.copyWith(
-                                letterSpacing: 1, fontWeight: FontWeight.w500),
-                          ),
-                        ),
+                    SizedBox(
+                      height: 50.h,
+                      child: CustomButton(
+                        title: 'Перейти на сайт',
+                        onTap: () =>
+                            launch('https://marketplace.egorka.delivery'),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -199,7 +192,7 @@ void showTipWhenTake(
                 borderRadius: BorderRadius.circular(15.r),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -210,9 +203,10 @@ void showTipWhenTake(
                           TextSpan(
                             text:
                                 'Оформить заказ на завтра можно строго до 15:00 сегодняшнего дня. Далее, все заказы отправляются на планирование и внести корректировки при форс-мажоре можно только через службу поддержки.',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: Colors.black,
                               fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
@@ -223,9 +217,13 @@ void showTipWhenTake(
                         const Spacer(),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text(
+                          child: Text(
                             'Понятно',
-                            style: TextStyle(color: Colors.red),
+                            style: GoogleFonts.manrope(
+                              color: Color.fromRGBO(255, 102, 102, 1),
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         )
                       ],
@@ -257,7 +255,8 @@ void showTipWork(
             backgroundColor: Colors.transparent,
             elevation: 0,
             content: Container(
-              width: MediaQuery.of(context).size.width - 30.w,
+              margin: EdgeInsets.all(10.w),
+              width: MediaQuery.of(context).size.width - 0.w,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: const [
@@ -270,7 +269,7 @@ void showTipWork(
                 borderRadius: BorderRadius.circular(15.r),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(30.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -279,17 +278,18 @@ void showTipWork(
                       text: TextSpan(
                         children: [
                           TextSpan(
-                              text: 'Типы доставок до маркетплейса:',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                              )),
+                            text: 'Типы доставок',
+                            style: GoogleFonts.manrope(
+                              color: Colors.black,
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                           TextSpan(
                             children: [
                               TextSpan(
                                 text: '\n\nFBO',
-                                style: TextStyle(
+                                style: GoogleFonts.manrope(
                                   color: Colors.black,
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w700,
@@ -298,7 +298,7 @@ void showTipWork(
                               TextSpan(
                                 text:
                                     ' - доставка до распределительных и сортировочных центров. Тип FBO подразумевает в себе продажу со склада маркетплейса, когда вы готовите поставку, выбираете временное окно и заказываете Егорку.',
-                                style: TextStyle(
+                                style: GoogleFonts.manrope(
                                   color: Colors.black,
                                   fontSize: 14.sp,
                                 ),
@@ -309,7 +309,7 @@ void showTipWork(
                             children: [
                               TextSpan(
                                 text: '\n\nFBS',
-                                style: TextStyle(
+                                style: GoogleFonts.manrope(
                                   color: Colors.black,
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w700,
@@ -318,7 +318,7 @@ void showTipWork(
                               TextSpan(
                                 text:
                                     ' - регулярная доставка до распределительных и сортировочных центров маркетплейса. Тип FBS подразумевает в себе продажу со склада продавца, когда заказы отгружаются на ежедневной основе и доставляются Егоркой.',
-                                style: TextStyle(
+                                style: GoogleFonts.manrope(
                                   color: Colors.black,
                                   fontSize: 14.sp,
                                 ),
@@ -328,7 +328,7 @@ void showTipWork(
                           TextSpan(
                             text:
                                 '\n\nЗаказ можно оформить на паллете или коробками россыпью. В зависимости от характеристик груза – команда Егорки назначит соответствующий авто на ваш маршрут.',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: Colors.black,
                               fontSize: 14.sp,
                             ),
@@ -337,22 +337,13 @@ void showTipWork(
                       ),
                     ),
                     SizedBox(height: 15.h),
-                    GestureDetector(
-                      onTap: () =>
-                          launch('https://marketplace.egorka.delivery'),
-                      child: Container(
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(15.r),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Узнать тарифы',
-                            style: CustomTextStyle.white15w600.copyWith(
-                                letterSpacing: 1, fontWeight: FontWeight.w500),
-                          ),
-                        ),
+                    SizedBox(
+                      height: 50.h,
+                      child: CustomButton(
+                        title: 'Узнать тарифы',
+                        onTap: () {
+                          launch('https://marketplace.egorka.delivery');
+                        },
                       ),
                     ),
                   ],
@@ -377,8 +368,7 @@ void iconSelectModal(
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: AlertDialog(
-            insetPadding:
-                EdgeInsets.only(top: offset.dy + 50.h),
+            insetPadding: EdgeInsets.only(top: offset.dy + 50.h),
             alignment: Alignment.topCenter,
             contentPadding: EdgeInsets.zero,
             backgroundColor: Colors.transparent,

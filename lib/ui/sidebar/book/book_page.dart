@@ -3,11 +3,14 @@ import 'dart:developer';
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/custom_page_route.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/book_adresses.dart';
 import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/suggestions.dart';
+import 'package:egorka/ui/sidebar/book/add_address_view.dart';
+import 'package:egorka/widget/custom_button.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_uppercase.dart';
@@ -15,6 +18,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -64,66 +69,100 @@ class _BookPageState extends State<BookPage> {
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: Scaffold(
         backgroundColor: backgroundColor,
-        appBar: AppBar(
-          elevation: 0.5,
-          title: const Text(
-            'Записная книжка',
-            style: CustomTextStyle.black17w400,
-          ),
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.red,
-            ),
-          ),
-          backgroundColor: Colors.white,
-        ),
+        // appBar: AppBar(
+        //   elevation: 0.5,
+        //   title: const Text(
+        //     'Записная книжка',
+        //     style: CustomTextStyle.black17w400,
+        //   ),
+        //   leading: GestureDetector(
+        //     onTap: () => Navigator.of(context).pop(),
+        //     child: const Icon(
+        //       Icons.arrow_back_ios,
+        //       color: Colors.red,
+        //     ),
+        //   ),
+        //   backgroundColor: Colors.white,
+        // ),
         body: Stack(
           children: [
             Padding(
               padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 20.w),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 30.h),
-                  Row(
-                    children: [
-                      const Text('Поиск', style: CustomTextStyle.black17w400),
-                      SizedBox(width: 20.w),
-                      CustomTextField(
-                        focusNode: focusSearch,
-                        hintText: 'По ключевым словам',
-                        textEditingController: searchController,
-                        width: 250.w,
-                        fillColor: Colors.white,
-                        height: 45.h,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
-                        onChanged: (value) {
-                          final bloc = BlocProvider.of<BookBloc>(context);
-                          bookAdresses.clear();
-                          List<BookAdresses> bookAdressesTemp = [];
-                          for (var element in bloc.books) {
-                            if (element.name!
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()) ||
-                                element.address!
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase())) {
-                              bookAdressesTemp.add(element);
-                            }
-                            if (value.isEmpty) {
-                              bookAdresses.addAll(bloc.books);
-                            } else {
-                              bookAdresses.addAll(bookAdressesTemp);
-                            }
-                          }
-                          setState(() {});
-                        },
+                  // Row(
+                  //   children: [
+                  //     const Text('Поиск', style: CustomTextStyle.black17w400),
+                  //     SizedBox(width: 20.w),
+                  //     CustomTextField(
+                  //       focusNode: focusSearch,
+                  //       hintText: 'По ключевым словам',
+                  //       textEditingController: searchController,
+                  //       width: 250.w,
+                  //       fillColor: Colors.white,
+                  //       height: 45.h,
+                  //       contentPadding: EdgeInsets.symmetric(horizontal: 15.w),
+                  //       onChanged: (value) {
+                  //         final bloc = BlocProvider.of<BookBloc>(context);
+                  //         bookAdresses.clear();
+                  //         List<BookAdresses> bookAdressesTemp = [];
+                  //         for (var element in bloc.books) {
+                  //           if (element.name!
+                  //                   .toLowerCase()
+                  //                   .contains(value.toLowerCase()) ||
+                  //               element.address!
+                  //                   .toLowerCase()
+                  //                   .contains(value.toLowerCase())) {
+                  //             bookAdressesTemp.add(element);
+                  //           }
+                  //           if (value.isEmpty) {
+                  //             bookAdresses.addAll(bloc.books);
+                  //           } else {
+                  //             bookAdresses.addAll(bookAdressesTemp);
+                  //           }
+                  //         }
+                  //         setState(() {});
+                  //       },
+                  //     ),
+                  //     const Spacer(),
+                  //   ],
+                  // ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      margin: EdgeInsets.only(top: 56.h),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 20.w),
+                          SvgPicture.asset(
+                            'assets/icons/arrow-left.svg',
+                            width: 30.w,
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            'Назад',
+                            style: GoogleFonts.manrope(
+                              fontSize: 17.h,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        ],
                       ),
-                      const Spacer(),
-                    ],
+                    ),
                   ),
                   SizedBox(height: 20.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Text(
+                      'Мои адреса',
+                      style: GoogleFonts.manrope(
+                        fontSize: 25.h,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
                   BlocBuilder<BookBloc, BookState>(
                     builder: (context, snapshot) {
                       if (snapshot is UpdateBook) {
@@ -151,87 +190,72 @@ class _BookPageState extends State<BookPage> {
                       return Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: bookAdresses.length + 2,
+                          itemCount: bookAdresses.length + 1,
                           physics: const ClampingScrollPhysics(),
+                          padding: EdgeInsets.only(top: 20.h),
                           itemBuilder: (context, index) {
-                            if (bookAdresses.length == index - 1) {
+                            if (bookAdresses.length == index) {
                               return Padding(
                                 padding: EdgeInsets.only(top: 20.h),
-                                child: ScaleButton(
-                                  onTap: () {
-                                    selectAddress = null;
-                                    address = null;
-                                    nameController.text = '';
-                                    entranceController.text = '';
-                                    floorController.text = '';
-                                    roomController.text = '';
-                                    fioController.text = '';
-                                    phoneController.text = '';
-                                    showAddAddress();
-                                  },
-                                  bound: 0.01,
-                                  child: Container(
-                                    height: 40.h,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.r),
-                                      color: Colors.red,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Добавить адрес',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15.sp,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                child: CustomButton(
+                                    title: 'Добавить адрес',
+                                    onTap: () {
+                                      // selectAddress = null;
+                                      // address = null;
+                                      // nameController.text = '';
+                                      // entranceController.text = '';
+                                      // floorController.text = '';
+                                      // roomController.text = '';
+                                      // fioController.text = '';
+                                      // phoneController.text = '';
+                                      // showAddAddress();
+                                      Navigator.push(context,
+                                          createRoute(AddAddressView()));
+                                    }),
                               );
                             }
-                            if (index == 0) {
-                              return Container(
-                                height: 50.h,
-                                color: index % 2 == 0
-                                    ? Colors.white
-                                    : Colors.grey[200],
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 10.w),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text(
-                                        'Название',
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 14.sp),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        'Адрес',
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 14.sp),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text(
-                                        'Телефон',
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 14.sp),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                  ],
-                                ),
-                              );
-                            }
+                            // if (index == 0) {
+                            //   return Container(
+                            //     height: 50.h,
+                            //     color: index % 2 == 0
+                            //         ? Colors.white
+                            //         : Colors.grey[200],
+                            //     child: Row(
+                            //       children: [
+                            //         SizedBox(width: 10.w),
+                            //         Expanded(
+                            //           flex: 1,
+                            //           child: Text(
+                            //             'Название',
+                            //             textAlign: TextAlign.center,
+                            //             style: CustomTextStyle.black17w400
+                            //                 .copyWith(fontSize: 14.sp),
+                            //           ),
+                            //         ),
+                            //         SizedBox(width: 10.w),
+                            //         Expanded(
+                            //           flex: 2,
+                            //           child: Text(
+                            //             'Адрес',
+                            //             textAlign: TextAlign.center,
+                            //             style: CustomTextStyle.black17w400
+                            //                 .copyWith(fontSize: 14.sp),
+                            //           ),
+                            //         ),
+                            //         Expanded(
+                            //           flex: 1,
+                            //           child: Text(
+                            //             'Телефон',
+                            //             textAlign: TextAlign.center,
+                            //             style: CustomTextStyle.black17w400
+                            //                 .copyWith(fontSize: 14.sp),
+                            //           ),
+                            //         ),
+                            //         SizedBox(width: 10.w),
+                            //       ],
+                            //     ),
+                            //   );
+                            // }
                             return Dismissible(
                               key: UniqueKey(),
                               background: Container(
@@ -252,7 +276,7 @@ class _BookPageState extends State<BookPage> {
                               ),
                               confirmDismiss: (direction) async {
                                 bool resDelete = await Repository()
-                                    .deleteAddress(bookAdresses[index - 1].id!);
+                                    .deleteAddress(bookAdresses[index].id!);
 
                                 if (resDelete) {
                                   bookAdresses.removeAt(index - 1);
@@ -266,39 +290,63 @@ class _BookPageState extends State<BookPage> {
                               direction: DismissDirection.endToStart,
                               child: Container(
                                 height: 70.h,
-                                color: index % 2 == 0
-                                    ? Colors.white
-                                    : Colors.grey[200],
+                                margin:
+                                    EdgeInsets.symmetric(horizontal: 10.w).add(
+                                  EdgeInsets.only(bottom: 10.h),
+                                ),
                                 child: Row(
                                   children: [
-                                    SizedBox(width: 10.w),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text(
-                                        bookAdresses[index - 1].name!,
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 14.sp),
-                                      ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(width: 10.h),
+                                        Text(
+                                          bookAdresses[index].name!,
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 17.h,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          bookAdresses[index].address!,
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 17.h,
+                                            fontWeight: FontWeight.w500,
+                                            color: const Color.fromRGBO(
+                                                177, 177, 177, 1),
+                                          ),
+                                        ),
+                                        Text(
+                                          bookAdresses[index]
+                                                  .contact
+                                                  ?.phoneMobile ??
+                                              '-',
+                                          maxLines: 1,
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 17.h,
+                                            fontWeight: FontWeight.w500,
+                                            color: const Color.fromRGBO(
+                                                177, 177, 177, 1),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10.w),
+                                      ],
                                     ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        bookAdresses[index - 1].address!,
-                                        textAlign: TextAlign.center,
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 14.sp),
+                                    const Expanded(child: SizedBox()),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 20.w),
+                                        child: Image.asset(
+                                          'assets/images/from_a_to_b.png',
+                                          width: 17.w,
+                                          height: 52.h,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      bookAdresses[index - 1]
-                                              .contact
-                                              ?.phoneMobile ??
-                                          '-',
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: CustomTextStyle.black17w400
-                                          .copyWith(fontSize: 14.sp),
                                     ),
                                     SizedBox(width: 10.w),
                                   ],

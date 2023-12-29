@@ -14,6 +14,9 @@ class CustomButton extends StatelessWidget {
     return ScaleButton(
       bound: 0.02,
       duration: const Duration(milliseconds: 200),
+      onTap: () {
+        onTap();
+      },
       child: Container(
         height: 64.h,
         width: double.infinity,

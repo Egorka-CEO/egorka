@@ -18,6 +18,7 @@ import 'package:egorka/model/type_group.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/buttons.dart';
+import 'package:egorka/widget/custom_button.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -128,7 +129,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
             },
             maxHeight: maxHeightPanel,
             // minHeight: snapshot is SearchAddressRoutePolilyne || bloc.isPolilyne
-            minHeight: 350.h,
+            minHeight: !bloc.isPolilyne ? 350.h : 420.h,
             // : 310.h,
             defaultPanelState: PanelState.CLOSED,
           );
@@ -459,6 +460,13 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                                       hintText: 'Введите адрес',
                                       enabled: typeGroup != TypeGroup.mixfbs,
                                       onTap: () async {
+                                        if (bloc.isPolilyne) {
+                                          bloc.add(DeletePolilyneEvent());
+                                          fromController.text = '';
+                                          suggestionsStart = null;
+                                          coasts.clear();
+                                          setState(() {});
+                                        }
                                         typeAdd = TypeAdd.sender;
                                         focusFrom.unfocus();
 
@@ -493,105 +501,106 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                                       },
                                     ),
                                   ),
-                                  if (typeGroup != TypeGroup.mixfbs)
-                                    fromController.text.isNotEmpty
-                                        ? Padding(
-                                            padding:
-                                                EdgeInsets.only(right: 88.w),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                bloc.add(DeletePolilyneEvent());
-                                                fromController.text = '';
-                                                suggestionsStart = null;
-                                                coasts.clear();
-                                                setState(() {});
-                                              },
-                                              child: Container(
-                                                height: 20.h,
-                                                width: 20.h,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.grey[300],
-                                                ),
-                                                child: const Icon(
-                                                  Icons.clear,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : Padding(
-                                            padding:
-                                                EdgeInsets.only(right: 5.w),
-                                            child: Row(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 0.h),
-                                                  child: Container(
-                                                    color: Colors.grey[300],
-                                                    width: 1,
-                                                    height: 40.h,
-                                                  ),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    final res =
-                                                        await Navigator.of(
-                                                                context)
-                                                            .pushNamed(AppRoute
-                                                                .selectPoint);
-                                                    if (res != null &&
-                                                        res is Suggestions) {
-                                                      suggestionsStart = res;
-                                                      fromController.text =
-                                                          suggestionsStart!
-                                                              .name;
+                                  SizedBox(width: 55.w),
+                                  // if (typeGroup != TypeGroup.mixfbs)
+                                  //   fromController.text.isNotEmpty
+                                  //       ? Padding(
+                                  //           padding:
+                                  //               EdgeInsets.only(right: 88.w),
+                                  //           child: GestureDetector(
+                                  //             onTap: () {
+                                  //               bloc.add(DeletePolilyneEvent());
+                                  //               fromController.text = '';
+                                  //               suggestionsStart = null;
+                                  //               coasts.clear();
+                                  //               setState(() {});
+                                  //             },
+                                  //             child: Container(
+                                  //               height: 20.h,
+                                  //               width: 20.h,
+                                  //               decoration: BoxDecoration(
+                                  //                 shape: BoxShape.circle,
+                                  //                 color: Colors.grey[300],
+                                  //               ),
+                                  //               child: const Icon(
+                                  //                 Icons.clear,
+                                  //                 color: Colors.white,
+                                  //                 size: 15,
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         )
+                                  //       : Padding(
+                                  //           padding:
+                                  //               EdgeInsets.only(right: 5.w),
+                                  //           child: Row(
+                                  //             children: [
+                                  //               Padding(
+                                  //                 padding: EdgeInsets.symmetric(
+                                  //                     vertical: 0.h),
+                                  //                 child: Container(
+                                  //                   color: Colors.grey[300],
+                                  //                   width: 1,
+                                  //                   height: 40.h,
+                                  //                 ),
+                                  //               ),
+                                  //               TextButton(
+                                  //                 onPressed: () async {
+                                  //                   final res =
+                                  //                       await Navigator.of(
+                                  //                               context)
+                                  //                           .pushNamed(AppRoute
+                                  //                               .selectPoint);
+                                  //                   if (res != null &&
+                                  //                       res is Suggestions) {
+                                  //                     suggestionsStart = res;
+                                  //                     fromController.text =
+                                  //                         suggestionsStart!
+                                  //                             .name;
 
-                                                      setState(() {});
-                                                      calc();
-                                                    }
-                                                  },
-                                                  style: ButtonStyle(
-                                                    shape: MaterialStateProperty
-                                                        .all<
-                                                            RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  10.r),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10.r),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    backgroundColor:
-                                                        const MaterialStatePropertyAll(
-                                                            Colors.transparent),
-                                                    foregroundColor:
-                                                        const MaterialStatePropertyAll(
-                                                            Colors.white),
-                                                    overlayColor:
-                                                        MaterialStatePropertyAll(
-                                                      Colors.grey[400],
-                                                    ),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Карта',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 13.sp),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                  //                     setState(() {});
+                                  //                     calc();
+                                  //                   }
+                                  //                 },
+                                  //                 style: ButtonStyle(
+                                  //                   shape: MaterialStateProperty
+                                  //                       .all<
+                                  //                           RoundedRectangleBorder>(
+                                  //                     RoundedRectangleBorder(
+                                  //                       borderRadius:
+                                  //                           BorderRadius.only(
+                                  //                         bottomRight:
+                                  //                             Radius.circular(
+                                  //                                 10.r),
+                                  //                         topRight:
+                                  //                             Radius.circular(
+                                  //                                 10.r),
+                                  //                       ),
+                                  //                     ),
+                                  //                   ),
+                                  //                   backgroundColor:
+                                  //                       const MaterialStatePropertyAll(
+                                  //                           Colors.transparent),
+                                  //                   foregroundColor:
+                                  //                       const MaterialStatePropertyAll(
+                                  //                           Colors.white),
+                                  //                   overlayColor:
+                                  //                       MaterialStatePropertyAll(
+                                  //                     Colors.grey[400],
+                                  //                   ),
+                                  //                 ),
+                                  //                 child: Center(
+                                  //                   child: Text(
+                                  //                     'Карта',
+                                  //                     style: TextStyle(
+                                  //                         color: Colors.black,
+                                  //                         fontSize: 13.sp),
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //             ],
+                                  //           ),
+                                  //         ),
                                 ],
                               ),
                             ),
@@ -628,6 +637,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                           ),
                         ),
                       ],
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        height: 48.h,
+                        width: 48.w,
+                        margin: EdgeInsets.only(right: 20.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: Color.fromRGBO(245, 245, 245, 1),
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -750,19 +771,40 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 child: CustomTextField(
                   height: 23.h,
                   onTap: () async {
-                    typeAdd = TypeAdd.receiver;
-                    focusTo.unfocus();
+                    if (bloc.isPolilyne) {
+                      bloc.add(DeletePolilyneEvent());
+                      // fromController.text = '';
+                      // suggestionsStart = null;
+                      // Future.delayed(const Duration(milliseconds: 500), () {
+                      //   focusTo.requestFocus();
+                      // });
+                      coasts.clear();
 
-                    await panelController.animatePanelToPosition(
-                      1,
-                      duration: const Duration(milliseconds: 250),
-                    );
-                    bloc.add(SearchAddressClear());
-                    Future.delayed(const Duration(milliseconds: 50), () {
-                      if (!focusTo.hasFocus) {
-                        focusTo.requestFocus();
-                      }
-                    });
+                      // typeAdd = TypeAdd.receiver;
+                      // bloc.add(SearchAddressClear());
+                      Future.delayed(const Duration(milliseconds: 100),
+                          () async {
+                        await panelController.animatePanelToPosition(
+                          1,
+                          duration: const Duration(milliseconds: 250),
+                        );
+                        if (!focusTo.hasFocus) {
+                          focusTo.requestFocus();
+                        }
+                      });
+                      setState(() {});
+                    } else {
+                      await panelController.animatePanelToPosition(
+                        1,
+                        duration: const Duration(milliseconds: 250),
+                      );
+                      bloc.add(SearchAddressClear());
+                      Future.delayed(const Duration(milliseconds: 50), () {
+                        if (!focusTo.hasFocus) {
+                          focusTo.requestFocus();
+                        }
+                      });
+                    }
                   },
                   onFieldSubmitted: (text) {
                     panelController.animatePanelToPosition(
@@ -881,7 +923,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
             SizedBox(
               height:
                   blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus
-                      ? 95.h
+                      ? 128.h
                       : null,
               child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 buildWhen: (previous, current) {
@@ -997,25 +1039,25 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         ? [
                             DeliveryChocie(
                               title: 'Пешком',
-                              icon: 'assets/images/ic_leg.png',
+                              icon: 'assets/images/egorka_man.png',
                               type: 'Walk',
                             ),
                             DeliveryChocie(
                               title: 'Легковая',
-                              icon: 'assets/images/ic_car.png',
+                              icon: 'assets/images/car.png',
                               type: 'Car',
                             )
                           ]
                         : [
                             DeliveryChocie(
                               title: 'Грузовая',
-                              icon: 'assets/images/ic_track.png',
+                              icon: 'assets/images/scooter.png',
                               type: 'Track',
                             )
                           ];
 
                     return SizedBox(
-                      height: 100.h,
+                      height: 128.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: coasts.length,
@@ -1023,7 +1065,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                           return Padding(
                             padding: EdgeInsets.only(
                               left: index == 0 ? 20.w : 0,
-                              right: index == coasts.length - 1 ? 5.w : 0,
+                              right: index == coasts.length - 1 ? 5.w : 8.w,
                             ),
                             child: GestureDetector(
                               onTap: () {
@@ -1041,50 +1083,66 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                                 }
                               },
                               child: Container(
-                                width: 80.w,
+                                width: 123.w,
+                                height: 128.h,
                                 decoration: BoxDecoration(
                                   color: snapshot.data! == index
                                       ? Colors.white
                                       : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(15.r),
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(221, 221, 221, 1),
+                                  ),
                                 ),
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Opacity(
                                       opacity:
                                           snapshot.data! == index ? 1 : 0.3,
                                       child: SizedBox(
-                                        height: 45.h,
+                                        height: 70.h,
                                         child: Image.asset(
                                           listChoice[index].icon,
-                                          color: snapshot.data! == index
-                                              ? Colors.black
-                                              : Colors.black,
+                                          // color: snapshot.data! == index
+                                          //     ? Colors.black
+                                          //     : Colors.black,
                                         ),
                                       ),
                                     ),
-                                    Opacity(
-                                      opacity:
-                                          snapshot.data! == index ? 1 : 0.3,
-                                      child: Text(
-                                        listChoice[index].title,
-                                        style: TextStyle(
-                                            color: snapshot.data! == index
-                                                ? Colors.black
-                                                : Colors.black,
-                                            fontWeight: snapshot.data! == index
-                                                ? FontWeight.w600
-                                                : FontWeight.w400),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 12.w, top: 4.h),
+                                      child: Opacity(
+                                        opacity:
+                                            snapshot.data! == index ? 1 : 0.3,
+                                        child: Text(
+                                          listChoice[index].title,
+                                          style: GoogleFonts.manrope(
+                                              // color: snapshot.data! == index
+                                              //     ? Colors.black
+                                              //     : Colors.black,
+                                              fontSize: 17.sp,
+                                              fontWeight:
+                                                  snapshot.data! == index
+                                                      ? FontWeight.w600
+                                                      : FontWeight.w400),
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                      '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()} ₽',
-                                      style: TextStyle(
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 12.w),
+                                      child: Text(
+                                        '${double.tryParse(coasts[index].result!.totalPrice!.total!)!.ceil()}₽',
+                                        style: GoogleFonts.manrope(
                                           color: snapshot.data! == index
                                               ? Colors.black
                                               : Colors.black,
-                                          fontWeight: FontWeight.w600),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17.sp,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1100,7 +1158,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 },
               ),
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 24.h),
             if (blocs.isPolilyne && !focusFrom.hasFocus && !focusTo.hasFocus)
               BlocBuilder<SearchAddressBloc, SearchAddressState>(
                 builder: (context, state) {
@@ -1112,34 +1170,19 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                   }
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: GestureDetector(
+                    child: CustomButton(
+                      title: 'К оформлению',
                       onTap: coasts.isNotEmpty
                           ? () {
                               // MessageDialogs()
                               //     .showAlert('Ошибка', 'Укажите номер дома');
                               authShowDialog(snapshot.data!);
                             }
-                          : null,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(15.w),
-                        decoration: BoxDecoration(
-                          color: coasts.isNotEmpty
-                              ? Colors.red
-                              : Colors.red.shade300,
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Перейти к оформлению',
-                            style: CustomTextStyle.white15w600,
-                          ),
-                        ),
-                      ),
+                          : () {},
                     ),
                   );
                 },
-              )
+              ),
           ],
         );
       },

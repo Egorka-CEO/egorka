@@ -255,7 +255,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
                   children: [
-                    const Text(
+                    Text(
                       'Не обязательно к заполнению',
                       style: CustomTextStyle.grey15bold,
                     ),
@@ -422,7 +422,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
-                  children: const [
+                  children: [
                     Text(
                       'Поручения для Егорки',
                       style: CustomTextStyle.grey15bold,

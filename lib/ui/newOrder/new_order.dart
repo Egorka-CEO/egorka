@@ -386,7 +386,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           Row(
                             children: [
                               SizedBox(width: 5.w),
-                              const Text(
+                              Text(
                                 'Когда забрать?',
                                 style: CustomTextStyle.grey15bold,
                               ),
@@ -638,7 +638,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         Row(
           children: [
             SizedBox(width: 5.w),
-            const Text(
+            Text(
               'Дополнительные услуги',
               style: CustomTextStyle.grey15bold,
             ),
@@ -671,7 +671,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 SizedBox(height: 10.h),
                 Row(
                   children: [
-                    const Flexible(
+                    Flexible(
                       child: Text(
                         'Услуга помощи погрузки / разгрузки',
                         style: CustomTextStyle.grey15bold,
@@ -707,7 +707,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         children: [
                           SizedBox(height: 10.h),
                           Row(
-                            children: const [
+                            children: [
                               Text(
                                 'Какой вес? (кг)',
                                 style: CustomTextStyle.grey15bold,
@@ -770,7 +770,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           ),
                           SizedBox(height: 10.h),
                           Row(
-                            children: const [
+                            children: [
                               Text(
                                 'Какие размеры? (см)',
                                 style: CustomTextStyle.grey15bold,
@@ -835,7 +835,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 SizedBox(height: 5.w),
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       'Отвезти посылку на почту',
                       style: CustomTextStyle.grey15bold,
                     ),
@@ -867,7 +867,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                     child: Column(
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'На какой адрес отправить?',
                               style: CustomTextStyle.grey15bold,
@@ -892,7 +892,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'На кого?',
                               style: CustomTextStyle.grey15bold,
@@ -922,7 +922,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 SizedBox(height: 5.h),
                 Row(
                   children: [
-                    const Flexible(
+                    Flexible(
                       child: Text(
                         'Отправить посылку поездом, автобусом или самолетом',
                         style: CustomTextStyle.grey15bold,
@@ -956,7 +956,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                       children: [
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Откуда отправление?',
                               style: CustomTextStyle.grey15bold,
@@ -981,7 +981,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Кому отдать?',
                               style: CustomTextStyle.grey15bold,
@@ -1006,7 +1006,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Номер рейса/поезда/автобуса?',
                               style: CustomTextStyle.grey15bold,
@@ -1031,7 +1031,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Контакты представителя?',
                               style: CustomTextStyle.grey15bold,
@@ -1061,7 +1061,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 SizedBox(height: 5.h),
                 Row(
                   children: [
-                    const Flexible(
+                    Flexible(
                       child: Text(
                         'Встретить посылку поездом, автобусом или самолетом',
                         style: CustomTextStyle.grey15bold,
@@ -1095,7 +1095,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                       children: [
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Куда прибывает?',
                               style: CustomTextStyle.grey15bold,
@@ -1120,7 +1120,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'У кого забрать?',
                               style: CustomTextStyle.grey15bold,
@@ -1145,7 +1145,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Номер рейса/поезда/автобуса?',
                               style: CustomTextStyle.grey15bold,
@@ -1170,7 +1170,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                         ),
                         SizedBox(height: 10.w),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               'Контакты представителя?',
                               style: CustomTextStyle.grey15bold,
@@ -1218,7 +1218,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           calc();
                         },
                       ),
-                      const Text(
+                      Text(
                         'ОФОРМЛЕНИЕ ДОВЕРЕННОСТИ',
                         style: CustomTextStyle.grey15bold,
                       ),
@@ -1252,7 +1252,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           calc();
                         },
                       ),
-                      const Text(
+                      Text(
                         'Промзона',
                         style: CustomTextStyle.grey15bold,
                       ),
@@ -1286,7 +1286,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                           calc();
                         },
                       ),
-                      const Text(
+                      Text(
                         'Доставить до двери',
                         style: CustomTextStyle.grey15bold,
                       ),

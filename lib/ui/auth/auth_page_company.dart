@@ -6,6 +6,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
+import 'package:egorka/widget/custom_button.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AuthPageCompany extends StatefulWidget {
@@ -64,7 +66,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
   @override
   Widget build(BuildContext context) {
     TextStyle labelStyle =
-        const TextStyle(fontWeight: FontWeight.w300, fontSize: 16);
+        GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 16);
     final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -73,9 +75,10 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
           initialData: 0,
           builder: (context, snapshot) {
             return AnimatedPadding(
-              duration: const Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 500),
               padding: EdgeInsets.symmetric(vertical: 0.h),
               child: Material(
+                color: Colors.white,
                 child: SafeArea(
                   bottom: false,
                   child: Padding(
@@ -89,37 +92,33 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutQuint,
                               height: state ? 5.h : 80.h,
                             ),
                             Row(
                               children: [
-                                Expanded(
-                                  child: SvgPicture.asset(
-                                    'assets/icons/logo_egorka.svg',
-                                    height: 60.h,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10.h),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
                                 Text(
-                                  'Егорка готов! Входите и начнём',
-                                  style: TextStyle(fontSize: 23.sp),
+                                  'Войти в аккаунт',
+                                  style: GoogleFonts.manrope(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: state ? 20.h : 36.h,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ],
                             ),
+                            SizedBox(height: 5.h),
                             AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutQuint,
                               height: state ? 5.h : 30.h,
                             ),
                             Text(
                               'Логин компании',
                               style: labelStyle,
                             ),
+                            SizedBox(height: 5.h),
                             Row(
                               children: [
                                 Expanded(
@@ -127,6 +126,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                                     focusNode: focusNode1,
                                     textEditingController: _companyController,
                                     hintText: 'Gazprom',
+                                    auth: true,
                                     height: 60.h,
                                     contentPadding: EdgeInsets.symmetric(
                                       horizontal: 20.w,
@@ -137,17 +137,20 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               ],
                             ),
                             AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutQuint,
                               height: state ? 5.h : 20.h,
                             ),
                             Text(
                               'Логин пользователя',
                               style: labelStyle,
                             ),
+                            SizedBox(height: 5.h),
                             CustomTextField(
                               focusNode: focusNode2,
                               textEditingController: _loginController,
                               hintText: 'Admin',
+                              auth: true,
                               height: 60.h,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 20.w,
@@ -155,20 +158,23 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               ),
                             ),
                             AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutQuint,
                               height: state ? 5.h : 20.h,
                             ),
                             Text(
                               'Пароль',
                               style: labelStyle,
                             ),
+                            SizedBox(height: 5.h),
                             Stack(
                               alignment: Alignment.center,
                               children: [
                                 CustomTextField(
                                   focusNode: focusNode3,
                                   textEditingController: _passwordController,
-                                  hintText: '••••••',
+                                  hintText: 'Пароль',
+                                  auth: true,
                                   height: 60.h,
                                   obscureText: obscureText,
                                   contentPadding: EdgeInsets.symmetric(
@@ -195,36 +201,39 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
                               ],
                             ),
                             AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutQuint,
                               height: state ? 5.h : 20.h,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () => Navigator.of(context).pushNamed(
-                                      AppRoute.registration,
-                                      arguments: false),
-                                  child: const Text(
-                                    'Егорка ещё не возит для вас?',
-                                    style: CustomTextStyle.red15,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     GestureDetector(
+                            //       onTap: () => Navigator.of(context).pushNamed(
+                            //           AppRoute.registration,
+                            //           arguments: false),
+                            //       child: const Text(
+                            //         'Егорка ещё не возит для вас?',
+                            //         style: CustomTextStyle.red15,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                             AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutQuint,
                               height: state ? 5.h : 20.h,
                             ),
-                            RoundedLoadingButton(
-                              controller: _btnController,
-                              onPressed: _signIn,
-                              color: Colors.red,
-                              child: const Text(
-                                'Войти',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                            // RoundedLoadingButton(
+                            //   controller: _btnController,
+                            //   onPressed: _signIn,
+                            //   color: Colors.red,
+                            //   child: const Text(
+                            //     'Войти',
+                            //     style: TextStyle(color: Colors.white),
+                            //   ),
+                            // ),
+                            CustomButton(title: 'Далее', onTap: _signIn),
                             SizedBox(height: heightKeyBoard),
                             const Spacer(flex: 4),
                           ],
@@ -256,7 +265,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
       storage.setKey(res.result!.key);
       BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
       BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
-      Navigator.of(context).pop(res);
+      Navigator.pushNamed(context, AppRoute.home);
     } else {
       _btnController.error();
       MessageDialogs().showAlert(

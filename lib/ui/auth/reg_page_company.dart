@@ -1,19 +1,24 @@
 import 'dart:async';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_company.dart';
+import 'package:egorka/widget/custom_button.dart';
+import 'package:egorka/widget/custom_checkbox.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/policy_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegPageCompany extends StatefulWidget {
-  RegPageCompany({super.key});
+  Function(bool) openKeyboard;
+  RegPageCompany({super.key, required this.openKeyboard});
 
   @override
   State<RegPageCompany> createState() => _RegPageCompanyState();
@@ -58,18 +63,69 @@ class _RegPageCompanyState extends State<RegPageCompany> {
   @override
   void initState() {
     super.initState();
-    focusNode1.addListener(() {
-      state = focusNode1.hasFocus;
-      setState(() {});
-    });
-    focusNode2.addListener(() {
-      state = focusNode2.hasFocus;
-      setState(() {});
-    });
-    focusNode3.addListener(() {
-      state = focusNode3.hasFocus;
-      setState(() {});
-    });
+    focusNode1.addListener(
+      () {
+        state = focusNode1.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode2.addListener(
+      () {
+        state = focusNode2.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode3.addListener(
+      () {
+        state = focusNode3.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode4.addListener(
+      () {
+        state = focusNode4.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode5.addListener(
+      () {
+        state = focusNode5.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode6.addListener(
+      () {
+        state = focusNode6.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode7.addListener(
+      () {
+        state = focusNode7.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode8.addListener(
+      () {
+        state = focusNode8.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
+    focusNode9.addListener(
+      () {
+        state = focusNode9.hasFocus;
+        widget.openKeyboard(state);
+        setState(() {});
+      },
+    );
   }
 
   @override
@@ -81,7 +137,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
   @override
   Widget build(BuildContext context) {
     TextStyle labelStyle =
-        const TextStyle(fontWeight: FontWeight.w300, fontSize: 16);
+        GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 16);
     final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
@@ -93,24 +149,26 @@ class _RegPageCompanyState extends State<RegPageCompany> {
               duration: const Duration(milliseconds: 200),
               padding: EdgeInsets.symmetric(vertical: 0.h),
               child: Material(
+                color: Colors.white,
                 child: SafeArea(
                   bottom: false,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text('ООО, ИП'),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: const [
+                          //     Text('ООО, ИП'),
+                          //   ],
+                          // ),
+                          // SizedBox(height: 20.h),
                           Text('ИНН организации', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -119,6 +177,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   textEditingController: innController,
                                   hintText: '4377373782382',
                                   height: 60.h,
+                                  auth: true,
                                   onChanged: (value) async {
                                     if (innController.text.isNotEmpty) {
                                       Map<String, dynamic>? temp =
@@ -155,6 +214,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                             ),
                           SizedBox(height: 20.h),
                           Text('Логин компании', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -163,6 +223,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   textEditingController: loginCompanyController,
                                   hintText: 'EgorkaDelivery',
                                   height: 60.h,
+                                  auth: true,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -176,14 +237,15 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                             'Логин компании един для всех учетных записей Вашей организации. '
                             'Рекомендуем использовать короткое название. Может содержать только '
                             'латинские буквы и цифры.',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: Colors.grey[500],
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
                             ),
                             textAlign: TextAlign.justify,
                           ),
                           SizedBox(height: 20.h),
                           Text('Телефон компании', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -192,6 +254,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   textEditingController: phoneCompanyController,
                                   hintText: '+7 999-888-7766',
                                   height: 60.h,
+                                  auth: true,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -209,6 +272,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           ),
                           SizedBox(height: 20.h),
                           Text('Email компании', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -217,6 +281,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   textEditingController: emailCompanyController,
                                   hintText: 'egorka@mail.ru',
                                   height: 60.h,
+                                  auth: true,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -231,6 +296,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           ),
                           SizedBox(height: 20.h),
                           Text('Логин пользователя', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -240,6 +306,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   hintText: 'Admin',
                                   height: 60.h,
                                   enabled: false,
+                                  auth: true,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -251,14 +318,15 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           SizedBox(height: 10.h),
                           Text(
                             'Логин главной учётной записи',
-                            style: TextStyle(
+                            style: GoogleFonts.manrope(
                               color: Colors.grey[500],
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
                             ),
                             textAlign: TextAlign.justify,
                           ),
                           SizedBox(height: 20.h),
                           Text('Ваш мобильный', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -267,6 +335,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   textEditingController: phoneUserController,
                                   hintText: '+7 (999) 888-77-66',
                                   height: 60.h,
+                                  auth: true,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -284,6 +353,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           ),
                           SizedBox(height: 20.h),
                           Text('Ваш Email', style: labelStyle),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Expanded(
@@ -292,6 +362,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                   textEditingController: emailUserController,
                                   hintText: 'ivanov@mail.ru',
                                   height: 60.h,
+                                  auth: true,
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 20.w,
                                     vertical: 20.w,
@@ -302,11 +373,13 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           ),
                           SizedBox(height: 20.h),
                           Text('Придумайте пароль', style: labelStyle),
+                          SizedBox(height: 5.h),
                           CustomTextField(
                             focusNode: focusNode8,
                             textEditingController: passwordController,
                             hintText: '******',
                             height: 60.h,
+                            auth: true,
                             contentPadding: EdgeInsets.symmetric(
                               horizontal: 20.w,
                               vertical: 20.w,
@@ -314,10 +387,12 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           ),
                           SizedBox(height: 20.h),
                           Text('Пароль еще раз', style: labelStyle),
+                          SizedBox(height: 5.h),
                           CustomTextField(
                             focusNode: focusNode9,
                             textEditingController: repeatPasswordController,
                             hintText: '******',
+                            auth: true,
                             height: 60.h,
                             contentPadding: EdgeInsets.symmetric(
                               horizontal: 20.w,
@@ -327,76 +402,105 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                           SizedBox(height: 20.h),
                           Row(
                             children: [
-                              Checkbox(
-                                value: confirmTermPolitics,
-                                fillColor:
-                                    MaterialStateProperty.all(Colors.red),
-                                shape: const CircleBorder(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    confirmTermPolitics = !confirmTermPolitics;
-                                  });
-                                },
-                              ),
+                              CustomCheckBox(
+                                  initialValue: false,
+                                  onTap: (value) {
+                                    setState(() {
+                                      confirmTermPolitics =
+                                          !confirmTermPolitics;
+                                    });
+                                  }),
+                              // Checkbox(
+                              //   value: confirmTermPolitics,
+                              //   fillColor:
+                              //       MaterialStateProperty.all(Colors.red),
+                              //   shape: const CircleBorder(),
+                              //   onChanged: (value) {
+                              //     setState(() {
+                              //       confirmTermPolitics = !confirmTermPolitics;
+                              //     });
+                              //   },
+                              // ),
+                              SizedBox(width: 20.w),
                               Expanded(
-                                child: RichText(
-                                  textAlign: TextAlign.justify,
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            'Нажимаю кнопку «Начать работать» Вы соглашаетесь с ',
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                      TextSpan(
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => launch(
-                                              'https://egorka.delivery/egorka_rules.pdf'),
-                                        text: 'Договором оферты ',
-                                        style: CustomTextStyle.red15
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                      TextSpan(
-                                        text: 'и ',
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                      TextSpan(
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap =
-                                              () => Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: ((context) {
-                                                        return PolicyView();
-                                                      }),
-                                                    ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      confirmTermPolitics =
+                                          !confirmTermPolitics;
+                                    });
+                                  },
+                                  child: RichText(
+                                    textAlign: TextAlign.justify,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              'Нажимая кнопку «Начать работать» Вы соглашаетесь с ',
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 13.h,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => launch(
+                                                'https://egorka.delivery/egorka_rules.pdf'),
+                                          text: 'Договором оферты ',
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 13.h,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'и ',
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 13.h,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () =>
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: ((context) {
+                                                      return PolicyView();
+                                                    }),
                                                   ),
-                                        text: 'Политикой конфиденциальности',
-                                        style: CustomTextStyle.red15
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                      TextSpan(
-                                        text: ' ООО «Егорка»',
-                                        style: CustomTextStyle.black17w400
-                                            .copyWith(fontSize: 13.sp),
-                                      ),
-                                    ],
+                                                ),
+                                          text: 'Политикой конфиденциальности',
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 13.h,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' ООО «Егорка»',
+                                          style: GoogleFonts.manrope(
+                                            fontSize: 13.h,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(height: 20.h),
-                          RoundedLoadingButton(
-                            controller: _btnController,
-                            onPressed: _signIn,
-                            color: Colors.red,
-                            child: const Text(
-                              'Начать работать',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
+                          // RoundedLoadingButton(
+                          //   controller: _btnController,
+                          //   onPressed: _signIn,
+                          //   color: Colors.red,
+                          //   child: const Text(
+                          //     'Начать работать',
+                          //     style: TextStyle(color: Colors.white),
+                          //   ),
+                          // ),
+                          CustomButton(
+                              title: 'Начать работать', onTap: _signIn),
                           SizedBox(height: heightKeyBoard),
                           SizedBox(height: 50.h),
                         ],
@@ -499,10 +603,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
 
       if (res == null) {
         _btnController.success();
-        Future.delayed(const Duration(seconds: 1), (() {
-          _btnController.reset();
-          Navigator.of(context).pop();
-        }));
+        Navigator.pushNamed(context, AppRoute.home);
       } else {
         _btnController.error();
         Future.delayed(const Duration(seconds: 1), (() {

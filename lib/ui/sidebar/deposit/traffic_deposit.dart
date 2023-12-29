@@ -6,6 +6,8 @@ import 'package:egorka/ui/sidebar/deposit/add_deposit.dart';
 import 'package:egorka/ui/sidebar/deposit/item_traffic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TrafficDeposit extends StatefulWidget {
   @override
@@ -26,28 +28,51 @@ class _TrafficDepositState extends State<TrafficDeposit> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
-          elevation: 0.5,
-          title: const Text(
-            'Депозит',
-            style: CustomTextStyle.black17w400,
-          ),
-          leading: GestureDetector(
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      // appBar: AppBar(
+      //   elevation: 0.5,
+      //   title: const Text(
+      //     'Депозит',
+      //     style: CustomTextStyle.black17w400,
+      //   ),
+      //   leading: GestureDetector(
+      //     onTap: () => Navigator.of(context).pop(),
+      //     child: const Icon(
+      //       Icons.arrow_back_ios,
+      //       color: Colors.red,
+      //     ),
+      //   ),
+      //   backgroundColor: Colors.white,
+      // ),
+      body: Column(
+        children: [
+          GestureDetector(
             onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.red,
+            child: Container(
+              margin: EdgeInsets.only(top: 76.h),
+              child: Row(
+                children: [
+                  SizedBox(width: 20.w),
+                  SvgPicture.asset(
+                    'assets/icons/arrow-left.svg',
+                    width: 30.w,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Назад',
+                    style: GoogleFonts.manrope(
+                      fontSize: 17.h,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-          backgroundColor: Colors.white,
-        ),
-        body: Column(
-          children: [
-            StreamBuilder<int>(
+          SizedBox(
+            height: 100.h,
+            child: StreamBuilder<int>(
               stream: tabBarController.stream,
               initialData: 0,
               builder: (context, snapshot) {
@@ -59,22 +84,27 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                   child: Container(
                     height: 50.h,
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15.r)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15.r),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
                               tabBarController.add(0);
-                              pageController.jumpToPage(0);
+                              pageController.animateToPage(0,
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOutQuint);
                             },
                             child: Container(
+                              height: 42.h,
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color:
-                                      snapshot.data! == 0 ? Colors.red : null,
-                                  borderRadius: BorderRadius.circular(10.r)),
+                                  color: snapshot.data! == 0
+                                      ? Color.fromRGBO(255, 102, 102, 1)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(32.r)),
                               child: Center(
                                 child: Text(
                                   'Пополнить',
@@ -92,14 +122,17 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                           child: GestureDetector(
                             onTap: () {
                               tabBarController.add(1);
-                              pageController.jumpToPage(1);
+                              pageController.animateToPage(1,
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOutQuint);
                             },
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color:
-                                      snapshot.data! == 1 ? Colors.red : null,
-                                  borderRadius: BorderRadius.circular(10.r)),
+                                  color: snapshot.data! == 1
+                                      ? Color.fromRGBO(255, 102, 102, 1)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(32.r)),
                               child: Center(
                                 child: Text(
                                   'Все счета',
@@ -117,14 +150,18 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                           child: GestureDetector(
                             onTap: () {
                               tabBarController.add(2);
-                              pageController.jumpToPage(2);
+                              pageController.animateToPage(2,
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOutQuint);
                             },
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color:
-                                      snapshot.data! == 2 ? Colors.red : null,
-                                  borderRadius: BorderRadius.circular(10)),
+                                color: snapshot.data! == 2
+                                    ? Color.fromRGBO(255, 102, 102, 1)
+                                    : null,
+                                borderRadius: BorderRadius.circular(32.r),
+                              ),
                               child: Center(
                                 child: Text(
                                   'Пополнения',
@@ -147,9 +184,10 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                             child: Container(
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                  color:
-                                      snapshot.data! == 3 ? Colors.red : null,
-                                  borderRadius: BorderRadius.circular(10)),
+                                  color: snapshot.data! == 3
+                                      ? Color.fromRGBO(255, 102, 102, 1)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(32.r)),
                               child: Center(
                                 child: Text(
                                   'Списания',
@@ -169,35 +207,43 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                 );
               },
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 30.w),
-                child: SizedBox(
-                  height: 400.h,
-                  child: PageView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: pageController,
-                    children: [
-                      AddDeposit(0),
-                      ItemTraffic(
-                        Filter(type: 'Bill'),
-                        page: 1,
-                      ),
-                      ItemTraffic(
-                        Filter(direction: 'Debet'),
-                        page: 2,
-                      ),
-                      ItemTraffic(
-                        Filter(direction: 'Credit'),
-                        page: 3,
-                      ),
-                    ],
+          ),
+          Expanded(
+            child: SizedBox(
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: AddDeposit(0),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: ItemTraffic(
+                      Filter(type: 'Bill'),
+                      page: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: ItemTraffic(
+                      Filter(direction: 'Debet'),
+                      page: 2,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: ItemTraffic(
+                      Filter(direction: 'Credit'),
+                      page: 3,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

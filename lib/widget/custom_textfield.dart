@@ -28,11 +28,12 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixicon;
   final String? prefixText;
   final bool? enabled;
-  final Color? fillColor;
+  Color? fillColor;
   double? height;
   double? width;
   TextStyle? hintStyle;
   EdgeInsets? contentPadding;
+  bool auth;
   CustomTextField({
     Key? key,
     this.onTap,
@@ -52,6 +53,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText,
     this.validateFunction,
     this.suffix,
+    this.auth = false,
     this.suffixIcon,
     this.suffixText,
     this.prefixicon,
@@ -68,124 +70,127 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     Color hintTextColor = Colors.grey;
     height = height ?? 175.h;
-    hintStyle = hintStyle ??
-        TextStyle(
-          overflow: TextOverflow.ellipsis,
-          fontSize: 14,
-          color: hintTextColor,
-          fontWeight: FontWeight.w400,
-        );
-
-    contentPadding = contentPadding ??
-        EdgeInsets.symmetric(vertical: 20.w, horizontal: 20.w);
-
+    hintStyle = GoogleFonts.manrope(
+      // overflow: TextOverflow.ellipsis,
+      fontSize: 17.h,
+      color: Color.fromRGBO(177, 177, 177, 1),
+      fontWeight: FontWeight.w500,
+    );
+    fillColor = Colors.white;
+    if (auth) {
+      contentPadding = EdgeInsets.symmetric(vertical: 17.h, horizontal: 20.w);
+    }
     var widthOfScreen = width ?? MediaQuery.of(context).size.width;
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
       child: SizedBox(
         height: height,
         width: widthOfScreen,
-        child: KeyboardActions(
-          disableScroll: true,
-          config: KeyboardActionsConfig(
-            defaultDoneWidget: GestureDetector(
-              onTap: () {
-                focusNode?.unfocus();
-                if (onFieldSubmitted != null) {
-                  onFieldSubmitted!(textEditingController.text);
-                }
-              },
-              // child: MediaQuery(
-              //   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-              //   child: Text(
-              //     'Готово',
-              //     style: TextStyle(fontSize: 14.sp),
-              //   ),
-              // ),
-            ),
-            actions: [
-              KeyboardActionsItem(
-                focusNode: focusNode ?? FocusNode(),
-                onTapAction: () => onFieldSubmitted,
-              ),
-            ],
+        // child: KeyboardActions(
+        //   disableScroll: true,
+        //   config: KeyboardActionsConfig(
+        //     defaultDoneWidget: GestureDetector(
+        //       onTap: () {
+        //         focusNode?.unfocus();
+        //         if (onFieldSubmitted != null) {
+        //           onFieldSubmitted!(textEditingController.text);
+        //         }
+        //       },
+        //       // child: MediaQuery(
+        //       //   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        //       //   child: Text(
+        //       //     'Готово',
+        //       //     style: TextStyle(fontSize: 14.sp),
+        //       //   ),
+        //       // ),
+        //     ),
+        //     actions: [
+        //       KeyboardActionsItem(
+        //         focusNode: focusNode ?? FocusNode(),
+        //         onTapAction: () => onFieldSubmitted,
+        //       ),
+        //     ],
+        //   ),
+        child: TextFormField(
+          onFieldSubmitted: onFieldSubmitted,
+          enabled: enabled,
+          focusNode: focusNode,
+          onTap: onTap as void Function()?,
+          validator: validateFunction,
+          readOnly: readOnly ?? false,
+          textInputAction: inputAction,
+          controller: textEditingController,
+          onChanged: onChanged,
+          obscureText: obscureText ?? false,
+          maxLines: 1,
+          minLines: 1,
+          cursorColor: const Color.fromRGBO(255, 102, 102, 1),
+          cursorHeight: 15.h,
+          inputFormatters: formatters,
+          keyboardType: textInputType,
+          style: GoogleFonts.manrope(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 17.sp,
           ),
-          child: TextFormField(
-            onFieldSubmitted: onFieldSubmitted,
-            enabled: enabled,
-            focusNode: focusNode,
-            onTap: onTap as void Function()?,
-            validator: validateFunction,
-            readOnly: readOnly ?? false,
-            textInputAction: inputAction,
-            controller: textEditingController,
-            onChanged: onChanged,
-            obscureText: obscureText ?? false,
-            maxLines: 1,
-            minLines: 1,
-            inputFormatters: formatters,
-            keyboardType: textInputType,
-            style: GoogleFonts.manrope(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: 17.sp,
+          decoration: InputDecoration(
+            fillColor: fillColor,
+            icon: icon,
+            prefixIcon: prefixicon,
+            suffixText: suffixText,
+            suffix: suffix,
+            prefixText: prefixText,
+            prefixStyle: const TextStyle(
+                fontSize: 14.5,
+                color: Colors.black,
+                overflow: TextOverflow.ellipsis),
+            suffixIcon: suffixIcon,
+            suffixStyle: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              fontSize: 14,
+              color: hintTextColor,
+              fontWeight: FontWeight.w400,
             ),
-            decoration: InputDecoration(
-              fillColor: fillColor,
-              icon: icon,
-              prefixIcon: prefixicon,
-              suffixText: suffixText,
-              suffix: suffix,
-              prefixText: prefixText,
-              prefixStyle: const TextStyle(
-                  fontSize: 14.5,
-                  color: Colors.black,
-                  overflow: TextOverflow.ellipsis),
-              suffixIcon: suffixIcon,
-              suffixStyle: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-              errorStyle: const TextStyle(fontSize: 10.0),
-              contentPadding: contentPadding,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
-                borderSide: const BorderSide(
-                  color: Colors.transparent,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
-                borderSide: const BorderSide(
-                  color: Colors.transparent,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
-                borderSide: const BorderSide(
-                  color: Colors.transparent,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              disabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: Colors.transparent,
-                width: 0.0,
+            errorStyle: const TextStyle(fontSize: 10.0),
+            contentPadding: contentPadding,
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.r),
+              borderSide: BorderSide(
+                color: Colors.black,
+                width: auth ? 1.0 : 0,
                 style: BorderStyle.solid,
-              )),
-              hintStyle: hintStyle,
-              hintText: hintText,
+              ),
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.r),
+              borderSide: BorderSide(
+                color: auth ? Color.fromRGBO(220, 220, 220, 1) : Colors.white,
+                width: auth ? 1.0 : 0,
+                style: BorderStyle.solid,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.r),
+              borderSide: BorderSide(
+                color: auth ? Color.fromRGBO(220, 220, 220, 1) : Colors.white,
+                width: auth ? 1.0 : 0,
+                style: BorderStyle.solid,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.r),
+              borderSide: BorderSide(
+                color: auth ? Color.fromRGBO(220, 220, 220, 1) : Colors.white,
+                width: auth ? 1.0 : 0,
+                style: BorderStyle.solid,
+              ),
+            ),
+            hintStyle: hintStyle,
+            hintText: hintText,
           ),
         ),
+        //   ),
       ),
     );
   }

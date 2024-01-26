@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +9,7 @@ class PaymentWebView extends StatefulWidget {
   int id;
   int pin;
 
-  PaymentWebView(this.url, this.id, this.pin);
+  PaymentWebView(this.url, this.id, this.pin, {super.key});
 
   @override
   State<PaymentWebView> createState() => _PaymentWebViewState();
@@ -47,7 +48,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Material(
         child: SafeArea(
           bottom: false,

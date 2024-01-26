@@ -5,7 +5,7 @@ import 'package:egorka/model/coast_advanced.dart';
 import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/locations.dart';
-import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/poin_details.dart';
 import 'package:egorka/model/point.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';

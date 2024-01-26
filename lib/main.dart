@@ -31,11 +31,11 @@ void main() async {
     MessageDialogs().showMessage('Уведомление', event.data.toString());
   });
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +65,12 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             initialRoute: AppRoute.home,
-            localizationsDelegates: [
+            localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: [
-              const Locale('ru'),
+            supportedLocales: const [
+              Locale('ru'),
             ],
             onGenerateRoute: AppRoute.onGenerateRoute,
             builder: FlutterSmartDialog.init(),

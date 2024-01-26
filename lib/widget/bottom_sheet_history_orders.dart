@@ -1,6 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/model/delivery_type.dart';
@@ -16,11 +16,12 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class HistoryOrdersBottomSheetDraggable extends StatefulWidget {
   PanelController panelController;
   double panelSize;
+
   HistoryOrdersBottomSheetDraggable({
     Key? key,
     required this.panelController,
     required this.panelSize,
-  });
+  }) : super(key: key);
 
   @override
   State<HistoryOrdersBottomSheetDraggable> createState() =>
@@ -43,7 +44,9 @@ class _BottomSheetDraggableState
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: Material(
         color: Colors.transparent,
         child: _floatingPanel(context),
@@ -66,7 +69,7 @@ class _BottomSheetDraggableState
             color: Colors.black12,
           ),
         ],
-        color: backgroundColor,
+        color: AppConsts.backgroundColor,
       ),
       child: Column(
         children: [
@@ -153,7 +156,7 @@ class _BottomSheetDraggableState
             ),
             printText
                 ? Container(
-                    height: 100.h,
+                    // height: 100.h,
                     padding: EdgeInsets.all(20.h),
                     margin: EdgeInsets.all(20.h),
                     decoration: BoxDecoration(
@@ -199,13 +202,13 @@ class _BottomSheetDraggableState
   }
 
   Container _pointCard(CreateFormModel state, int index, BuildContext context) {
-    var parsedDate = DateTime.parse(state.result.RecordDate!);
+    var parsedDate = DateTime.parse(state.result.recordDate!);
     bool date = false;
 
     if (index == 0) {
     } else {
-      final date1 = DateTime.parse(coast[index - 1].result.RecordDate!);
-      final date2 = DateTime.parse(coast[index].result.RecordDate!);
+      final date1 = DateTime.parse(coast[index - 1].result.recordDate!);
+      final date2 = DateTime.parse(coast[index].result.recordDate!);
 
       if (date2.year == date1.year) {
         if (date2.month == date1.month) {
@@ -233,7 +236,7 @@ class _BottomSheetDraggableState
     String status = 'Ошибка';
 
     Color colorStatus = Colors.red;
-    bool resPaid = state.result.StatusPay! == 'Paid' ? true : false;
+    state.result.statusPay! == 'Paid' ? true : false;
     Widget typeOrder = Text(
       'FBO',
       style: TextStyle(
@@ -243,7 +246,7 @@ class _BottomSheetDraggableState
       ),
     );
 
-    if (state.result.Group == 'FBS') {
+    if (state.result.group == 'FBS') {
       typeOrder = Text(
         'FBS',
         style: TextStyle(
@@ -252,7 +255,7 @@ class _BottomSheetDraggableState
           fontWeight: FontWeight.w800,
         ),
       );
-    } else if (state.result.Group == 'MixFBS') {
+    } else if (state.result.group == 'MixFBS') {
       typeOrder = Text(
         'FBS',
         style: TextStyle(
@@ -261,7 +264,7 @@ class _BottomSheetDraggableState
           fontWeight: FontWeight.w800,
         ),
       );
-    } else if (state.result.Group == 'FBO') {
+    } else if (state.result.group == 'FBO') {
       typeOrder = Text(
         'FBO',
         style: TextStyle(
@@ -270,8 +273,8 @@ class _BottomSheetDraggableState
           fontWeight: FontWeight.w800,
         ),
       );
-    } else if (state.result.Group == 'Express') {
-      if (state.result.Type! == 'Car') {
+    } else if (state.result.group == 'Express') {
+      if (state.result.type! == 'Car') {
         typeOrder = Image.asset(
           listChoice[0].icon,
           color: Colors.grey[200],
@@ -282,7 +285,7 @@ class _BottomSheetDraggableState
           color: Colors.grey[200],
         );
       }
-    } else if (state.result.Group == 'Marketplace') {
+    } else if (state.result.group == 'Marketplace') {
       typeOrder = Text(
         'FBO',
         style: TextStyle(
@@ -293,22 +296,22 @@ class _BottomSheetDraggableState
       );
     }
 
-    if (state.result.Status == 'Drafted') {
+    if (state.result.status == 'Drafted') {
       colorStatus = Colors.orange;
       status = 'Черновик';
-    } else if (state.result.Status == 'Booked') {
+    } else if (state.result.status == 'Booked') {
       colorStatus = Colors.green;
       status = 'В работе';
-    } else if (state.result.Status == 'Completed') {
+    } else if (state.result.status == 'Completed') {
       colorStatus = Colors.green;
       status = 'Выполнено';
-    } else if (state.result.Status == 'Cancelled') {
+    } else if (state.result.status == 'Cancelled') {
       colorStatus = Colors.red;
       status = 'Отменено';
-    } else if (state.result.Status == 'Rejected') {
+    } else if (state.result.status == 'Rejected') {
       colorStatus = Colors.orange;
       status = 'Отказано';
-    } else if (state.result.Status == 'Error') {
+    } else if (state.result.status == 'Error') {
       colorStatus = Colors.red;
       status = 'Ошибка';
     }
@@ -362,7 +365,7 @@ class _BottomSheetDraggableState
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.Date! * 1000))}',
+                                          'Доставка $period в ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(state.result.date! * 1000))}',
                                           style: const TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.w600),
@@ -434,7 +437,7 @@ class _BottomSheetDraggableState
                                         child: Material(
                                           color: Colors.grey[200],
                                           child: InkWell(
-                                            onTap: state.result.Group !=
+                                            onTap: state.result.group !=
                                                     'Express'
                                                 ? () => Navigator.of(context)
                                                         .pushNamed(
@@ -442,18 +445,18 @@ class _BottomSheetDraggableState
                                                                 .marketplaces,
                                                             arguments: [
                                                           state.result
-                                                              .RecordNumber,
+                                                              .recordNumber,
                                                           state
-                                                              .result.RecordPIN,
+                                                              .result.recordPIN,
                                                           null,
                                                           null,
                                                           null,
                                                           null,
-                                                          state.result.Group ==
+                                                          state.result.group ==
                                                                   'Marketplace'
                                                               ? TypeGroup.fbo
                                                               : state.result
-                                                                          .Group ==
+                                                                          .group ==
                                                                       'FBS'
                                                                   ? TypeGroup
                                                                       .fbs
@@ -468,8 +471,8 @@ class _BottomSheetDraggableState
                                                                 .repeatOrder,
                                                             arguments: [
                                                           state.result
-                                                              .RecordNumber,
-                                                          state.result.RecordPIN
+                                                              .recordNumber,
+                                                          state.result.recordPIN
                                                         ]),
                                             child: SizedBox(
                                               width: 43.h,

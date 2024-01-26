@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/point.dart' as pointModel;
+import 'package:egorka/model/point.dart' as point_model;
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-class SelectAdresMap extends StatefulWidget {
+class SelectAddressMap extends StatefulWidget {
   static const CameraPosition kPlex = CameraPosition(
     target: Point(
       latitude: 53.946798,
@@ -19,11 +19,13 @@ class SelectAdresMap extends StatefulWidget {
     ),
     zoom: 18,
   );
+
+  const SelectAddressMap({super.key});
   @override
-  State<SelectAdresMap> createState() => _SelectAdresMapState();
+  State<SelectAddressMap> createState() => _SelectAddressMapState();
 }
 
-class _SelectAdresMapState extends State<SelectAdresMap> {
+class _SelectAddressMapState extends State<SelectAddressMap> {
   YandexMapController? mapController;
   CameraPosition? pos;
   PanelController panelController = PanelController();
@@ -81,7 +83,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
         suggestions = Suggestions(
           iD: '',
           name: address,
-          point: pointModel.Point(
+          point: point_model.Point(
             address: address,
             latitude: pos!.target.latitude,
             longitude: pos!.target.longitude,
@@ -119,7 +121,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
         suggestions = Suggestions(
           iD: '',
           name: address,
-          point: pointModel.Point(
+          point: point_model.Point(
             address: address,
             latitude: pos!.target.latitude,
             longitude: pos!.target.longitude,
@@ -135,7 +137,7 @@ class _SelectAdresMapState extends State<SelectAdresMap> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Material(
         child: SafeArea(
           bottom: false,

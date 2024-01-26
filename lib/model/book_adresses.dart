@@ -36,8 +36,9 @@ class BookAdresses {
     dynamic latitude = data['Latitude'] ?? '';
     dynamic longtitude = data['Longitude'] ?? '';
     dynamic contact;
-    if (data['Contact'] != null)
+    if (data['Contact'] != null) {
       contact = Contact.fromJson(data['Contact']);
+    }
     return BookAdresses(
         id: id,
         code: code,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/suggestions.dart';
@@ -23,7 +24,7 @@ class MarketPlaceBottomSheetDraggable extends StatefulWidget {
     required this.fromController,
     required this.panelController,
     required this.onSearch,
-  });
+  }) : super(key: key);
 
   @override
   State<MarketPlaceBottomSheetDraggable> createState() =>
@@ -39,7 +40,7 @@ class _BottomSheetDraggableState
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(
           buildWhen: (previous, current) {
         if (current is MarketPlaceStatedOpenBtmSheet) {
@@ -199,9 +200,9 @@ class _BottomSheetDraggableState
               if (state is MarketPlaceStated) {
                 return const SizedBox();
               } else if (state is MarketPlaceLoading) {
-                return Column(
+                return const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [CupertinoActivityIndicator()],
+                  children: [CupertinoActivityIndicator()],
                 );
               } else if (state is MarketPlaceSuccess) {
                 return address != null

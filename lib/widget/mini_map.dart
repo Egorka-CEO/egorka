@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +39,7 @@ class _MiniMapViewState extends State<MiniMapView> {
     BlocProvider.of<HistoryOrdersBloc>(context)
         .add(HistoryOrderPolilyne(widget.locations));
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
           buildWhen: (previous, current) {
         if (current is HistoryOrderRoutePolilyne) {

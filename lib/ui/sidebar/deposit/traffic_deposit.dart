@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/ui/sidebar/deposit/add_deposit.dart';
@@ -10,6 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TrafficDeposit extends StatefulWidget {
+  const TrafficDeposit({super.key});
+
   @override
   State<TrafficDeposit> createState() => _TrafficDepositState();
 }
@@ -29,7 +31,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: AppConsts.backgroundColor,
       // appBar: AppBar(
       //   elevation: 0.5,
       //   title: const Text(
@@ -102,7 +104,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                   color: snapshot.data! == 0
-                                      ? Color.fromRGBO(255, 102, 102, 1)
+                                      ? const Color.fromRGBO(255, 102, 102, 1)
                                       : null,
                                   borderRadius: BorderRadius.circular(32.r)),
                               child: Center(
@@ -130,7 +132,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                   color: snapshot.data! == 1
-                                      ? Color.fromRGBO(255, 102, 102, 1)
+                                      ? const Color.fromRGBO(255, 102, 102, 1)
                                       : null,
                                   borderRadius: BorderRadius.circular(32.r)),
                               child: Center(
@@ -158,7 +160,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                 color: snapshot.data! == 2
-                                    ? Color.fromRGBO(255, 102, 102, 1)
+                                    ? const Color.fromRGBO(255, 102, 102, 1)
                                     : null,
                                 borderRadius: BorderRadius.circular(32.r),
                               ),
@@ -185,7 +187,7 @@ class _TrafficDepositState extends State<TrafficDeposit> {
                               margin: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                   color: snapshot.data! == 3
-                                      ? Color.fromRGBO(255, 102, 102, 1)
+                                      ? const Color.fromRGBO(255, 102, 102, 1)
                                       : null,
                                   borderRadius: BorderRadius.circular(32.r)),
                               child: Center(

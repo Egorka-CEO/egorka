@@ -33,76 +33,76 @@ class CreateFormModel {
 
 class Result {
   Result({
-    required this.ID,
-    required this.Type,
-    required this.Group,
-    required this.Date,
-    required this.DateUpdate,
-    this.Stage,
-    required this.RecordNumber,
-    required this.RecordPIN,
-    required this.RecordKey,
-    required this.RecordDate,
-    required this.RecordDateStamp,
-    required this.RecordPriceDate,
-    required this.RecordPriceDateStamp,
-    required this.RecordExpireDate,
-    this.RecordExpireDateStamp,
+    required this.id,
+    required this.type,
+    required this.group,
+    required this.date,
+    required this.dateUpdate,
+    this.stage,
+    required this.recordNumber,
+    required this.recordPIN,
+    required this.recordKey,
+    required this.recordDate,
+    required this.recordDateStamp,
+    required this.recordPriceDate,
+    required this.recordPriceDateStamp,
+    required this.recordExpireDate,
+    this.recordExpireDateStamp,
     required this.locations,
-    required this.Ancillaries,
+    required this.ancillaries,
     required this.calculation,
     required this.totalPrice,
-    required this.Status,
-    required this.StatusPay,
+    required this.status,
+    required this.statusPay,
   });
-  String? ID;
-  String? Type;
-  String? Group;
-  int? Date;
-  int? DateUpdate;
-  String? Stage;
-  int? RecordNumber;
-  int? RecordPIN;
-  String? RecordKey;
-  String? RecordDate;
-  int? RecordDateStamp;
-  String? RecordPriceDate;
-  int? RecordPriceDateStamp;
-  String? RecordExpireDate;
-  int? RecordExpireDateStamp;
+  String? id;
+  String? type;
+  String? group;
+  int? date;
+  int? dateUpdate;
+  String? stage;
+  int? recordNumber;
+  int? recordPIN;
+  String? recordKey;
+  String? recordDate;
+  int? recordDateStamp;
+  String? recordPriceDate;
+  int? recordPriceDateStamp;
+  String? recordExpireDate;
+  int? recordExpireDateStamp;
   List<Location> locations = [];
-  List<dynamic> Ancillaries = [];
+  List<dynamic> ancillaries = [];
   List<Calculation> calculation = [];
   TotalPrice? totalPrice;
-  String? Status;
-  String? StatusPay;
+  String? status;
+  String? statusPay;
 
   Result.fromJson(Map<String, dynamic> json) {
-    ID = json['ID'];
-    Type = json['Type'];
-    Group = json['Group'];
-    Date = json['Date'];
-    DateUpdate = json['DateUpdate'];
-    Stage = null;
-    RecordNumber = json['RecordNumber'];
-    RecordPIN = json['RecordPIN'];
-    RecordKey = json['RecordKey'];
-    RecordDate = json['RecordDate'];
-    RecordDateStamp = json['RecordDateStamp'];
-    RecordPriceDate = json['RecordPriceDate'];
-    RecordPriceDateStamp = json['RecordPriceDateStamp'];
-    RecordExpireDate = json['RecordExpireDate'];
-    RecordExpireDateStamp = null;
+    id = json['ID'];
+    type = json['Type'];
+    group = json['Group'];
+    date = json['Date'];
+    dateUpdate = json['DateUpdate'];
+    stage = null;
+    recordNumber = json['RecordNumber'];
+    recordPIN = json['RecordPIN'];
+    recordKey = json['RecordKey'];
+    recordDate = json['RecordDate'];
+    recordDateStamp = json['RecordDateStamp'];
+    recordPriceDate = json['RecordPriceDate'];
+    recordPriceDateStamp = json['RecordPriceDateStamp'];
+    recordExpireDate = json['RecordExpireDate'];
+    recordExpireDateStamp = null;
     locations =
         List.from(json['Locations']).map((e) => Location.fromJson(e)).toList();
-    Ancillaries = List.castFrom<dynamic, dynamic>(json['Ancillaries']);
+    ancillaries = List.castFrom<dynamic, dynamic>(json['Ancillaries']);
     calculation = json['Calculation'] != null
         ? List.from(json['Calculation'])
             .map((e) => Calculation.fromJson(e))
             .toList()
         : [];
     totalPrice = TotalPrice.fromJson(json['TotalPrice']);
-    Status = json['Status'];
-    StatusPay = json['StatusPay'];
+    status = json['Status'];
+    statusPay = json['StatusPay'];
   }
 }

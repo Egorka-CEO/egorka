@@ -1,4 +1,5 @@
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/marketplaces.dart';
 import 'package:egorka/model/point.dart';
@@ -21,7 +22,7 @@ class MarketPlacesMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
       child: BlocProvider(
         create: (context) => MarketPlacePageBloc(),
         child: Scaffold(
@@ -122,7 +123,7 @@ class MarketPlacesMap extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               }),
               BlocBuilder<MarketPlacePageBloc, MarketPlaceState>(

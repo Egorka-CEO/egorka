@@ -1,4 +1,3 @@
-import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,7 +41,7 @@ Widget detailsItems(
                     border: Border.all(
                       width: 1,
                       color: data
-                          ? Color.fromRGBO(220, 220, 220, 1)
+                          ? const Color.fromRGBO(220, 220, 220, 1)
                           : Colors.white,
                     ),
                   ),
@@ -69,7 +68,7 @@ Widget detailsItems(
                     border: Border.all(
                       width: 1,
                       color: data
-                          ? Color.fromRGBO(220, 220, 220, 1)
+                          ? const Color.fromRGBO(220, 220, 220, 1)
                           : Colors.white,
                     ),
                   ),
@@ -95,7 +94,7 @@ Widget detailsItems(
                     border: Border.all(
                       width: 1,
                       color: data
-                          ? Color.fromRGBO(220, 220, 220, 1)
+                          ? const Color.fromRGBO(220, 220, 220, 1)
                           : Colors.white,
                     ),
                   ),

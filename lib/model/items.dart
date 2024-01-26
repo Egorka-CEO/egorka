@@ -3,13 +3,13 @@ class Items {
   int? dateStamp;
   String? iD;
   String? type;
-  Null? gate;
-  Null? recordID;
+  Null gate;
+  Null recordID;
   String? recordNumber;
   int? recordDate;
-  Null? recordDateStamp;
-  Null? recordExpireDate;
-  Null? recordExpireDateStamp;
+  Null recordDateStamp;
+  Null recordExpireDate;
+  Null recordExpireDateStamp;
   int? amount;
   String? currency;
   String? status;

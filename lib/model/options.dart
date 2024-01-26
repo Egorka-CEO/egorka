@@ -24,13 +24,13 @@ class Options {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Logic'] = this.logic;
-    data['Gate'] = this.gate;
-    data['Type'] = this.type;
-    data['Amount'] = this.amount;
-    data['Currency'] = this.currency;
-    data['Status'] = this.status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Logic'] = logic;
+    data['Gate'] = gate;
+    data['Type'] = type;
+    data['Amount'] = amount;
+    data['Currency'] = currency;
+    data['Status'] = status;
     return data;
   }
 }

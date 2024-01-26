@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:egorka/model/options.dart';
 import 'package:egorka/model/payments.dart';
 

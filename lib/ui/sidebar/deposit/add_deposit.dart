@@ -1,9 +1,9 @@
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/helpers/app_colors.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/invoice.dart';
-import 'package:egorka/widget/allert_dialog.dart';
 import 'package:egorka/widget/custom_button.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
@@ -57,7 +57,7 @@ class _AddDepositState extends State<AddDeposit> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Padding(
         padding: EdgeInsets.only(left: 10.w, right: 10.w),
         child: Column(
@@ -188,8 +188,7 @@ class _AddDepositState extends State<AddDeposit> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(20.r),
-                                        color: const Color.fromRGBO(
-                                            245, 245, 245, 1),
+                                        color: AppColors.grey,
                                       ),
                                       alignment: Alignment.center,
                                       child: Text(
@@ -502,7 +501,7 @@ class _AddDepositState extends State<AddDeposit> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(32.r),
-                                        color: Color.fromRGBO(245, 245, 245, 1),
+                                        color: AppColors.grey,
                                       ),
                                       child: Row(
                                         mainAxisAlignment:
@@ -544,8 +543,9 @@ class _AddDepositState extends State<AddDeposit> {
                                       String? excel = await Repository()
                                           .getEXCEL(depositHistory[index].iD!,
                                               depositHistory[index].pIN!);
-                                      if (excel != null)
+                                      if (excel != null) {
                                         await OpenFile.open(excel);
+                                      }
                                       SmartDialog.dismiss();
                                     },
                                     child: Container(
@@ -553,7 +553,7 @@ class _AddDepositState extends State<AddDeposit> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(32.r),
-                                        color: Color.fromRGBO(245, 245, 245, 1),
+                                        color: AppColors.grey,
                                       ),
                                       child: Row(
                                         mainAxisAlignment:

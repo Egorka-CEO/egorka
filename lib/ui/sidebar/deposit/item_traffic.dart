@@ -1,10 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:egorka/core/bloc/deposit/deposit_bloc.dart';
+import 'package:egorka/helpers/app_colors.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/model/filter_invoice.dart';
 import 'package:egorka/model/invoice.dart';
-import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/date_input_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,7 +83,9 @@ class _ItemTrafficState extends State<ItemTraffic> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: Column(
         children: [
           // Padding(
@@ -262,13 +263,13 @@ class _ItemTrafficState extends State<ItemTraffic> {
                                 //   ),
                                 // ),
 
-                                Expanded(child: SizedBox()),
+                                const Expanded(child: SizedBox()),
                                 Container(
                                     width: 200.w,
                                     height: 48.h,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.r),
-                                      color: Color.fromRGBO(245, 245, 245, 1),
+                                      color: AppColors.grey,
                                     ),
                                     alignment: Alignment.center,
                                     child: statusOrder(list[index].status!)),
@@ -316,7 +317,9 @@ class _ItemTrafficState extends State<ItemTraffic> {
         context: context,
         builder: (ctx) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(
+              textScaler: AppConsts.textScalerStd,
+            ),
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [

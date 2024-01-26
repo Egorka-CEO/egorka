@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/choice_delivery.dart';
-import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/poin_details.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
@@ -45,7 +45,7 @@ class NewOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: MultiBlocProvider(
         providers: [
           BlocProvider<NewOrderPageBloc>(
@@ -181,7 +181,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
     bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: backgroundColor,
+      backgroundColor: AppConsts.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         shadowColor: Colors.black.withOpacity(0.5),
@@ -254,8 +254,8 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                 Navigator.of(context)
                   ..pop(true)
                   ..pushNamed(AppRoute.currentOrder, arguments: [
-                    current.createFormModel.result.RecordNumber!,
-                    current.createFormModel.result.RecordPIN!
+                    current.createFormModel.result.recordNumber!,
+                    current.createFormModel.result.recordPIN!
                   ]);
               });
             } else if (current is CreateFormFail) {
@@ -492,11 +492,12 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                                 onChanged: (value) {
                                   int? coast = int.tryParse(value);
                                   if (coast != null) {
-                                    if (coast > 100000)
+                                    if (coast > 100000) {
                                       MessageDialogs().errorDialog(
                                           text: 'Ошибка',
                                           error:
                                               'Ценность груза не может быть больше 100000 ₽');
+                                    }
                                   }
                                 },
                                 hintText: 'До 100000 ₽',
@@ -574,7 +575,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                     renderPanelSheet: false,
                     isDraggable: true,
                     collapsed: Container(),
-                    panel: AddAdressBottomSheetDraggable(
+                    panel: AddAddressBottomSheetDraggable(
                       typeAdd: typeAdd,
                       fromController: fromController,
                       panelController: panelController,
@@ -613,14 +614,14 @@ class _NewOrderPageState extends State<NewOrderPageState> {
                     Positioned.fill(
                       child: Container(
                         color: Colors.transparent,
-                        child: CalculateLoadingDialog(),
+                        child: const CalculateLoadingDialog(),
                       ),
                     ),
                   if (snapshot is CreateFormState)
                     Positioned.fill(
                       child: Container(
                         color: Colors.transparent,
-                        child: LoadForm(),
+                        child: const LoadForm(),
                       ),
                     ),
                 ],
@@ -1584,7 +1585,7 @@ class _NewOrderPageState extends State<NewOrderPageState> {
         context: context,
         builder: (ctx) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [

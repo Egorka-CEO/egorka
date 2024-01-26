@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/address.dart';
 import 'package:egorka/model/suggestions.dart';
@@ -13,25 +13,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class AddAdressBottomSheetDraggable extends StatefulWidget {
+class AddAddressBottomSheetDraggable extends StatefulWidget {
   TextEditingController fromController;
   PanelController panelController;
   TypeAdd? typeAdd;
   void Function(Suggestions) onSearch;
-  AddAdressBottomSheetDraggable({
+  AddAddressBottomSheetDraggable({
     Key? key,
     required this.typeAdd,
     required this.fromController,
     required this.panelController,
     required this.onSearch,
-  });
+  }) : super(key: key);
 
   @override
-  State<AddAdressBottomSheetDraggable> createState() =>
+  State<AddAddressBottomSheetDraggable> createState() =>
       _BottomSheetDraggableState();
 }
 
-class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
+class _BottomSheetDraggableState extends State<AddAddressBottomSheetDraggable> {
   FocusNode focusFrom = FocusNode();
 
   Address? address;
@@ -39,7 +39,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: BlocBuilder<NewOrderPageBloc, NewOrderState>(
           buildWhen: (previous, current) {
         if (current is NewOrderStatedOpenBtmSheet) {
@@ -70,7 +70,7 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
             color: Colors.black12,
           ),
         ],
-        color: backgroundColor.withOpacity(1),
+        color: AppConsts.backgroundColor.withOpacity(1),
       ),
       child: Column(
         children: [
@@ -202,9 +202,9 @@ class _BottomSheetDraggableState extends State<AddAdressBottomSheetDraggable> {
               if (state is NewOrderStated) {
                 return const SizedBox();
               } else if (state is NewOrderLoading) {
-                return Column(
+                return const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [CupertinoActivityIndicator()],
+                  children: [CupertinoActivityIndicator()],
                 );
               } else if (state is NewOrderSuccess) {
                 return address != null

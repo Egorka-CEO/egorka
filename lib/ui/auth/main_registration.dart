@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:egorka/helpers/app_colors.dart';
 import 'package:egorka/ui/auth/reg_page.dart';
 import 'package:egorka/ui/auth/reg_page_company.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _MainRegPageState extends State<MainRegPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).viewInsets);
+    debugPrint(MediaQuery.of(context).viewInsets.toString()); // FIXME(kki): remove after prod
     return Scaffold(
       backgroundColor: Colors.white,
       // resizeToAvoidBottomInset: false,
@@ -127,9 +128,8 @@ class _MainRegPageState extends State<MainRegPage> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20.r),
                                       color: snapshot.data == 0
-                                          ? Color.fromRGBO(255, 102, 102, 1)
-                                          : const Color.fromRGBO(
-                                              245, 245, 245, 1),
+                                          ? const Color.fromRGBO(255, 102, 102, 1)
+                                          : AppColors.grey,
                                     ),
                                     child: Text(
                                       'Физ. Лицо',
@@ -163,9 +163,8 @@ class _MainRegPageState extends State<MainRegPage> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20.r),
                                       color: snapshot.data == 1
-                                          ? Color.fromRGBO(255, 102, 102, 1)
-                                          : const Color.fromRGBO(
-                                              245, 245, 245, 1),
+                                          ? const Color.fromRGBO(255, 102, 102, 1)
+                                          : AppColors.grey,
                                     ),
                                     child: Text(
                                       'ИП или ООО',

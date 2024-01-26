@@ -75,7 +75,7 @@ class SearchAddressFailed extends SearchAddressState {}
 class FindMeState extends SearchAddressState {}
 
 class JumpToPointState extends SearchAddressState {
-  final pointModel.Point point;
+  final point_model.Point point;
 
   JumpToPointState(this.point);
 }

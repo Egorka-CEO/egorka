@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_colors.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/choice_delivery.dart';
 import 'package:egorka/model/coast_marketplace.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/model/point.dart' as pointModel;
+import 'package:egorka/model/point.dart' as point_model;
 import 'package:egorka/model/point.dart';
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
@@ -32,7 +32,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart' as yandex_mapkit;
 
 class BottomSheetDraggable extends StatefulWidget {
-  const BottomSheetDraggable({Key? key});
+  const BottomSheetDraggable({Key? key}) : super(key: key);
 
   @override
   State<BottomSheetDraggable> createState() => _BottomSheetDraggableState();
@@ -79,14 +79,14 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
         buildWhen: (previous, current) {
           if (current is GetAddressSuccess) {
             suggestionsStart = Suggestions(
               iD: null,
               name: current.address,
-              point: pointModel.Point(
+              point: point_model.Point(
                 address: current.address,
                 code: '${current.latitude},${current.longitude}',
                 latitude: current.latitude,
@@ -232,12 +232,12 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.express
                               ? const Color.fromRGBO(255, 102, 102, 1)
-                              : const Color.fromRGBO(245, 245, 245, 1),
+                              : AppColors.grey,
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 19.w),
+                          padding: EdgeInsets.symmetric(horizontal: 15.w),
                           child: Text(
                             'Город',
                             style: GoogleFonts.manrope(
@@ -274,7 +274,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.fbo
                               ? const Color.fromRGBO(255, 102, 102, 1)
-                              : const Color.fromRGBO(245, 245, 245, 1),
+                              : AppColors.grey,
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Padding(
@@ -316,7 +316,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.fbs
                               ? const Color.fromRGBO(255, 102, 102, 1)
-                              : const Color.fromRGBO(245, 245, 245, 1),
+                              : AppColors.grey,
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Padding(
@@ -347,7 +347,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                           name:
                               marketplaces?.result.points[1].name?.first.name ??
                                   'Egorka: СЦ Чертановский',
-                          point: pointModel.Point(
+                          point: point_model.Point(
                             latitude: marketplaces?.result.points[1].latitude,
                             longitude: marketplaces?.result.points[1].longitude,
                           ),
@@ -357,7 +357,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                           name:
                               marketplaces?.result.points[0].name?.first.name ??
                                   'Egorka: Сборный груз FBS',
-                          point: pointModel.Point(
+                          point: point_model.Point(
                             latitude: marketplaces?.result.points[0].latitude,
                             longitude: marketplaces?.result.points[0].longitude,
                           ),
@@ -380,7 +380,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         decoration: BoxDecoration(
                           color: typeGroup == TypeGroup.mixfbs
                               ? const Color.fromRGBO(255, 102, 102, 1)
-                              : const Color.fromRGBO(245, 245, 245, 1),
+                              : AppColors.grey,
                           borderRadius: BorderRadius.circular(100.r),
                         ),
                         child: Padding(
@@ -407,7 +407,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 margin: EdgeInsets.symmetric(horizontal: 20.w).add(
                   EdgeInsets.only(top: 24.h),
                 ),
-                height: 148.h,
+                height: 168.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.r),
                   border: Border.all(
@@ -646,7 +646,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                         margin: EdgeInsets.only(right: 20.w),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12.r),
-                          color: Color.fromRGBO(245, 245, 245, 1),
+                          color: AppColors.grey,
                         ),
                       ),
                     ),
@@ -932,7 +932,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       suggestionsStart = Suggestions(
                         iD: null,
                         name: current.address,
-                        point: pointModel.Point(
+                        point: point_model.Point(
                           address: current.address,
                           code: '${current.latitude},${current.longitude}',
                           latitude: current.latitude,
@@ -961,18 +961,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 },
                 builder: (context, state) {
                   if (state is SearchLoading) {
-                    return Column(
+                    return const Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
+                      children: [
                         Text('Егорка рассчитывает стоимость'),
                         CupertinoActivityIndicator(),
                       ],
                     );
                   }
                   if (state is SearchAddressLoading) {
-                    return Column(
+                    return const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [CupertinoActivityIndicator()],
+                      children: [CupertinoActivityIndicator()],
                     );
                   } else if (state is SearchAddressSuccess) {
                     return Container(
@@ -986,7 +986,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 24.r,
-                              color: Color.fromRGBO(0, 0, 0, 0.12),
+                              color: const Color.fromRGBO(0, 0, 0, 0.12),
                             ),
                           ]),
                       // height: 300.h,
@@ -1091,7 +1091,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                                       : Colors.transparent,
                                   borderRadius: BorderRadius.circular(16.r),
                                   border: Border.all(
-                                    color: Color.fromRGBO(221, 221, 221, 1),
+                                    color: const Color.fromRGBO(221, 221, 221, 1),
                                   ),
                                 ),
                                 child: Column(
@@ -1234,7 +1234,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
       await showDialog(
         context: context,
         builder: (context) {
-          return StandartAlertDialog(
+          return StandardAlertDialog(
             message: 'Хотите авторизоваться?',
             buttons: [
               StandartButton(
@@ -1414,7 +1414,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
       context: context,
       builder: (ctx) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [

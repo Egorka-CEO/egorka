@@ -6,6 +6,8 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PolicyView extends StatefulWidget {
+  const PolicyView({super.key});
+
   @override
   State<PolicyView> createState() => _PolicyViewState();
 }
@@ -29,7 +31,7 @@ class _PolicyViewState extends State<PolicyView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pdfFile == null
-          ? CupertinoActivityIndicator()
+          ? const CupertinoActivityIndicator()
           : SafeArea(
               bottom: false,
               child: Column(

@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +12,7 @@ class TotalPriceWidget extends StatelessWidget {
   String? deliveryCost;
   VoidCallback onTap;
 
-  TotalPriceWidget({
+  TotalPriceWidget({super.key,
     required this.title,
     required this.icon,
     required this.totalPrice,
@@ -24,7 +25,7 @@ class TotalPriceWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(

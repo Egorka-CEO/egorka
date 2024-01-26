@@ -1,6 +1,6 @@
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/point.dart';
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class BottomMarketPlacesMap extends StatefulWidget {
     Key? key,
     required this.fromController,
     required this.panelController,
-  });
+  }) : super(key: key);
 
   @override
   State<BottomMarketPlacesMap> createState() => _BottomMarketPlacesMaptate();
@@ -28,7 +28,7 @@ class _BottomMarketPlacesMaptate extends State<BottomMarketPlacesMap> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: _floatingPanel(context),
     );
   }

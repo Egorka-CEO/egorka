@@ -3,7 +3,7 @@ import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
@@ -15,13 +15,12 @@ import 'package:egorka/model/contact.dart';
 import 'package:egorka/model/info_form.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/marketplaces.dart';
-import 'package:egorka/model/point.dart' as pointModel;
+import 'package:egorka/model/point.dart' as point_model;
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
 import 'package:egorka/model/type_group.dart';
-import 'package:egorka/ui/sidebar/market_place/widget/app_bar.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/details_items.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/how_it_work.dart';
 import 'package:egorka/ui/sidebar/market_place/widget/personal_data.dart';
@@ -44,7 +43,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'dart:io' show Platform;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -66,10 +64,13 @@ class MarketPage extends StatelessWidget {
     this.end,
     this.typeGroup,
   });
+
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: MarketPages(
         recorNumber: recorNumber,
         recordPIN: recordPIN,
@@ -90,6 +91,7 @@ class MarketPages extends StatefulWidget {
   Suggestions? start;
   Suggestions? end;
   TypeGroup? typeGroup;
+
   MarketPages({
     super.key,
     this.recordPIN,
@@ -236,7 +238,7 @@ class _MarketPageState extends State<MarketPages>
     suggestionEnd = Suggestions(
       iD: null,
       name: formOrder!.result!.locations!.last.point?.address ?? '',
-      point: pointModel.Point(
+      point: point_model.Point(
         latitude: formOrder?.result?.locations?.last.point?.latitude,
         longitude: formOrder?.result?.locations?.last.point?.longitude,
       ),
@@ -285,7 +287,7 @@ class _MarketPageState extends State<MarketPages>
     suggestionStart = Suggestions(
       iD: '',
       name: address,
-      point: pointModel.Point(
+      point: point_model.Point(
         address: address,
         latitude: latitude,
         longitude: longitude,
@@ -303,7 +305,7 @@ class _MarketPageState extends State<MarketPages>
       builder: (context) {
         // BlocProvider.of<MarketPlacePageBloc>(context).add(GetMarketPlaces());
         return Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: AppConsts.backgroundColor,
           resizeToAvoidBottomInset: false,
           // appBar: marketPlaceAppBar(context, iconBtn),
           body: loadOrder && formOrder == null
@@ -333,8 +335,8 @@ class _MarketPageState extends State<MarketPages>
                             Navigator.of(context)
                               ..pop()
                               ..pushNamed(AppRoute.currentOrder, arguments: [
-                                current.createFormModel.result.RecordNumber!,
-                                current.createFormModel.result.RecordPIN!
+                                current.createFormModel.result.recordNumber!,
+                                current.createFormModel.result.recordPIN!
                               ]);
                           });
                         } else if (current is CreateFormFail) {
@@ -477,7 +479,7 @@ class _MarketPageState extends State<MarketPages>
                                                 BorderRadius.circular(20.r),
                                             border: Border.all(
                                               width: 1,
-                                              color: Color.fromRGBO(
+                                              color: const Color.fromRGBO(
                                                   220, 220, 220, 1),
                                             ),
                                           ),
@@ -612,7 +614,7 @@ class _MarketPageState extends State<MarketPages>
                                                 BorderRadius.circular(20.r),
                                             border: Border.all(
                                               width: 1,
-                                              color: Color.fromRGBO(
+                                              color: const Color.fromRGBO(
                                                   220, 220, 220, 1),
                                             ),
                                           ),
@@ -668,7 +670,7 @@ class _MarketPageState extends State<MarketPages>
                                                                   .name ??
                                                               '',
                                                           point:
-                                                              pointModel.Point(
+                                                              point_model.Point(
                                                             latitude:
                                                                 marketplaces
                                                                     .result
@@ -734,7 +736,7 @@ class _MarketPageState extends State<MarketPages>
                                                                   ?.address ??
                                                               '',
                                                           point:
-                                                              pointModel.Point(
+                                                              point_model.Point(
                                                             latitude: pointsRes
                                                                 .latitude,
                                                             longitude: pointsRes
@@ -814,7 +816,7 @@ class _MarketPageState extends State<MarketPages>
                                             suggestionStart = Suggestions(
                                               iD: value.id,
                                               name: value.name ?? '',
-                                              point: pointModel.Point(
+                                              point: point_model.Point(
                                                 latitude: value.latitude,
                                                 longitude: value.longitude,
                                               ),
@@ -860,8 +862,9 @@ class _MarketPageState extends State<MarketPages>
                                                             20.r),
                                                     border: Border.all(
                                                       width: 1,
-                                                      color: Color.fromRGBO(
-                                                          220, 220, 220, 1),
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              220, 220, 220, 1),
                                                     ),
                                                   ),
                                                   child: Expanded(
@@ -891,7 +894,6 @@ class _MarketPageState extends State<MarketPages>
                                                           bucketCountMore15kg
                                                               .add(0);
                                                           setState(() {});
-                                                          ;
                                                         },
                                                         focusNode: bucketFocus,
                                                         height: 45.h,
@@ -1001,8 +1003,9 @@ class _MarketPageState extends State<MarketPages>
                                                             20.r),
                                                     border: Border.all(
                                                       width: 1,
-                                                      color: Color.fromRGBO(
-                                                          220, 220, 220, 1),
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              220, 220, 220, 1),
                                                     ),
                                                   ),
                                                   child: Center(
@@ -1216,14 +1219,14 @@ class _MarketPageState extends State<MarketPages>
                                 Positioned.fill(
                                   child: Container(
                                     color: Colors.transparent,
-                                    child: CalculateLoadingDialog(),
+                                    child: const CalculateLoadingDialog(),
                                   ),
                                 ),
                               if (snapshot is CreateFormState)
                                 Positioned.fill(
                                   child: Container(
                                     color: Colors.transparent,
-                                    child: LoadForm(),
+                                    child: const LoadForm(),
                                   ),
                                 ),
                             ],
@@ -1373,7 +1376,8 @@ class _MarketPageState extends State<MarketPages>
                                                                 .circular(20.r),
                                                         border: Border.all(
                                                           width: 1,
-                                                          color: Color.fromRGBO(
+                                                          color: const Color
+                                                              .fromRGBO(
                                                               220, 220, 220, 1),
                                                         ),
                                                       ),
@@ -1494,7 +1498,8 @@ class _MarketPageState extends State<MarketPages>
                                                                 .circular(20.r),
                                                         border: Border.all(
                                                           width: 1,
-                                                          color: Color.fromRGBO(
+                                                          color: const Color
+                                                              .fromRGBO(
                                                               220, 220, 220, 1),
                                                         ),
                                                       ),
@@ -1685,7 +1690,8 @@ class _MarketPageState extends State<MarketPages>
                                                               20.r),
                                                       border: Border.all(
                                                         width: 1,
-                                                        color: Color.fromRGBO(
+                                                        color: const Color
+                                                            .fromRGBO(
                                                             220, 220, 220, 1),
                                                       ),
                                                     ),
@@ -1888,7 +1894,7 @@ class _MarketPageState extends State<MarketPages>
                 contact: Contact(
                     name: nameController.text,
                     phoneMobile: phoneController.text),
-                point: pointModel.Point(
+                point: point_model.Point(
                   id: 'EGORKA_SC',
                   code:
                       '${marketplaces?.result.points[1].latitude},${marketplaces?.result.points[1].longitude}',
@@ -1898,7 +1904,7 @@ class _MarketPageState extends State<MarketPages>
                 contact: Contact(
                     name: nameController.text,
                     phoneMobile: phoneController.text),
-                point: pointModel.Point(
+                point: point_model.Point(
                   id: 'Egorka_SBOR_FBS',
                   code:
                       '${marketplaces?.result.points[0].latitude},${marketplaces?.result.points[0].longitude}',
@@ -1919,7 +1925,9 @@ class _MarketPageState extends State<MarketPages>
       context: context,
       builder: (ctx) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: AppConsts.textScalerStd,
+          ),
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
@@ -1962,7 +1970,7 @@ class _MarketPageState extends State<MarketPages>
                           name: formOrder!
                                   .result!.locations!.last.point?.address ??
                               '',
-                          point: pointModel.Point(
+                          point: point_model.Point(
                             latitude:
                                 marketplaces.result.points[value].latitude,
                             longitude:

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_user.dart';
 import 'package:egorka/widget/custom_button.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -111,9 +110,9 @@ class _RegPageState extends State<RegPage> {
 
   @override
   Widget build(BuildContext context) {
-    final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
+    // final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
 
-    print(state);
+    debugPrint(state.toString()); // FIXME(kki): remove after prod
     TextStyle labelStyle =
         GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 16.h);
     return StreamBuilder<int>(
@@ -318,7 +317,7 @@ class _RegPageState extends State<RegPage> {
                                             () => Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                     builder: ((context) {
-                                                      return PolicyView();
+                                                      return const PolicyView();
                                                     }),
                                                   ),
                                                 ),

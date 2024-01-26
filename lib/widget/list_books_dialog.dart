@@ -1,4 +1,5 @@
 import 'package:egorka/core/bloc/book/book_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/book_adresses.dart';
@@ -16,7 +17,7 @@ void showBooksAddress(BuildContext context, List<BookAdresses> bookAdresses,
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
           child: AlertDialog(
             insetPadding: EdgeInsets.only(top: 150.h),
             alignment: Alignment.topCenter,
@@ -96,7 +97,7 @@ void showBooksAddress(BuildContext context, List<BookAdresses> bookAdresses,
                                                 fontWeight: FontWeight.w700),
                                             textAlign: TextAlign.center,
                                           ),
-                                          Spacer(),
+                                          const Spacer(),
                                           GestureDetector(
                                             onTap: () async {
                                               Navigator.of(context).pop();

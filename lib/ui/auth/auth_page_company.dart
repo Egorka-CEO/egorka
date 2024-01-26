@@ -3,8 +3,8 @@ import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/custom_button.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -13,7 +13,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -69,7 +68,7 @@ class _AuthPageCompanyState extends State<AuthPageCompany> {
         GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 16);
     final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: StreamBuilder<int>(
           stream: streamSwap.stream,
           initialData: 0,

@@ -1,16 +1,16 @@
 class Agent {
-  String? ID;
-  String? Type;
-  String? Title;
-  String? Email;
-  String? Phone;
+  String? id;
+  String? type;
+  String? title;
+  String? email;
+  String? phone;
 
   Agent({
-    required this.ID,
-    required this.Type,
-    required this.Title,
-    required this.Email,
-    required this.Phone,
+    required this.id,
+    required this.type,
+    required this.title,
+    required this.email,
+    required this.phone,
   });
 
   factory Agent.fromJson(Map<String, dynamic> json) {
@@ -20,11 +20,11 @@ class Agent {
     final email = json['Email'];
     final phone = json['Phone'];
     return Agent(
-      ID: id,
-      Type: type,
-      Title: title,
-      Email: email,
-      Phone: phone,
+      id: id,
+      type: type,
+      title: title,
+      email: email,
+      phone: phone,
     );
   }
 }

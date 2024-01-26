@@ -1,4 +1,5 @@
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/employee.dart';
 import 'package:egorka/widget/custom_textfield.dart';
@@ -10,6 +11,8 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:scale_button/scale_button.dart';
 
 class EmployeePage extends StatefulWidget {
+  const EmployeePage({super.key});
+
   @override
   State<EmployeePage> createState() => _EmployeePageState();
 }
@@ -46,7 +49,8 @@ class _EmployeePageState extends State<EmployeePage> {
   Widget build(BuildContext context) {
     countEmployee = 0;
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data:
+          MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.5,
@@ -100,7 +104,7 @@ class _EmployeePageState extends State<EmployeePage> {
                 ),
               );
             }
-            if (employee[index].username == 'Admin') return SizedBox();
+            if (employee[index].username == 'Admin') return const SizedBox();
             return itemEmployee(employee[index], index);
           },
         ),
@@ -202,7 +206,9 @@ class _EmployeePageState extends State<EmployeePage> {
         context: context,
         builder: (context) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(
+              textScaler: AppConsts.textScalerStd,
+            ),
             child: StatefulBuilder(builder: (context, snapshot) {
               return AlertDialog(
                 insetPadding: EdgeInsets.only(top: 80.h),
@@ -227,9 +233,9 @@ class _EmployeePageState extends State<EmployeePage> {
                     child: Column(
                       children: [
                         SizedBox(height: 20.h),
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text(
                               'Укажите данные нового сотрудника',
                               style: CustomTextStyle.black17w400,
@@ -409,7 +415,9 @@ class _EmployeePageState extends State<EmployeePage> {
         context: context,
         builder: (context) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(
+              textScaler: AppConsts.textScalerStd,
+            ),
             child: StatefulBuilder(builder: (context, snapshot) {
               return AlertDialog(
                 insetPadding: EdgeInsets.only(top: 80.h),
@@ -434,9 +442,9 @@ class _EmployeePageState extends State<EmployeePage> {
                   child: Column(
                     children: [
                       SizedBox(height: 20.h),
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Редактирование данных о сотруднике',
                             style: CustomTextStyle.black17w400,

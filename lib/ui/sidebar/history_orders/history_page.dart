@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/month.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
@@ -105,8 +104,8 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
 
   void getForm() async {
     formOrder = await Repository().infoForm(
-        widget.coast.result.RecordNumber.toString(),
-        widget.coast.result.RecordPIN.toString());
+        widget.coast.result.recordNumber.toString(),
+        widget.coast.result.recordPIN.toString());
     for (var element in formOrder!.result!.ancillaries!) {
       if (element.type == 'Insurance') {
         declaredCost = (element.params?.first.value / 100).ceil().toString();
@@ -114,7 +113,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     }
 
     Repository()
-        .getPhotoCourier(formOrder?.result?.courier?.ID ?? '')
+        .getPhotoCourier(formOrder?.result?.courier?.id ?? '')
         .then((value) {
       if (value != null) {
         photoCourier = value;
@@ -258,7 +257,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
     }
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Material(
         child: SafeArea(
           bottom: false,
@@ -997,7 +996,7 @@ class _HistoryOrdersPageState extends State<HistoryOrdersPage> {
                               in formOrder!.result!.invoices!.first.options) {
                             if (element.logic == 'Card') {
                               cardTotal =
-                                  '${((element.amount)! / 100).toStringAsFixed(2)}';
+                                  ((element.amount)! / 100).toStringAsFixed(2);
                               break;
                             }
                           }

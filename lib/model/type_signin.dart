@@ -1,1 +1,1 @@
-enum TypeSignIn { User, Company }
+enum TypeSignIn { user, company }

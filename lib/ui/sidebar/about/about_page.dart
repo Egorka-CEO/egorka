@@ -1,16 +1,39 @@
-import 'package:egorka/helpers/text_style.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
+class AboutPage extends StatefulWidget {
+  const AboutPage({Key? key}) : super(key: key);
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  String _version = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = packageInfo.version;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: Material(
         child: Scaffold(
           // appBar: AppBar(
@@ -62,26 +85,13 @@ class AboutPage extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
               Text(
-                'Версия 0.1',
+                'Версия: $_version',
                 style: GoogleFonts.manrope(
                   fontSize: 17.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Spacer(flex: 20),
-              Text(
-                'Команда разработки',
-                style: GoogleFonts.manrope(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              SvgPicture.asset(
-                'assets/icons/br.svg',
-                height: 25.h,
-              ),
-              const Spacer(flex: 2),
+              const Spacer(flex: 22),
             ],
           ),
         ),

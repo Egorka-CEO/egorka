@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/custom_page_route.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/address.dart';
@@ -21,16 +19,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:scale_button/scale_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class BookPage extends StatefulWidget {
+  const BookPage({super.key});
+
   @override
   State<BookPage> createState() => _BookPageState();
 }
 
 class _BookPageState extends State<BookPage> {
-  List<BookAdresses> bookAdresses = [];
+  List<BookAdresses> bookAddresses = [];
 
   TextEditingController searchController = TextEditingController();
   TextEditingController floorController = TextEditingController();
@@ -60,15 +59,15 @@ class _BookPageState extends State<BookPage> {
   void initState() {
     super.initState();
     BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
-    bookAdresses.addAll(BlocProvider.of<BookBloc>(context).books);
+    bookAddresses.addAll(BlocProvider.of<BookBloc>(context).books);
   }
 
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: AppConsts.backgroundColor,
         // appBar: AppBar(
         //   elevation: 0.5,
         //   title: const Text(
@@ -166,7 +165,7 @@ class _BookPageState extends State<BookPage> {
                   BlocBuilder<BookBloc, BookState>(
                     builder: (context, snapshot) {
                       if (snapshot is UpdateBook) {
-                        bookAdresses.clear();
+                        bookAddresses.clear();
                         final books = context.read<BookBloc>().books;
                         List<BookAdresses> bookAdressesTemp = [];
                         for (var element in books) {
@@ -182,19 +181,19 @@ class _BookPageState extends State<BookPage> {
                           }
                         }
                         if (searchController.text.isEmpty) {
-                          bookAdresses.addAll(books);
+                          bookAddresses.addAll(books);
                         } else {
-                          bookAdresses.addAll(bookAdressesTemp);
+                          bookAddresses.addAll(bookAdressesTemp);
                         }
                       }
                       return Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: bookAdresses.length + 1,
+                          itemCount: bookAddresses.length + 1,
                           physics: const ClampingScrollPhysics(),
                           padding: EdgeInsets.only(top: 20.h),
                           itemBuilder: (context, index) {
-                            if (bookAdresses.length == index) {
+                            if (bookAddresses.length == index) {
                               return Padding(
                                 padding: EdgeInsets.only(top: 20.h),
                                 child: CustomButton(
@@ -276,10 +275,10 @@ class _BookPageState extends State<BookPage> {
                               ),
                               confirmDismiss: (direction) async {
                                 bool resDelete = await Repository()
-                                    .deleteAddress(bookAdresses[index].id!);
+                                    .deleteAddress(bookAddresses[index].id!);
 
                                 if (resDelete) {
-                                  bookAdresses.removeAt(index - 1);
+                                  bookAddresses.removeAt(index - 1);
                                 }
 
                                 BlocProvider.of<BookBloc>(context)
@@ -302,7 +301,7 @@ class _BookPageState extends State<BookPage> {
                                       children: [
                                         SizedBox(width: 10.h),
                                         Text(
-                                          bookAdresses[index].name!,
+                                          bookAddresses[index].name!,
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.manrope(
                                             fontSize: 17.h,
@@ -310,7 +309,7 @@ class _BookPageState extends State<BookPage> {
                                           ),
                                         ),
                                         Text(
-                                          bookAdresses[index].address!,
+                                          bookAddresses[index].address!,
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.manrope(
                                             fontSize: 17.h,
@@ -320,7 +319,7 @@ class _BookPageState extends State<BookPage> {
                                           ),
                                         ),
                                         Text(
-                                          bookAdresses[index]
+                                          bookAddresses[index]
                                                   .contact
                                                   ?.phoneMobile ??
                                               '-',
@@ -374,7 +373,7 @@ class _BookPageState extends State<BookPage> {
         context: context,
         builder: (context) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
             child: StatefulBuilder(builder: (context, snapshot) {
               return AlertDialog(
                 insetPadding: EdgeInsets.only(top: 100.h),

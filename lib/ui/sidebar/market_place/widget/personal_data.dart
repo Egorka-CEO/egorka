@@ -29,7 +29,7 @@ Widget personalData(
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             width: 1,
-            color: Color.fromRGBO(220, 220, 220, 1),
+            color: const Color.fromRGBO(220, 220, 220, 1),
           ),
         ),
         padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -89,7 +89,7 @@ Widget personalData(
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             width: 1,
-            color: Color.fromRGBO(220, 220, 220, 1),
+            color: const Color.fromRGBO(220, 220, 220, 1),
           ),
         ),
         child: Row(

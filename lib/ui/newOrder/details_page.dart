@@ -1,9 +1,9 @@
 import 'package:egorka/core/bloc/book/book_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/poin_details.dart';
 import 'package:egorka/model/point.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
@@ -32,7 +32,7 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
       child: MultiBlocProvider(
           providers: [
             BlocProvider<NewOrderPageBloc>(
@@ -103,7 +103,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: AppConsts.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         shadowColor: Colors.black.withOpacity(0.5),
@@ -487,7 +487,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
                 renderPanelSheet: false,
                 isDraggable: true,
                 collapsed: Container(),
-                panel: AddAdressBottomSheetDraggable(
+                panel: AddAddressBottomSheetDraggable(
                   typeAdd: widget.typeAdd,
                   fromController: controllerBtmSheet,
                   panelController: panelController,

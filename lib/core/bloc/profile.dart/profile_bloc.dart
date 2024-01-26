@@ -13,7 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc() : super(ProfileStated()) {
     on<ProfileEventInit>(_init);
     on<ProfileEventUpdate>(_updateUser);
-    on<GetDepositeEvent>(_getDeposite);
+    on<GetDepositEvent>(_getDeposite);
     on<ExitAccountEvent>(_exitAccount);
   }
 
@@ -37,7 +37,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ExitStated());
   }
 
-  void _getDeposite(GetDepositeEvent event, Emitter<ProfileState> emit) async {
+  void _getDeposite(GetDepositEvent event, Emitter<ProfileState> emit) async {
     final accounts = await Repository().getDeposit();
     if (accounts != null) {
       deposit = accounts;

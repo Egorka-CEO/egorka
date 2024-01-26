@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:blur/blur.dart';
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/month.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
@@ -27,8 +26,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CurrentOrderPage extends StatefulWidget {
   int? recordPIN;
-  int? recorNumber;
-  CurrentOrderPage({super.key, this.recordPIN, this.recorNumber});
+  int? recordNumber;
+
+  CurrentOrderPage({super.key, this.recordPIN, this.recordNumber});
 
   @override
   State<CurrentOrderPage> createState() => _CurrentOrderPageState();
@@ -98,10 +98,10 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
   }
 
   void getForm() async {
-    if (widget.recorNumber != null && widget.recordPIN != null) {
+    if (widget.recordNumber != null && widget.recordPIN != null) {
       loadOrder = true;
       formOrder = await Repository().infoForm(
-        widget.recorNumber.toString(),
+        widget.recordNumber.toString(),
         widget.recordPIN.toString(),
       );
       for (var element in formOrder!.result!.ancillaries!) {
@@ -235,7 +235,9 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
     pointSentCount = 0;
     pointReceiveCount = 0;
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: Material(
         child: SafeArea(
           bottom: false,

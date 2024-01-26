@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scale_button/scale_button.dart';
@@ -23,7 +24,7 @@ class StandartButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: ScaleButton(
         duration: const Duration(milliseconds: 150),
         bound: 0.05,

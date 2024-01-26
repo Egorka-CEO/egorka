@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -73,7 +74,7 @@ class CustomTextField extends StatelessWidget {
     hintStyle = GoogleFonts.manrope(
       // overflow: TextOverflow.ellipsis,
       fontSize: 17.h,
-      color: Color.fromRGBO(177, 177, 177, 1),
+      color: const Color.fromRGBO(177, 177, 177, 1),
       fontWeight: FontWeight.w500,
     );
     fillColor = Colors.white;
@@ -82,7 +83,7 @@ class CustomTextField extends StatelessWidget {
     }
     var widthOfScreen = width ?? MediaQuery.of(context).size.width;
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: SizedBox(
         height: height,
         width: widthOfScreen,
@@ -165,7 +166,7 @@ class CustomTextField extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.r),
               borderSide: BorderSide(
-                color: auth ? Color.fromRGBO(220, 220, 220, 1) : Colors.white,
+                color: auth ? const Color.fromRGBO(220, 220, 220, 1) : Colors.white,
                 width: auth ? 1.0 : 0,
                 style: BorderStyle.solid,
               ),
@@ -173,7 +174,7 @@ class CustomTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.r),
               borderSide: BorderSide(
-                color: auth ? Color.fromRGBO(220, 220, 220, 1) : Colors.white,
+                color: auth ? const Color.fromRGBO(220, 220, 220, 1) : Colors.white,
                 width: auth ? 1.0 : 0,
                 style: BorderStyle.solid,
               ),
@@ -181,7 +182,7 @@ class CustomTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.r),
               borderSide: BorderSide(
-                color: auth ? Color.fromRGBO(220, 220, 220, 1) : Colors.white,
+                color: auth ? const Color.fromRGBO(220, 220, 220, 1) : Colors.white,
                 width: auth ? 1.0 : 0,
                 style: BorderStyle.solid,
               ),

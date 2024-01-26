@@ -11,7 +11,7 @@ class InfoForm {
   double? execution;
   String? method;
   Result? result;
-  Null? errors;
+  Null errors;
 
   InfoForm(
       {this.time,

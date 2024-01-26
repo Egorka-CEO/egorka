@@ -10,19 +10,21 @@ class CustomInputFormatterUpperCase extends TextInputFormatter {
       for (int i = 0; i < word.length; i++) {
         String temp = '';
         for (int j = 0; j < word[i].length; j++) {
-          if (j == 0)
+          if (j == 0) {
             temp = word[i][j].toUpperCase();
-          else
+          } else {
             temp += word[i][j];
+          }
         }
         word[i] = temp;
       }
 
       for (int i = 0; i < word.length; i++) {
-        if (i == word.length - 1)
+        if (i == word.length - 1) {
           str += word[i];
-        else
+        } else {
           str += '${word[i]} ';
+        }
       }
       return newValue.copyWith(
         text: str,

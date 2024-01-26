@@ -1,4 +1,5 @@
 import 'package:egorka/core/bloc/search/search_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/location.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
-import 'package:egorka/model/point.dart' as pointModel;
+import 'package:egorka/model/point.dart' as point_model;
 
 class MapView extends StatefulWidget {
   final VoidCallback callBack;
@@ -34,7 +35,7 @@ class _MapViewState extends State<MapView> {
       var position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       _jumpToPoint(
-        pointModel.Point(
+        point_model.Point(
           latitude: kDebugMode ? 55.7522200 : position.latitude,
           longitude: kDebugMode ? 37.6155600 : position.longitude,
         ),
@@ -64,7 +65,7 @@ class _MapViewState extends State<MapView> {
     }
   }
 
-  void _jumpToPoint(pointModel.Point point) async {
+  void _jumpToPoint(point_model.Point point) async {
     if (await LocationGeo().checkPermission()) {
       if (mapController != null) {
         await mapController!.moveCamera(
@@ -87,7 +88,7 @@ class _MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
         buildWhen: (previous, current) {
           if (current is SearchAddressRoutePolilyne) {
@@ -196,7 +197,7 @@ class _MapViewState extends State<MapView> {
             return true;
           } else if (current is GetAddressSuccess) {
             _jumpToPoint(
-              pointModel.Point(
+              point_model.Point(
                 latitude: current.latitude,
                 longitude: current.longitude,
               ),

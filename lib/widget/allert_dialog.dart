@@ -1,9 +1,10 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/widget/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class StandartAlertDialog extends StatelessWidget {
-  const StandartAlertDialog({
+class StandardAlertDialog extends StatelessWidget {
+  const StandardAlertDialog({
     Key? key,
     required this.message,
     required this.buttons,
@@ -15,7 +16,7 @@ class StandartAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd),
       child: Stack(
         children: [
           Center(
@@ -39,7 +40,7 @@ class StandartAlertDialog extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 19,
-                          color: Theme.of(context).textTheme.bodyText1?.color,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                       ),
                     ),

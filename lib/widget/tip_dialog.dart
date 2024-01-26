@@ -1,3 +1,4 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/widget/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,9 @@ void showTipPallet(
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: AppConsts.textScalerStd,
+          ),
           child: AlertDialog(
             alignment: Alignment.center,
             contentPadding: EdgeInsets.zero,
@@ -104,7 +107,9 @@ void showTipBucket(
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: AppConsts.textScalerStd,
+          ),
           child: AlertDialog(
             alignment: Alignment.center,
             contentPadding: EdgeInsets.zero,
@@ -172,7 +177,9 @@ void showTipWhenTake(
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: AppConsts.textScalerStd,
+          ),
           child: AlertDialog(
             alignment: Alignment.center,
             contentPadding: EdgeInsets.zero,
@@ -220,7 +227,7 @@ void showTipWhenTake(
                           child: Text(
                             'Понятно',
                             style: GoogleFonts.manrope(
-                              color: Color.fromRGBO(255, 102, 102, 1),
+                              color: const Color.fromRGBO(255, 102, 102, 1),
                               fontSize: 17.sp,
                               fontWeight: FontWeight.w700,
                             ),
@@ -248,7 +255,9 @@ void showTipWork(
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: AppConsts.textScalerStd,
+          ),
           child: AlertDialog(
             alignment: Alignment.center,
             contentPadding: EdgeInsets.zero,
@@ -366,7 +375,9 @@ void iconSelectModal(
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: AppConsts.textScalerStd,
+          ),
           child: AlertDialog(
             insetPadding: EdgeInsets.only(top: offset.dy + 50.h),
             alignment: Alignment.topCenter,
@@ -423,7 +434,8 @@ void iconDateOrder(
       context: context,
       builder: (context) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: AppConsts.textScalerStd),
           child: AlertDialog(
             insetPadding: EdgeInsets.only(top: offset.dy + 40.h),
             alignment: Alignment.topCenter,

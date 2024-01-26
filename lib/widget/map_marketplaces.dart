@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:egorka/core/bloc/market_place/market_place_bloc.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/model/directions.dart';
 import 'package:egorka/model/point_marketplace.dart';
 import 'package:flutter/material.dart';
@@ -176,7 +175,7 @@ class _MapMarketPlacesState extends State<MapMarketPlaces> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Stack(
         children: [
           Stack(

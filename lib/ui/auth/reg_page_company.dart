@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/register_company.dart';
@@ -18,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class RegPageCompany extends StatefulWidget {
   Function(bool) openKeyboard;
+
   RegPageCompany({super.key, required this.openKeyboard});
 
   @override
@@ -140,7 +142,9 @@ class _RegPageCompanyState extends State<RegPageCompany> {
         GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 16);
     final heightKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: StreamBuilder<int>(
           stream: streamSwap.stream,
           initialData: 0,
@@ -465,7 +469,7 @@ class _RegPageCompanyState extends State<RegPageCompany> {
                                                 Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                     builder: ((context) {
-                                                      return PolicyView();
+                                                      return const PolicyView();
                                                     }),
                                                   ),
                                                 ),

@@ -6,12 +6,11 @@ import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/bloc/search/search_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
 import 'package:egorka/core/network/repository.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/user.dart';
 import 'package:egorka/widget/disconnect_page.dart';
 import 'package:egorka/widget/bottom_sheet_history_orders.dart';
-import 'package:egorka/widget/custom_widget.dart';
 import 'package:egorka/widget/map.dart';
 import 'package:egorka/ui/sidebar/side_menu.dart';
 import 'package:egorka/widget/bottom_sheet.dart';
@@ -91,12 +90,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (res != null) {
         storage.setKey(res.result!.key);
         BlocProvider.of<ProfileBloc>(context).add(ProfileEventUpdate(res));
-        BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
+        BlocProvider.of<ProfileBloc>(context).add(GetDepositEvent());
         BlocProvider.of<BookBloc>(context).add(LoadBooksEvent());
       }
     } else if (id != null) {
     } else {
-      await Repository().UUIDCreate();
+      await Repository().uuidCreate();
     }
     BlocProvider.of<HistoryOrdersBloc>(context).add(GetListOrdersEvent());
   }
@@ -108,7 +107,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       hight = MediaQuery.of(context).size.height;
     }
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: BlocBuilder<SearchAddressBloc, SearchAddressState>(
         builder: (context, snapshot) {
           var bloc = BlocProvider.of<SearchAddressBloc>(context);

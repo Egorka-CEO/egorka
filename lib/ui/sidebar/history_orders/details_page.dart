@@ -1,4 +1,4 @@
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/locations.dart';
 import 'package:egorka/model/type_add.dart';
@@ -21,7 +21,9 @@ class HistoryDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: DetailsPageTemp(
         index: index,
         typeAdd: typeAdd,
@@ -79,7 +81,7 @@ class _DetailsPageState extends State<DetailsPageTemp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: AppConsts.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         shadowColor: Colors.black.withOpacity(0.5),

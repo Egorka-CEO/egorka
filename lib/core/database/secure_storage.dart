@@ -3,46 +3,46 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class MySecureStorage {
   final storage = const FlutterSecureStorage();
 
-  static const String ID = 'ID';
-  static const String KEY = 'KEY';
-  static const String SECURE = 'Secure';
-  static const String LOGIN = 'Login';
-  static const String PASSWORD = 'Password';
-  static const String COMPANY = 'Company';
-  static const String TYPE_AUTH = 'TypeAuth'; // 0-username, 1-email, 2-phone
-  static const String TYPE_USER = 'TypeUser'; // 0-user, 1-company
+  static const String id = 'ID';
+  static const String key = 'KEY';
+  static const String secure = 'Secure';
+  static const String login = 'Login';
+  static const String password = 'Password';
+  static const String company = 'Company';
+  static const String typeAuth = 'TypeAuth'; // 0-username, 1-email, 2-phone
+  static const String typeUser = 'TypeUser'; // 0-user, 1-company
 
-  Future<String?> getKey() => storage.read(key: KEY);
+  Future<String?> getKey() => storage.read(key: key);
 
-  void setKey(String? value) => storage.write(key: KEY, value: value);
+  void setKey(String? value) => storage.write(key: key, value: value);
 
-  Future<String?> getID() => storage.read(key: ID);
+  Future<String?> getID() => storage.read(key: id);
 
-  void setID(String? value) => storage.write(key: ID, value: value);
+  void setID(String? value) => storage.write(key: id, value: value);
 
-  Future<String?> getSecure() => storage.read(key: SECURE);
+  Future<String?> getSecure() => storage.read(key: secure);
 
-  void setSecure(String? value) => storage.write(key: SECURE, value: value);
+  void setSecure(String? value) => storage.write(key: secure, value: value);
 
-  Future<String?> getLogin() => storage.read(key: LOGIN);
+  Future<String?> getLogin() => storage.read(key: login);
 
-  void setLogin(String? value) => storage.write(key: LOGIN, value: value);
+  void setLogin(String? value) => storage.write(key: login, value: value);
 
-  Future<String?> getPassword() => storage.read(key: PASSWORD);
+  Future<String?> getPassword() => storage.read(key: password);
 
-  void setPassword(String? value) => storage.write(key: PASSWORD, value: value);
+  void setPassword(String? value) => storage.write(key: password, value: value);
 
-  Future<String?> getCompany() => storage.read(key: COMPANY);
+  Future<String?> getCompany() => storage.read(key: company);
 
-  void setCompany(String? value) => storage.write(key: COMPANY, value: value);
+  void setCompany(String? value) => storage.write(key: company, value: value);
 
-  Future<String?> getTypeAuth() => storage.read(key: TYPE_AUTH);
+  Future<String?> getTypeAuth() => storage.read(key: typeAuth);
 
   void setTypeAuth(String? value) =>
-      storage.write(key: TYPE_AUTH, value: value);
+      storage.write(key: typeAuth, value: value);
 
-  Future<String?> getTypeUser() => storage.read(key: TYPE_USER);
+  Future<String?> getTypeUser() => storage.read(key: typeUser);
 
   void setTypeUser(String? value) =>
-      storage.write(key: TYPE_USER, value: value);
+      storage.write(key: typeUser, value: value);
 }

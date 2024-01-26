@@ -4,13 +4,13 @@ import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/new_order/new_order_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/ancillaries.dart';
 import 'package:egorka/model/delivery_type.dart';
 import 'package:egorka/model/info_form.dart';
-import 'package:egorka/model/poinDetails.dart';
+import 'package:egorka/model/poin_details.dart';
 import 'package:egorka/model/response_coast_base.dart';
 import 'package:egorka/model/suggestions.dart';
 import 'package:egorka/model/type_add.dart';
@@ -42,7 +42,9 @@ class RepeatOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: MultiBlocProvider(
         providers: [
           BlocProvider<NewOrderPageBloc>(
@@ -218,7 +220,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
     bool keyBoardVisible = MediaQuery.of(context).viewInsets.bottom == 0;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: backgroundColor,
+      backgroundColor: AppConsts.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         shadowColor: Colors.black.withOpacity(0.5),
@@ -294,8 +296,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                         Navigator.of(context)
                           ..pop()
                           ..pushNamed(AppRoute.currentOrder, arguments: [
-                            current.createFormModel.result.RecordNumber!,
-                            current.createFormModel.result.RecordPIN!
+                            current.createFormModel.result.recordNumber!,
+                            current.createFormModel.result.recordPIN!
                           ]);
                       });
                     } else if (current is CreateFormFail) {
@@ -638,7 +640,7 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                             renderPanelSheet: false,
                             isDraggable: true,
                             collapsed: Container(),
-                            panel: AddAdressBottomSheetDraggable(
+                            panel: AddAddressBottomSheetDraggable(
                               typeAdd: typeAdd,
                               fromController: fromController,
                               panelController: panelController,
@@ -678,14 +680,14 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
                             Positioned.fill(
                               child: Container(
                                 color: Colors.transparent,
-                                child: CalculateLoadingDialog(),
+                                child: const CalculateLoadingDialog(),
                               ),
                             ),
                           if (snapshot is CreateFormState)
                             Positioned.fill(
                               child: Container(
                                 color: Colors.transparent,
-                                child: LoadForm(),
+                                child: const LoadForm(),
                               ),
                             ),
                         ],
@@ -1648,7 +1650,8 @@ class _RepeatOrderPageState extends State<RepeatOrderPageState> {
         context: context,
         builder: (ctx) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: AppConsts.textScalerStd),
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [

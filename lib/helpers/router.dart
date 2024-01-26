@@ -51,14 +51,14 @@ class AppRoute {
       case home:
         return createRoute(const HomePage());
       case employee:
-        return createRoute(EmployeePage());
+        return createRoute(const EmployeePage());
       case currentOrder:
         final list = route.arguments as List<int?>;
         var number = list[0];
         var pin = list[1];
         return createRoute(
           CurrentOrderPage(
-            recorNumber: number,
+            recordNumber: number,
             recordPIN: pin,
           ),
         );
@@ -139,12 +139,12 @@ class AppRoute {
         final list = route.arguments as CreateFormModel;
         return createRoute(HistoryOrdersPage(coast: list));
       case profile:
-        return createRoute(ProfilePage());
+        return createRoute(const ProfilePage());
       case marketplacesMap:
         final value = route.arguments as mrkt.MarketPlaces;
         return createRoute(MarketPlacesMap(value));
       case trafficDeposit:
-        return createRoute(TrafficDeposit());
+        return createRoute(const TrafficDeposit());
       case detailsOrder:
         final list = route.arguments as List<dynamic>;
         return createRoute(
@@ -164,9 +164,9 @@ class AppRoute {
           ),
         );
       case book:
-        return createRoute(BookPage());
+        return createRoute(const BookPage());
       case selectPoint:
-        return createRoute(SelectAdresMap());
+        return createRoute(const SelectAddressMap());
       case registration:
         final flag = route.arguments as bool;
         return createRoute(MainRegPage(flag: flag));

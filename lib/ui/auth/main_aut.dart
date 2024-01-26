@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:egorka/helpers/app_colors.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/ui/auth/auth_page.dart';
 import 'package:egorka/ui/auth/auth_page_company.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,9 @@ class _MainAuthPageState extends State<MainAuthPage> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
@@ -86,8 +90,8 @@ class _MainAuthPageState extends State<MainAuthPage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20.r),
                                 color: snapshot.data == 0
-                                    ? Color.fromRGBO(255, 102, 102, 1)
-                                    : const Color.fromRGBO(245, 245, 245, 1),
+                                    ? const Color.fromRGBO(255, 102, 102, 1)
+                                    : AppColors.grey,
                               ),
                               child: Text(
                                 'Физ. Лицо',
@@ -118,8 +122,8 @@ class _MainAuthPageState extends State<MainAuthPage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20.r),
                                 color: snapshot.data == 1
-                                    ? Color.fromRGBO(255, 102, 102, 1)
-                                    : const Color.fromRGBO(245, 245, 245, 1),
+                                    ? const Color.fromRGBO(255, 102, 102, 1)
+                                    : AppColors.grey,
                               ),
                               child: Text(
                                 'ИП или ООО',
@@ -146,7 +150,7 @@ class _MainAuthPageState extends State<MainAuthPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
                     AuthPage(),
-                    AuthPageCompany(),
+                    const AuthPageCompany(),
                   ],
                 ),
               ),

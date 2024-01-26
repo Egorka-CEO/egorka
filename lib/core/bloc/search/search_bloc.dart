@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:ui' as ui;
-import 'package:egorka/model/point.dart' as pointModel;
+import 'package:egorka/model/point.dart' as point_model;
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 part 'search_event.dart';
@@ -87,7 +87,9 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
       drivingSessionResult = await requestRoutes.result;
       bicycleResultWithSession = await requestRoutesBicycle.result;
-    } catch (e) {}
+    } catch (e) {
+      //TODO(kki): add logging
+    }
     if (drivingSessionResult != null) {
       var result = await Repository().getCoastMarketPlace(event.coast);
       emit(
@@ -292,7 +294,9 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
 
       drivingSessionResult = await requestRoutes.result;
       bicycleResultWithSession = await requestRoutesBicycle.result;
-    } catch (e) {}
+    } catch (e) {
+      //TODO(kki): add logging
+    }
     if (drivingSessionResult != null) {
       List<String> type = ['Walk', 'Car'];
       List<CoastResponse> coasts = [];
@@ -302,7 +306,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         locations.add(
           Location(
             type: 'Pickup',
-            point: pointModel.Point(
+            point: point_model.Point(
               latitude: element!.point!.latitude!,
               longitude: element.point!.longitude!,
             ),
@@ -314,7 +318,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
         locations.add(
           Location(
             type: 'Drop',
-            point: pointModel.Point(
+            point: point_model.Point(
               latitude: element!.point!.latitude,
               longitude: element.point!.longitude,
             ),
@@ -369,6 +373,7 @@ class SearchAddressBloc extends Bloc<SearchAddressEvent, SearchAddressState> {
           ),
         );
       } catch (e) {
+        //TODO(kki): add logging
         isPolilyne = false;
       }
     } else {

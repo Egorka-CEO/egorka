@@ -1,19 +1,18 @@
 import 'package:egorka/core/bloc/history_orders/history_orders_bloc.dart';
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
 import 'package:egorka/core/database/secure_storage.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/helpers/text_style.dart';
 import 'package:egorka/model/create_form_model.dart';
 import 'package:egorka/widget/policy_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NavBar extends StatefulWidget {
-  NavBar({Key? key}) : super(key: key);
+  const NavBar({Key? key}) : super(key: key);
 
   @override
   State<NavBar> createState() => _NavBarState();
@@ -30,15 +29,17 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: BlocBuilder<HistoryOrdersBloc, HistoryOrdersState>(
           builder: (context, snapshot) {
         final blocHistory = BlocProvider.of<HistoryOrdersBloc>(context);
         CreateFormModel? createFormModel;
 
         for (var element in blocHistory.coast) {
-          if (element.result.Status == 'Booked' &&
-              element.result.StatusPay != 'Paid') {
+          if (element.result.status == 'Booked' &&
+              element.result.statusPay != 'Paid') {
             createFormModel = element;
             break;
           }
@@ -100,7 +101,7 @@ class _NavBarState extends State<NavBar> {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    (auth.result?.agent!.Title) ?? '',
+                                    (auth.result?.agent!.title) ?? '',
                                     style: GoogleFonts.manrope(
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.w600,
@@ -141,7 +142,7 @@ class _NavBarState extends State<NavBar> {
                             ),
                             foregroundColor:
                                 const MaterialStatePropertyAll(Colors.white),
-                            overlayColor: MaterialStatePropertyAll(
+                            overlayColor: const MaterialStatePropertyAll(
                               Color.fromRGBO(255, 102, 102, 1),
                             ),
                           ),
@@ -389,7 +390,7 @@ class _NavBarState extends State<NavBar> {
                       ),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 18.w, vertical: 30.h),
@@ -416,7 +417,7 @@ class _NavBarState extends State<NavBar> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: ((context) {
-                                  return PolicyView();
+                                  return const PolicyView();
                                 }),
                               ),
                             );

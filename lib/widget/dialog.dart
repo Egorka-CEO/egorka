@@ -1,8 +1,8 @@
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
@@ -16,7 +16,7 @@ class MessageDialogs {
       builder: (context) => Padding(
         padding: EdgeInsets.only(top: 70.h, left: 20, right: 20),
         child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.r),
@@ -70,7 +70,7 @@ class MessageDialogs {
       builder: (context) => Padding(
         padding: EdgeInsets.only(top: 70.h, left: 20, right: 20),
         child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
           child: Container(
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
@@ -126,7 +126,7 @@ class MessageDialogs {
         backDismiss: false,
         builder: (context) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
               decoration: BoxDecoration(
@@ -164,7 +164,7 @@ class MessageDialogs {
 class DoneAnim extends StatefulWidget {
   String text;
 
-  DoneAnim(this.text);
+  DoneAnim(this.text, {super.key});
 
   @override
   State<DoneAnim> createState() => _DoneAnimState();
@@ -201,7 +201,7 @@ class _DoneAnimState extends State<DoneAnim>
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Center(
         child: Container(
           height: 300.h,
@@ -243,7 +243,7 @@ class ErrorAnim extends StatefulWidget {
   String text;
   String error;
 
-  ErrorAnim(this.text, this.error);
+  ErrorAnim(this.text, this.error, {super.key});
 
   @override
   State<ErrorAnim> createState() => _ErrorAnimState();
@@ -280,7 +280,7 @@ class _ErrorAnimState extends State<ErrorAnim>
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Center(
         child: Container(
           height: 250.h,

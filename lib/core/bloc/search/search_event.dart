@@ -46,7 +46,7 @@ class SearchAddressClear extends SearchAddressEvent {}
 class SearchMeEvent extends SearchAddressEvent {}
 
 class JumpToPointEvent extends SearchAddressEvent {
-  final pointModel.Point point;
+  final point_model.Point point;
 
   JumpToPointEvent(this.point);
 }

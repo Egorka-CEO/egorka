@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class Payments {
   int? date;
   int? dateStamp;
@@ -39,44 +37,44 @@ class Payments {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Date'] = this.date;
-    data['DateStamp'] = this.dateStamp;
-    data['DateActual'] = this.dateActual;
-    data['DateActualStamp'] = this.dateActualStamp;
-    data['Gate'] = this.gate;
-    data['GateID'] = this.gateID;
-    if (this.account != null) {
-      data['Account'] = this.account!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Date'] = date;
+    data['DateStamp'] = dateStamp;
+    data['DateActual'] = dateActual;
+    data['DateActualStamp'] = dateActualStamp;
+    data['Gate'] = gate;
+    data['GateID'] = gateID;
+    if (account != null) {
+      data['Account'] = account!.toJson();
     }
-    data['Amount'] = this.amount;
-    data['Currency'] = this.currency;
-    data['Status'] = this.status;
+    data['Amount'] = amount;
+    data['Currency'] = currency;
+    data['Status'] = status;
     return data;
   }
 }
 
 class Account {
-  String? iD;
+  String? id;
   String? detail;
   int? balanceBefore;
   int? balanceAfter;
 
-  Account({this.iD, this.detail, this.balanceBefore, this.balanceAfter});
+  Account({this.id, this.detail, this.balanceBefore, this.balanceAfter});
 
   Account.fromJson(Map<String, dynamic> json) {
-    iD = json['ID'];
+    id = json['ID'];
     detail = json['Detail'];
     balanceBefore = json['BalanceBefore'];
     balanceAfter = json['BalanceAfter'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['ID'] = this.iD;
-    data['Detail'] = this.detail;
-    data['BalanceBefore'] = this.balanceBefore;
-    data['BalanceAfter'] = this.balanceAfter;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['ID'] = id;
+    data['Detail'] = detail;
+    data['BalanceBefore'] = balanceBefore;
+    data['BalanceAfter'] = balanceAfter;
     return data;
   }
 }

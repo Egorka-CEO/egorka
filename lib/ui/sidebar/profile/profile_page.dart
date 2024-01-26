@@ -1,14 +1,7 @@
-import 'dart:developer';
-
 import 'package:egorka/core/bloc/profile.dart/profile_bloc.dart';
-import 'package:egorka/core/database/secure_storage.dart';
-import 'package:egorka/core/network/repository.dart';
-import 'package:egorka/helpers/constant.dart';
+import 'package:egorka/helpers/app_colors.dart';
+import 'package:egorka/helpers/app_consts.dart';
 import 'package:egorka/helpers/router.dart';
-import 'package:egorka/helpers/text_style.dart';
-import 'package:egorka/widget/custom_button.dart';
-import 'package:egorka/widget/custom_textfield.dart';
-import 'package:egorka/widget/dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -42,12 +35,14 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final user = BlocProvider.of<ProfileBloc>(context).getUser();
-    BlocProvider.of<ProfileBloc>(context).add(GetDepositeEvent());
+    BlocProvider.of<ProfileBloc>(context).add(GetDepositEvent());
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: AppConsts.textScalerStd,
+      ),
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: AppConsts.backgroundColor,
         body: BlocBuilder<ProfileBloc, ProfileState>(
             buildWhen: (previous, current) {
           if (current is ExitStated) {
@@ -143,11 +138,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Column(
                                   children: [
                                     Text(
-                                      (auth.result?.agent?.Title) ?? '',
+                                      (auth.result?.agent?.title) ?? '',
                                       style: GoogleFonts.manrope(
                                         fontSize: 17.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: Color.fromRGBO(177, 177, 177, 1),
+                                        color: const Color.fromRGBO(
+                                            177, 177, 177, 1),
                                       ),
                                     ),
                                     SizedBox(height: 20.h),
@@ -162,8 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(20.r),
-                                        color: const Color.fromRGBO(
-                                            245, 245, 245, 1),
+                                        color: AppColors.grey,
                                       ),
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 20.w),
@@ -202,8 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(20.r),
-                                        color: const Color.fromRGBO(
-                                            245, 245, 245, 1),
+                                        color: AppColors.grey,
                                       ),
                                       child: const Icon(
                                         Icons.add,

@@ -11,13 +11,13 @@ Widget tabGroup(
 ) {
   return Container(
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(13.r),
+      borderRadius: BorderRadius.circular(20.r),
       color: Colors.white,
     ),
     child: TabBar(
       unselectedLabelColor: Colors.black,
       indicator: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.r),
+        borderRadius: BorderRadius.circular(20.r),
         color: const Color.fromRGBO(255, 102, 102, 1),
       ),
       onTap: (value) {
@@ -27,7 +27,7 @@ Widget tabGroup(
       controller: tabController,
       tabs: [
         SizedBox(
-          height: 50,
+          height: 64,
           child: Center(
             child: Text(
               'FBO',
@@ -38,7 +38,7 @@ Widget tabGroup(
           ),
         ),
         SizedBox(
-          height: 50,
+          height: 64,
           child: Center(
             child: Text(
               'FBS',
@@ -49,14 +49,17 @@ Widget tabGroup(
           ),
         ),
         SizedBox(
-          height: 50,
+          height: 64,
           child: Center(
-            child: Text(
-              'Сборный FBS',
-              textAlign: TextAlign.center,
-              style: CustomTextStyle.grey15bold.copyWith(
-                  fontSize: 14.sp,
-                  color: indexTab == 2 ? Colors.white : Colors.black),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                'Сборный FBS',
+                textAlign: TextAlign.center,
+                style: CustomTextStyle.grey15bold.copyWith(
+                    fontSize: 14.sp,
+                    color: indexTab == 2 ? Colors.white : Colors.black),
+              ),
             ),
           ),
         ),

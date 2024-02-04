@@ -283,8 +283,8 @@ class _ErrorAnimState extends State<ErrorAnim>
       data: MediaQuery.of(context).copyWith(textScaler: AppConsts.textScalerStd,),
       child: Center(
         child: Container(
-          height: 250.h,
-          width: 200.h,
+          height: 300.h,
+          width: 250.h,
           decoration: BoxDecoration(
             color: Colors.grey.withOpacity(0.8),
             borderRadius: BorderRadius.circular(20.r),

@@ -407,7 +407,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 margin: EdgeInsets.symmetric(horizontal: 20.w).add(
                   EdgeInsets.only(top: 24.h),
                 ),
-                height: 168.h,
+                height: 178.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.r),
                   border: Border.all(
@@ -421,7 +421,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 60.w, top: 16.h),
+                          padding: EdgeInsets.only(left: 60.w, top: 25.h),
                           child: Text(
                             'Откуда',
                             style: GoogleFonts.manrope(
@@ -643,11 +643,18 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       child: Container(
                         height: 48.h,
                         width: 48.w,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         margin: EdgeInsets.only(right: 20.w),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12.r),
                           color: AppColors.grey,
                         ),
+                        child: SvgPicture.asset(
+                        'assets/icons/arrow-double.svg',
+                        // height: 12,
+                        // width: 12,
+                        // color: Colors.black,
+                      ),
                       ),
                     ),
                     Align(
@@ -676,71 +683,76 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(15.r),
       ),
-      child: Row(
-        children: [
-          Checkbox(
-            value: false,
-            fillColor: MaterialStateProperty.all(Colors.blue),
-            shape: const CircleBorder(),
-            onChanged: (value) {},
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                if (typeGroup != TypeGroup.mixfbs) {
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: 40.w,),
+            // Checkbox(
+            //   value: false,
+            //   fillColor: MaterialStateProperty.all(Colors.blue),
+            //   shape: const CircleBorder(),
+            //   onChanged: (value) {},
+            // ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (typeGroup != TypeGroup.mixfbs) {
+                    final marketplaces =
+                        BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
+                    if (marketplaces != null) {
+                      toController.text =
+                          marketplaces.result.points.first.name!.first.name!;
+                      showMarketPlaces(marketplaces);
+                    }
+                  }
+                },
+                child: CustomTextField(
+                  contentPadding: const EdgeInsets.all(0),
+                  height: 23.h,
+                  fillColor: Colors.white,
+                  enabled: false,
+                  hintText: 'Куда отвезти?',
+                  textEditingController: toController,
+                ),
+              ),
+            ),
+            SizedBox(width: 10.w),
+            if (typeGroup != TypeGroup.mixfbs)
+              GestureDetector(
+                onTap: () async {
                   final marketplaces =
                       BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
                   if (marketplaces != null) {
-                    toController.text =
-                        marketplaces.result.points.first.name!.first.name!;
-                    showMarketPlaces(marketplaces);
+                    final result = await Navigator.of(context).pushNamed(
+                        AppRoute.marketplacesMap,
+                        arguments: marketplaces);
+                    if (result != null) {
+                      final pointsRes = result as PointMarketPlace;
+                      toController.text = pointsRes.name?.first.name ?? '';
+                      suggestionsEnd = Suggestions(
+                        iD: null,
+                        name: pointsRes.name?.first.name ?? '',
+                        point: Point(
+                          latitude: pointsRes.latitude,
+                          longitude: pointsRes.longitude,
+                        ),
+                      );
+                      calc();
+                    }
                   }
-                }
-              },
-              child: CustomTextField(
-                contentPadding: const EdgeInsets.all(0),
-                height: 45.h,
-                fillColor: Colors.white,
-                enabled: false,
-                hintText: 'Куда отвезти?',
-                textEditingController: toController,
+                },
+                child: const Icon(
+                  Icons.map_outlined,
+                  color: Colors.red,
+                ),
               ),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          if (typeGroup != TypeGroup.mixfbs)
-            GestureDetector(
-              onTap: () async {
-                final marketplaces =
-                    BlocProvider.of<SearchAddressBloc>(context).marketPlaces;
-                if (marketplaces != null) {
-                  final result = await Navigator.of(context).pushNamed(
-                      AppRoute.marketplacesMap,
-                      arguments: marketplaces);
-                  if (result != null) {
-                    final pointsRes = result as PointMarketPlace;
-                    toController.text = pointsRes.name?.first.name ?? '';
-                    suggestionsEnd = Suggestions(
-                      iD: null,
-                      name: pointsRes.name?.first.name ?? '',
-                      point: Point(
-                        latitude: pointsRes.latitude,
-                        longitude: pointsRes.longitude,
-                      ),
-                    );
-                    calc();
-                  }
-                }
-              },
-              child: const Icon(
-                Icons.map_outlined,
-                color: Colors.red,
-              ),
-            ),
-          SizedBox(width: 10.w),
-        ],
+            SizedBox(width: 10.w),
+          ],
+        ),
       ),
     );
   }

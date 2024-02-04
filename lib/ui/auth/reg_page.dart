@@ -3,6 +3,7 @@ import 'package:egorka/core/network/repository.dart';
 import 'package:egorka/helpers/router.dart';
 import 'package:egorka/model/register_user.dart';
 import 'package:egorka/widget/custom_button.dart';
+import 'package:egorka/widget/custom_checkbox.dart';
 import 'package:egorka/widget/custom_textfield.dart';
 import 'package:egorka/widget/dialog.dart';
 import 'package:egorka/widget/formatter_uppercase.dart';
@@ -149,7 +150,7 @@ class _RegPageState extends State<RegPage> {
                             child: CustomTextField(
                               focusNode: focusNode6,
                               textEditingController: usernameController,
-                              hintText: 'Ivanov',
+                              hintText: 'login',
                               height: 60.h,
                               auth: true,
                               contentPadding: EdgeInsets.symmetric(
@@ -169,7 +170,7 @@ class _RegPageState extends State<RegPage> {
                             child: CustomTextField(
                               focusNode: focusNode1,
                               textEditingController: nameController,
-                              hintText: 'Ivanov',
+                              hintText: 'Ivan',
                               auth: true,
                               formatters: [CustomInputFormatterUpperCase()],
                               height: 60.h,
@@ -265,16 +266,25 @@ class _RegPageState extends State<RegPage> {
                       SizedBox(height: 20.h),
                       Row(
                         children: [
-                          Checkbox(
-                            value: confirmTermPolitics,
-                            fillColor: MaterialStateProperty.all(Colors.red),
-                            shape: const CircleBorder(),
-                            onChanged: (value) {
-                              setState(() {
-                                confirmTermPolitics = !confirmTermPolitics;
-                              });
-                            },
-                          ),
+                          CustomCheckBox(
+                              initialValue: false,
+                              onTap: (value) {
+                                setState(() {
+                                  confirmTermPolitics =
+                                  !confirmTermPolitics;
+                                });
+                              }),
+                          // Checkbox(
+                          //   value: confirmTermPolitics,
+                          //   fillColor: MaterialStateProperty.all(Colors.red),
+                          //   shape: const CircleBorder(),
+                          //   onChanged: (value) {
+                          //     setState(() {
+                          //       confirmTermPolitics = !confirmTermPolitics;
+                          //     });
+                          //   },
+                          // ),
+                          SizedBox(width: 20.w,),
                           Expanded(
                             child: GestureDetector(
                               onTap: () {

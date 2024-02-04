@@ -357,7 +357,7 @@ class _MarketPageState extends State<MarketPages>
                         return true;
                       },
                       builder: (context, snapshot) {
-                        return Expanded(
+                        return Flexible(
                           child: Stack(
                             children: [
                               ListView(
@@ -803,7 +803,7 @@ class _MarketPageState extends State<MarketPages>
                                               'Отправитель',
                                               style: CustomTextStyle.grey15bold,
                                             ),
-                                            const Spacer(),
+                                            // const Spacer(),
                                           ],
                                         ),
                                         SizedBox(height: 8.h),

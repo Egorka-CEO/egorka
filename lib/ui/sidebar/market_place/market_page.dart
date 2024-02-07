@@ -867,54 +867,52 @@ class _MarketPageState extends State<MarketPages>
                                                               220, 220, 220, 1),
                                                     ),
                                                   ),
-                                                  child: Expanded(
-                                                    child: Center(
-                                                      child: CustomTextField(
-                                                        onTap: () =>
-                                                            scrolling(),
-                                                        onFieldSubmitted:
-                                                            (value) =>
-                                                                calcOrder(),
-                                                        onChanged: (value) {
-                                                          int? res =
-                                                              int.tryParse(
-                                                                  value);
-                                                          if (res != null) {
-                                                            countBucket
-                                                                .add(res);
-                                                          } else {
-                                                            countBucket.add(0);
-                                                          }
-                                                          countPalletControllerLess15kg
-                                                              .text = '';
-                                                          countPalletControllerMore15kg
-                                                              .text = '';
-                                                          bucketCountLess15kg
-                                                              .add(0);
-                                                          bucketCountMore15kg
-                                                              .add(0);
-                                                          setState(() {});
-                                                        },
-                                                        focusNode: bucketFocus,
-                                                        height: 45.h,
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        10.w),
-                                                        fillColor: Colors.white,
-                                                        hintText:
-                                                            'Кол-во коробок',
-                                                        textInputType:
-                                                            TextInputType
-                                                                .number,
-                                                        formatters: [
-                                                          CustomInputFormatterSlider(
-                                                              maxSliderBucket)
-                                                        ],
-                                                        textEditingController:
-                                                            countBucketController,
-                                                      ),
+                                                  child: Center(
+                                                    child: CustomTextField(
+                                                      onTap: () =>
+                                                          scrolling(),
+                                                      onFieldSubmitted:
+                                                          (value) =>
+                                                              calcOrder(),
+                                                      onChanged: (value) {
+                                                        int? res =
+                                                            int.tryParse(
+                                                                value);
+                                                        if (res != null) {
+                                                          countBucket
+                                                              .add(res);
+                                                        } else {
+                                                          countBucket.add(0);
+                                                        }
+                                                        countPalletControllerLess15kg
+                                                            .text = '';
+                                                        countPalletControllerMore15kg
+                                                            .text = '';
+                                                        bucketCountLess15kg
+                                                            .add(0);
+                                                        bucketCountMore15kg
+                                                            .add(0);
+                                                        setState(() {});
+                                                      },
+                                                      focusNode: bucketFocus,
+                                                      height: 45.h,
+                                                      contentPadding:
+                                                          EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10.w),
+                                                      fillColor: Colors.white,
+                                                      hintText:
+                                                          'Кол-во коробок',
+                                                      textInputType:
+                                                          TextInputType
+                                                              .number,
+                                                      formatters: [
+                                                        CustomInputFormatterSlider(
+                                                            maxSliderBucket)
+                                                      ],
+                                                      textEditingController:
+                                                          countBucketController,
                                                     ),
                                                   ),
                                                 ),
@@ -937,8 +935,7 @@ class _MarketPageState extends State<MarketPages>
                                                     color: Colors.red,
                                                   ),
                                                 ),
-                                                Expanded(
-                                                  flex: 2,
+                                                Flexible(
                                                   child: Slider(
                                                     min: minSliderBucket,
                                                     max: maxSliderBucket,
@@ -1009,50 +1006,48 @@ class _MarketPageState extends State<MarketPages>
                                                     ),
                                                   ),
                                                   child: Center(
-                                                    child: Expanded(
-                                                      child: CustomTextField(
-                                                        onTap: () =>
-                                                            scrolling(),
-                                                        onFieldSubmitted:
-                                                            (value) =>
-                                                                calcOrder(),
-                                                        onChanged: (value) {
-                                                          int? res =
-                                                              int.tryParse(
-                                                                  value);
-                                                          if (res != null) {
-                                                            countPallet
-                                                                .add(res);
-                                                          } else {
-                                                            countPallet.add(0);
-                                                          }
-                                                          countPalletControllerMore
-                                                              .text = '';
-                                                          additionalPalletCount
-                                                              .add(0);
-                                                          setState(() {});
-                                                        },
-                                                        maxLines: 1,
-                                                        focusNode: palletFocus,
-                                                        height: 45.h,
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        10.w),
-                                                        fillColor: Colors.white,
-                                                        hintText:
-                                                            'Кол-во паллет',
-                                                        textInputType:
-                                                            TextInputType
-                                                                .number,
-                                                        formatters: [
-                                                          CustomInputFormatterSlider(
-                                                              maxSliderPallet)
-                                                        ],
-                                                        textEditingController:
-                                                            countPalletController,
-                                                      ),
+                                                    child: CustomTextField(
+                                                      onTap: () =>
+                                                          scrolling(),
+                                                      onFieldSubmitted:
+                                                          (value) =>
+                                                              calcOrder(),
+                                                      onChanged: (value) {
+                                                        int? res =
+                                                            int.tryParse(
+                                                                value);
+                                                        if (res != null) {
+                                                          countPallet
+                                                              .add(res);
+                                                        } else {
+                                                          countPallet.add(0);
+                                                        }
+                                                        countPalletControllerMore
+                                                            .text = '';
+                                                        additionalPalletCount
+                                                            .add(0);
+                                                        setState(() {});
+                                                      },
+                                                      maxLines: 1,
+                                                      focusNode: palletFocus,
+                                                      height: 45.h,
+                                                      contentPadding:
+                                                          EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10.w),
+                                                      fillColor: Colors.white,
+                                                      hintText:
+                                                          'Кол-во паллет',
+                                                      textInputType:
+                                                          TextInputType
+                                                              .number,
+                                                      formatters: [
+                                                        CustomInputFormatterSlider(
+                                                            maxSliderPallet)
+                                                      ],
+                                                      textEditingController:
+                                                          countPalletController,
                                                     ),
                                                   ),
                                                 ),
@@ -1072,8 +1067,7 @@ class _MarketPageState extends State<MarketPages>
                                                     color: Colors.red,
                                                   ),
                                                 ),
-                                                Expanded(
-                                                  flex: 2,
+                                                Flexible(
                                                   child: Slider(
                                                     min: minSliderPallet,
                                                     max: maxSliderPallet,
@@ -1337,7 +1331,7 @@ class _MarketPageState extends State<MarketPages>
                             // ),
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 500),
-                              height: snapshot.data! ? 216.h : 0.h,
+                              height: snapshot.data! ? 220.h : 0.h,
                               curve: Curves.easeInOutQuint,
                               child: Stack(
                                 children: [
@@ -1696,52 +1690,50 @@ class _MarketPageState extends State<MarketPages>
                                                       ),
                                                     ),
                                                     child: Center(
-                                                      child: Expanded(
-                                                        child: CustomTextField(
-                                                          onTap: () =>
-                                                              scrolling(),
-                                                          onFieldSubmitted:
-                                                              (value) =>
-                                                                  calcOrder(),
-                                                          onChanged: (value) {
-                                                            int? res =
-                                                                int.tryParse(
-                                                                    value);
-                                                            if (res != null) {
-                                                              additionalPalletCount
-                                                                  .add(res);
-                                                            } else {
-                                                              additionalPalletCount
-                                                                  .add(0);
-                                                            }
-                                                            setState(() {});
-                                                          },
-                                                          focusNode:
-                                                              palletFocusAdditional,
-                                                          height: 45.h,
-                                                          contentPadding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          10.w),
-                                                          fillColor:
-                                                              Colors.white,
-                                                          hintText:
-                                                              'Кол-во паллет',
-                                                          textInputType:
-                                                              TextInputType
-                                                                  .number,
-                                                          formatters: [
-                                                            CustomInputFormatterSlider(
-                                                              (double.tryParse(
-                                                                      countPalletController
-                                                                          .text) ??
-                                                                  0),
-                                                            ),
-                                                          ],
-                                                          textEditingController:
-                                                              countPalletControllerMore,
-                                                        ),
+                                                      child: CustomTextField(
+                                                        onTap: () =>
+                                                            scrolling(),
+                                                        onFieldSubmitted:
+                                                            (value) =>
+                                                                calcOrder(),
+                                                        onChanged: (value) {
+                                                          int? res =
+                                                              int.tryParse(
+                                                                  value);
+                                                          if (res != null) {
+                                                            additionalPalletCount
+                                                                .add(res);
+                                                          } else {
+                                                            additionalPalletCount
+                                                                .add(0);
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                        focusNode:
+                                                            palletFocusAdditional,
+                                                        height: 45.h,
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10.w),
+                                                        fillColor:
+                                                            Colors.white,
+                                                        hintText:
+                                                            'Кол-во паллет',
+                                                        textInputType:
+                                                            TextInputType
+                                                                .number,
+                                                        formatters: [
+                                                          CustomInputFormatterSlider(
+                                                            (double.tryParse(
+                                                                    countPalletController
+                                                                        .text) ??
+                                                                0),
+                                                          ),
+                                                        ],
+                                                        textEditingController:
+                                                            countPalletControllerMore,
                                                       ),
                                                     ),
                                                   ),

@@ -407,7 +407,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                 margin: EdgeInsets.symmetric(horizontal: 20.w).add(
                   EdgeInsets.only(top: 24.h),
                 ),
-                height: 178.h,
+                height: 158.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.r),
                   border: Border.all(
@@ -421,7 +421,7 @@ class _BottomSheetDraggableState extends State<BottomSheetDraggable>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 60.w, top: 25.h),
+                          padding: EdgeInsets.only(left: 60.w, top: 15.h),
                           child: Text(
                             'Откуда',
                             style: GoogleFonts.manrope(

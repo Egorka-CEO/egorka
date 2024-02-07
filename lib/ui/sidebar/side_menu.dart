@@ -80,18 +80,14 @@ class _NavBarState extends State<NavBar> {
                             child: Container(
                               height: 72.h,
                               width: 72.h,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey[100],
-                              ),
                               alignment: Alignment.center,
                               child: Image.asset(
-                                'assets/images/egorka_man.png',
+                                'assets/images/egorka_circle.png',
                               ),
                             ),
                           ),
                           SizedBox(width: 12.w),
-                          Expanded(
+                          Flexible(
                             child: GestureDetector(
                               onTap: () => Navigator.pushNamed(
                                   context, AppRoute.profile),
@@ -101,7 +97,7 @@ class _NavBarState extends State<NavBar> {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    (auth.result?.agent!.title) ?? '',
+                                    (auth.result?.agent?.title) ?? (auth.result?.user?.name) ?? '',
                                     style: GoogleFonts.manrope(
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.w600,

@@ -75,7 +75,7 @@ class _AboutPageState extends State<AboutPage> {
               const Spacer(flex: 2),
               // SizedBox(height: 100.h),
               Image.asset(
-                'assets/images/egorka_man.png',
+                'assets/images/egorka_circle.png',
                 height: 150.h,
               ),
               const Spacer(flex: 1),

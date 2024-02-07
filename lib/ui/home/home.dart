@@ -321,7 +321,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: Center(
                       child: SizedBox(
                         child: Image.asset(
-                          'assets/images/egorka_man.png',
+                          'assets/images/city_egorka.png',
                           // width: 100.w,
                           height: 150.w,
                         ),

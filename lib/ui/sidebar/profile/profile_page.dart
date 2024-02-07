@@ -86,14 +86,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     Container(
                       height: 190.h,
                       width: 190.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey[100],
-                      ),
                       alignment: Alignment.center,
                       child: Image.asset(
-                        'assets/images/egorka_man.png',
-                        height: 130.h,
+                        'assets/images/egorka_circle.png',
+                        height: 200.h,
                       ),
                     ),
                     if (user!.result!.agent != null)
@@ -674,7 +670,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             const Expanded(child: SizedBox()),
-                            SvgPicture.asset('assets/icons/logout.svg'),
+                            SvgPicture.asset(
+                              'assets/icons/logout.svg',
+                              height: 25,
+                            ),
+                            SizedBox(width: 20.w),
                           ],
                         ),
                       ),

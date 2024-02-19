@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "625482976556",
-    "project_id": "egorkadelivery-9f2db",
-    "storage_bucket": "egorkadelivery-9f2db.appspot.com"
+    "project_number": "351740650975",
+    "project_id": "egorka-delivery-ooo",
+    "storage_bucket": "egorka-delivery-ooo.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:625482976556:android:c0ef757e9112e5bb70b089",
+        "mobilesdk_app_id": "1:351740650975:android:4ca8f96552a406a266906a",
         "android_client_info": {
           "package_name": "com.example.egorka"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "625482976556-krrpl43aoel1b4p9bsp9nk2ki6rbnmfq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.egorka",
-            "certificate_hash": "a789e505c817a122ea906ea6eaa3d48b3a30ab18"
-          }
-        },
-        {
-          "client_id": "625482976556-ts7uqiu7riopugldnh46of85l0b7r5bb.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBtqr5c7ahcKxw2yVvzPtCC3TWSatFX5Zs"
+          "current_key": "AIzaSyBI6Y5s-dBv_MnSG0DRQi785o1lGkDS8h4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "625482976556-ts7uqiu7riopugldnh46of85l0b7r5bb.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

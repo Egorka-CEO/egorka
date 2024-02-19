@@ -2,24 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>625482976556-rffh2druk8isnqsruq7dvc6lnqh1cu99.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.625482976556-rffh2druk8isnqsruq7dvc6lnqh1cu99</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>625482976556-krrpl43aoel1b4p9bsp9nk2ki6rbnmfq.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDr31Kw4eY4bsAIfNrfAFJC0wLG-NIfVoU</string>
+	<string>AIzaSyDlS_i6pubQHPNRKPmmWEzeIgxIyg5pFEc</string>
 	<key>GCM_SENDER_ID</key>
-	<string>625482976556</string>
+	<string>351740650975</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>dev.broseph.egorka</string>
+	<string>com.egorka.delivery.app</string>
 	<key>PROJECT_ID</key>
-	<string>egorkadelivery-9f2db</string>
+	<string>egorka-delivery-ooo</string>
 	<key>STORAGE_BUCKET</key>
-	<string>egorkadelivery-9f2db.appspot.com</string>
+	<string>egorka-delivery-ooo.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:625482976556:ios:acd37e3c47542ba770b089</string>
+	<string>1:351740650975:ios:116659d3ed56308766906a</string>
 </dict>
 </plist>

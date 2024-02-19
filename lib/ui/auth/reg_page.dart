@@ -170,7 +170,7 @@ class _RegPageState extends State<RegPage> {
                             child: CustomTextField(
                               focusNode: focusNode1,
                               textEditingController: nameController,
-                              hintText: 'Ivan',
+                              hintText: 'Иван',
                               auth: true,
                               formatters: [CustomInputFormatterUpperCase()],
                               height: 60.h,
